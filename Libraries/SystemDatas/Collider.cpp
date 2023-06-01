@@ -112,10 +112,10 @@ void Collider::BoxCollider::PushBox(DirectX::SimpleMath::Vector3* moveObj,
 //--------------------------------------------------------//
 Collider::SphereCollider::SphereCollider():
 	is_hitFlag{},
-	is_pushFlag{}
+	is_pushMode{}
 {
 	is_hitFlag = false;
-	is_pushFlag = false;
+	is_pushMode = false;
 }
 
 //--------------------------------------------------------//
@@ -144,7 +144,7 @@ void Collider::SphereCollider::PushSphere(DirectX::SimpleMath::Vector3& pos1,
 		// Õ“Ë‚µ‚½‹…‚Ì‰Ÿ‚µ–ß‚µ‹——£‚ğŒvZ
 		float pushDistance = sumOfRadius - distance;
 
-		if (is_pushFlag)
+		if (is_pushMode)
 		{
 			// ‹…1‚ğ‰Ÿ‚µ–ß‚·
 			pos1 -= collisionDirection * pushDistance / 2;
