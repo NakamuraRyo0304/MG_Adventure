@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>3b11e4ac-5d12-4acb-a5e4-8faaa69519f9</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>58607b5c-a5fb-4b95-8ca7-4ab0549ccd33</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="GameLoop">
+      <UniqueIdentifier>{8a1eb1ff-b944-4453-9ebd-b07a051aeadc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IScene">
+      <UniqueIdentifier>{972675d9-5a97-4792-95b5-af7e631221f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameMain">
+      <UniqueIdentifier>{941c7117-b2d9-4102-8ce2-6aca54491ae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pch">
+      <UniqueIdentifier>{3e217278-3bac-4b95-9d22-e933b285749f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TitleScene">
+      <UniqueIdentifier>{8893bd6f-1e61-4c48-ad02-79cb383339e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SelectScene">
+      <UniqueIdentifier>{31000f87-0069-405b-a113-80df8e6a5691}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PlayScene">
+      <UniqueIdentifier>{97c9aef9-e8f0-4ac8-b3be-082c137631f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ResultScene">
+      <UniqueIdentifier>{30cf41e5-4992-4f54-aa3c-e92d1232d6df}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="StepTimer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceResources.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\GridFloor.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\DrawString.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\Collider.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\Camera.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Icon\Icon.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>GameLoop</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameMain.h">
+      <Filter>GameMain</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\IScene.h">
+      <Filter>IScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\MapLoad.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\RayCast.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\UserUtility.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\TitleScene\TitleScene.h">
+      <Filter>TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\SelectScene\SelectScene.h">
+      <Filter>SelectScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PlayScene\PlayScene.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResultScene\ResultScene.h">
+      <Filter>ResultScene</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DeviceResources.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\GridFloor.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\DrawString.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\Collider.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\Camera.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>GameLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>GameLoop</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameMain.cpp">
+      <Filter>GameMain</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\IScene.cpp">
+      <Filter>IScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\RayCast.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>pch</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\TitleScene\TitleScene.cpp">
+      <Filter>TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\SelectScene\SelectScene.cpp">
+      <Filter>SelectScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\PlayScene.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResultScene\ResultScene.cpp">
+      <Filter>ResultScene</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\Icon\Icon.rc">
+      <Filter>Assets</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="resource.rc">
+      <Filter>Assets</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="directx.ico">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest">
+      <Filter>Assets</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Resources\Fonts\myfile.spritefont">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Resources\Fonts\SegoeUI_18.spritefont">
+      <Filter>Assets</Filter>
+    </None>
+  </ItemGroup>
+</Project>
