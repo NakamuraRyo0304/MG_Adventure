@@ -1,0 +1,68 @@
+/*
+ *	@file	Game.h
+ *	@brief	ゲームの基盤。
+ *	@date	2023-03-31
+ *  @human  NakamuraRyo
+ */
+
+#pragma once
+#ifndef GAME
+#define GAME
+
+#include "DeviceResources.h"
+#include "StepTimer.h"
+#include "Game/GameMain.h"
+
+// 前方宣言
+class Scene;
+
+class Game final : public DX::IDeviceNotify
+{
+public:
+
+    static const wchar_t* TITLE;    // ゲームタイトル
+    static const int SCREEN_W;      // 画面サイズ
+    static const int SCREEN_H;
+
+public:
+    Game() noexcept(false);
+
+    // 初期化
+    void Initialize(HWND window, int width, int height);
+
+    // ゲームループ
+    void Tick();
+
+    // IDeviceNotify
+    virtual void OnDeviceLost() override;
+    virtual void OnDeviceRestored() override;
+
+    // メッセージ
+    void OnActivated();
+    void OnDeactivated();
+    void OnSuspending();
+    void OnResuming();
+    void OnWindowMoved();
+    void OnWindowSizeChanged(int width, int height);
+
+    // プロパティ
+    void GetDefaultSize( int& width, int& height ) const;
+
+private:
+
+    void Update(DX::StepTimer const& timer);
+    void Draw();
+
+    void Clear();
+
+    void CreateDeviceDependentResources();
+    void CreateWindowSizeDependentResources();
+
+    DX::StepTimer m_timer;
+
+    // シーン
+    std::unique_ptr<GameMain> mGameMain;
+
+};
+
+#endif // GAME
