@@ -41,26 +41,32 @@
     <Filter Include="Resources\Models">
       <UniqueIdentifier>{e2d29db9-cf39-4c1e-b545-e4e2c3719d5f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Camera">
+      <UniqueIdentifier>{5653c5f1-8b91-4ec8-926b-a84d51730494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Collider">
+      <UniqueIdentifier>{2173a58a-097e-49f5-8119-2a4221b9f1ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\DeviceResources">
+      <UniqueIdentifier>{a2d73052-253b-4e9b-b2fa-e34918ac4ad7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\DrawString">
+      <UniqueIdentifier>{4e74567a-c8e0-4d55-897c-84489a262085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\GridFloor">
+      <UniqueIdentifier>{4b800ea6-ace5-4bd5-b7d6-2ff72fe944cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\MapLoad">
+      <UniqueIdentifier>{0fe180e7-fe66-453f-afc3-6b0091d33735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\RayCast">
+      <UniqueIdentifier>{21ce2c6b-b070-4805-a3ba-cb7bf7bae8e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\HeaderOnly">
+      <UniqueIdentifier>{e6876608-32b7-4fe9-b504-5b194bd9baf0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StepTimer.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="DeviceResources.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\GridFloor.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\DrawString.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\Collider.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\Camera.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Resources\Icon\Icon.h">
       <Filter>Assets</Filter>
     </ClInclude>
@@ -72,15 +78,6 @@
     </ClInclude>
     <ClInclude Include="Game\IScene.h">
       <Filter>IScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\MapLoad.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\RayCast.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\UserUtility.h">
-      <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>pch</Filter>
@@ -97,23 +94,35 @@
     <ClInclude Include="Game\ResultScene\ResultScene.h">
       <Filter>ResultScene</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\Camera.h">
+      <Filter>Common\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\Collider.h">
+      <Filter>Common\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceResources.h">
+      <Filter>Common\DeviceResources</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\DrawString.h">
+      <Filter>Common\DrawString</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\GridFloor.h">
+      <Filter>Common\GridFloor</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\MapLoad.h">
+      <Filter>Common\MapLoad</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\RayCast.h">
+      <Filter>Common\RayCast</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\UserUtility.h">
+      <Filter>Common\HeaderOnly</Filter>
+    </ClInclude>
+    <ClInclude Include="StepTimer.h">
+      <Filter>Common\HeaderOnly</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DeviceResources.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\GridFloor.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\DrawString.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\Collider.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\Camera.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>GameLoop</Filter>
     </ClCompile>
@@ -125,12 +134,6 @@
     </ClCompile>
     <ClCompile Include="Game\IScene.cpp">
       <Filter>IScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\RayCast.cpp">
-      <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>pch</Filter>
@@ -146,6 +149,27 @@
     </ClCompile>
     <ClCompile Include="Game\ResultScene\ResultScene.cpp">
       <Filter>ResultScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\Camera.cpp">
+      <Filter>Common\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\Collider.cpp">
+      <Filter>Common\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceResources.cpp">
+      <Filter>Common\DeviceResources</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\DrawString.cpp">
+      <Filter>Common\DrawString</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\GridFloor.cpp">
+      <Filter>Common\GridFloor</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp">
+      <Filter>Common\MapLoad</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\RayCast.cpp">
+      <Filter>Common\RayCast</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

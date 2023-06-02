@@ -43,7 +43,7 @@ void PlayScene::Initialize()
 	CreateWindowDependentResources();
 
 	m_camera->SetMoveMode(false);				// カメラ座標移動
-	m_camera->SetEagleMode(false);				// カメラ視点移動
+	m_camera->SetEagleMode(true);				// カメラ視点移動
 
 	// マップ読み込み
 	LoadMap(GetStageNum());
@@ -76,7 +76,7 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// レイの更新
 	GetRayCast()->Update(mouseState);
 
-	// ボックスのサイズ値を変更
+	// 球のサイズ値を変更
 	if (GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Up))
 	{
 		m_spherePos.y += COMMON_SIZE / 2;
@@ -98,6 +98,7 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();
+
 	// Spaceキーでシーン切り替え
 	if (GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
 	{

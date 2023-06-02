@@ -67,6 +67,7 @@ void SelectScene::Update(const float& elapsedTime, DirectX::Keyboard::State& key
 
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();
+
 	// Spaceキーでシーン切り替え
 	if (GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
 	{

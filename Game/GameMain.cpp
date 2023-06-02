@@ -62,9 +62,6 @@ void GameMain::Update(const DX::StepTimer& timer)
 
 	m_mouseStateTracker->Update(mouseState);
 
-	// ESCキーで終了
-	if (keyState.Escape) PostQuitMessage(0);
-
 	// 次のシーンが設定されていたらシーン切り替え
 	if (m_nextScene != SCENE::NONE)
 	{
