@@ -194,6 +194,7 @@
     <ClInclude Include="Libraries\SystemDatas\GridFloor.h" />
     <ClInclude Include="Libraries\SystemDatas\MapLoad.h" />
     <ClInclude Include="Libraries\SystemDatas\RayCast.h" />
+    <ClInclude Include="Libraries\SystemManager\SystemManager.h" />
     <ClInclude Include="Libraries\UserUtility.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resources\Icon\Icon.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="Libraries\SystemDatas\GridFloor.cpp" />
     <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp" />
     <ClCompile Include="Libraries\SystemDatas\RayCast.cpp" />
+    <ClCompile Include="Libraries\SystemManager\SystemManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

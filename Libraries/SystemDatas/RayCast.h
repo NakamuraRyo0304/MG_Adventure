@@ -20,12 +20,6 @@ private:
 	// ƒNƒŠƒbƒN”»’è
 	bool is_clickFlag;
 
-public:
-	typedef struct MOUSE_BUTTON
-	{
-		const int LEFT = 1;
-		const int RIGHT = 2;
-	};
 
 public:
 	RayCast();

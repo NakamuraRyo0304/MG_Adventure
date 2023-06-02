@@ -20,18 +20,6 @@
     <Filter Include="pch">
       <UniqueIdentifier>{3e217278-3bac-4b95-9d22-e933b285749f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="TitleScene">
-      <UniqueIdentifier>{8893bd6f-1e61-4c48-ad02-79cb383339e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SelectScene">
-      <UniqueIdentifier>{31000f87-0069-405b-a113-80df8e6a5691}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="PlayScene">
-      <UniqueIdentifier>{97c9aef9-e8f0-4ac8-b3be-082c137631f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ResultScene">
-      <UniqueIdentifier>{30cf41e5-4992-4f54-aa3c-e92d1232d6df}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{d03fc034-8115-4f08-8c86-f4d43e011a31}</UniqueIdentifier>
     </Filter>
@@ -65,6 +53,24 @@
     <Filter Include="Common\HeaderOnly">
       <UniqueIdentifier>{e6876608-32b7-4fe9-b504-5b194bd9baf0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes">
+      <UniqueIdentifier>{ac0ca22b-0a98-41d8-99cb-c97109329248}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\PlayScene">
+      <UniqueIdentifier>{97c9aef9-e8f0-4ac8-b3be-082c137631f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\ResultScene">
+      <UniqueIdentifier>{30cf41e5-4992-4f54-aa3c-e92d1232d6df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\SelectScene">
+      <UniqueIdentifier>{31000f87-0069-405b-a113-80df8e6a5691}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\TitleScene">
+      <UniqueIdentifier>{8893bd6f-1e61-4c48-ad02-79cb383339e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SystemManager">
+      <UniqueIdentifier>{7f1eb7c5-76c0-4700-81fe-b6cfd2ba3176}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -83,16 +89,16 @@
       <Filter>pch</Filter>
     </ClInclude>
     <ClInclude Include="Game\TitleScene\TitleScene.h">
-      <Filter>TitleScene</Filter>
+      <Filter>Scenes\TitleScene</Filter>
     </ClInclude>
     <ClInclude Include="Game\SelectScene\SelectScene.h">
-      <Filter>SelectScene</Filter>
+      <Filter>Scenes\SelectScene</Filter>
     </ClInclude>
     <ClInclude Include="Game\PlayScene\PlayScene.h">
-      <Filter>PlayScene</Filter>
+      <Filter>Scenes\PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Game\ResultScene\ResultScene.h">
-      <Filter>ResultScene</Filter>
+      <Filter>Scenes\ResultScene</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\Camera.h">
       <Filter>Common\Camera</Filter>
@@ -121,6 +127,9 @@
     <ClInclude Include="StepTimer.h">
       <Filter>Common\HeaderOnly</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\SystemManager\SystemManager.h">
+      <Filter>SystemManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -139,16 +148,16 @@
       <Filter>pch</Filter>
     </ClCompile>
     <ClCompile Include="Game\TitleScene\TitleScene.cpp">
-      <Filter>TitleScene</Filter>
+      <Filter>Scenes\TitleScene</Filter>
     </ClCompile>
     <ClCompile Include="Game\SelectScene\SelectScene.cpp">
-      <Filter>SelectScene</Filter>
+      <Filter>Scenes\SelectScene</Filter>
     </ClCompile>
     <ClCompile Include="Game\PlayScene\PlayScene.cpp">
-      <Filter>PlayScene</Filter>
+      <Filter>Scenes\PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Game\ResultScene\ResultScene.cpp">
-      <Filter>ResultScene</Filter>
+      <Filter>Scenes\ResultScene</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\Camera.cpp">
       <Filter>Common\Camera</Filter>
@@ -170,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\RayCast.cpp">
       <Filter>Common\RayCast</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemManager\SystemManager.cpp">
+      <Filter>SystemManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
