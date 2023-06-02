@@ -110,12 +110,12 @@ void Collider::BoxCollider::PushBox(DirectX::SimpleMath::Vector3* moveObj,
 //--------------------------------------------------------//
 //コンストラクタスフィア                                  //
 //--------------------------------------------------------//
-Collider::SphereCollider::SphereCollider():
+Collider::SphereCollider::SphereCollider() :
 	is_hitFlag{},
-	is_pushFlag{}
+	is_pushMode{}
 {
 	is_hitFlag = false;
-	is_pushFlag = false;
+	is_pushMode = false;
 }
 
 //--------------------------------------------------------//
@@ -144,7 +144,7 @@ void Collider::SphereCollider::PushSphere(DirectX::SimpleMath::Vector3& pos1,
 		// 衝突した球の押し戻し距離を計算
 		float pushDistance = sumOfRadius - distance;
 
-		if (is_pushFlag)
+		if (is_pushMode)
 		{
 			// 球1を押し戻す
 			pos1 -= collisionDirection * pushDistance / 2;
@@ -157,4 +157,4 @@ void Collider::SphereCollider::PushSphere(DirectX::SimpleMath::Vector3& pos1,
 	}
 
 	is_hitFlag = false;
-};
+}

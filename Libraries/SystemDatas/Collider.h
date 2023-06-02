@@ -17,21 +17,24 @@ namespace Collider
 	class BoxCollider
 	{
 	private:
+		// 当っている面を判定
 		unsigned int m_hitFace;
+		// 当っているか判定
 		bool is_hitFlag;
+		// 押し戻し処理を行うか決めるフラグ
 		bool is_pushMode;
 
 	public:
 		// 当った位置
 		struct HIT_FACE
 		{
-			static const unsigned int RIGHT = 11;
-			static const unsigned int LEFT = 22;
-			static const unsigned int UP = 33;
-			static const unsigned int DOWN = 44;
-			static const unsigned int FRONT = 55;
-			static const unsigned int BACK = 66;
-			static const unsigned int NONE = 99;
+			static const unsigned int RIGHT = 11;		// 右
+			static const unsigned int LEFT  = 22;		// 左
+			static const unsigned int UP    = 33;		// 上
+			static const unsigned int DOWN  = 44;		// 下
+			static const unsigned int FRONT = 55;		// 前
+			static const unsigned int BACK  = 66;		// 後ろ
+			static const unsigned int NONE  = 99;		// 当っていない
 		};
 
 	public:
@@ -40,9 +43,9 @@ namespace Collider
 
 		// 押し戻し処理 引数：&動かすやつ,動かないやつ,大きさ１,大きさ２
 		void PushBox(DirectX::SimpleMath::Vector3* moveObj, 
-				     const DirectX::SimpleMath::Vector3& constObj, 
-				     const DirectX::SimpleMath::Vector3& sz1, 
-				     const DirectX::SimpleMath::Vector3& sz2);
+		       const DirectX::SimpleMath::Vector3& constObj, 
+		       const DirectX::SimpleMath::Vector3& sz1, 
+		       const DirectX::SimpleMath::Vector3& sz2);
 
 		// 当った位置を返す
 		unsigned int GetHitFace() { return m_hitFace; }
@@ -58,23 +61,36 @@ namespace Collider
 	class SphereCollider
 	{
 	private:
+		// 当っているか判定
 		bool is_hitFlag;
-		bool is_pushFlag;
+		// 押し戻し処理を行うか決めるフラグ
+		bool is_pushMode;
+
 	public:
 		SphereCollider();
 		~SphereCollider() = default;
 		
 		// 当たり判定と押し戻し
-		void PushSphere(DirectX::SimpleMath::Vector3& pos1,DirectX::SimpleMath::Vector3& pos2,float radius1,float radius2);
+		void PushSphere(DirectX::SimpleMath::Vector3& pos1,
+			            DirectX::SimpleMath::Vector3& pos2,
+			            float radius1,float radius2);
 		
 		// 当っているかどうか判定する
 		const bool& GetHitSphereFlag() { return is_hitFlag; }
 	
 		// 押し戻し処理をするか
-		void SetPushMode(bool flag) { is_pushFlag = flag; }
-	};
+		void SetPushMode(const bool& flag) { is_pushMode = flag; }
 
-	
+	};	
+
+	// OBBコライダークラス
+	class OBBCollider
+	{
+	private:
+
+	public:
+
+	};
 }
 
 #endif // COLLIDER
