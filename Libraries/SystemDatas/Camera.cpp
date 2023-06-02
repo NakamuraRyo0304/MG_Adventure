@@ -233,7 +233,7 @@ void Camera::ShakeCamera(float duration, float tremor, DirectX::SimpleMath::Vect
 //--------------------------------------------------------//
 //射影行列の作成と取得                                    //
 //--------------------------------------------------------//
-// 第１引数：画面横幅 / 第２引数：画面縦幅 / 第３引数：カメラ画角
+// 第１引数：画面横幅 / 第２引数：画面縦幅 / 第３引数：カメラ画角(float値を変換なしで渡す)
 const DirectX::SimpleMath::Matrix& Camera::GetProjection(float width, float height,float angle)
 {
 	// 画面サイズとアングルの保存
