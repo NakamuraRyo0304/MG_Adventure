@@ -181,6 +181,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DeviceResources.h" />
+    <ClInclude Include="Factories\ModelFactory.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
@@ -202,6 +203,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DeviceResources.cpp" />
+    <ClCompile Include="Factories\ModelFactory.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />
