@@ -71,6 +71,9 @@
     <Filter Include="SystemManager">
       <UniqueIdentifier>{7f1eb7c5-76c0-4700-81fe-b6cfd2ba3176}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Factories">
+      <UniqueIdentifier>{a396931d-e107-4640-a03e-917f27bce54c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -130,6 +133,9 @@
     <ClInclude Include="Libraries\SystemManager\SystemManager.h">
       <Filter>SystemManager</Filter>
     </ClInclude>
+    <ClInclude Include="Factories\ModelFactory.h">
+      <Filter>Factories</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -182,6 +188,9 @@
     </ClCompile>
     <ClCompile Include="Libraries\SystemManager\SystemManager.cpp">
       <Filter>SystemManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Factories\ModelFactory.cpp">
+      <Filter>Factories</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

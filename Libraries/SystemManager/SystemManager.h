@@ -67,9 +67,6 @@ public: // ゲッター、セッター、ファクトリー
 	// カメラの取得
 	Camera*& GetCamera();
 
-	// モデルの作成をするファクトリー
-	std::unique_ptr<DirectX::DX11::Model> ModelFactory(ID3D11Device1* device, const wchar_t* filename);
-
 public:
 	// ポインタの削除
 	template <typename T>

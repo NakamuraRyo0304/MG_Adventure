@@ -95,3 +95,4 @@ namespace DX
 #include "CommonStates.h"               // コモンステート
 #include "DDSTextureLoader.h"           // 画像読み込み（ddsファイル）
 #include "StepTimer.h"                  // 時間
+#include "Effects.h"                    // エフェクトを使用可能にする

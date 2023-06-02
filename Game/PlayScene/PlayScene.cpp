@@ -181,7 +181,7 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 	
 	// ƒ‚ƒfƒ‹‚ðì¬‚·‚é
-	m_boxModel = GetSystemManager()->ModelFactory(
+	m_boxModel = ModelFactory::GetModel(
 		device,
 		L"Resources/Models/GrassBox.cmo"
 	);
