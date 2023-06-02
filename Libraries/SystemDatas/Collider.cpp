@@ -110,7 +110,7 @@ void Collider::BoxCollider::PushBox(DirectX::SimpleMath::Vector3* moveObj,
 //--------------------------------------------------------//
 //コンストラクタスフィア                                  //
 //--------------------------------------------------------//
-Collider::SphereCollider::SphereCollider():
+Collider::SphereCollider::SphereCollider() :
 	is_hitFlag{},
 	is_pushMode{}
 {
@@ -157,4 +157,4 @@ void Collider::SphereCollider::PushSphere(DirectX::SimpleMath::Vector3& pos1,
 	}
 
 	is_hitFlag = false;
-};
+}

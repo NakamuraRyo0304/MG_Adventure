@@ -65,7 +65,7 @@ namespace Collider
 		bool is_hitFlag;
 		// 押し戻し処理を行うか決めるフラグ
 		bool is_pushMode;
-	
+
 	public:
 		SphereCollider();
 		~SphereCollider() = default;
@@ -79,8 +79,18 @@ namespace Collider
 		const bool& GetHitSphereFlag() { return is_hitFlag; }
 	
 		// 押し戻し処理をするか
-		void SetPushMode(bool flag) { is_pushMode = flag; }
+		void SetPushMode(const bool& flag) { is_pushMode = flag; }
+
 	};	
+
+	// OBBコライダークラス
+	class OBBCollider
+	{
+	private:
+
+	public:
+
+	};
 }
 
 #endif // COLLIDER
