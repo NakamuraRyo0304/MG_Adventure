@@ -10,7 +10,7 @@
 #include "PlayScene.h"
 
 // マップサイズ(Stage)
-#define			BOXSIZE			1.0f
+#define			COMMON_SIZE			1.0f
 
 
  //--------------------------------------------------------//
@@ -18,13 +18,12 @@
  //--------------------------------------------------------//
 PlayScene::PlayScene() :
 	IScene(),
-	m_box{},
-	m_boxPos{},
+	m_sphere{},
+	m_boxesPos{},
 	m_map{},
 	m_mapData{},
 	m_size{},
-	m_wantPos{DirectX::SimpleMath::Vector3::Zero},				// デバッグ用
-	m_testPos{DirectX::SimpleMath::Vector3::Zero}				// デバッグ用
+	m_spherePos{ DirectX::SimpleMath::Vector3::Zero }		// デバッグ用
 {
 }
 
@@ -49,12 +48,9 @@ void PlayScene::Initialize()
 	// マップ読み込み
 	LoadMap(GetStageNum());
 
-	// ボックスの初期化
-	m_box = DirectX::GeometricPrimitive::CreateBox(
-		GetDeviceResources()->GetD3DDeviceContext(),
-		DirectX::XMFLOAT3(BOXSIZE, BOXSIZE, BOXSIZE));
-
-	m_sphereColl.SetPushMode(true);
+	// スフィアの初期化
+	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
+		GetDeviceResources()->GetD3DDeviceContext(), COMMON_SIZE);
 
 	m_size = 0;
 }
@@ -83,30 +79,21 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// ボックスのサイズ値を変更
 	if (GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Up))
 	{
-		m_wantPos.y += BOXSIZE / 2;
-		m_size += BOXSIZE;
+		m_spherePos.y += COMMON_SIZE / 2;
+		m_size += COMMON_SIZE;
 	}
 	if (GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Down))
 	{
-		m_wantPos.y -= BOXSIZE / 2;
-		m_size -= BOXSIZE;
+		m_spherePos.y -= COMMON_SIZE / 2;
+		m_size -= COMMON_SIZE;
 	}
-
-	// ボックスサイズ変更（後々変更）
-	m_box = DirectX::GeometricPrimitive::CreateSphere(
-		GetDeviceResources()->GetD3DDeviceContext(),BOXSIZE);
-
-	m_test = DirectX::GeometricPrimitive::CreateSphere(
-		GetDeviceResources()->GetD3DDeviceContext(),BOXSIZE);
-
-	m_sphereColl.PushSphere(m_wantPos, m_testPos, BOXSIZE / 2, BOXSIZE / 2);
 
 	// 移動したい位置を設定
 	if (GetRayCast()->GetClickFlag())
 	{
-		float save = m_wantPos.y;
-		m_wantPos = GetRayCast()->GetWorldMousePosition();
-		m_wantPos.y = save;
+		float save = m_spherePos.y;
+		m_spherePos = GetRayCast()->GetWorldMousePosition();
+		m_spherePos.y = save;
 	}
 
 	// ESCキーで終了
@@ -142,15 +129,19 @@ void PlayScene::Draw()
 	// レイの設定
 	GetRayCast()->SetMatrix(view, projection);
 
+	// 球の描画
+	world *= DirectX::SimpleMath::Matrix::CreateTranslation(m_spherePos);
+
+	m_sphere->Draw(world, view, projection, DirectX::Colors::Red);
+
 	// 座標設定
 	world = DirectX::SimpleMath::Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+	
+	world *= DirectX::SimpleMath::Matrix::CreateScale(0.001f);
 
-	// 箱の描画
-	world *= DirectX::SimpleMath::Matrix::CreateTranslation(m_wantPos);
-	DirectX::SimpleMath::Matrix world1 = DirectX::SimpleMath::Matrix::CreateTranslation(m_testPos);
-
-	m_box->Draw(world, view, projection, DirectX::Colors::Red);
-	m_test->Draw(world1, view, projection, DirectX::Colors::Blue);
+	// ステージボックスの表示
+	m_boxModel->Draw(GetDeviceResources()->GetD3DDeviceContext(),
+		*GetCommonStates(), world, view, projection);
 
 	// デバッグ表示
 	DebugLog(view, projection);
@@ -187,6 +178,12 @@ void PlayScene::CreateWindowDependentResources()
 
 	// レイが及ぶ範囲を設定
 	GetRayCast()->SetScreenSize(width, height);
+	
+	// モデルを作成する
+	m_boxModel = ModelFactory(
+		device,
+		L"Resources/Models/GrassBox.cmo"
+	);
 }
 
 
@@ -222,9 +219,9 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 
 	// 保存された座標
 	swprintf_s(mos, 64, L"ClickPos = %f,%f,%f",
-		m_wantPos.x,
-		m_wantPos.y,
-		m_wantPos.z);
+		m_spherePos.x,
+		m_spherePos.y,
+		m_spherePos.z);
 
 	GetString()->DrawFormatString(GetCommonStates().get(), { 0,60 }, mos);
 
@@ -276,7 +273,7 @@ void PlayScene::LoadMap(int num)
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
 			m_mapData[y][x] = m_map.GetMapData(x, y);
-			m_boxPos[y][x] = { x * BOXSIZE, BOXSIZE / 2, y * BOXSIZE};
+			m_boxesPos[y][x] = { x * COMMON_SIZE, COMMON_SIZE / 2, y * COMMON_SIZE};
 		}
 	}
 }

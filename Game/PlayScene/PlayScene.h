@@ -20,19 +20,20 @@ class PlayScene : public IScene
 {
 private:
 	// ボックスのモデル
-	std::unique_ptr<DirectX::GeometricPrimitive> m_box , m_test;
-	DirectX::SimpleMath::Vector3 m_boxPos[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
+	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere;
+	DirectX::SimpleMath::Vector3 m_boxesPos[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
 
 	// マップリーダー
 	MapLoad m_map;
+
 	// マップ用配列
 	int m_mapData[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN] = { 0 };
 
-	DirectX::SimpleMath::Vector3 m_wantPos,m_testPos;
-
-	Collider::SphereCollider m_sphereColl;
+	DirectX::SimpleMath::Vector3 m_spherePos;
 
 	float m_size;
+
+	std::unique_ptr<DirectX::Model>m_boxModel;
 
 public:
 

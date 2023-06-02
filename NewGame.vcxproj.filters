@@ -32,6 +32,15 @@
     <Filter Include="ResultScene">
       <UniqueIdentifier>{30cf41e5-4992-4f54-aa3c-e92d1232d6df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{d03fc034-8115-4f08-8c86-f4d43e011a31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{3675a529-c864-468b-aa6b-f9786b51642d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Models">
+      <UniqueIdentifier>{e2d29db9-cf39-4c1e-b545-e4e2c3719d5f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StepTimer.h">
@@ -151,6 +160,9 @@
     <Image Include="directx.ico">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Resources\Textures\GrassBox.png">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -167,5 +179,10 @@
     <None Include="Resources\Fonts\SegoeUI_18.spritefont">
       <Filter>Assets</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="Resources\Models\GrassBox.fbx">
+      <Filter>Resources\Models</Filter>
+    </MeshContentTask>
   </ItemGroup>
 </Project>

@@ -74,26 +74,35 @@ public:
 	// 番号セッター
 	void SetStageNum(int stageNum) { m_stageNum = stageNum; }
 
-public:
+public: // ゲッター、セッター、ファクトリー
 	// 共通のメイクユニーク
 	void CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* context);
 
 	// unique_ptrのアクセサ
 
 	// デバイスリソースの取得
-	DX::DeviceResources*										    GetDeviceResources();
+	DX::DeviceResources* GetDeviceResources();
+
 	// コモンステートの取得
-	const std::unique_ptr<DirectX::CommonStates>                  & GetCommonStates();
+	const std::unique_ptr<DirectX::CommonStates>& GetCommonStates();
+
 	// キーボードステートトラッカーの取得
 	const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& GetStateTrack();
+
 	// ドローストリングの取得
-	const std::unique_ptr<DrawString>							  & GetString();
+	const std::unique_ptr<DrawString>& GetString();
+
 	// マウストラッカーの取得
-	const std::unique_ptr<DirectX::Mouse::ButtonStateTracker>	  & GetMouseTrack();
+	const std::unique_ptr<DirectX::Mouse::ButtonStateTracker>& GetMouseTrack();
+	
 	// グリッドフロアの取得
-	const std::unique_ptr<GridFloor>							  & GetGridFloor();
+	const std::unique_ptr<GridFloor>& GetGridFloor();
+	
 	// レイキャストの取得
-	const std::unique_ptr<RayCast>								  & GetRayCast();
+	const std::unique_ptr<RayCast>& GetRayCast();
+	
+	// モデルの作成をするファクトリー
+	std::unique_ptr<DirectX::DX11::Model> ModelFactory(ID3D11Device1* device, const wchar_t* filename);
 
 public:
 	// 共通機能（使用）

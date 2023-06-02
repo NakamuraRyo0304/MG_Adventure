@@ -5,7 +5,10 @@
  *  @Author NakamuraRyo
  */
 
-#include "pch.h"
+#pragma once
+#ifndef USERUTILLITY
+#define	USERUTILLITY
+
 #include <iostream>
 
 namespace UserUtillity
@@ -57,6 +60,6 @@ namespace UserUtillity
 												 std::pow(value.z - center.z, 2)));
 		return distance <= radius;
 	}
-	
-	
 }
+
+#endif // USERUTILLITY
