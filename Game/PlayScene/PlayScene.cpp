@@ -10,7 +10,9 @@
 #include "PlayScene.h"
 
 // マップサイズ(Stage)
-#define			COMMON_SIZE			0.001f
+#define			COMMON_SIZE			1.0f
+// カメラアングル
+#define			CAMERA_ANGLE		45.0f
 
 
  //--------------------------------------------------------//
@@ -18,12 +20,14 @@
  //--------------------------------------------------------//
 PlayScene::PlayScene() :
 	IScene(),
-	m_sphere{},
+	m_sphere{},			// 球
+	m_spherePos{},
+	m_box{},			// 箱
 	m_boxesPos{},
-	m_map{},
+	m_map{},			// マップ
 	m_mapData{},
-	m_size{},
-	m_spherePos{ DirectX::SimpleMath::Vector3::Zero }		// デバッグ用
+	m_boxCol{},			// 立方体当たり判定
+	is_boxesHitFlag{}
 {
 }
 
@@ -48,11 +52,15 @@ void PlayScene::Initialize()
 	// マップ読み込み
 	LoadMap(GetStageNum());
 
-	// スフィアの初期化
+	// スフィアの初期化(テスト)
 	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
-		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), COMMON_SIZE);
+		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), COMMON_SIZE / 2);
 
-	m_size = 0;
+	// ボックスの初期化(テスト)
+	m_box = DirectX::GeometricPrimitive::CreateBox(
+		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), 
+		DirectX::XMFLOAT3(COMMON_SIZE, COMMON_SIZE, COMMON_SIZE)
+	);
 }
 
 //--------------------------------------------------------//
@@ -76,24 +84,24 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// レイの更新
 	GetSystemManager()->GetRayCast()->Update(mouseState);
 
-	// 球のサイズ値を変更
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Up))
-	{
-		m_spherePos.y += COMMON_SIZE / 2;
-		m_size += COMMON_SIZE;
-	}
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Down))
-	{
-		m_spherePos.y -= COMMON_SIZE / 2;
-		m_size -= COMMON_SIZE;
-	}
-
 	// 移動したい位置を設定
-	if (GetSystemManager()->GetRayCast()->GetClickFlag())
+	m_spherePos = GetSystemManager()->GetRayCast()->GetWorldMousePosition();
+
+	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
-		float save = m_spherePos.y;
-		m_spherePos = GetSystemManager()->GetRayCast()->GetWorldMousePosition();
-		m_spherePos.y = save;
+		for (int x = 0; x < m_map.MAP_COLUMN; x++)
+		{
+			m_boxCol.PushBox(&m_spherePos, m_boxesPos[y][x],		 // スフィア＆ボックス
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
+			);
+			//is_boxesHitFlag[y][x] = m_boxCol.GetHitBoxFlag();
+
+			if (m_boxCol.GetHitBoxFlag()&&GetSystemManager()->GetRayCast()->GetClickFlag())
+			{
+				is_boxesHitFlag[y][x] = true;
+			}
+		}
 	}
 
 	// ESCキーで終了
@@ -125,7 +133,7 @@ void PlayScene::Draw()
 	view = GetSystemManager()->GetCamera()->GetView();
 
 	// プロジェクション行列
-	projection = GetSystemManager()->GetCamera()->GetProjection(width, height, 45.0f);
+	projection = GetSystemManager()->GetCamera()->GetProjection(width, height, CAMERA_ANGLE);
 
 	// レイの設定
 	GetSystemManager()->GetRayCast()->SetMatrix(view, projection);
@@ -155,13 +163,19 @@ void PlayScene::Draw()
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
 			// ボックスの移動
-			box *= DirectX::SimpleMath::Matrix::CreateTranslation(m_boxesPos[y][x]);
+			box = DirectX::SimpleMath::Matrix::CreateTranslation(m_boxesPos[y][x]);
 
 			if (m_mapData[y][x] == 1)
 			{
 				box *= boxesSize;
-				m_boxModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-					*GetSystemManager()->GetCommonStates(), box, view, projection);
+				if (is_boxesHitFlag[y][x])
+				{
+					m_box->Draw(box, view, projection, DirectX::Colors::Red);
+				}
+				else
+				{
+					m_box->Draw(box, view, projection, DirectX::Colors::Black);
+				}
 			}
 		}
 	}
@@ -194,7 +208,7 @@ void PlayScene::CreateWindowDependentResources()
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 	
 	// カメラの設定
-	GetSystemManager()->GetCamera()->GetProjection(width, height, 45.0f);
+	GetSystemManager()->GetCamera()->GetProjection(width, height, CAMERA_ANGLE);
 
 	// 文字の設定
 	GetSystemManager()->GetString()->CreateString(device, context);
@@ -295,7 +309,12 @@ void PlayScene::LoadMap(int num)
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
 			m_mapData[y][x] = m_map.GetMapData(x, y);
-			m_boxesPos[y][x] = { x * COMMON_SIZE,  0.05f ,y * COMMON_SIZE };
+			
+			m_boxesPos[y][x] = { 
+				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE) ,	// ブロックの位置 - オフセット
+				COMMON_SIZE / 2 ,											// 初期位置はブロックがめり込まない位置
+				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
+			};
 		}
 	}
 }
