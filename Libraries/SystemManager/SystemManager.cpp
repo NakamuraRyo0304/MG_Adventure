@@ -26,7 +26,7 @@ SystemManager::GetCommonStates()
 {
 	if (!m_commonState)
 	{
-		return nullptr;
+		m_commonState = std::make_unique<DirectX::CommonStates>(GetDeviceResources()->GetD3DDevice());
 	}
 	return m_commonState;
 }

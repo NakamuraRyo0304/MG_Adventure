@@ -205,8 +205,8 @@
     <Image Include="directx.ico">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Resources\Textures\GrassBox.png">
-      <Filter>Resources\Textures</Filter>
+    <Image Include="Resources\Models\GrassBox.png">
+      <Filter>Resources\Models</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -223,6 +223,9 @@
     </None>
     <None Include="Resources\Fonts\SegoeUI_18.spritefont">
       <Filter>Assets</Filter>
+    </None>
+    <None Include="Resources\Models\GrassBox.cmo">
+      <Filter>Resources\Models</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,8 @@ PlayScene::PlayScene() :
 	m_map{},			// マップ
 	m_mapData{},
 	m_boxCol{},			// 立方体当たり判定
-	is_boxesHitFlag{}
+	is_boxesHitFlag{},
+	m_boxModel{nullptr}	// モデル
 {
 }
 
@@ -47,7 +48,7 @@ void PlayScene::Initialize()
 	CreateWindowDependentResources();
 
 	GetSystemManager()->GetCamera()->SetMoveMode(true);	    	// カメラ座標移動
-	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetEagleMode(false);		// カメラ視点移動
 
 	// マップ読み込み
 	LoadMap(GetStageNum());
@@ -80,27 +81,37 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
-
+	
 	// レイの更新
 	GetSystemManager()->GetRayCast()->Update(mouseState);
 
 	// 移動したい位置を設定
-	m_spherePos = GetSystemManager()->GetRayCast()->GetWorldMousePosition();
+	m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
+	m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
+	
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Z)) m_spherePos.y+=1;
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::X)) m_spherePos.y-=1;
 
+	// 当たり判定
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			m_boxCol.PushBox(&m_spherePos, m_boxesPos[y][x],		 // スフィア＆ボックス
+			m_boxCol.PushBox(&m_spherePos, m_boxesPos[y][x],		// スフィア＆ボックス
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
 			);
-			//is_boxesHitFlag[y][x] = m_boxCol.GetHitBoxFlag();
+			is_boxesHitFlag[y][x] = m_boxCol.GetHitBoxFlag();
 
-			if (m_boxCol.GetHitBoxFlag()&&GetSystemManager()->GetRayCast()->GetClickFlag())
-			{
-				is_boxesHitFlag[y][x] = true;
-			}
+			//// 当っているときに右クリックで変動
+			//if (is_boxesHitFlag[y][x] && mouseState.rightButton)
+			//{
+			//	m_boxesPos[y][x].y += COMMON_SIZE / 2;
+			//	if (m_boxesPos[y][x].y > COMMON_SIZE / 2 * 10)
+			//	{
+			//		m_boxesPos[y][x].y = COMMON_SIZE / 2;
+			//	}
+			//}
 		}
 	}
 
@@ -148,11 +159,7 @@ void PlayScene::Draw()
 	
 	// サイズ行列
 	DirectX::SimpleMath::Matrix boxesSize =
-		DirectX::SimpleMath::Matrix::CreateScale(COMMON_SIZE);
-
-	// ボックスの行列
-	DirectX::SimpleMath::Matrix worldFloor = DirectX::SimpleMath::Matrix::Identity;
-
+		DirectX::SimpleMath::Matrix::CreateScale(0.001f);
 
 	// ボックスの移動
 	DirectX::SimpleMath::Matrix box = DirectX::SimpleMath::Matrix::Identity;
@@ -162,23 +169,33 @@ void PlayScene::Draw()
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
+			// サイズ変更
+			box *= boxesSize;
+
 			// ボックスの移動
 			box = DirectX::SimpleMath::Matrix::CreateTranslation(m_boxesPos[y][x]);
 
-			if (m_mapData[y][x] == 1)
+			if (m_mapData[y][x] != 0)
 			{
-				box *= boxesSize;
-				if (is_boxesHitFlag[y][x])
-				{
-					m_box->Draw(box, view, projection, DirectX::Colors::Red);
-				}
-				else
-				{
-					m_box->Draw(box, view, projection, DirectX::Colors::Black);
-				}
+				//if (is_boxesHitFlag[y][x] && GetSystemManager()->GetRayCast()->GetClickFlag())
+				//{
+				//	m_box->Draw(box, view, projection, DirectX::Colors::Red);
+				//}
+				//else if (is_boxesHitFlag[y][x])
+				//{
+				//	m_box->Draw(box, view, projection, DirectX::Colors::LightPink);
+				//}
+				//else
+				//{
+				//	m_box->Draw(box, view, projection, DirectX::Colors::Black);
+				//}
 			}
 		}
 	}
+
+	// モデル描画
+	m_boxModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+		*GetSystemManager()->GetCommonStates(), box, view, projection, false);
 
 	// デバッグ表示
 	DebugLog(view, projection);
@@ -310,9 +327,12 @@ void PlayScene::LoadMap(int num)
 		{
 			m_mapData[y][x] = m_map.GetMapData(x, y);
 			
-			m_boxesPos[y][x] = { 
+			m_boxesPos[y][x] = { 0,0,0 };
+
+			m_boxesPos[y][x] =
+			{
 				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE) ,	// ブロックの位置 - オフセット
-				COMMON_SIZE / 2 ,											// 初期位置はブロックがめり込まない位置
+				0,											// 高度
 				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
 			};
 		}

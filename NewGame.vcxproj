@@ -232,7 +232,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="directx.ico" />
-    <Image Include="Resources\Textures\GrassBox.png" />
+    <Image Include="Resources\Models\GrassBox.png" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest" />
@@ -241,6 +241,7 @@
     <None Include="packages.config" />
     <None Include="Resources\Fonts\myfile.spritefont" />
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />
+    <None Include="Resources\Models\GrassBox.cmo" />
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Resources\Models\GrassBox.fbx">
