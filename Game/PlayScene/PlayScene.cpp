@@ -10,7 +10,7 @@
 #include "PlayScene.h"
 
 // マップサイズ(Stage)
-#define			COMMON_SIZE			1.0f
+#define			COMMON_SIZE			0.001f
 
 
  //--------------------------------------------------------//
@@ -42,7 +42,7 @@ void PlayScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetMoveMode(false);		// カメラ座標移動
+	GetSystemManager()->GetCamera()->SetMoveMode(true);	    	// カメラ座標移動
 	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
 
 	// マップ読み込み
@@ -138,11 +138,33 @@ void PlayScene::Draw()
 	// 座標設定
 	world = DirectX::SimpleMath::Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
 	
-	world *= DirectX::SimpleMath::Matrix::CreateScale(0.001f);
+	// サイズ行列
+	DirectX::SimpleMath::Matrix boxesSize =
+		DirectX::SimpleMath::Matrix::CreateScale(COMMON_SIZE);
 
-	// ステージボックスの表示
-	m_boxModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-		*GetSystemManager()->GetCommonStates(), world, view, projection);
+	// ボックスの行列
+	DirectX::SimpleMath::Matrix worldFloor = DirectX::SimpleMath::Matrix::Identity;
+
+
+	// ボックスの移動
+	DirectX::SimpleMath::Matrix box = DirectX::SimpleMath::Matrix::Identity;
+
+	// ボックスの描画
+	for (int y = 0; y < m_map.MAP_RAW; y++)
+	{
+		for (int x = 0; x < m_map.MAP_COLUMN; x++)
+		{
+			// ボックスの移動
+			box *= DirectX::SimpleMath::Matrix::CreateTranslation(m_boxesPos[y][x]);
+
+			if (m_mapData[y][x] == 1)
+			{
+				box *= boxesSize;
+				m_boxModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+					*GetSystemManager()->GetCommonStates(), box, view, projection);
+			}
+		}
+	}
 
 	// デバッグ表示
 	DebugLog(view, projection);
@@ -245,28 +267,27 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 void PlayScene::LoadMap(int num)
 {
 	// ファイル名の宣言
-	const char* filename = "CleanData";
+	const wchar_t* filename = L"CleanData";
 
 	// マップの変更
 	switch (num)
 	{
 	case 1:	
-		filename = "Resources/Maps/Stage1.csv";	
+		filename = L"Resources/Maps/Stage1.csv";
 		break;
 	case 2:	
-		filename = "Resources/Maps/Stage2.csv";	
+		filename = L"Resources/Maps/Stage2.csv";
 		break;
 	case 3:
-		filename = "Resources/Maps/Stage3.csv";
+		filename = L"Resources/Maps/Stage3.csv";
 		break;
 	default:
-		filename = "NoStage";
+		filename = L"NoStage";
 		break;
 	}
 
 	// マップの読み込み
 	m_map.SetMapData(filename);
-
 
 	// マップの格納
 	for (int y = 0; y < m_map.MAP_RAW; y++)
@@ -274,7 +295,7 @@ void PlayScene::LoadMap(int num)
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
 			m_mapData[y][x] = m_map.GetMapData(x, y);
-			m_boxesPos[y][x] = { x * COMMON_SIZE, COMMON_SIZE / 2, y * COMMON_SIZE};
+			m_boxesPos[y][x] = { x * COMMON_SIZE,  0.05f ,y * COMMON_SIZE };
 		}
 	}
 }

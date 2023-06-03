@@ -19,12 +19,12 @@ class MapLoad
 {
 public:
 	// 横の長さ
-	const static int MAP_COLUMN = 50;
+	const static int MAP_COLUMN = 15;
 	// 縦の長さ
-	const static int MAP_RAW = 30;
+	const static int MAP_RAW = 15;
 
 	// 読み込むファイルの名前を指定
-	std::string m_fileName;
+	const wchar_t* m_fileName;
 
 private:
 	// マップデータ格納用配列
@@ -39,10 +39,10 @@ public:
 	MapLoad();
 	~MapLoad() = default;
 	// マップのデータを渡す
-	int GetMapData(int x,int y);
+	int GetMapData(int x, int y);
 
 	// ファイル名セッター
-	void SetMapData(const char* filename);
+	void SetMapData(const wchar_t* filename);
 };
 
 #endif // MAPLOAD
