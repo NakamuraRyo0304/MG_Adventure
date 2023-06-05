@@ -11,6 +11,7 @@
 
 // マップサイズ(Stage)
 #define			COMMON_SIZE			1.0f
+
 // カメラアングル
 #define			CAMERA_ANGLE		45.0f
 
@@ -50,9 +51,6 @@ void PlayScene::Initialize()
 	GetSystemManager()->GetCamera()->SetMoveMode(true);	    	// カメラ座標移動
 	GetSystemManager()->GetCamera()->SetEagleMode(false);		// カメラ視点移動
 
-	// マップ読み込み
-	LoadMap(GetStageNum());
-
 	// スフィアの初期化(テスト)
 	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
 		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), COMMON_SIZE / 2);
@@ -62,6 +60,10 @@ void PlayScene::Initialize()
 		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), 
 		DirectX::XMFLOAT3(COMMON_SIZE, COMMON_SIZE, COMMON_SIZE)
 	);
+
+	// マップ読み込み
+	LoadMap(GetStageNum());
+
 }
 
 //--------------------------------------------------------//
@@ -157,45 +159,33 @@ void PlayScene::Draw()
 	// 座標設定
 	world = DirectX::SimpleMath::Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
 	
-	// サイズ行列
-	DirectX::SimpleMath::Matrix boxesSize =
-		DirectX::SimpleMath::Matrix::CreateScale(0.001f);
-
-	// ボックスの移動
-	DirectX::SimpleMath::Matrix box = DirectX::SimpleMath::Matrix::Identity;
 
 	// ボックスの描画
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			// サイズ変更
-			box *= boxesSize;
-
 			// ボックスの移動
-			box = DirectX::SimpleMath::Matrix::CreateTranslation(m_boxesPos[y][x]);
+			DirectX::SimpleMath::Matrix boxWorldMat = DirectX::SimpleMath::Matrix::CreateTranslation(m_boxesPos[y][x]);
 
 			if (m_mapData[y][x] != 0)
 			{
-				//if (is_boxesHitFlag[y][x] && GetSystemManager()->GetRayCast()->GetClickFlag())
-				//{
-				//	m_box->Draw(box, view, projection, DirectX::Colors::Red);
-				//}
-				//else if (is_boxesHitFlag[y][x])
-				//{
-				//	m_box->Draw(box, view, projection, DirectX::Colors::LightPink);
-				//}
-				//else
-				//{
-				//	m_box->Draw(box, view, projection, DirectX::Colors::Black);
-				//}
+				if (is_boxesHitFlag[y][x] && GetSystemManager()->GetRayCast()->GetClickFlag())
+				{
+					m_box->Draw(boxWorldMat, view, projection, DirectX::Colors::Red);
+				}
+				else if (is_boxesHitFlag[y][x])
+				{
+					m_box->Draw(boxWorldMat, view, projection, DirectX::Colors::LightPink);
+				}
+				else
+				{
+					m_boxModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+				}
 			}
 		}
 	}
-
-	// モデル描画
-	m_boxModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-		*GetSystemManager()->GetCommonStates(), box, view, projection, false);
 
 	// デバッグ表示
 	DebugLog(view, projection);
@@ -236,7 +226,7 @@ void PlayScene::CreateWindowDependentResources()
 	// モデルを作成する
 	m_boxModel = ModelFactory::GetModel(
 		device,
-		L"Resources/Models/GrassBox.cmo"
+		L"Resources/Models/GrassBlock.cmo"
 	);
 }
 
@@ -332,7 +322,7 @@ void PlayScene::LoadMap(int num)
 			m_boxesPos[y][x] =
 			{
 				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE) ,	// ブロックの位置 - オフセット
-				0,											// 高度
+				COMMON_SIZE / 2,											// 高度
 				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
 			};
 		}

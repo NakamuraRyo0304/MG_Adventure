@@ -205,9 +205,6 @@
     <Image Include="directx.ico">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Resources\Models\GrassBox.png">
-      <Filter>Resources\Models</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -224,12 +221,18 @@
     <None Include="Resources\Fonts\SegoeUI_18.spritefont">
       <Filter>Assets</Filter>
     </None>
-    <None Include="Resources\Models\GrassBox.cmo">
+    <None Include="Resources\Models\GrassBlock.cmo">
+      <Filter>Resources\Models</Filter>
+    </None>
+    <None Include="Resources\Models\Cube.cmo">
       <Filter>Resources\Models</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <MeshContentTask Include="Resources\Models\GrassBox.fbx">
+    <MeshContentTask Include="Resources\Models\GrassBlock.fbx">
+      <Filter>Resources\Models</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Resources\Models\Cube.fbx">
       <Filter>Resources\Models</Filter>
     </MeshContentTask>
   </ItemGroup>
