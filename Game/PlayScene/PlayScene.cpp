@@ -21,16 +21,18 @@
  //--------------------------------------------------------//
 PlayScene::PlayScene() :
 	IScene(),
-	m_sphere{},			// 球
+	m_sphere{},						// 球
 	m_spherePos{},
-	m_box{},			// 箱
+	m_box{},						// 箱
 	m_boxesPos{},
-	m_map{},			// マップ
+	m_map{},						// マップ
 	m_mapData{},
-	m_boxCol{},			// 立方体当たり判定
+	m_boxCol{},						// 立方体当たり判定
 	is_boxesHitFlag{},
-	m_boxModel{nullptr}	// モデル
+	m_grassBox{ nullptr },			// モデル
+	m_grassBoxDark{ nullptr }
 {
+
 }
 
 //--------------------------------------------------------//
@@ -172,15 +174,17 @@ void PlayScene::Draw()
 			{
 				if (is_boxesHitFlag[y][x] && GetSystemManager()->GetRayCast()->GetClickFlag())
 				{
-					m_box->Draw(boxWorldMat, view, projection, DirectX::Colors::Red);
+					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, true);
 				}
 				else if (is_boxesHitFlag[y][x])
 				{
-					m_box->Draw(boxWorldMat, view, projection, DirectX::Colors::LightPink);
+					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
 				}
 				else
 				{
-					m_boxModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+					m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
 				}
 			}
@@ -224,9 +228,13 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 	
 	// モデルを作成する
-	m_boxModel = ModelFactory::GetModel(
+	m_grassBox = ModelFactory::GetModel(
 		device,
 		L"Resources/Models/GrassBlock.cmo"
+	);
+	m_grassBoxDark = ModelFactory::GetModel(
+		device,
+		L"Resources/Models/GrassBlock_Dark.cmo"
 	);
 }
 

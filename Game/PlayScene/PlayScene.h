@@ -33,7 +33,7 @@ private:
 	Collider::BoxCollider m_boxCol;
 
 	// ƒ‚ƒfƒ‹
-	std::unique_ptr<DirectX::Model>m_boxModel;
+	std::unique_ptr<DirectX::Model>m_grassBox,m_grassBoxDark;
 
 public:
 
