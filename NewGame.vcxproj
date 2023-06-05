@@ -232,7 +232,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="directx.ico" />
-    <Image Include="Resources\Models\GrassBox.png" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest" />
@@ -241,12 +240,12 @@
     <None Include="packages.config" />
     <None Include="Resources\Fonts\myfile.spritefont" />
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />
-    <None Include="Resources\Models\GrassBox.cmo" />
+    <None Include="Resources\Models\Cube.cmo" />
+    <None Include="Resources\Models\GrassBlock.cmo" />
   </ItemGroup>
   <ItemGroup>
-    <MeshContentTask Include="Resources\Models\GrassBox.fbx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </MeshContentTask>
+    <MeshContentTask Include="Resources\Models\Cube.fbx" />
+    <MeshContentTask Include="Resources\Models\GrassBlock.fbx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
