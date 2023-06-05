@@ -83,13 +83,19 @@ namespace Collider
 
 	};	
 
-	// OBBコライダークラス
-	class OBBCollider
+	// AABBコライダー
+	class AABBCollider
 	{
 	private:
-
 	public:
+		AABBCollider();
+		~AABBCollider() = default;
 
+		// 当っているかどうかを返す
+		bool HitAABB(const DirectX::SimpleMath::Vector3& pos1,
+			const DirectX::SimpleMath::Vector3& pos2,
+			const DirectX::SimpleMath::Vector3& sz1,
+			const DirectX::SimpleMath::Vector3& sz2);
 	};
 }
 

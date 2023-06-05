@@ -23,26 +23,19 @@ public:
 	// 縦の長さ
 	const static int MAP_RAW = 15;
 
-	// 読み込むファイルの名前を指定
-	const wchar_t* m_fileName;
-
 private:
 	// マップデータ格納用配列
 	int m_mapData[MAP_RAW][MAP_COLUMN];
-
-private:
-	// マップの読み込み(セットしたらMapLoad内で処理される関数)
-	void LoadMap();
-
 public:
 
 	MapLoad();
 	~MapLoad() = default;
+
+	// マップの読み込み
+	void LoadMap(const wchar_t* filename);
+
 	// マップのデータを渡す
 	int GetMapData(int x, int y);
-
-	// ファイル名セッター
-	void SetMapData(const wchar_t* filename);
 };
 
 #endif // MAPLOAD

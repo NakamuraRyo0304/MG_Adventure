@@ -12,6 +12,9 @@
 // マップサイズ(Stage)
 #define			COMMON_SIZE			1.0f
 
+// 最低高度
+#define			COMMON_LOW			COMMON_SIZE / 2
+
 // カメラアングル
 #define			CAMERA_ANGLE		45.0f
 
@@ -55,7 +58,9 @@ void PlayScene::Initialize()
 
 	// スフィアの初期化(テスト)
 	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
-		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), COMMON_SIZE / 2);
+		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), 
+		COMMON_SIZE / 2
+	);
 
 	// ボックスの初期化(テスト)
 	m_box = DirectX::GeometricPrimitive::CreateBox(
@@ -105,17 +110,24 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
 			);
+			
+			// 当っていたらTrueにする
 			is_boxesHitFlag[y][x] = m_boxCol.GetHitBoxFlag();
 
+			m_aabbCol.HitAABB(m_spherePos, m_boxesPos[y][x],		// スフィア＆ボックス
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
+			);
+
 			//// 当っているときに右クリックで変動
-			//if (is_boxesHitFlag[y][x] && mouseState.rightButton)
-			//{
-			//	m_boxesPos[y][x].y += COMMON_SIZE / 2;
-			//	if (m_boxesPos[y][x].y > COMMON_SIZE / 2 * 10)
-			//	{
-			//		m_boxesPos[y][x].y = COMMON_SIZE / 2;
-			//	}
-			//}
+			if (is_boxesHitFlag[y][x] && mouseState.rightButton)
+			{
+				m_boxesPos[y][x].y += COMMON_SIZE / 2;
+				if (m_boxesPos[y][x].y > COMMON_SIZE / 2 * 10)
+				{
+					m_boxesPos[y][x].y = COMMON_LOW;
+				}
+			}
 		}
 	}
 
@@ -158,10 +170,6 @@ void PlayScene::Draw()
 
 	m_sphere->Draw(world, view, projection, DirectX::Colors::Red);
 
-	// 座標設定
-	world = DirectX::SimpleMath::Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
-	
-
 	// ボックスの描画
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
@@ -170,23 +178,22 @@ void PlayScene::Draw()
 			// ボックスの移動
 			DirectX::SimpleMath::Matrix boxWorldMat = DirectX::SimpleMath::Matrix::CreateTranslation(m_boxesPos[y][x]);
 
-			if (m_mapData[y][x] != 0)
+			if (m_mapData[y][x] == 0) return;	// ボックスがなければ描画しない
+			
+			if (is_boxesHitFlag[y][x] && GetSystemManager()->GetRayCast()->GetClickFlag())
 			{
-				if (is_boxesHitFlag[y][x] && GetSystemManager()->GetRayCast()->GetClickFlag())
-				{
-					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, true);
-				}
-				else if (is_boxesHitFlag[y][x])
-				{
-					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
-				}
-				else
-				{
-					m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
-				}
+				m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+					*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, true);
+			}
+			else if (is_boxesHitFlag[y][x])
+			{
+				m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+					*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+			}
+			else
+			{
+				m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+					*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
 			}
 		}
 	}
@@ -228,11 +235,11 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 	
 	// モデルを作成する
-	m_grassBox = ModelFactory::GetModel(
+	m_grassBox = ModelFactory::GetModel(					// 草ブロック-通常時
 		device,
 		L"Resources/Models/GrassBlock.cmo"
 	);
-	m_grassBoxDark = ModelFactory::GetModel(
+	m_grassBoxDark = ModelFactory::GetModel(				// 草ブロック-選択時
 		device,
 		L"Resources/Models/GrassBlock_Dark.cmo"
 	);
@@ -316,21 +323,24 @@ void PlayScene::LoadMap(int num)
 	}
 
 	// マップの読み込み
-	m_map.SetMapData(filename);
+	m_map.LoadMap(filename);
 
 	// マップの格納
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
+			// 読み込んだデータを格納
 			m_mapData[y][x] = m_map.GetMapData(x, y);
 			
+			// 配列のごみを除去
 			m_boxesPos[y][x] = { 0,0,0 };
 
+			// ボックスの位置を初期化
 			m_boxesPos[y][x] =
 			{
-				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE) ,	// ブロックの位置 - オフセット
-				COMMON_SIZE / 2,											// 高度
+				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
+				COMMON_LOW + (m_mapData[y][x] - 1) * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
 				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
 			};
 		}

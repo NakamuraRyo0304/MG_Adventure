@@ -31,6 +31,7 @@ private:
 
 	// “–‚½‚è”»’è
 	Collider::BoxCollider m_boxCol;
+	Collider::AABBCollider m_aabbCol;
 
 	// ƒ‚ƒfƒ‹
 	std::unique_ptr<DirectX::Model>m_grassBox,m_grassBoxDark;

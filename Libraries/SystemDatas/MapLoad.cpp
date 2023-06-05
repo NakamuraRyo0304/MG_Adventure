@@ -12,8 +12,7 @@
 //コンストラクタ                                          //
 //--------------------------------------------------------//
 MapLoad::MapLoad() :
-	m_mapData{},
-	m_fileName{}
+	m_mapData{}
 {
 }
 
@@ -21,13 +20,13 @@ MapLoad::MapLoad() :
  //--------------------------------------------------------//
  //マップの読み込み                                        //
  //--------------------------------------------------------//
-void MapLoad::LoadMap()
+void MapLoad::LoadMap(const wchar_t* filename)
 {
 	// ファイル読み込み変数定義
 	std::ifstream ifs;
 
 	// ファイルを読み取り専用で開く
-	ifs.open(m_fileName, std::ios::in | std::ios::binary);
+	ifs.open(filename, std::ios::in | std::ios::binary);
 
 	// ファイルが開けなかった場合はエラーメッセージを出す
 	if (!ifs)
@@ -71,14 +70,4 @@ void MapLoad::LoadMap()
 int MapLoad::GetMapData(int x, int y)
 {
 	return m_mapData[y][x];
-}
-
-//--------------------------------------------------------//
-//マップをセット                                          //
-//--------------------------------------------------------//
-void MapLoad::SetMapData(const wchar_t* filename)
-{
-	// 名前を設定して読み込む
-	this->m_fileName = filename;
-	LoadMap();
 }

@@ -158,3 +158,27 @@ void Collider::SphereCollider::PushSphere(DirectX::SimpleMath::Vector3& pos1,
 
 	is_hitFlag = false;
 }
+
+
+//--------------------------------------------------------//
+//コンストラクタAABB		                              //
+//--------------------------------------------------------//
+Collider::AABBCollider::AABBCollider()
+{
+
+}
+
+//--------------------------------------------------------//
+//当っているかどうかを返す                                //
+//--------------------------------------------------------//
+bool Collider::AABBCollider::HitAABB(const DirectX::SimpleMath::Vector3& pos1, const DirectX::SimpleMath::Vector3& pos2, const DirectX::SimpleMath::Vector3& sz1, const DirectX::SimpleMath::Vector3& sz2)
+{
+	// XZ平面における当たり判定
+	if (pos1.x - sz1.x / 2 < pos2.x + sz2.x / 2 &&
+		pos1.x + sz1.x / 2 > pos2.x - sz2.x / 2 &&
+		pos1.z - sz1.z / 2 < pos2.z + sz2.z / 2 &&
+		pos1.z + sz1.z / 2 > pos2.z - sz2.z / 2)return true;
+
+	return false;
+}
+
