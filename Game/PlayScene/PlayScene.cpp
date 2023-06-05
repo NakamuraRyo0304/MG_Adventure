@@ -54,7 +54,7 @@ void PlayScene::Initialize()
 	CreateWindowDependentResources();
 
 	GetSystemManager()->GetCamera()->SetMoveMode(true);	    	// カメラ座標移動
-	GetSystemManager()->GetCamera()->SetEagleMode(false);		// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
 
 	// スフィアの初期化(テスト)
 	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
@@ -119,16 +119,39 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
 			);
 
-			//// 当っているときに右クリックで変動
+			// 当っているときに右クリックで変動
 			if (is_boxesHitFlag[y][x] && mouseState.rightButton)
 			{
-				m_boxesPos[y][x].y += COMMON_SIZE / 2;
-				if (m_boxesPos[y][x].y > COMMON_SIZE / 2 * 10)
+				m_mapData[y][x] += 1;
+				if (m_mapData[y][x] > 15)
 				{
-					m_boxesPos[y][x].y = COMMON_LOW;
+					m_mapData[y][x] = 1;
 				}
 			}
+			// 当っているときに右クリックで変動
+			if (is_boxesHitFlag[y][x] && mouseState.rightButton)
+			{
+				m_mapData[y][x] -= 1;
+				if (m_mapData[y][x] < 1)
+				{
+					m_mapData[y][x] = 1;
+				}
+			}
+			m_boxesPos[y][x] =
+			{
+				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
+				COMMON_LOW + (m_mapData[y][x] - 1) * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
+				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
+			};
 		}
+	}
+
+	// カメラ移動モード切り替え　デバッグ用
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::M))
+	{
+		auto flag = GetSystemManager()->GetCamera();
+		flag->SetMoveMode(!flag->GetMoveMode());
+		flag->SetEagleMode(!flag->GetEagleMode());
 	}
 
 	// ESCキーで終了
@@ -175,25 +198,32 @@ void PlayScene::Draw()
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			// ボックスの移動
-			DirectX::SimpleMath::Matrix boxWorldMat = DirectX::SimpleMath::Matrix::CreateTranslation(m_boxesPos[y][x]);
+			for (int h = 0; h < m_mapData[y][x]; h++)
+			{
 
-			if (m_mapData[y][x] == 0) return;	// ボックスがなければ描画しない
-			
-			if (is_boxesHitFlag[y][x] && GetSystemManager()->GetRayCast()->GetClickFlag())
-			{
-				m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-					*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, true);
-			}
-			else if (is_boxesHitFlag[y][x])
-			{
-				m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-					*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
-			}
-			else
-			{
-				m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-					*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+				m_boxesPos[y][x].y = h * COMMON_SIZE;
+
+				// ボックスの移動
+				DirectX::SimpleMath::Matrix boxWorldMat = DirectX::SimpleMath::Matrix::CreateTranslation(m_boxesPos[y][x]);
+
+				if (m_mapData[y][x] == 0) return;	// ボックスがなければ描画しない
+				
+				// 描画処理
+				if (is_boxesHitFlag[y][x] && GetSystemManager()->GetRayCast()->GetClickFlag())
+				{
+					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, true);
+				}
+				else if (is_boxesHitFlag[y][x])
+				{
+					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+				}
+				else
+				{
+					m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+				}
 			}
 		}
 	}
@@ -340,7 +370,7 @@ void PlayScene::LoadMap(int num)
 			m_boxesPos[y][x] =
 			{
 				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-				COMMON_LOW + (m_mapData[y][x] - 1) * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
+				COMMON_LOW,													// ブロックの最低高度
 				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
 			};
 		}

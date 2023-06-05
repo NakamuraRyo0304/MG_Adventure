@@ -89,9 +89,11 @@ public:
 
 	// カメラ移動モード切替
 	void SetMoveMode(bool flag) { is_moveMode = flag; }
+	const bool GetMoveMode() { return is_moveMode; }
 
 	// カメラ視点移動モード切替
 	void SetEagleMode(bool flag) { is_eagleMode = flag; }
+	const bool GetEagleMode() { return is_eagleMode; }
 
 	// カメラの座標をセットする
 	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos) 
