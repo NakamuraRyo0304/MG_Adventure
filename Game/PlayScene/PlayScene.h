@@ -20,7 +20,7 @@ struct Object
 {
 	DirectX::SimpleMath::Vector3 position;		// 座標
 	bool hitFlag;								// 当たり判定フラグ
-
+	UINT state;									// マップのステータス
 };
 
 class PlayScene : public IScene
@@ -33,7 +33,6 @@ private:
 
 	// マップ
 	MapLoad m_map;
-	int m_mapData[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN] = { 0 };
 
 	// 当たり判定
 	Collider::BoxCollider m_boxCol;

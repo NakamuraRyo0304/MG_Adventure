@@ -29,7 +29,6 @@ PlayScene::PlayScene() :
 	m_box{},						// 箱
 	m_obj{},
 	m_map{},						// マップ
-	m_mapData{},
 	m_boxCol{},						// 立方体当たり判定
 	m_grassBox{ nullptr },			// モデル
 	m_grassBoxDark{ nullptr }
@@ -122,27 +121,27 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 			if (m_obj[y][x].hitFlag && 
 				GetSystemManager()->GetMouseTrack()->rightButton && !keyState.LeftShift)
 			{
-				m_mapData[y][x] += 1;
-				if (m_mapData[y][x] > 15)
+				m_obj[y][x].state += 1;
+				if (m_obj[y][x].state % 100 > 15)
 				{
-					m_mapData[y][x] = 1;
+					m_obj[y][x].state = MapLoad::BoxState::GrassBox;
 				}
 			}
 			// 当っているときに右クリックで変動
 			if (m_obj[y][x].hitFlag &&
 				GetSystemManager()->GetMouseTrack()->rightButton && keyState.LeftShift)
 			{
-				m_mapData[y][x] -= 1;
-				if (m_mapData[y][x] < 1)
+				m_obj[y][x].state -= 1;
+				if (m_obj[y][x].state % 100 < 1)
 				{
-					m_mapData[y][x] = 15;
+					m_obj[y][x].state = MapLoad::BoxState::GrassBox + 15;
 				}
 			}
 			// ポジションの変更
 			m_obj[y][x].position =
 			{
 				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-				COMMON_LOW + m_mapData[y][x] * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
+				COMMON_LOW + m_obj[y][x].state % 100 * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
 				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
 			};
 		}
@@ -158,6 +157,20 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();
+	
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Enter))
+	{
+		// 内容を記録
+		for (int y = 0; y < m_map.MAP_RAW; y++)
+		{
+			for (int x = 0; x < m_map.MAP_COLUMN; x++)
+			{
+				m_map.SetMapData(m_obj[y][x].state, x, y);
+			}
+		}
+		// ファイル書き出し
+		m_map.WriteMap();
+	}
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
@@ -200,7 +213,7 @@ void PlayScene::Draw()
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			for (int h = 0; h < m_mapData[y][x]; h++)
+			for (int h = 0; h < m_obj[y][x].state % 100; h++)
 			{
 				m_obj[y][x].position.y = h * COMMON_SIZE;
 
@@ -208,7 +221,7 @@ void PlayScene::Draw()
 				DirectX::SimpleMath::Matrix boxWorldMat =
 					DirectX::SimpleMath::Matrix::CreateTranslation(m_obj[y][x].position);
 
-				if (m_mapData[y][x] == 0) return;	// ボックスがなければ描画しない
+				if (m_obj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
 				
 				// 描画処理
 				if (m_obj[y][x].hitFlag && GetSystemManager()->GetRayCast()->GetClickFlag())
@@ -363,7 +376,7 @@ void PlayScene::LoadMap(int num)
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
 			// 読み込んだデータを格納
-			m_mapData[y][x] = m_map.GetMapData(x, y);
+			m_obj[y][x].state = m_map.GetMapData(x, y);
 			
 			// 配列のごみを除去
 			m_obj[y][x].position = DirectX::SimpleMath::Vector3::Zero;

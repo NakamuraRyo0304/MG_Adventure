@@ -7,13 +7,24 @@
 
 #include "pch.h"
 
+#include<iostream>    // string,cout,cinに使用
+#include<regex>       // 文字列の置換に使用
+#include<sstream>     // ファイルの保存に使用
+#include<ostream>     // ファイルの保存に使用
+#include<fstream>     // ファイルの保存に使用
+#include<Windows.h>   // WindowsAPIに使用
+#include<shobjidl.h>  // IFileSaveDialogに使用
+
+
 #include "MapLoad.h"
 
 //--------------------------------------------------------//
 //コンストラクタ                                          //
 //--------------------------------------------------------//
 MapLoad::MapLoad() :
-	m_mapData{}
+	m_mapData{},
+    is_saveFileOpenFlag{false},
+    m_hWnd{nullptr}
 {
 }
 
@@ -66,54 +77,148 @@ void MapLoad::LoadMap(const wchar_t* filename)
 }
 
 //--------------------------------------------------------//
-//ファイルの書き出し                                      //
+//ファイルを書きだす関数                                  //
 //--------------------------------------------------------//
-// ファイルの名前
-void MapLoad::WriteMap(const wchar_t* filename)
+void MapLoad::WriteMap()
 {
-	//OPENFILENAME ofn;							//　FILENAME構造体の定義
-	//char path[MAX_PATH] = "";					//　ファイルパスを初期化
-	//ZeroMemory(&ofn, sizeof(ofn));				//　構造体のパスを空にする
-	//ofn.lStructSize = sizeof(OPENFILENAME);		//　構造体のサイズを指定
-	//ofn.lpstrFilter = "csv(*.csv)\0*.csv\0"		//　拡張子のフィルターをかける \nは文の終わりを表す
-	//	"json(*.json)\0*.json\0"
-	//	"すべてのファイル(*.*)\0*.*\0\0";
-	//ofn.lpstrFile = path;						//　ファイルパスを格納するポインタ
-	//ofn.nMaxFile = MAX_PATH;					//　lpstrFileのバッファサイズ
-	//ofn.lpstrDefExt = ".csv";					//　拡張子が指定されていなければ".csv"をつける
-	//int result = 0;
+	// ファイルパスを指定
+	SaveMapPath(m_filename);
 
-	//GetSaveFileName(&ofn);
+	//　ファイルを開く
+	std::ofstream ofs(m_filename);
 
-	////　ファイルを開く
-	//ofstream ofs(path);
+	//　１行書きだしたら次の列へ
+	for (int y = 0; y < MAP_RAW; y++)
+	{
+		for (int x = 0; x < MAP_COLUMN; x++)
+		{
+			ofs << m_mapData[y][x] << ",";
+		}
+		ofs << std::endl;
+	}
 
-
-	//for (int y = 0; y < MAP_RAW; y++)
-	//{
-	//	// 一行分のデータを読み込む
-	//	std::ofs >> s[y];
-
-	//	// カンマを空白に変更
-	//	std::string tmp = std::regex_replace(s[y], std::regex(","), " ");
-
-	//	// 空白で分割する
-	//	std::istringstream iss(tmp);
-	//	for (int x = 0; x < MAP_COLUMN; x++)
-	//	{
-	//		ofs << m_MapBlock[y][x] << ",";
-	//	}
-	//	ofs << endl;
-	//}
-
-	////　ファイルを閉じる
-	//ofs.close();
+	//　ファイルを閉じる
+	ofs.close();
 }
 
 //--------------------------------------------------------//
-//マップゲッター                                          //
+//マップデータの格納                                      //
 //--------------------------------------------------------//
-int MapLoad::GetMapData(int x, int y)
+// 第１引数：マップの値 第２、３引数：配列番号
+void MapLoad::SetMapData(int state, int x, int y)
 {
-	return m_mapData[y][x];
+	m_mapData[y][x] = state;
+}
+
+//--------------------------------------------------------//
+//ファイルパスをセーブする関数                            //
+//--------------------------------------------------------//
+// private
+bool MapLoad::SaveMapPath(std::wstring& filePath)
+{
+	// 例外エラー用変数
+	HRESULT hr;
+
+	// ファイル保存ダイアログ用のインターフェースを作成
+	IFileSaveDialog* pFileDialog = nullptr;
+	hr = CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileDialog));
+
+	// インスタンスの作成に失敗した場合はfalseを返して終了
+	if (FAILED(hr))
+	{
+		return false; 
+	}
+
+	// 拡張子フィルタを設定する
+	COMDLG_FILTERSPEC fileTypes[] = 
+	{
+		{ L"CSV(カンマ区切り)"	, L"*.csv" },			// カンマ区切りファイル
+		{ L"テキスト ファイル"	, L"*.txt" }			// テキストファイル
+	};
+
+	// 引数：フィルタの数、フィルタの配列
+	hr = pFileDialog->SetFileTypes(2, fileTypes);
+
+	// ウィンドウハンドルを指定してダイアログを表示
+	hr = pFileDialog->Show(m_hWnd); // m_hWndはウィンドウハンドル
+
+	// ウィンドウダイアログが開けた場合はパスの取得処理へ
+	if (SUCCEEDED(hr))
+	{
+		// 選択されたファイルパスを取得
+		IShellItem* pShell;
+		hr = pFileDialog->GetResult(&pShell);
+
+		// パスが取得出来たら以下処理を実行
+		if (SUCCEEDED(hr))
+		{
+			wchar_t* tmpFilePath;
+			hr = pShell->GetDisplayName(SIGDN_FILESYSPATH, &tmpFilePath);
+
+			if (SUCCEEDED(hr))
+			{
+				// 選択されたファイルパスをfilePathに格納
+				filePath = tmpFilePath;
+
+				// メモリの解放
+				CoTaskMemFree(tmpFilePath);
+
+				// pItemの解放
+				pShell->Release(); 
+
+				// pFileDialogの解放
+				pFileDialog->Release(); 
+
+				// 選択されたフィルタのインデックスを取得
+				unsigned int filterIndex;
+				hr = pFileDialog->GetFileTypeIndex(&filterIndex);
+
+				// 一番最後に現在のファイルパスを格納
+				std::wstring extension = L".csv";					// デフォルトはCSV
+
+				// 条件によって変更する
+				if (filterIndex == 1) extension = L".csv";			// CSVカンマ区切り
+				if (filterIndex == 2) extension = L".txt";			// txtファイル
+
+				filePath = AutoAddExtension(filePath, extension);
+
+				m_filename = filePath;
+
+				// 正常終了
+				return true;
+			}
+			pShell->Release();
+		}
+	}
+
+	// pFileDialogの解放
+	pFileDialog->Release();
+
+	// ダイアログが閉じられた場合やエラーが発生した場合はデータを削除
+	filePath.clear();
+
+	// 一番最後に現在のファイルパスを格納
+	m_filename = filePath;
+
+	// 異常終了
+	return false;
+}
+
+//--------------------------------------------------------//
+//拡張子がないときのみ処理する                            //
+//--------------------------------------------------------//
+std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::wstring& extension)
+{
+	// 元ファイル名を格納する
+	std::wstring result = filePath;
+	
+	// 文字列"."を見つける
+	std::wstring::size_type extPos = filePath.rfind(L".");
+	
+	// ドットが見つかった位置が対象文字列の最後尾or何もついていない場合追加する
+	if (extPos == std::wstring::npos || extPos < filePath.rfind(L"\\")) 
+	{
+		result += extension;
+	}
+	return result;
 }
