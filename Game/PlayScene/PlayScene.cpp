@@ -105,16 +105,16 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,										// スフィア＆ボックス
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE,COMMON_LOW + (m_mapData[y][x] - 1) * COMMON_SIZE - (m_mapData[y][x]) * COMMON_SIZE ,COMMON_SIZE },	// サイズ
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE }											// サイズ
+			m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,							// スフィア＆ボックス
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},								// サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
 			);
 			
 			// 当っていたらTrueにする
 			m_obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
 
 			m_aabbCol.HitAABB(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE },	    // サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},	    // サイズ
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
 			);
 

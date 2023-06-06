@@ -219,7 +219,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
-    case WM_SIZE:
+ /*   case WM_SIZE:
         if (wParam == SIZE_MINIMIZED)
         {
             if (!s_minimized)
@@ -241,7 +241,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             game->OnWindowSizeChanged(LOWORD(lParam), HIWORD(lParam));
         }
-        break;
+        break;*/
 
     case WM_ENTERSIZEMOVE:
         s_in_sizemove = true;
