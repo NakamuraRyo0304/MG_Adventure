@@ -6,6 +6,7 @@
  */
 
 #include "pch.h"
+
 #include "MapLoad.h"
 
 //--------------------------------------------------------//
@@ -62,6 +63,51 @@ void MapLoad::LoadMap(const wchar_t* filename)
 	}
 	// 開いたファイルを閉じる
 	ifs.close();
+}
+
+//--------------------------------------------------------//
+//ファイルの書き出し                                      //
+//--------------------------------------------------------//
+// ファイルの名前
+void MapLoad::WriteMap(const wchar_t* filename)
+{
+	//OPENFILENAME ofn;							//　FILENAME構造体の定義
+	//char path[MAX_PATH] = "";					//　ファイルパスを初期化
+	//ZeroMemory(&ofn, sizeof(ofn));				//　構造体のパスを空にする
+	//ofn.lStructSize = sizeof(OPENFILENAME);		//　構造体のサイズを指定
+	//ofn.lpstrFilter = "csv(*.csv)\0*.csv\0"		//　拡張子のフィルターをかける \nは文の終わりを表す
+	//	"json(*.json)\0*.json\0"
+	//	"すべてのファイル(*.*)\0*.*\0\0";
+	//ofn.lpstrFile = path;						//　ファイルパスを格納するポインタ
+	//ofn.nMaxFile = MAX_PATH;					//　lpstrFileのバッファサイズ
+	//ofn.lpstrDefExt = ".csv";					//　拡張子が指定されていなければ".csv"をつける
+	//int result = 0;
+
+	//GetSaveFileName(&ofn);
+
+	////　ファイルを開く
+	//ofstream ofs(path);
+
+
+	//for (int y = 0; y < MAP_RAW; y++)
+	//{
+	//	// 一行分のデータを読み込む
+	//	std::ofs >> s[y];
+
+	//	// カンマを空白に変更
+	//	std::string tmp = std::regex_replace(s[y], std::regex(","), " ");
+
+	//	// 空白で分割する
+	//	std::istringstream iss(tmp);
+	//	for (int x = 0; x < MAP_COLUMN; x++)
+	//	{
+	//		ofs << m_MapBlock[y][x] << ",";
+	//	}
+	//	ofs << endl;
+	//}
+
+	////　ファイルを閉じる
+	//ofs.close();
 }
 
 //--------------------------------------------------------//

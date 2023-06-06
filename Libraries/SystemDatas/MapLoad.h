@@ -12,6 +12,7 @@
 #include<iostream>
 #include<sstream>
 #include<regex>
+#include<ostream>
 #include<fstream>
 #include<Windows.h>
 
@@ -33,6 +34,8 @@ public:
 
 	// マップの読み込み
 	void LoadMap(const wchar_t* filename);
+
+	void WriteMap(const wchar_t* filename);
 
 	// マップのデータを渡す
 	int GetMapData(int x, int y);

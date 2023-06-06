@@ -27,11 +27,10 @@ PlayScene::PlayScene() :
 	m_sphere{},						// 球
 	m_spherePos{},
 	m_box{},						// 箱
-	m_boxesPos{},
+	m_obj{},
 	m_map{},						// マップ
 	m_mapData{},
 	m_boxCol{},						// 立方体当たり判定
-	is_boxesHitFlag{},
 	m_grassBox{ nullptr },			// モデル
 	m_grassBoxDark{ nullptr }
 {
@@ -98,29 +97,30 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
 	m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
 	
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Z)) m_spherePos.y+=1;
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::X)) m_spherePos.y-=1;
+	if (keyState.Z) m_spherePos.y += 0.1f;
+	if (keyState.X) m_spherePos.y -= 0.1f;
 
 	// 当たり判定
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			m_boxCol.PushBox(&m_spherePos, m_boxesPos[y][x],		// スフィア＆ボックス
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
+			m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,										// スフィア＆ボックス
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE,COMMON_LOW + (m_mapData[y][x] - 1) * COMMON_SIZE - (m_mapData[y][x]) * COMMON_SIZE ,COMMON_SIZE },	// サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE }											// サイズ
 			);
 			
 			// 当っていたらTrueにする
-			is_boxesHitFlag[y][x] = m_boxCol.GetHitBoxFlag();
+			m_obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
 
-			m_aabbCol.HitAABB(m_spherePos, m_boxesPos[y][x],		// スフィア＆ボックス
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
+			m_aabbCol.HitAABB(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE },	    // サイズ
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
 			);
 
 			// 当っているときに右クリックで変動
-			if (is_boxesHitFlag[y][x] && mouseState.rightButton)
+			if (m_obj[y][x].hitFlag && 
+				GetSystemManager()->GetMouseTrack()->rightButton && !keyState.LeftShift)
 			{
 				m_mapData[y][x] += 1;
 				if (m_mapData[y][x] > 15)
@@ -129,18 +129,20 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 				}
 			}
 			// 当っているときに右クリックで変動
-			if (is_boxesHitFlag[y][x] && mouseState.rightButton)
+			if (m_obj[y][x].hitFlag &&
+				GetSystemManager()->GetMouseTrack()->rightButton && keyState.LeftShift)
 			{
 				m_mapData[y][x] -= 1;
 				if (m_mapData[y][x] < 1)
 				{
-					m_mapData[y][x] = 1;
+					m_mapData[y][x] = 15;
 				}
 			}
-			m_boxesPos[y][x] =
+			// ポジションの変更
+			m_obj[y][x].position =
 			{
 				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-				COMMON_LOW + (m_mapData[y][x] - 1) * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
+				COMMON_LOW + m_mapData[y][x] * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
 				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
 			};
 		}
@@ -200,21 +202,21 @@ void PlayScene::Draw()
 		{
 			for (int h = 0; h < m_mapData[y][x]; h++)
 			{
-
-				m_boxesPos[y][x].y = h * COMMON_SIZE;
+				m_obj[y][x].position.y = h * COMMON_SIZE;
 
 				// ボックスの移動
-				DirectX::SimpleMath::Matrix boxWorldMat = DirectX::SimpleMath::Matrix::CreateTranslation(m_boxesPos[y][x]);
+				DirectX::SimpleMath::Matrix boxWorldMat =
+					DirectX::SimpleMath::Matrix::CreateTranslation(m_obj[y][x].position);
 
 				if (m_mapData[y][x] == 0) return;	// ボックスがなければ描画しない
 				
 				// 描画処理
-				if (is_boxesHitFlag[y][x] && GetSystemManager()->GetRayCast()->GetClickFlag())
+				if (m_obj[y][x].hitFlag && GetSystemManager()->GetRayCast()->GetClickFlag())
 				{
 					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, true);
 				}
-				else if (is_boxesHitFlag[y][x])
+				else if (m_obj[y][x].hitFlag)
 				{
 					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
@@ -364,10 +366,10 @@ void PlayScene::LoadMap(int num)
 			m_mapData[y][x] = m_map.GetMapData(x, y);
 			
 			// 配列のごみを除去
-			m_boxesPos[y][x] = { 0,0,0 };
+			m_obj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
 
 			// ボックスの位置を初期化
-			m_boxesPos[y][x] =
+			m_obj[y][x].position =
 			{
 				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
 				COMMON_LOW,													// ブロックの最低高度
