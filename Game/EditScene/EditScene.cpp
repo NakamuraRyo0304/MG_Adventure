@@ -1,15 +1,15 @@
 /*
- *	@File	PlayScene.cpp
- *	@Brief  プレイシーン。
- *	@Date	2023-06-07
+ *	@File	EditScene.cpp
+ *	@Brief  エディットシーン。
+ *	@Date	2023-03-31
  *  @Author NakamuraRyo
  */
 
 #include "pch.h"
 
-#include "PlayScene.h"
+#include "EditScene.h"
 
- // マップサイズ(Stage)
+// マップサイズ(Stage)
 #define			COMMON_SIZE			1.0f
 
 // 最低高度
@@ -22,14 +22,16 @@
  //--------------------------------------------------------//
  //コンストラクタ                                          //
  //--------------------------------------------------------//
-PlayScene::PlayScene() :
+EditScene::EditScene() :
 	IScene(),
 	m_sphere{},						// 球
 	m_spherePos{},
+	m_box{},						// 箱
 	m_obj{},
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
-	m_grassBox{ nullptr }			// モデル
+	m_grassBox{ nullptr },			// モデル
+	m_grassBoxDark{ nullptr }
 {
 
 }
@@ -37,14 +39,14 @@ PlayScene::PlayScene() :
 //--------------------------------------------------------//
 //デストラクタ                                            //
 //--------------------------------------------------------//
-PlayScene::~PlayScene()
+EditScene::~EditScene()
 {
 }
 
 //--------------------------------------------------------//
 //初期化処理                                              //
 //--------------------------------------------------------//
-void PlayScene::Initialize()
+void EditScene::Initialize()
 {
 	// 画面依存の初期化
 	CreateWindowDependentResources();
@@ -54,8 +56,14 @@ void PlayScene::Initialize()
 
 	// スフィアの初期化(テスト)
 	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
-		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), 
 		COMMON_SIZE / 2
+	);
+
+	// ボックスの初期化(テスト)
+	m_box = DirectX::GeometricPrimitive::CreateBox(
+		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), 
+		DirectX::XMFLOAT3(COMMON_SIZE, COMMON_SIZE, COMMON_SIZE)
 	);
 
 	// マップ読み込み
@@ -67,7 +75,7 @@ void PlayScene::Initialize()
 //更新処理                                                //
 //--------------------------------------------------------//
 // 第１引数：時間(60FPS = 1sec) / 第２引数：キーボードのポインタ / 第３引数：マウスのポインタ
-void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keyState,
+void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keyState,
 	DirectX::Mouse::State& mouseState)
 {
 	elapsedTime;
@@ -80,14 +88,14 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
-
+	
 	// レイの更新
 	GetSystemManager()->GetRayCast()->Update(mouseState);
 
 	// 移動したい位置を設定
 	m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
 	m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
-
+	
 	if (keyState.Z) m_spherePos.y += 0.1f;
 	if (keyState.X) m_spherePos.y -= 0.1f;
 
@@ -96,16 +104,60 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },										   // プレイヤのサイズ
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE , COMMON_SIZE * m_obj[y][x].state, COMMON_SIZE } // ボックスのサイズ
+			m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,							// スフィア＆ボックス
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},								// サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
 			);
+			
+			// 当っていたらTrueにする
+			m_obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
+
+			m_aabbCol.HitAABB(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},	    // サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
+			);
+
+			// 当っているときに右クリックで変動
+			if (m_obj[y][x].hitFlag && 
+				GetSystemManager()->GetMouseTrack()->rightButton && !keyState.LeftShift)
+			{
+				m_obj[y][x].state += 1;
+				if (m_obj[y][x].state % 100 > 15)
+				{
+					m_obj[y][x].state = MapLoad::BoxState::GrassBox;
+				}
+			}
+			// 当っているときに右クリックで変動
+			if (m_obj[y][x].hitFlag &&
+				GetSystemManager()->GetMouseTrack()->rightButton && keyState.LeftShift)
+			{
+				m_obj[y][x].state -= 1;
+				if (m_obj[y][x].state % 100 < 1)
+				{
+					m_obj[y][x].state = MapLoad::BoxState::GrassBox + 15;
+				}
+			}
+			// ポジションの変更
+			m_obj[y][x].position =
+			{
+				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
+				COMMON_LOW + m_obj[y][x].state % 100 * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
+				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
+			};
 		}
+	}
+
+	// カメラ移動モード切り替え　デバッグ用
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::M))
+	{
+		auto flag = GetSystemManager()->GetCamera();
+		flag->SetMoveMode(!flag->GetMoveMode());
+		flag->SetEagleMode(!flag->GetEagleMode());
 	}
 
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();
-
+	
 	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Enter))
 	{
 		// 内容を記録
@@ -130,10 +182,10 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 //--------------------------------------------------------//
 //描画処理                                                //
 //--------------------------------------------------------//
-void PlayScene::Draw()
+void EditScene::Draw()
 {
 	// 画面サイズの格納
-	float width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
+	float width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// カメラ用行列
@@ -170,10 +222,23 @@ void PlayScene::Draw()
 					DirectX::SimpleMath::Matrix::CreateTranslation(m_obj[y][x].position);
 
 				if (m_obj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
-
+				
 				// 描画処理
-				m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-					*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+				if (m_obj[y][x].hitFlag && GetSystemManager()->GetRayCast()->GetClickFlag())
+				{
+					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, true);
+				}
+				else if (m_obj[y][x].hitFlag)
+				{
+					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+				}
+				else
+				{
+					m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+				}
 			}
 		}
 	}
@@ -185,26 +250,26 @@ void PlayScene::Draw()
 //--------------------------------------------------------//
 //終了処理                                                //
 //--------------------------------------------------------//
-void PlayScene::Finalize()
+void EditScene::Finalize()
 {
 }
 
 //--------------------------------------------------------//
 //画面依存の初期化                                        //
 //--------------------------------------------------------//
-void PlayScene::CreateWindowDependentResources()
+void EditScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
-	auto device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
+	auto device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(device, context);
 
 	// 画面サイズの格納
-	float width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
+	float width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
-
+	
 	// カメラの設定
 	GetSystemManager()->GetCamera()->GetProjection(width, height, CAMERA_ANGLE);
 
@@ -213,11 +278,15 @@ void PlayScene::CreateWindowDependentResources()
 
 	// レイが及ぶ範囲を設定
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
-
+	
 	// モデルを作成する
 	m_grassBox = ModelFactory::GetModel(					// 草ブロック-通常時
 		device,
 		L"Resources/Models/GrassBlock.cmo"
+	);
+	m_grassBoxDark = ModelFactory::GetModel(				// 草ブロック-選択時
+		device,
+		L"Resources/Models/GrassBlock_Dark.cmo"
 	);
 }
 
@@ -225,12 +294,12 @@ void PlayScene::CreateWindowDependentResources()
 //--------------------------------------------------------//
 //デバッグ表示                                            //
 //--------------------------------------------------------//
-void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	GetSystemManager()->GetString()->ChangeFontColor(DirectX::Colors::Black);
 
 	// シーン名の表示
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,0 }, L"PlayScene");
+	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,0 }, L"EditScene");
 
 	// 文字数設定
 	wchar_t cam[64];
@@ -266,7 +335,7 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,80 }, num);
 
-
+	
 	// デバイスコンテキストの取得：グリッドの描画に使用
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	// デバッググリッドの表示
@@ -276,7 +345,7 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 //--------------------------------------------------------//
 //マップ読み込み                                          //
 //--------------------------------------------------------//
-void PlayScene::LoadMap(int num)
+void EditScene::LoadMap(int num)
 {
 	// ファイル名の宣言
 	const wchar_t* filename = L"CleanData";
@@ -284,10 +353,10 @@ void PlayScene::LoadMap(int num)
 	// マップの変更
 	switch (num)
 	{
-	case 1:
+	case 1:	
 		filename = L"Resources/Maps/Stage1.csv";
 		break;
-	case 2:
+	case 2:	
 		filename = L"Resources/Maps/Stage2.csv";
 		break;
 	case 3:
@@ -308,7 +377,7 @@ void PlayScene::LoadMap(int num)
 		{
 			// 読み込んだデータを格納
 			m_obj[y][x].state = m_map.GetMapData(x, y);
-
+			
 			// 配列のごみを除去
 			m_obj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
 

@@ -9,6 +9,9 @@
 
 #include "IScene.h"
 
+//--------------------------------------------------------//
+//コンストラクタ                                          //
+//--------------------------------------------------------//
 IScene::IScene():
 	m_systemManager{std::make_unique<SystemManager>()},
 	m_nextScene{SCENE::NONE}

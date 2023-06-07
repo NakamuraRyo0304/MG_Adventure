@@ -61,7 +61,7 @@ namespace DX
         void SetTargetElapsedSeconds(double targetElapsed)	{ m_targetElapsedTicks = SecondsToTicks(targetElapsed); }
 
         // Integer format represents time using 10,000,000 ticks per second.
-        static const uint64_t TicksPerSecond = 10000000;
+        const static uint64_t TicksPerSecond = 10000000;
 
         static double TicksToSeconds(uint64_t ticks)		{ return static_cast<double>(ticks) / TicksPerSecond; }
         static uint64_t SecondsToTicks(double seconds)		{ return static_cast<uint64_t>(seconds * TicksPerSecond); }

@@ -1,17 +1,17 @@
 /*
- *	@File	PlayScene.h
- *	@Brief  プレイシーン。
- *	@Date	2023-06-07
+ *	@File	EditScene.h
+ *	@Brief  エディットシーン。
+ *	@Date	2023-03-31
  *  @Author NakamuraRyo
  */
 
 #pragma once
-#ifndef PLAYSCENE
-#define PLAYSCENE
+#ifndef EDITSCENE
+#define EDITSCENE
 
 #include "../IScene.h"
 
- // CSV読み込み
+// CSV読み込み
 #include "../../Libraries/SystemDatas/MapLoad.h"
 
 #include "../../Libraries/SystemDatas/Collider.h"
@@ -23,11 +23,11 @@ struct Object
 	UINT state;									// マップのステータス
 };
 
-class PlayScene : public IScene
+class EditScene : public IScene
 {
 private:
 	// ボックスとスフィア
-	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere;
+	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere,m_box;
 	DirectX::SimpleMath::Vector3 m_spherePos;
 	Object m_obj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
 
@@ -36,23 +36,24 @@ private:
 
 	// 当たり判定
 	Collider::BoxCollider m_boxCol;
+	Collider::AABBCollider m_aabbCol;
 
 	// モデル
-	std::unique_ptr<DirectX::Model>m_grassBox;
+	std::unique_ptr<DirectX::Model>m_grassBox,m_grassBoxDark;
 
 public:
 
 	// コンストラクタ
-	PlayScene();
+	EditScene();
 
 	// デストラクタ
-	~PlayScene();
+	~EditScene();
 
 	// 初期化
 	void Initialize() override;
 
 	// 更新
-	void Update(const float& elapsedTime, DirectX::Keyboard::State& keyState, DirectX::Mouse::State& mouseState) override;
+	void Update(const float& elapsedTime,DirectX::Keyboard::State& keyState,DirectX::Mouse::State& mouseState) override;
 
 	// 描画
 	void Draw() override;
@@ -64,11 +65,11 @@ public:
 	void CreateWindowDependentResources() override;
 
 	// デバッグ表示
-	void DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void DebugLog(DirectX::SimpleMath::Matrix view,DirectX::SimpleMath::Matrix proj);
 
 	// マップ読み込み
 	void LoadMap(int num);
 
 };
 
-#endif // PLAYSCENE
+#endif // EDITSCENE

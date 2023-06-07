@@ -20,9 +20,9 @@ class Game final : public DX::IDeviceNotify
 {
 public:
 
-    static const wchar_t* TITLE;    // ゲームタイトル
-    static const int SCREEN_W;      // 画面サイズ
-    static const int SCREEN_H;
+    const static wchar_t* TITLE;    // ゲームタイトル
+    const static int SCREEN_W;      // 画面サイズ
+    const static int SCREEN_H;
 
 public:
     Game() noexcept(false);

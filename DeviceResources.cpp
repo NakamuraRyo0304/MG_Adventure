@@ -134,7 +134,7 @@ void DeviceResources::CreateDeviceResources()
     }
 
     // Determine DirectX hardware feature levels this app will support.
-    static const D3D_FEATURE_LEVEL s_featureLevels[] =
+    const static D3D_FEATURE_LEVEL s_featureLevels[] =
     {
         D3D_FEATURE_LEVEL_11_1,
         D3D_FEATURE_LEVEL_11_0,

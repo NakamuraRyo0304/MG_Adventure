@@ -1,7 +1,7 @@
 /*
  *	@File	MapLoad.h
- *	@Brief	マップを読み込み。
- *	@Date	2023-01-20
+ *	@Brief	マップを読み書き。
+ *	@Date	2023-06-07
  *  @Author NakamuraRyo
  */
 

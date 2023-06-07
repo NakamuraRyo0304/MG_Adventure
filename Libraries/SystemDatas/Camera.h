@@ -13,10 +13,10 @@ class Camera
 {
 public:
 	// ƒJƒƒ‰‚Ì‹——£
-	static const float DEFAULT_CAMERA_DISTANCE;
+	const static float DEFAULT_CAMERA_DISTANCE;
 
 	// ƒJƒƒ‰‚ÌˆÚ“®‘¬“x
-	static const float DEFAULT_CAMERA_SPEED;
+	const static float DEFAULT_CAMERA_SPEED;
 
 private:
 	// ‰ñ“]Šp

@@ -42,9 +42,9 @@ namespace DX
         DeviceResources operator=(const DeviceResources& dr) = delete;
 
     public:
-        static const unsigned int c_FlipPresent     = 0x1;
-        static const unsigned int c_AllowTearing    = 0x2;
-        static const unsigned int c_EnableHDR       = 0x4;
+        const static unsigned int c_FlipPresent     = 0x1;
+        const static unsigned int c_AllowTearing    = 0x2;
+        const static unsigned int c_EnableHDR       = 0x4;
 
         void CreateDeviceResources();
         void CreateWindowSizeDependentResources();
