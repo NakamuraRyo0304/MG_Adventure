@@ -24,10 +24,12 @@
  //--------------------------------------------------------//
 PlayScene::PlayScene() :
 	IScene(),
-	m_obj{},
+	m_obj{},						// マップのブロック
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
-	m_grassBox{ nullptr }			// モデル
+	m_player{ nullptr },			// プレイヤのモデル
+	m_playerPos{},					// プレイヤの位置
+	m_grassBox{ nullptr }			// 草ブロックのモデル
 {
 
 }
@@ -53,6 +55,7 @@ void PlayScene::Initialize()
 	// マップ読み込み
 	LoadMap(GetStageNum());
 
+	m_playerPos = { 0.0f,2.0f,0.0f };
 }
 
 //--------------------------------------------------------//
@@ -75,6 +78,17 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	// レイの更新
 	GetSystemManager()->GetRayCast()->Update(mouseState);
+
+	// 当たり判定の更新
+	DoBoxCollision();
+
+	//　クラス分け　Player Boxも作る
+	if (keyState.Up) m_playerPos.y+=0.05f;
+	if (keyState.Down) m_playerPos.y-=0.05f;
+	if (keyState.W) m_playerPos.z -= 0.05f;
+	if (keyState.S) m_playerPos.z += 0.05f;
+	if (keyState.A) m_playerPos.x -= 0.05f;
+	if (keyState.D) m_playerPos.x += 0.05f;
 
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();
@@ -109,6 +123,12 @@ void PlayScene::Draw()
 
 	// レイの設定
 	GetSystemManager()->GetRayCast()->SetMatrix(view, projection);
+
+	// プレイヤの描画
+	DirectX::SimpleMath::Matrix playerWorldMat =
+		DirectX::SimpleMath::Matrix::CreateTranslation(m_playerPos);
+	m_player->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+		*GetSystemManager()->GetCommonStates(), playerWorldMat, view, projection, false);
 
 	// ボックスの描画
 	for (int y = 0; y < m_map.MAP_RAW; y++)
@@ -169,12 +189,34 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 
 	// モデルを作成する
-	m_grassBox = ModelFactory::GetModel(					// 草ブロック-通常時
+	m_player = ModelFactory::GetModel(						// プレイヤ
+		device,
+		L"Resources/Models/TestPlayer.cmo"
+	);
+	m_grassBox = ModelFactory::GetModel(					// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
 	);
 }
 
+//--------------------------------------------------------//
+//当たり判定の処理をまとめた関数                          //
+//--------------------------------------------------------//
+void PlayScene::DoBoxCollision()
+{
+	m_boxCol.SetPushMode(true);
+	// 当たり判定
+	for (int y = 0; y < m_map.MAP_RAW; y++)
+	{
+		for (int x = 0; x < m_map.MAP_COLUMN; x++)
+		{
+			m_boxCol.PushBox(&m_playerPos, m_obj[y][x].position,							// プレイヤ＆ボックス
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE },								// サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
+			);
+		}
+	}
+}
 
 //--------------------------------------------------------//
 //デバッグ表示                                            //
@@ -211,6 +253,12 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	swprintf_s(num, 32, L"StageNum = %d", GetStageNum());
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,60 }, num);
+	
+	// プレイヤの座標
+	wchar_t plr[64];
+	swprintf_s(plr, 64, L"Player = %f,%f,%f", m_playerPos.x,m_playerPos.y,m_playerPos.z);
+
+	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,80 }, plr);
 
 
 	// デバイスコンテキストの取得：グリッドの描画に使用

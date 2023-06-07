@@ -26,6 +26,8 @@ struct Object
 class PlayScene : public IScene
 {
 private:
+	// プレイヤ
+	DirectX::SimpleMath::Vector3 m_playerPos;
 	// ボックス
 	Object m_obj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
 
@@ -36,7 +38,7 @@ private:
 	Collider::BoxCollider m_boxCol;
 
 	// モデル
-	std::unique_ptr<DirectX::Model>m_grassBox;
+	std::unique_ptr<DirectX::Model> m_player, m_grassBox;
 
 public:
 
@@ -60,6 +62,9 @@ public:
 
 	// 画面依存の初期化
 	void CreateWindowDependentResources() override;
+
+	// 当たり判定
+	void DoBoxCollision();
 
 	// デバッグ表示
 	void DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);

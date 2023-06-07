@@ -245,6 +245,7 @@
     <None Include="Resources\Models\Cube.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
     <None Include="Resources\Models\GrassBlock_Dark.cmo" />
+    <None Include="Resources\Models\TestPlayer.cmo" />
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx" />
