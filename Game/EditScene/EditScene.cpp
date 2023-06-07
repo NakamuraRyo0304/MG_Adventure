@@ -357,12 +357,12 @@ void EditScene::LoadMap(int num)
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
-		{
-			// 読み込んだデータを格納
-			m_obj[y][x].state = m_map.GetMapData(x, y);
-			
+		{			
 			// 配列のごみを除去
 			m_obj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
+
+			// ステートをセット
+			m_obj[y][x].state = m_map.GetMapData(x, y);
 
 			// ボックスの位置を初期化
 			m_obj[y][x].position =

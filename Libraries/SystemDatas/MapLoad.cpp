@@ -15,7 +15,6 @@
 #include<Windows.h>   // WindowsAPIに使用
 #include<shobjidl.h>  // IFileSaveDialogに使用
 
-
 #include "MapLoad.h"
 
 //--------------------------------------------------------//
