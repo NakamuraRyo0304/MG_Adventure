@@ -16,11 +16,14 @@ public:
 	const static int MAP_COLUMN = 15;
 	// 縦の長さ
 	const static int MAP_RAW = 15;
+	// 足場の高さ
+	const static int MAP_HEIGHT = 15;
 
 	// エリアボックスのステータス
 	struct BoxState
 	{
-		const static UINT GrassBox = 101;		// 草のブロック
+		const static int GrassBox = 100;		// 草のブロック
+		const static int None = 0;				// データなし
 	};
 
 private:

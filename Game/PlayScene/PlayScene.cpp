@@ -24,8 +24,6 @@
  //--------------------------------------------------------//
 PlayScene::PlayScene() :
 	IScene(),
-	m_sphere{},						// 球
-	m_spherePos{},
 	m_obj{},
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
@@ -49,14 +47,8 @@ void PlayScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetMoveMode(true);	    	// カメラ座標移動
+	GetSystemManager()->GetCamera()->SetMoveMode(false);    	// カメラ座標移動
 	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
-
-	// スフィアの初期化(テスト)
-	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
-		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-		COMMON_SIZE / 2
-	);
 
 	// マップ読み込み
 	LoadMap(GetStageNum());
@@ -84,41 +76,8 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// レイの更新
 	GetSystemManager()->GetRayCast()->Update(mouseState);
 
-	// 移動したい位置を設定
-	m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
-	m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
-
-	if (keyState.Z) m_spherePos.y += 0.1f;
-	if (keyState.X) m_spherePos.y -= 0.1f;
-
-	// 当たり判定
-	for (int y = 0; y < m_map.MAP_RAW; y++)
-	{
-		for (int x = 0; x < m_map.MAP_COLUMN; x++)
-		{
-			m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },										   // プレイヤのサイズ
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE , COMMON_SIZE * m_obj[y][x].state, COMMON_SIZE } // ボックスのサイズ
-			);
-		}
-	}
-
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();
-
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Enter))
-	{
-		// 内容を記録
-		for (int y = 0; y < m_map.MAP_RAW; y++)
-		{
-			for (int x = 0; x < m_map.MAP_COLUMN; x++)
-			{
-				m_map.SetMapData(m_obj[y][x].state, x, y);
-			}
-		}
-		// ファイル書き出し
-		m_map.WriteMap();
-	}
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
@@ -151,11 +110,6 @@ void PlayScene::Draw()
 	// レイの設定
 	GetSystemManager()->GetRayCast()->SetMatrix(view, projection);
 
-	// 球の描画
-	world *= DirectX::SimpleMath::Matrix::CreateTranslation(m_spherePos);
-
-	m_sphere->Draw(world, view, projection, DirectX::Colors::Red);
-
 	// ボックスの描画
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
@@ -163,17 +117,17 @@ void PlayScene::Draw()
 		{
 			for (int h = 0; h < m_obj[y][x].state % 100; h++)
 			{
-				m_obj[y][x].position.y = h * COMMON_SIZE;
+				m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE; // 最低座標＋任意の高さ
 
 				// ボックスの移動
 				DirectX::SimpleMath::Matrix boxWorldMat =
 					DirectX::SimpleMath::Matrix::CreateTranslation(m_obj[y][x].position);
 
-				if (m_obj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
+				if (m_obj[y][x].state % 100 == MapLoad::BoxState::None) return;	// ボックスがなければ描画しない
 
-				// 描画処理
 				m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 					*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+
 			}
 		}
 	}
@@ -252,19 +206,11 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,40 }, mos);
 
-	// 保存された座標
-	swprintf_s(mos, 64, L"ClickPos = %f,%f,%f",
-		m_spherePos.x,
-		m_spherePos.y,
-		m_spherePos.z);
-
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,60 }, mos);
-
 	// ステージ番号確認
 	wchar_t num[32];
 	swprintf_s(num, 32, L"StageNum = %d", GetStageNum());
 
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,80 }, num);
+	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,60 }, num);
 
 
 	// デバイスコンテキストの取得：グリッドの描画に使用
@@ -306,19 +252,20 @@ void PlayScene::LoadMap(int num)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			// 読み込んだデータを格納
+			// ステートをセット
 			m_obj[y][x].state = m_map.GetMapData(x, y);
 
 			// 配列のごみを除去
 			m_obj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
-
+								
 			// ボックスの位置を初期化
 			m_obj[y][x].position =
 			{
-				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-				COMMON_LOW,													// ブロックの最低高度
-				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
+				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),							// ブロックの位置 - オフセット
+				COMMON_LOW,						 												// ブロック初期位置
+				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)								// ブロックの位置 - オフセット
 			};
+			
 		}
 	}
 }

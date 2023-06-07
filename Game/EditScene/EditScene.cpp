@@ -361,8 +361,7 @@ void EditScene::LoadMap(int num)
 			// 配列のごみを除去
 			m_obj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
 
-			// ステートをセット
-			m_obj[y][x].state = m_map.GetMapData(x, y);
+			m_obj[y][x].state = m_map.GetMapData(x,y);
 
 			// ボックスの位置を初期化
 			m_obj[y][x].position =

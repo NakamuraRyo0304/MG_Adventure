@@ -80,9 +80,11 @@ public:
 
 	// カメラの座標を取得する
 	const DirectX::SimpleMath::Vector3& GetEyePosition() { return m_eye; }
-
+	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_eye = pos;}
+	
 	// カメラの注視点座標を取得する
 	const DirectX::SimpleMath::Vector3& GetTargetPosition() { return m_target; }
+	void SetTargetPosition(const DirectX::SimpleMath::Vector3& pos) { m_target = pos; }
 
 	// 射影行列の取得
 	const DirectX::SimpleMath::Matrix& GetProjection(float width, float height,float angle);
@@ -95,12 +97,6 @@ public:
 	void SetEagleMode(bool flag) { is_eagleMode = flag; }
 	const bool GetEagleMode() { return is_eagleMode; }
 
-	// カメラの座標をセットする
-	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos) 
-	{ 
-		m_eyePos = pos; 
-		m_target = pos; 
-	}
 };
 
 #endif // CAMERA

@@ -32,6 +32,8 @@ Camera::Camera():
 	m_screenHeight{},			// 画面の高さ
 	m_screenWidth{}				// 画面の幅
 {
+	// マウスの回転量をリセット
+	DirectX::Mouse::Get().ResetScrollWheelValue();
 }
 
 //--------------------------------------------------------//

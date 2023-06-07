@@ -26,9 +26,7 @@ struct Object
 class PlayScene : public IScene
 {
 private:
-	// ボックスとスフィア
-	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere;
-	DirectX::SimpleMath::Vector3 m_spherePos;
+	// ボックス
 	Object m_obj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
 
 	// マップ
