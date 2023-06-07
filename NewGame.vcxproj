@@ -247,8 +247,6 @@
     <None Include="Resources\Models\GrassBlock_Dark.cmo" />
   </ItemGroup>
   <ItemGroup>
-    <MeshContentTask Include="Resources\Models\Cube.fbx" />
-    <MeshContentTask Include="Resources\Models\GrassBlock.fbx" />
     <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

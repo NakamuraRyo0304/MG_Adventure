@@ -236,15 +236,11 @@
     <None Include="Resources\Models\Cube.cmo">
       <Filter>Resources\Models</Filter>
     </None>
-    <None Include="Resources\Models\GrassBlock_Dark.cmo" />
+    <None Include="Resources\Models\GrassBlock_Dark.cmo">
+      <Filter>Resources\Models</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <MeshContentTask Include="Resources\Models\GrassBlock.fbx">
-      <Filter>Resources\Models</Filter>
-    </MeshContentTask>
-    <MeshContentTask Include="Resources\Models\Cube.fbx">
-      <Filter>Resources\Models</Filter>
-    </MeshContentTask>
     <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx">
       <Filter>Assets</Filter>
     </MeshContentTask>
