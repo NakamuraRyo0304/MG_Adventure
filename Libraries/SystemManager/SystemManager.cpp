@@ -9,6 +9,13 @@
 
 #include "SystemManager.h"
 
+// デストラクタ
+SystemManager::~SystemManager()
+{
+	DeletePointer(m_camera);
+}
+
+
 // DeviceResources
 DX::DeviceResources*
 SystemManager::GetDeviceResources()

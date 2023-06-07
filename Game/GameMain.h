@@ -20,7 +20,8 @@ enum class SCENE : int
     TITLE,
     SELECT,
     PLAY,
-    RESULT
+    RESULT,
+    EDIT
 };
 
 class GameMain

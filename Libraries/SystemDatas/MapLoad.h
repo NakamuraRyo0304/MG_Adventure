@@ -36,25 +36,38 @@ private:
 	// ウィンドウハンドル
 	HWND m_hWnd;
 
+	// エディタモード
+	bool is_editMode;
+
 public:
 
 	MapLoad();
 	~MapLoad() = default;
 
 	// マップの読み込み
-	void LoadMap(const wchar_t* filename);
+	void LoadMap(std::wstring filename);
 
 	// マップの書き出し
 	void WriteMap();
 
+	// マップデータの保存
 	void SetMapData(int state, int x, int y);
+
+	// エディットモード切替
+	void SetEditMode(const bool& flag) { is_editMode = flag; }
 
 	// マップのデータを渡す
 	int GetMapData(int x, int y) { return m_mapData[y][x]; }
 
+	// マップのパス名を渡す
+	std::wstring GetFilePath() { return m_filename; }
+
 private:
-	// マップのパス指定
+	// マップの保存パス指定
 	bool SaveMapPath(std::wstring& filePath);
+
+	// マップの読み込みパス指定
+	bool LoadMapPath();
 
 	// 拡張子がついていない場合に自動で拡張子を追加する関数
 	std::wstring AutoAddExtension(const std::wstring& filePath, const std::wstring& extension);

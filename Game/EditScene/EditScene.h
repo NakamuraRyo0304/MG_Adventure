@@ -16,7 +16,7 @@
 
 #include "../../Libraries/SystemDatas/Collider.h"
 
-struct Object
+struct EditObject
 {
 	DirectX::SimpleMath::Vector3 position;		// 座標
 	bool hitFlag;								// 当たり判定フラグ
@@ -29,7 +29,7 @@ private:
 	// ボックスとスフィア
 	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere,m_box;
 	DirectX::SimpleMath::Vector3 m_spherePos;
-	Object m_obj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
+	EditObject m_obj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
 
 	// マップ
 	MapLoad m_map;

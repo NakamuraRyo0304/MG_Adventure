@@ -56,9 +56,6 @@
     <Filter Include="Scenes">
       <UniqueIdentifier>{ac0ca22b-0a98-41d8-99cb-c97109329248}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scenes\PlayScene">
-      <UniqueIdentifier>{97c9aef9-e8f0-4ac8-b3be-082c137631f6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scenes\ResultScene">
       <UniqueIdentifier>{30cf41e5-4992-4f54-aa3c-e92d1232d6df}</UniqueIdentifier>
     </Filter>
@@ -73,6 +70,12 @@
     </Filter>
     <Filter Include="Factories">
       <UniqueIdentifier>{a396931d-e107-4640-a03e-917f27bce54c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\EditScene">
+      <UniqueIdentifier>{97c9aef9-e8f0-4ac8-b3be-082c137631f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\PlayScene">
+      <UniqueIdentifier>{6d7048f2-a7c6-4a38-bf2a-53e95b7d2a02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,9 +99,6 @@
     </ClInclude>
     <ClInclude Include="Game\SelectScene\SelectScene.h">
       <Filter>Scenes\SelectScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\PlayScene\PlayScene.h">
-      <Filter>Scenes\PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Game\ResultScene\ResultScene.h">
       <Filter>Scenes\ResultScene</Filter>
@@ -136,6 +136,12 @@
     <ClInclude Include="Factories\ModelFactory.h">
       <Filter>Factories</Filter>
     </ClInclude>
+    <ClInclude Include="Game\PlayScene\PlayScene.h">
+      <Filter>Scenes\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\EditScene\EditScene.h">
+      <Filter>Scenes\EditScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -158,9 +164,6 @@
     </ClCompile>
     <ClCompile Include="Game\SelectScene\SelectScene.cpp">
       <Filter>Scenes\SelectScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\PlayScene\PlayScene.cpp">
-      <Filter>Scenes\PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Game\ResultScene\ResultScene.cpp">
       <Filter>Scenes\ResultScene</Filter>
@@ -191,6 +194,12 @@
     </ClCompile>
     <ClCompile Include="Factories\ModelFactory.cpp">
       <Filter>Factories</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\PlayScene.cpp">
+      <Filter>Scenes\PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\EditScene\EditScene.cpp">
+      <Filter>Scenes\EditScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +236,7 @@
     <None Include="Resources\Models\Cube.cmo">
       <Filter>Resources\Models</Filter>
     </None>
+    <None Include="Resources\Models\GrassBlock_Dark.cmo" />
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Resources\Models\GrassBlock.fbx">
@@ -234,6 +244,9 @@
     </MeshContentTask>
     <MeshContentTask Include="Resources\Models\Cube.fbx">
       <Filter>Resources\Models</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx">
+      <Filter>Assets</Filter>
     </MeshContentTask>
   </ItemGroup>
 </Project>

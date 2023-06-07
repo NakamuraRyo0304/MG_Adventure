@@ -73,7 +73,7 @@ void SelectScene::Update(const float& elapsedTime, DirectX::Keyboard::State& key
 		if (max < value) return max;
 		return value;
 	};
-	m_stageNum = clamp(m_stageNum, 1, 3);
+	m_stageNum = clamp(m_stageNum, 0, 3);
 
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();
@@ -81,7 +81,15 @@ void SelectScene::Update(const float& elapsedTime, DirectX::Keyboard::State& key
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
 	{
-		GoNextScene(SCENE::PLAY);
+		if (m_stageNum == 0)
+		{
+			// 0番目を選択したらステージエディタのシーンへ飛ぶ
+			GoNextScene(SCENE::EDIT);
+		}
+		else
+		{
+			GoNextScene(SCENE::PLAY);
+		}
 	}
 }
 

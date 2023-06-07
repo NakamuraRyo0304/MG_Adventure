@@ -12,6 +12,7 @@
 // TODO: シーン２：シーンのインクルード
 #include "Game/TitleScene/TitleScene.h"
 #include "Game/SelectScene/SelectScene.h"
+#include "Game/EditScene/EditScene.h"
 #include "Game/PlayScene/PlayScene.h"
 #include "Game/ResultScene/ResultScene.h"
 
@@ -118,24 +119,29 @@ void GameMain::CreateScene()
 	// TODO: シーン３：シーンはここから追加
 	switch (m_nextScene)
 	{
-		case SCENE::TITLE:
+		case SCENE::TITLE:		// タイトルシーン
 		{
 			m_pNowScene = new TitleScene();
 			break;
 		}
-		case SCENE::SELECT:
+		case SCENE::SELECT:		// ステージセレクトシーン
 		{
 			m_pNowScene = new SelectScene();
 			break;
 		}
-		case SCENE::PLAY:
+		case SCENE::PLAY:		// ゲームシーン
 		{
 			m_pNowScene = new PlayScene();
 			break;
 		}
-		case SCENE::RESULT:
+		case SCENE::RESULT:		// リザルトシーン
 		{
 			m_pNowScene = new ResultScene();
+			break;
+		}
+		case SCENE::EDIT:		// ステージエディットシーン
+		{
+			m_pNowScene = new EditScene();
 			break;
 		}
 		default:

@@ -24,7 +24,8 @@
 MapLoad::MapLoad() :
 	m_mapData{},
     is_saveFileOpenFlag{false},
-    m_hWnd{nullptr}
+    m_hWnd{nullptr},
+	is_editMode{false}
 {
 }
 
@@ -32,13 +33,22 @@ MapLoad::MapLoad() :
  //--------------------------------------------------------//
  //マップの読み込み                                        //
  //--------------------------------------------------------//
-void MapLoad::LoadMap(const wchar_t* filename)
+void MapLoad::LoadMap(std::wstring filename)
 {
+	// ファイル名の保存
+	m_filename = filename;
+
+	// もしファイル名が空だったらダイアログを開く
+	if (filename == L"")
+	{
+		LoadMapPath();
+	}
+
 	// ファイル読み込み変数定義
 	std::ifstream ifs;
 
 	// ファイルを読み取り専用で開く
-	ifs.open(filename, std::ios::in | std::ios::binary);
+	ifs.open(m_filename, std::ios::in | std::ios::binary);
 
 	// ファイルが開けなかった場合はエラーメッセージを出す
 	if (!ifs)
@@ -205,8 +215,101 @@ bool MapLoad::SaveMapPath(std::wstring& filePath)
 }
 
 //--------------------------------------------------------//
+//ファイルを読み込む                                      //
+//--------------------------------------------------------//
+// private
+bool MapLoad::LoadMapPath()
+{
+	// 例外エラー用変数
+	HRESULT hr;
+
+	// ファイル保存ダイアログ用のインターフェースを作成
+	IFileOpenDialog* pFileDialog = nullptr;
+	hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileDialog));
+
+	// インスタンスの作成に失敗した場合はfalseを返して終了
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	// 拡張子フィルタを設定する
+	COMDLG_FILTERSPEC fileTypes[] =
+	{
+		{ L"CSV(カンマ区切り)"	, L"*.csv" },			// カンマ区切りファイル
+		{ L"テキスト ファイル"	, L"*.txt" }			// テキストファイル
+	};
+
+	// 引数：フィルタの数、フィルタの配列
+	hr = pFileDialog->SetFileTypes(2, fileTypes);
+
+	// ウィンドウハンドルを指定してダイアログを表示
+	hr = pFileDialog->Show(m_hWnd); // m_hWndはウィンドウハンドル
+
+	// ウィンドウダイアログが開けた場合はパスの取得処理へ
+	if (SUCCEEDED(hr))
+	{
+		// 選択されたファイルパスを取得
+		IShellItem* pShell;
+		hr = pFileDialog->GetResult(&pShell);
+
+		// パスが取得出来たら以下処理を実行
+		if (SUCCEEDED(hr))
+		{
+			wchar_t* tmpFilePath;
+			hr = pShell->GetDisplayName(SIGDN_FILESYSPATH, &tmpFilePath);
+
+			if (SUCCEEDED(hr))
+			{
+				// 選択されたファイルパスをfilePathに格納
+				m_filename = tmpFilePath;
+
+				// メモリの解放
+				CoTaskMemFree(tmpFilePath);
+
+				// pItemの解放
+				pShell->Release();
+
+				// pFileDialogの解放
+				pFileDialog->Release();
+
+				// 選択されたフィルタのインデックスを取得
+				unsigned int filterIndex;
+				hr = pFileDialog->GetFileTypeIndex(&filterIndex);
+
+				// 一番最後に現在のファイルパスを格納
+				std::wstring extension = L".csv";					// デフォルトはCSV
+
+				// 条件によって変更する
+				if (filterIndex == 1) extension = L".csv";			// CSVカンマ区切り
+				if (filterIndex == 2) extension = L".txt";			// txtファイル
+
+				m_filename = AutoAddExtension(m_filename, extension);
+
+				// 正常終了
+				return true;
+			}
+			pShell->Release();
+		}
+	}
+
+	// pFileDialogの解放
+	pFileDialog->Release();
+
+	// ダイアログが閉じられた場合やエラーが発生した場合はデータを削除
+	m_filename.clear();
+
+	// 一番最後に現在のファイルパスを格納
+	m_filename = m_filename;
+
+	// 異常終了
+	return false;
+}
+
+//--------------------------------------------------------//
 //拡張子がないときのみ処理する                            //
 //--------------------------------------------------------//
+// private
 std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::wstring& extension)
 {
 	// 元ファイル名を格納する

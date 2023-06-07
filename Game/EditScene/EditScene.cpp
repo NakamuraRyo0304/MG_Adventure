@@ -347,28 +347,11 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 //--------------------------------------------------------//
 void EditScene::LoadMap(int num)
 {
-	// ファイル名の宣言
-	const wchar_t* filename = L"CleanData";
-
-	// マップの変更
-	switch (num)
-	{
-	case 1:	
-		filename = L"Resources/Maps/Stage1.csv";
-		break;
-	case 2:	
-		filename = L"Resources/Maps/Stage2.csv";
-		break;
-	case 3:
-		filename = L"Resources/Maps/Stage3.csv";
-		break;
-	default:
-		filename = L"NoStage";
-		break;
-	}
+	// 空のファイルパスを用意する
+	std::wstring filePath = L"";
 
 	// マップの読み込み
-	m_map.LoadMap(filename);
+	m_map.LoadMap(filePath);
 
 	// マップの格納
 	for (int y = 0; y < m_map.MAP_RAW; y++)

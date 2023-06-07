@@ -20,7 +20,7 @@ class SystemManager
 {
 private:
 	// デバイスリソーシーズ
-	DX::DeviceResources* m_pDR = nullptr;
+	DX::DeviceResources*										m_pDR = nullptr;
 	// コモンステート
 	std::unique_ptr<DirectX::CommonStates>						m_commonState;
 	// 押された瞬間を検知する
@@ -68,6 +68,8 @@ public: // ゲッター、セッター、ファクトリー
 	Camera*& GetCamera();
 
 public:
+	~SystemManager();
+
 	// ポインタの削除
 	template <typename T>
 	inline void DeletePointer(T*& p)
