@@ -112,7 +112,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 			// 当っていたらTrueにする
 			m_obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
 
-			m_aabbCol.HitAABB(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
+			m_aabbCol.HitAABB_2D(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},	    // サイズ
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
 			);
@@ -145,6 +145,24 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
 			};
 		}
+	}
+
+	// スクリーンクリック保存のテスト
+	if (m_aabbCol.HitAABB_2D({(float)mouseState.x,0.0f,(float)mouseState.y }, { 1860,0,65 }, // マウスと画面端
+		DirectX::SimpleMath::Vector3{ 2.0f },	    // サイズ
+		DirectX::SimpleMath::Vector3{ 100.0f }			// サイズ
+	) && GetSystemManager()->GetMouseTrack()->leftButton)
+	{
+		// 内容を記録
+		for (int y = 0; y < m_map.MAP_RAW; y++)
+		{
+			for (int x = 0; x < m_map.MAP_COLUMN; x++)
+			{
+				m_map.SetMapData(m_obj[y][x].state, x, y);
+			}
+		}
+		// ファイル書き出し
+		m_map.WriteMap();
 	}
 
 	// カメラ移動モード切り替え　デバッグ用
@@ -243,6 +261,20 @@ void EditScene::Draw()
 		}
 	}
 
+	// 画像の描画
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+		L"Save",					// 登録キー
+		{1800,0},					// 座標
+		{1.0f,1.0f,1.0f,1.0f},		// 色
+		0.5f						// 拡大率
+	);
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+		L"Camera",					// 登録キー
+		{1650,0},					// 座標
+		{1.0f,1.0f,1.0f,1.0f},		// 色
+		0.5f						// 拡大率
+	);
+
 	// デバッグ表示
 	DebugLog(view, projection);
 }
@@ -288,6 +320,11 @@ void EditScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/GrassBlock_Dark.cmo"
 	);
+
+	// 画像の設定
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(context);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Save",  L"Resources/Textures/SaveFile.dds",device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Camera",L"Resources/Textures/Camera.dds",  device);
 }
 
 
@@ -329,9 +366,10 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,60 }, mos);
 
-	// ステージ番号確認
+	auto mouse = DirectX::Mouse::Get().GetState();
+	// マウス位置確認
 	wchar_t num[32];
-	swprintf_s(num, 32, L"StageNum = %d", GetStageNum());
+	swprintf_s(num, 32, L"Mouse = %d:%d", mouse.x, mouse.y);
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,80 }, num);
 

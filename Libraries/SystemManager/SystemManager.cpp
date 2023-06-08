@@ -93,6 +93,17 @@ SystemManager::GetRayCast()
 	return m_rayCast;
 }
 
+// DrawSprite
+const std::unique_ptr<DrawSprite>&
+SystemManager::GetDrawSprite()
+{
+	if (!m_drawSprite)
+	{
+		return nullptr;
+	}
+	return m_drawSprite;
+}
+
 //--------------------------------------------------------//
 //カメラゲッター                                          //
 //--------------------------------------------------------//
@@ -132,4 +143,6 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 	// レイを飛ばす
 	m_rayCast = std::make_unique<RayCast>();
 
+	// 画像の描画
+	m_drawSprite = std::make_unique<DrawSprite>();
 }

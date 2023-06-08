@@ -15,6 +15,7 @@
 #include "../SystemDatas/Camera.h"
 #include "../SystemDatas/GridFloor.h"
 #include "../SystemDatas/RayCast.h"
+#include "../SystemDatas/DrawSprite.h"
 
 class SystemManager
 {
@@ -33,6 +34,9 @@ private:
 	std::unique_ptr<GridFloor>                                  m_gridFloor;
 	// レイキャスト
 	std::unique_ptr<RayCast>									m_rayCast;
+	// ドロースプライト
+	std::unique_ptr<DrawSprite>									m_drawSprite;
+
 public:
 	// カメラ
 	Camera* m_camera = nullptr;
@@ -63,6 +67,9 @@ public: // ゲッター、セッター、ファクトリー
 
 	// レイキャストの取得
 	const std::unique_ptr<RayCast>& GetRayCast();
+
+	// ドロースプライトの取得
+	const std::unique_ptr<DrawSprite>& GetDrawSprite();
 
 	// カメラの取得
 	Camera*& GetCamera();

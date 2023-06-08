@@ -58,6 +58,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\MeshContentTask.props" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -127,6 +128,12 @@
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <ImageContentTask>
+      <Compress>BC3_UNORM_SRGB</Compress>
+    </ImageContentTask>
+    <ImageContentTask>
+      <ContentOutput>Resources/Textures/%(Filename).dds</ContentOutput>
+    </ImageContentTask>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -192,6 +199,7 @@
     <ClInclude Include="Libraries\Factories\ModelFactory.h" />
     <ClInclude Include="Libraries\SystemDatas\Collider.h" />
     <ClInclude Include="Libraries\SystemDatas\Camera.h" />
+    <ClInclude Include="Libraries\SystemDatas\DrawSprite.h" />
     <ClInclude Include="Libraries\SystemDatas\DrawString.h" />
     <ClInclude Include="Libraries\SystemDatas\GridFloor.h" />
     <ClInclude Include="Libraries\SystemDatas\MapLoad.h" />
@@ -215,6 +223,7 @@
     <ClCompile Include="Libraries\Factories\ModelFactory.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Collider.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Camera.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\DrawSprite.cpp" />
     <ClCompile Include="Libraries\SystemDatas\DrawString.cpp" />
     <ClCompile Include="Libraries\SystemDatas\GridFloor.cpp" />
     <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp" />
@@ -234,6 +243,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="directx.ico" />
+    <ImageContentTask Include="Resources\Textures\Camera.png" />
+    <Image Include="Resources\Textures\SaveFile.dds" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest" />
@@ -255,6 +266,7 @@
     <Import Project="packages\Microsoft.XAudio2.Redist.1.2.11\build\native\Microsoft.XAudio2.Redist.targets" Condition="Exists('packages\Microsoft.XAudio2.Redist.1.2.11\build\native\Microsoft.XAudio2.Redist.targets')" />
     <Import Project="packages\directxtk_desktop_2019.2023.3.30.1\build\native\directxtk_desktop_2019.targets" Condition="Exists('packages\directxtk_desktop_2019.2023.3.30.1\build\native\directxtk_desktop_2019.targets')" />
     <Import Project="$(VCTargetsPath)\BuildCustomizations\MeshContentTask.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.targets" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

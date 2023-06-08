@@ -222,16 +222,16 @@ void PlayScene::DoBoxCollision()
 			{
 				m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE; // 最低座標＋任意の高さ
 
-				m_boxCol.PushBox(&m_playerPos, m_obj[y][x].position,							// プレイヤ＆ボックス
-					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},								// サイズ
-					DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
+				m_boxCol.PushBox(&m_playerPos, m_obj[y][x].position,   // プレイヤ＆ボックス
+					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},	   // サイズ
+					DirectX::SimpleMath::Vector3{ COMMON_SIZE }		   // サイズ
 				);
 			}
 		}
 	}
 	
 	// 上に当たったら重力をリセット
-	if (m_boxCol.GetHitFace() == Collider::BoxCollider::HIT_FACE::UP)
+	if (m_boxCol.GetHitFace() != Collider::BoxCollider::HIT_FACE::DOWN)
 	{
 		m_gravity = 0.0f;
 	}

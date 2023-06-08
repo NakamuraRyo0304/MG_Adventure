@@ -77,6 +77,9 @@
     <Filter Include="Scenes\PlayScene">
       <UniqueIdentifier>{6d7048f2-a7c6-4a38-bf2a-53e95b7d2a02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\DrawSprite">
+      <UniqueIdentifier>{358594c6-9a83-47e0-b9bc-f4b09b8969aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -142,6 +145,9 @@
     <ClInclude Include="Libraries\Factories\ModelFactory.h">
       <Filter>Factories</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\DrawSprite.h">
+      <Filter>Common\DrawSprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -201,6 +207,9 @@
     <ClCompile Include="Libraries\Factories\ModelFactory.cpp">
       <Filter>Factories</Filter>
     </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\DrawSprite.cpp">
+      <Filter>Common\DrawSprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Icon\Icon.rc">
@@ -213,6 +222,9 @@
   <ItemGroup>
     <Image Include="directx.ico">
       <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Resources\Textures\SaveFile.dds">
+      <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -247,5 +259,10 @@
     <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx">
       <Filter>Assets</Filter>
     </MeshContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Resources\Textures\Camera.png">
+      <Filter>Resources\Textures</Filter>
+    </ImageContentTask>
   </ItemGroup>
 </Project>

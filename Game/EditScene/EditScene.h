@@ -40,7 +40,7 @@ private:
 
 	// モデル
 	std::unique_ptr<DirectX::Model>m_grassBox,m_grassBoxDark;
-
+	
 public:
 
 	// コンストラクタ
