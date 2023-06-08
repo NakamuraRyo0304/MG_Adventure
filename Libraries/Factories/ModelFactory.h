@@ -9,7 +9,7 @@
 #ifndef MODELFACTORY
 #define MODELFACTORY
 
-#include "../Game/GameMain.h"
+#include "../../Game/GameMain.h"
 
 class ModelFactory
 {

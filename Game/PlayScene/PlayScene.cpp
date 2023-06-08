@@ -29,7 +29,8 @@ PlayScene::PlayScene() :
 	m_boxCol{},						// 立方体当たり判定
 	m_player{ nullptr },			// プレイヤのモデル
 	m_playerPos{},					// プレイヤの位置
-	m_grassBox{ nullptr }			// 草ブロックのモデル
+	m_grassBox{ nullptr },			// 草ブロックのモデル
+	m_gravity{}
 {
 
 }
@@ -79,22 +80,29 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// レイの更新
 	GetSystemManager()->GetRayCast()->Update(mouseState);
 
-	// 当たり判定の更新
-	DoBoxCollision();
-
 	//　クラス分け　Player Boxも作る
-	if (keyState.Up) m_playerPos.y+=0.05f;
-	if (keyState.Down) m_playerPos.y-=0.05f;
 	if (keyState.W) m_playerPos.z -= 0.05f;
 	if (keyState.S) m_playerPos.z += 0.05f;
 	if (keyState.A) m_playerPos.x -= 0.05f;
 	if (keyState.D) m_playerPos.x += 0.05f;
 
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Space))
+	{
+		m_playerPos.y += 1.0f;
+	}
+
+	m_gravity += 0.01f;
+
+	m_playerPos.y -= m_gravity;
+
+	// 当たり判定の更新
+	DoBoxCollision();
+
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();
 
 	// Spaceキーでシーン切り替え
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Enter))
 	{
 		GoNextScene(SCENE::RESULT);
 	}
@@ -210,11 +218,22 @@ void PlayScene::DoBoxCollision()
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			m_boxCol.PushBox(&m_playerPos, m_obj[y][x].position,							// プレイヤ＆ボックス
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE },								// サイズ
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
-			);
+			for (int h = 0; h < m_obj[y][x].state % 100; h++)
+			{
+				m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE; // 最低座標＋任意の高さ
+
+				m_boxCol.PushBox(&m_playerPos, m_obj[y][x].position,							// プレイヤ＆ボックス
+					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},								// サイズ
+					DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
+				);
+			}
 		}
+	}
+	
+	// 上に当たったら重力をリセット
+	if (m_boxCol.GetHitFace() == Collider::BoxCollider::HIT_FACE::UP)
+	{
+		m_gravity = 0.0f;
 	}
 }
 

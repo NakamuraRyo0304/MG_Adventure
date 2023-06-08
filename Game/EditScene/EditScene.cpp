@@ -122,7 +122,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 				GetSystemManager()->GetMouseTrack()->rightButton && !keyState.LeftShift)
 			{
 				m_obj[y][x].state += 1;
-				if (m_obj[y][x].state % 100 > 15)
+				if (m_obj[y][x].state > MapLoad::BoxState::GrassBox + 15)
 				{
 					m_obj[y][x].state = MapLoad::BoxState::GrassBox;
 				}
@@ -132,7 +132,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 				GetSystemManager()->GetMouseTrack()->rightButton && keyState.LeftShift)
 			{
 				m_obj[y][x].state -= 1;
-				if (m_obj[y][x].state % 100 < 1)
+				if (m_obj[y][x].state < MapLoad::BoxState::GrassBox)
 				{
 					m_obj[y][x].state = MapLoad::BoxState::GrassBox + 15;
 				}

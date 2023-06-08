@@ -40,6 +40,9 @@ private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_player, m_grassBox;
 
+	// 重力
+	float m_gravity;
+
 public:
 
 	// コンストラクタ

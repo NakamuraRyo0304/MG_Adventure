@@ -133,14 +133,14 @@
     <ClInclude Include="Libraries\SystemManager\SystemManager.h">
       <Filter>SystemManager</Filter>
     </ClInclude>
-    <ClInclude Include="Factories\ModelFactory.h">
-      <Filter>Factories</Filter>
-    </ClInclude>
     <ClInclude Include="Game\PlayScene\PlayScene.h">
       <Filter>Scenes\PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Game\EditScene\EditScene.h">
       <Filter>Scenes\EditScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Factories\ModelFactory.h">
+      <Filter>Factories</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -192,14 +192,14 @@
     <ClCompile Include="Libraries\SystemManager\SystemManager.cpp">
       <Filter>SystemManager</Filter>
     </ClCompile>
-    <ClCompile Include="Factories\ModelFactory.cpp">
-      <Filter>Factories</Filter>
-    </ClCompile>
     <ClCompile Include="Game\PlayScene\PlayScene.cpp">
       <Filter>Scenes\PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Game\EditScene\EditScene.cpp">
       <Filter>Scenes\EditScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Factories\ModelFactory.cpp">
+      <Filter>Factories</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
