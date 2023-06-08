@@ -243,7 +243,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="directx.ico" />
-    <ImageContentTask Include="Resources\Textures\Camera.png" />
+    <Image Include="Resources\Textures\Camera.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
   </ItemGroup>
   <ItemGroup>
