@@ -35,7 +35,9 @@ public:
 	void AddTextureData(const wchar_t* key, const wchar_t* path, ID3D11Device* device);
 
 	// ‰æ‘œ‚ð•`‰æ‚·‚é
-	void DrawTexture(const wchar_t* key, DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector4 color,float rate);
+	void DrawTexture(const wchar_t* key, DirectX::SimpleMath::Vector2 pos,
+						DirectX::SimpleMath::Vector4 color,float rate,
+						DirectX::SimpleMath::Vector2 origin);
 };
 
 #endif // DRAWSPRITE

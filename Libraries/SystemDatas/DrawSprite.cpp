@@ -59,22 +59,25 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 //--------------------------------------------------------//
 //画像を描画する                                          //
 //--------------------------------------------------------//
-// 第１引数：キー 第２引数：表示座標 第３引数：色 第４引数：拡大率
-void DrawSprite::DrawTexture(const wchar_t* key, DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector4 color, float rate)
+// 第１引数：キー 第２引数：表示座標 第３引数：色 第４引数：拡大率 第５引数：中心位置
+void DrawSprite::DrawTexture(const wchar_t* key, DirectX::SimpleMath::Vector2 pos, 
+	DirectX::SimpleMath::Vector4 color, float rate, DirectX::SimpleMath::Vector2 origin)
 {
 	m_spriteBatch->Begin();
 
+	// 描画したいキー番号に対応するマップをイテレータに格納
 	std::map<const wchar_t*, const wchar_t*>::const_iterator it = m_textures.find(key);
 
+	// 画像の描画
 	m_spriteBatch->Draw(
-		m_SRV[it->first].Get(),
-		pos,
-		nullptr,
-		color,
-		0.0f,
-		DirectX::SimpleMath::Vector2(0.0f, 0.0f),
-		rate,
-		DirectX::SpriteEffects_None, 0.0f
+		m_SRV[it->first].Get(),					// 対応するイテレータの画像を描画
+		pos,									// 表示する位置
+		nullptr,								// 切り取り位置
+		color,									// 描画色
+		0.0f,									// 回転
+		origin,									// 画像の原点
+		rate,									// 拡大率
+		DirectX::SpriteEffects_None, 0.0f		// 描画レイヤー
 	);
 
 	m_spriteBatch->End();
