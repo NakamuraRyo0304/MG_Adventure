@@ -27,6 +27,11 @@ private:
 	
 	// マウスホイールのスクロール値
 	int m_scrollWheelValue;
+	// 一時的なスクロール値の蓄積用変数
+	int m_tempScrollValue;
+	// 前回のスクロール値の保存変数
+	int m_prevScrollWheelValue;
+
 
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
@@ -48,6 +53,7 @@ private:
 
 	// 視点移動モード
 	bool is_eagleMode;
+	bool is_prevEagleMode;
 
 	// スクリーンサイズ
 	int m_screenWidth, m_screenHeight;

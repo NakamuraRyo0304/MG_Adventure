@@ -31,11 +31,10 @@ EditScene::EditScene() :
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
 	m_grassBox{ nullptr },			// モデル
-	m_grassBoxDark{ nullptr },
 	m_saveTexPos{},					// 座標
 	m_cameraTexPos{},
 	is_saveFlag{},					// 選択フラグ
-	is_cameraFlag{}
+	is_cameraFlag{false}
 {
 
 }
@@ -55,8 +54,8 @@ void EditScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetMoveMode(false);	    // カメラ座標移動
-	GetSystemManager()->GetCamera()->SetEagleMode(false);		// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetMoveMode(is_cameraFlag);	    // カメラ座標移動
+	GetSystemManager()->GetCamera()->SetEagleMode(is_cameraFlag);		// カメラ視点移動
 
 	// スフィアの初期化(テスト)
 	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
@@ -112,7 +111,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 										 DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
 										 DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
 	// 当っていてクリックした時処理
-	if (is_saveFlag && GetSystemManager()->GetMouseTrack()->leftButton)
+	if (is_saveFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
 	{
 		is_saveFlag = true;
 		// ダイアログを表示してマップを出力
@@ -126,12 +125,12 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 											DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
 
 	// カメラ移動モード切り替え
-	if (cameraFlag && GetSystemManager()->GetMouseTrack()->leftButton)
+	if (cameraFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
 	{
 		is_cameraFlag = !is_cameraFlag;
-		auto flag = GetSystemManager()->GetCamera();
-		flag->SetMoveMode(is_cameraFlag);
-		flag->SetEagleMode(is_cameraFlag);
+		auto camera = GetSystemManager()->GetCamera();
+		camera->SetMoveMode(is_cameraFlag);
+		camera->SetEagleMode(is_cameraFlag);
 	}
 
 	// ESCキーで終了
@@ -140,7 +139,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
 	{
-		GoNextScene(SCENE::RESULT);
+		GoNextScene(SCENE::SELECT);
 	}
 }
 
@@ -180,7 +179,7 @@ void EditScene::Draw()
 		{
 			for (int h = 0; h < m_obj[y][x].state % 100; h++)
 			{
-				m_obj[y][x].position.y = h * COMMON_SIZE;
+				m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
 
 				// ボックスの移動
 				DirectX::SimpleMath::Matrix boxWorldMat =
@@ -191,7 +190,8 @@ void EditScene::Draw()
 				// 描画処理
 				if (m_obj[y][x].hitFlag)
 				{
-					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+
+					m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
 				}
 				else
@@ -204,46 +204,7 @@ void EditScene::Draw()
 	}
 
 	// 画像の描画
-	if (is_saveFlag)
-	{
-		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Save",					// 登録キー
-			m_saveTexPos,				// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },	// 色
-			0.5f,						// 拡大率
-			{ 128,128 }					// 中心位置
-		);
-	}
-	else
-	{
-		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Save",					// 登録キー
-			m_saveTexPos,				// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },	// 色
-			0.5f,						// 拡大率
-			{ 128,128 }					// 中心位置
-		);
-	}
-	if (is_cameraFlag)
-	{
-		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Camera",					// 登録キー
-			m_cameraTexPos,				// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },	// 色
-			0.5f,						// 拡大率
-			{ 128,128 }					// 中心位置
-		);
-	}
-	else
-	{
-		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Camera",					// 登録キー
-			m_cameraTexPos,				// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },	// 色
-			0.5f,						// 拡大率
-			{ 128,128 }					// 中心位置
-		);
-	}
+	DrawImages();
 
 	// デバッグ表示
 	DebugLog(view, projection);
@@ -282,13 +243,9 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 	
 	// モデルを作成する
-	m_grassBox = ModelFactory::GetModel(					// 草ブロック-通常時
+	m_grassBox = ModelFactory::GetModel(					// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
-	);
-	m_grassBoxDark = ModelFactory::GetModel(				// 草ブロック-選択時
-		device,
-		L"Resources/Models/GrassBlock_Dark.cmo"
 	);
 
 	// 画像の設定
@@ -299,7 +256,7 @@ void EditScene::CreateWindowDependentResources()
 
 	// 座標情報
 	m_saveTexPos = { width - 100,60 };
-	m_cameraTexPos = { width - 300,60 };
+	m_cameraTexPos = { width - 100,180 };
 
 }
 
@@ -348,8 +305,13 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	swprintf_s(num, 32, L"Mouse = %d:%d", mouse.x, mouse.y);
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,80 }, num);
-
 	
+	// マウス位置確認
+	wchar_t mw[32];
+	swprintf_s(mw, 32, L"MouseWheel = %d", mouse.scrollWheelValue);
+
+	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,100 }, mw);
+
 	// デバイスコンテキストの取得：グリッドの描画に使用
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	// デバッググリッドの表示
@@ -438,7 +400,7 @@ void EditScene::LoadMap(int num)
 			m_obj[y][x].position =
 			{
 				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-				COMMON_LOW,													// ブロックの最低高度
+				COMMON_LOW + COMMON_SIZE,									// ブロックの最低高度
 				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
 			};
 		}
@@ -460,4 +422,54 @@ void EditScene::SaveFile()
 	}
 	// ファイル書き出し
 	m_map.WriteMap();
+}
+
+//--------------------------------------------------------//
+//画像の描画                                              //
+//--------------------------------------------------------//
+void EditScene::DrawImages()
+{
+	// ファイルアイコン
+	if (is_saveFlag)
+	{
+		GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Save",					// 登録キー
+			m_saveTexPos,				// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },	// 色
+			0.5f,						// 拡大率
+			{ 128,128 }					// 中心位置
+		);
+	}
+	else
+	{
+		GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Save",					// 登録キー
+			m_saveTexPos,				// 座標
+			{ 1.0f,1.0f,1.0f,0.5f },	// 色
+			0.5f,						// 拡大率
+			{ 128,128 }					// 中心位置
+		);
+	}
+
+	// カメラアイコン
+	if (is_cameraFlag)
+	{
+		GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Camera",					// 登録キー
+			m_cameraTexPos,				// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },	// 色
+			0.5f,						// 拡大率
+			{ 128,128 }					// 中心位置
+		);
+	}
+	else
+	{
+		GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Camera",					// 登録キー
+			m_cameraTexPos,				// 座標
+			{ 1.0f,1.0f,1.0f,0.5f },	// 色
+			0.5f,						// 拡大率
+			{ 128,128 }					// 中心位置
+		);
+	}
 }

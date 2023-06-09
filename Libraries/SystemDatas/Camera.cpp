@@ -24,11 +24,14 @@ Camera::Camera():
 	m_prevMouse{},				// 過去のマウスの位置
 	m_viewAngle{},				// 画面の画角
 	m_scrollWheelValue{},		// マウスホイールの回転量
+	m_tempScrollValue{},		// マウスホイールの回転量(不動時の蓄積用)
+	m_prevScrollWheelValue{},	// マウスホイールの回転量(前回の保存用)
 	m_target{},					// 注視点
 	m_view{},					// ビュー行列
 	m_proj{},					// プロジェクション行列
 	is_moveMode{false},			// カメラを動かすフラグ
 	is_eagleMode{false},		// カメラの視点移動フラグマウスホイールを使用する
+	is_prevEagleMode{false},	// カメラの視点移動フラグマウスホイールを使用する(前回の保存用)
 	m_screenHeight{},			// 画面の高さ
 	m_screenWidth{}				// 画面の幅
 {
@@ -61,16 +64,31 @@ void Camera::Update()
 	m_prevMouse.x = state.x;
 	m_prevMouse.y = state.y;
 
-	// マウスホイールのスクロール値を取得
-	m_scrollWheelValue = state.scrollWheelValue;
-	if (m_scrollWheelValue > 0)
+	// マウスホイールのスクロール値の差分を計算
+	int scrollDelta = state.scrollWheelValue - m_prevScrollWheelValue;
+
+	if (is_eagleMode)
 	{
-		m_scrollWheelValue = 0;
-		DirectX::Mouse::Get().ResetScrollWheelValue();
+		// フラグがTrueの場合のみスクロール値を反映
+		m_scrollWheelValue += scrollDelta;
+
+		// マウスホイールの前回のTrueの値を保持
+		m_tempScrollValue = m_scrollWheelValue;
+	}
+	else
+	{
+		// フラグがFalseの場合は前回のTrueの値を代入
+		m_scrollWheelValue = m_tempScrollValue;
 	}
 
 	// ビュー行列の算出
 	CalculateViewMatrix();
+
+	// 前回のフラグを更新
+	is_prevEagleMode = is_eagleMode;
+
+	// マウスホイールの前回の値を更新
+	m_prevScrollWheelValue = state.scrollWheelValue;
 }
 
 //--------------------------------------------------------//
@@ -79,7 +97,7 @@ void Camera::Update()
 void Camera::DraggedDistance(int x, int y)
 {
 	// 視点移動しなければ処理しない
-	if (!is_eagleMode)return;
+	if (!is_eagleMode)	return;
 
 	// マウスポインタの前回からの変位
 	// DEFAULT_CAMERA_SPEEDを乗算してドラッグの移動量を調整する
@@ -110,9 +128,9 @@ void Camera::CalculateViewMatrix()
 	// 回転量を計算
 	DirectX::SimpleMath::Matrix rt = rotY * rotX;
 
-	// 行列の初期化
 	// ポジション
 	DirectX::SimpleMath::Vector3    eye(0.0f, 0.1f, 1.0f);
+
 	// カメラの傾き（目線の角度）:0.1.0で正位置
 	DirectX::SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
 	DirectX::SimpleMath::Vector3 target(m_target);

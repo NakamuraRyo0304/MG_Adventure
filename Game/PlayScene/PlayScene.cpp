@@ -91,7 +91,7 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 		m_playerPos.y += 1.0f;
 	}
 
-	m_gravity += 0.01f;
+	m_gravity += 0.05f;
 
 	m_playerPos.y -= m_gravity;
 

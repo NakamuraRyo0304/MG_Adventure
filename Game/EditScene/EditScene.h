@@ -39,7 +39,7 @@ private:
 	Collider::AABBCollider m_aabbCol;
 
 	// モデル
-	std::unique_ptr<DirectX::Model>m_grassBox,m_grassBoxDark;
+	std::unique_ptr<DirectX::Model>m_grassBox;
 	
 	// 画像の座標
 	DirectX::SimpleMath::Vector2 m_saveTexPos;
@@ -83,6 +83,9 @@ public:
 
 	// ファイルをセーブする
 	void SaveFile();
+
+	// 画像の描画
+	void DrawImages();
 
 };
 
