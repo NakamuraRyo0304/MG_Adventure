@@ -9,8 +9,7 @@
 #ifndef DRAWSPRITE
 #define DRAWSPRITE
 
-#include <iostream>
-#include <map>			// マップを使用する
+#include <map>
 
 class DrawSprite
 {

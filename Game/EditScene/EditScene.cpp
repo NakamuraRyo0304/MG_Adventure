@@ -153,19 +153,25 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	}
 
 	// 保存アイコンをクリック
-	bool hitFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
+	bool saveFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
 									    { m_saveTexPos.x,0,m_saveTexPos.y },			 // 画像の位置
-										  DirectX::SimpleMath::Vector3{ 2.0f },		     // サイズ
+										  DirectX::SimpleMath::Vector3{ 5.0f },		     // サイズ
 										  DirectX::SimpleMath::Vector3{ 100.0f });	     // サイズ
 	// 当っていてクリックした時処理
-	if (hitFlag && GetSystemManager()->GetMouseTrack()->leftButton)
+	if (saveFlag && GetSystemManager()->GetMouseTrack()->leftButton)
 	{
 		// ダイアログを表示してマップを出力
 		SaveFile();
 	}
 
-	// カメラ移動モード切り替え　デバッグ用
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::M))
+	// カメラアイコンをクリック
+	bool cameraFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
+										    { m_cameraTexPos.x,0,m_cameraTexPos.y },	 	// 画像の位置
+											DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
+											DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
+
+	// カメラ移動モード切り替え
+	if (cameraFlag && GetSystemManager()->GetMouseTrack()->leftButton)
 	{
 		auto flag = GetSystemManager()->GetCamera();
 		flag->SetMoveMode(!flag->GetMoveMode());
