@@ -45,6 +45,10 @@ private:
 	DirectX::SimpleMath::Vector2 m_saveTexPos;
 	DirectX::SimpleMath::Vector2 m_cameraTexPos;
 
+	// フラグ
+	bool is_saveFlag;
+	bool is_cameraFlag;
+
 public:
 
 	// コンストラクタ
@@ -70,6 +74,9 @@ public:
 
 	// デバッグ表示
 	void DebugLog(DirectX::SimpleMath::Matrix view,DirectX::SimpleMath::Matrix proj);
+
+	// マップを編集
+	void EditMap(DirectX::Keyboard::State& keyState);
 
 	// マップ読み込み
 	void LoadMap(int num);

@@ -33,7 +33,9 @@ EditScene::EditScene() :
 	m_grassBox{ nullptr },			// モデル
 	m_grassBoxDark{ nullptr },
 	m_saveTexPos{},					// 座標
-	m_cameraTexPos{}
+	m_cameraTexPos{},
+	is_saveFlag{},					// 選択フラグ
+	is_cameraFlag{}
 {
 
 }
@@ -53,8 +55,8 @@ void EditScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetMoveMode(true);	    	// カメラ座標移動
-	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetMoveMode(false);	    // カメラ座標移動
+	GetSystemManager()->GetCamera()->SetEagleMode(false);		// カメラ視点移動
 
 	// スフィアの初期化(テスト)
 	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
@@ -70,10 +72,6 @@ void EditScene::Initialize()
 
 	// マップ読み込み
 	LoadMap(GetStageNum());
-
-	// 座標情報
-	m_saveTexPos = { 1800,60 };
-	m_cameraTexPos = { 1650,60 };
 }
 
 //--------------------------------------------------------//
@@ -101,65 +99,22 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
 	m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
 	
-	if (keyState.Z) m_spherePos.y += 0.1f;
-	if (keyState.X) m_spherePos.y -= 0.1f;
-
-	// 当たり判定
-	for (int y = 0; y < m_map.MAP_RAW; y++)
+	// カメラモードじゃなければ編集できる
+	if (!is_cameraFlag)
 	{
-		for (int x = 0; x < m_map.MAP_COLUMN; x++)
-		{
-			m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,							// スフィア＆ボックス
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},								// サイズ
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
-			);
-			
-			// 当っていたらTrueにする
-			m_obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
-
-			m_aabbCol.HitAABB_2D(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},	    // サイズ
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
-			);
-
-			// 当っているときに右クリックで変動
-			if (m_obj[y][x].hitFlag && 
-				GetSystemManager()->GetMouseTrack()->rightButton && !keyState.LeftShift)
-			{
-				m_obj[y][x].state += 1;
-				if (m_obj[y][x].state > MapLoad::BoxState::GrassBox + 15)
-				{
-					m_obj[y][x].state = MapLoad::BoxState::GrassBox;
-				}
-			}
-			// 当っているときに右クリックで変動
-			if (m_obj[y][x].hitFlag &&
-				GetSystemManager()->GetMouseTrack()->rightButton && keyState.LeftShift)
-			{
-				m_obj[y][x].state -= 1;
-				if (m_obj[y][x].state < MapLoad::BoxState::GrassBox)
-				{
-					m_obj[y][x].state = MapLoad::BoxState::GrassBox + 15;
-				}
-			}
-			// ポジションの変更
-			m_obj[y][x].position =
-			{
-				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-				COMMON_LOW + m_obj[y][x].state % 100 * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
-				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
-			};
-		}
+		EditMap(keyState);
 	}
 
+	
 	// 保存アイコンをクリック
-	bool saveFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-									    { m_saveTexPos.x,0,m_saveTexPos.y },			 // 画像の位置
-										  DirectX::SimpleMath::Vector3{ 5.0f },		     // サイズ
-										  DirectX::SimpleMath::Vector3{ 100.0f });	     // サイズ
+	is_saveFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
+									   { m_saveTexPos.x,0,m_saveTexPos.y },		        // 画像の位置
+										 DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
+										 DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
 	// 当っていてクリックした時処理
-	if (saveFlag && GetSystemManager()->GetMouseTrack()->leftButton)
+	if (is_saveFlag && GetSystemManager()->GetMouseTrack()->leftButton)
 	{
+		is_saveFlag = true;
 		// ダイアログを表示してマップを出力
 		SaveFile();
 	}
@@ -173,9 +128,10 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// カメラ移動モード切り替え
 	if (cameraFlag && GetSystemManager()->GetMouseTrack()->leftButton)
 	{
+		is_cameraFlag = !is_cameraFlag;
 		auto flag = GetSystemManager()->GetCamera();
-		flag->SetMoveMode(!flag->GetMoveMode());
-		flag->SetEagleMode(!flag->GetEagleMode());
+		flag->SetMoveMode(is_cameraFlag);
+		flag->SetEagleMode(is_cameraFlag);
 	}
 
 	// ESCキーで終了
@@ -233,12 +189,7 @@ void EditScene::Draw()
 				if (m_obj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
 				
 				// 描画処理
-				if (m_obj[y][x].hitFlag && GetSystemManager()->GetRayCast()->GetClickFlag())
-				{
-					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, true);
-				}
-				else if (m_obj[y][x].hitFlag)
+				if (m_obj[y][x].hitFlag)
 				{
 					m_grassBoxDark->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
@@ -253,20 +204,46 @@ void EditScene::Draw()
 	}
 
 	// 画像の描画
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-		L"Save",					// 登録キー
-		m_saveTexPos,				// 座標
-		{1.0f,1.0f,1.0f,1.0f},		// 色
-		0.5f,						// 拡大率
-		{128,128}					// 中心位置
-	);
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-		L"Camera",					// 登録キー
-		m_cameraTexPos,				// 座標
-		{1.0f,1.0f,1.0f,1.0f},		// 色
-		0.5f,						// 拡大率
-		{ 128,128 }					// 中心位置
-	);
+	if (is_saveFlag)
+	{
+		GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Save",					// 登録キー
+			m_saveTexPos,				// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },	// 色
+			0.5f,						// 拡大率
+			{ 128,128 }					// 中心位置
+		);
+	}
+	else
+	{
+		GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Save",					// 登録キー
+			m_saveTexPos,				// 座標
+			{ 1.0f,1.0f,1.0f,0.5f },	// 色
+			0.5f,						// 拡大率
+			{ 128,128 }					// 中心位置
+		);
+	}
+	if (is_cameraFlag)
+	{
+		GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Camera",					// 登録キー
+			m_cameraTexPos,				// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },	// 色
+			0.5f,						// 拡大率
+			{ 128,128 }					// 中心位置
+		);
+	}
+	else
+	{
+		GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Camera",					// 登録キー
+			m_cameraTexPos,				// 座標
+			{ 1.0f,1.0f,1.0f,0.5f },	// 色
+			0.5f,						// 拡大率
+			{ 128,128 }					// 中心位置
+		);
+	}
 
 	// デバッグ表示
 	DebugLog(view, projection);
@@ -319,6 +296,11 @@ void EditScene::CreateWindowDependentResources()
 	// キー名　：　ファイルパス名　：　デバイス
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Save",  L"Resources/Textures/SaveFile.dds",device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Camera",L"Resources/Textures/Camera.dds",  device);
+
+	// 座標情報
+	m_saveTexPos = { width - 100,60 };
+	m_cameraTexPos = { width - 300,60 };
+
 }
 
 
@@ -372,6 +354,63 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	// デバッググリッドの表示
 	GetSystemManager()->GetGridFloor()->Draw(context, GetSystemManager()->GetCommonStates().get(), view, proj);
+}
+
+//--------------------------------------------------------//
+//マップを編集する                                        //
+//--------------------------------------------------------//
+void EditScene::EditMap(DirectX::Keyboard::State& keyState)
+{
+	if (keyState.Z) m_spherePos.y += 0.1f;
+	if (keyState.X) m_spherePos.y -= 0.1f;
+
+	// 当たり判定
+	for (int y = 0; y < m_map.MAP_RAW; y++)
+	{
+		for (int x = 0; x < m_map.MAP_COLUMN; x++)
+		{
+			m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,							// スフィア＆ボックス
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },							// サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
+			);
+
+			// 当っていたらTrueにする
+			m_obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
+
+			m_aabbCol.HitAABB_2D(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	    // サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
+			);
+
+			// 当っているときに左クリックで変動
+			if (m_obj[y][x].hitFlag &&
+				GetSystemManager()->GetMouseTrack()->leftButton && !keyState.LeftShift)
+			{
+				m_obj[y][x].state += 1;
+				if (m_obj[y][x].state > MapLoad::BoxState::GrassBox + 15)
+				{
+					m_obj[y][x].state = MapLoad::BoxState::GrassBox;
+				}
+			}
+			if (m_obj[y][x].hitFlag &&
+				GetSystemManager()->GetMouseTrack()->leftButton && keyState.LeftShift)
+			{
+				m_obj[y][x].state -= 1;
+				if (m_obj[y][x].state < MapLoad::BoxState::GrassBox)
+				{
+					m_obj[y][x].state = MapLoad::BoxState::GrassBox + 15;
+				}
+			}
+			// ポジションの変更
+			m_obj[y][x].position =
+			{
+				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
+				COMMON_LOW + m_obj[y][x].state % 100 * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
+				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
+			};
+		}
+	}
+
 }
 
 //--------------------------------------------------------//
