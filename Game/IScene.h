@@ -47,7 +47,7 @@ public:
 
 public:
 	// ステージ番号
-	int m_stageNum = 0;
+	int m_stageNum = 1;
 	
 	// 番号ゲッター
 	int GetStageNum() { return m_stageNum; }

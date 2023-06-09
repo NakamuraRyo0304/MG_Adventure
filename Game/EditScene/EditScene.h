@@ -41,6 +41,10 @@ private:
 	// モデル
 	std::unique_ptr<DirectX::Model>m_grassBox,m_grassBoxDark;
 	
+	// 画像の座標
+	DirectX::SimpleMath::Vector2 m_saveTexPos;
+	DirectX::SimpleMath::Vector2 m_cameraTexPos;
+
 public:
 
 	// コンストラクタ
@@ -69,6 +73,9 @@ public:
 
 	// マップ読み込み
 	void LoadMap(int num);
+
+	// ファイルをセーブする
+	void SaveFile();
 
 };
 

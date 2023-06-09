@@ -33,7 +33,7 @@ void TitleScene::Initialize()
 	CreateWindowDependentResources();
 
 	GetSystemManager()->GetCamera()->SetMoveMode(false);		// カメラ座標移動
-	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetEagleMode(false);		// カメラ視点移動
 }
 
 //--------------------------------------------------------//

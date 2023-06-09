@@ -31,7 +31,9 @@ EditScene::EditScene() :
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
 	m_grassBox{ nullptr },			// モデル
-	m_grassBoxDark{ nullptr }
+	m_grassBoxDark{ nullptr },
+	m_saveTexPos{},					// 座標
+	m_cameraTexPos{}
 {
 
 }
@@ -69,6 +71,9 @@ void EditScene::Initialize()
 	// マップ読み込み
 	LoadMap(GetStageNum());
 
+	// 座標情報
+	m_saveTexPos = { 1800,60 };
+	m_cameraTexPos = { 1650,60 };
 }
 
 //--------------------------------------------------------//
@@ -147,22 +152,16 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 		}
 	}
 
-	// スクリーンクリック保存のテスト
-	if (m_aabbCol.HitAABB_2D({(float)mouseState.x,0.0f,(float)mouseState.y }, { 1860,0,65 }, // マウスと画面端
-		DirectX::SimpleMath::Vector3{ 2.0f },	    // サイズ
-		DirectX::SimpleMath::Vector3{ 100.0f }			// サイズ
-	) && GetSystemManager()->GetMouseTrack()->leftButton)
+	// 保存アイコンをクリック
+	bool hitFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
+									    { m_saveTexPos.x,0,m_saveTexPos.y },			 // 画像の位置
+										  DirectX::SimpleMath::Vector3{ 2.0f },		     // サイズ
+										  DirectX::SimpleMath::Vector3{ 100.0f });	     // サイズ
+	// 当っていてクリックした時処理
+	if (hitFlag && GetSystemManager()->GetMouseTrack()->leftButton)
 	{
-		// 内容を記録
-		for (int y = 0; y < m_map.MAP_RAW; y++)
-		{
-			for (int x = 0; x < m_map.MAP_COLUMN; x++)
-			{
-				m_map.SetMapData(m_obj[y][x].state, x, y);
-			}
-		}
-		// ファイル書き出し
-		m_map.WriteMap();
+		// ダイアログを表示してマップを出力
+		SaveFile();
 	}
 
 	// カメラ移動モード切り替え　デバッグ用
@@ -175,20 +174,6 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();
-	
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Enter))
-	{
-		// 内容を記録
-		for (int y = 0; y < m_map.MAP_RAW; y++)
-		{
-			for (int x = 0; x < m_map.MAP_COLUMN; x++)
-			{
-				m_map.SetMapData(m_obj[y][x].state, x, y);
-			}
-		}
-		// ファイル書き出し
-		m_map.WriteMap();
-	}
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
@@ -264,17 +249,17 @@ void EditScene::Draw()
 	// 画像の描画
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
 		L"Save",					// 登録キー
-		{1800,0},					// 座標
+		m_saveTexPos,				// 座標
 		{1.0f,1.0f,1.0f,1.0f},		// 色
 		0.5f,						// 拡大率
-		{0,0}						// 中心位置
+		{128,128}					// 中心位置
 	);
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
 		L"Camera",					// 登録キー
-		{1650,0},					// 座標
+		m_cameraTexPos,				// 座標
 		{1.0f,1.0f,1.0f,1.0f},		// 色
 		0.5f,						// 拡大率
-		{0,0}						// 中心位置
+		{ 128,128 }					// 中心位置
 	);
 
 	// デバッグ表示
@@ -413,4 +398,21 @@ void EditScene::LoadMap(int num)
 			};
 		}
 	}
+}
+
+//--------------------------------------------------------//
+//ファイルを書きだす                                      //
+//--------------------------------------------------------//
+void EditScene::SaveFile()
+{
+	// 内容を記録
+	for (int y = 0; y < m_map.MAP_RAW; y++)
+	{
+		for (int x = 0; x < m_map.MAP_COLUMN; x++)
+		{
+			m_map.SetMapData(m_obj[y][x].state, x, y);
+		}
+	}
+	// ファイル書き出し
+	m_map.WriteMap();
 }
