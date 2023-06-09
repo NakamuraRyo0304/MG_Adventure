@@ -57,38 +57,42 @@ void Camera::Update()
 	// マウスの左クリック＆ドラッグでカメラ座標を更新する
 	if (state.leftButton)
 	{
-		DraggedDistance(state.x, state.y);
+		// マウスのドラッグによるカメラ移動
+		DraggedDistance(state.x, state.y); 
 	}
 
 	// マウスの座標を前回の値として保存
-	m_prevMouse.x = state.x;
-	m_prevMouse.y = state.y;
+	m_prevMouse.x = state.x; // X座標を保存
+	m_prevMouse.y = state.y; // Y座標を保存
 
 	// マウスホイールのスクロール値の差分を計算
 	int scrollDelta = state.scrollWheelValue - m_prevScrollWheelValue;
 
+	// カメラモードの時の処理
 	if (is_eagleMode)
 	{
 		// フラグがTrueの場合のみスクロール値を反映
-		m_scrollWheelValue += scrollDelta;
+		m_scrollWheelValue += scrollDelta; // スクロール値の反映
 
 		// マウスホイールの前回のTrueの値を保持
 		m_tempScrollValue = m_scrollWheelValue;
 	}
+	// 非カメラモードの時の処理
 	else
 	{
 		// フラグがFalseの場合は前回のTrueの値を代入
-		m_scrollWheelValue = m_tempScrollValue;
+		m_scrollWheelValue = m_tempScrollValue; 
 	}
 
 	// ビュー行列の算出
 	CalculateViewMatrix();
 
 	// 前回のフラグを更新
-	is_prevEagleMode = is_eagleMode;
+	is_prevEagleMode = is_eagleMode; 
 
 	// マウスホイールの前回の値を更新
 	m_prevScrollWheelValue = state.scrollWheelValue;
+
 }
 
 //--------------------------------------------------------//

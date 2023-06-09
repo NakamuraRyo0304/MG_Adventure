@@ -56,7 +56,7 @@ void PlayScene::Initialize()
 	// マップ読み込み
 	LoadMap(GetStageNum());
 
-	m_playerPos = { 0.0f,2.0f,0.0f };
+	m_playerPos = { 0.0f,5.0f,0.0f };
 }
 
 //--------------------------------------------------------//
@@ -88,15 +88,21 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Space))
 	{
-		m_playerPos.y += 1.0f;
+		m_playerPos.y += 1.5f;
 	}
 
-	m_gravity += 0.05f;
+	m_gravity += 0.03f;
 
 	m_playerPos.y -= m_gravity;
 
 	// 当たり判定の更新
 	DoBoxCollision();
+
+	if (m_playerPos.y < -200.0f)
+	{
+		m_playerPos.y = 5.0f;
+		m_gravity = 0;
+	}
 
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();

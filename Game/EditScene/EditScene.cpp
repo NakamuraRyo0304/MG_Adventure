@@ -18,6 +18,9 @@
 // カメラアングル
 #define			CAMERA_ANGLE		45.0f
 
+// 画像の中心位置
+#define			IMAGE_CENTER		128
+
 
  //--------------------------------------------------------//
  //コンストラクタ                                          //
@@ -255,11 +258,10 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Camera",L"Resources/Textures/Camera.dds",  device);
 
 	// 座標情報
-	m_saveTexPos = { width - 100,60 };
-	m_cameraTexPos = { width - 100,180 };
+	m_saveTexPos   = { width - 100, 80 };
+	m_cameraTexPos = { width - 100,208 };
 
 }
-
 
 //--------------------------------------------------------//
 //デバッグ表示                                            //
@@ -433,21 +435,21 @@ void EditScene::DrawImages()
 	if (is_saveFlag)
 	{
 		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Save",					// 登録キー
-			m_saveTexPos,				// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },	// 色
-			0.5f,						// 拡大率
-			{ 128,128 }					// 中心位置
+			L"Save",							// 登録キー
+			m_saveTexPos,						// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			0.5f,								// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
 	else
 	{
 		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Save",					// 登録キー
-			m_saveTexPos,				// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },	// 色
-			0.5f,						// 拡大率
-			{ 128,128 }					// 中心位置
+			L"Save",							// 登録キー
+			m_saveTexPos,						// 座標
+			{ 1.0f,1.0f,1.0f,0.3f },			// 色
+			0.5f,								// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
 
@@ -455,21 +457,21 @@ void EditScene::DrawImages()
 	if (is_cameraFlag)
 	{
 		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Camera",					// 登録キー
-			m_cameraTexPos,				// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },	// 色
-			0.5f,						// 拡大率
-			{ 128,128 }					// 中心位置
+			L"Camera",							// 登録キー
+			m_cameraTexPos,						// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			0.5f,								// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
 	else
 	{
 		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Camera",					// 登録キー
-			m_cameraTexPos,				// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },	// 色
-			0.5f,						// 拡大率
-			{ 128,128 }					// 中心位置
+			L"Camera",							// 登録キー
+			m_cameraTexPos,						// 座標
+			{ 1.0f,1.0f,1.0f,0.3f },			// 色
+			0.5f,								// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
 }
