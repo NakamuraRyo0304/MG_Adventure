@@ -232,6 +232,9 @@
     <Image Include="Resources\Textures\AddBlock.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
+    <Image Include="Resources\Textures\EraseBlock.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">

@@ -103,38 +103,14 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	
 	// レイの更新
 	GetSystemManager()->GetRayCast()->Update(mouseState);
+
+	// UIの処理
+	ClickUserInterface(mouseState);
 	
 	// カメラモードじゃなければ編集できる
 	if (!is_cameraFlag)
 	{
 		EditMap(keyState);
-	}
-	
-	// 保存アイコンをクリック
-	is_saveFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-									   { m_saveTexPos.x,0,m_saveTexPos.y },		        // 画像の位置
-										 DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
-										 DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
-	// 当っていてクリックした時処理
-	if (is_saveFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
-	{
-		is_saveFlag = true;
-		// ダイアログを表示してマップを出力
-		SaveFile();
-	}
-
-	// カメラアイコンをクリック
-	bool cameraFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-										    { m_cameraTexPos.x,0,m_cameraTexPos.y },	 	// 画像の位置
-											DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
-											DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
-
-	// カメラ移動モード切り替え
-	if (cameraFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
-	{
-		is_cameraFlag = !is_cameraFlag;
-		auto camera = GetSystemManager()->GetCamera();
-		camera->SetEagleMode(is_cameraFlag);
 	}
 
 	// ESCキーで終了
@@ -258,9 +234,10 @@ void EditScene::CreateWindowDependentResources()
 	// 画像の設定
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(context);
 	// キー名　：　ファイルパス名　：　デバイス
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Save",  L"Resources/Textures/SaveFile.dds",device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Camera",L"Resources/Textures/Camera.dds",  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Pen", L"Resources/Textures/AddBlock.dds",  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Save",  L"Resources/Textures/SaveFile.dds",  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Camera",L"Resources/Textures/Camera.dds",    device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Pen",   L"Resources/Textures/AddBlock.dds",  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds",device);
 
 	// 座標情報
 	m_saveTexPos   = { width - 100, 80 };
@@ -364,13 +341,13 @@ void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 				// 左クリックでブロックの追加＆削除
 				if (m_obj[y][x].hitFlag &&
 					GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
-					!keyState.LeftShift)
+					is_upFlag)
 				{
 					m_obj[y][x].state += 1;
 				}
 				if (m_obj[y][x].hitFlag &&
 					GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
-					keyState.LeftShift)
+					!is_upFlag)
 				{
 					m_obj[y][x].state -= 1;
 				}
@@ -502,5 +479,60 @@ void EditScene::DrawImages()
 			0.5f,								// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
+	}
+	else
+	{
+		GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Erase",							// 登録キー
+			m_penTexPos,						// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			0.5f,								// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+}
+
+//--------------------------------------------------------//
+//UIのクリック                                            //
+//--------------------------------------------------------//
+void EditScene::ClickUserInterface(DirectX::Mouse::State& mouseState)
+{
+	// 保存アイコンをクリック
+	is_saveFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
+		{ m_saveTexPos.x,0,m_saveTexPos.y },		        // 画像の位置
+		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
+		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
+	// 当っていてクリックした時処理
+	if (is_saveFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
+	{
+		is_saveFlag = true;
+		// ダイアログを表示してマップを出力
+		SaveFile();
+	}
+
+	// カメラアイコンをクリック
+	bool cameraFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
+		{ m_cameraTexPos.x,0,m_cameraTexPos.y },	 	// 画像の位置
+		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
+		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
+
+	// カメラ移動モード切り替え
+	if (cameraFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
+	{
+		is_cameraFlag = !is_cameraFlag;
+		auto camera = GetSystemManager()->GetCamera();
+		camera->SetEagleMode(is_cameraFlag);
+	}
+
+	// ペン/消しゴムアイコンをクリック
+	bool toolFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
+		{ m_penTexPos.x,0,m_penTexPos.y },	        	// 画像の位置
+		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
+		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
+
+	// 描画モード切り替え
+	if (toolFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
+	{
+		is_upFlag = !is_upFlag;
 	}
 }

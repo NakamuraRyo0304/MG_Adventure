@@ -92,6 +92,9 @@ public:
 	// ‰æ‘œ‚Ì•`‰æ
 	void DrawImages();
 
+	// UI‚ÌƒNƒŠƒbƒN
+	void ClickUserInterface(DirectX::Mouse::State& mouseState);
+
 };
 
 #endif // EDITSCENE

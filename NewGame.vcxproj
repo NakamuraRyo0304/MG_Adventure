@@ -245,6 +245,7 @@
     <Image Include="directx.ico" />
     <Image Include="Resources\Textures\AddBlock.dds" />
     <Image Include="Resources\Textures\Camera.dds" />
+    <Image Include="Resources\Textures\EraseBlock.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
   </ItemGroup>
   <ItemGroup>
