@@ -243,6 +243,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="directx.ico" />
+    <Image Include="Resources\Textures\AddBlock.dds" />
     <Image Include="Resources\Textures\Camera.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
   </ItemGroup>
@@ -261,6 +262,9 @@
     <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </MeshContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="DevelopMemo.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

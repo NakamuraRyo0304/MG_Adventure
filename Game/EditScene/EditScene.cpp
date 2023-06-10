@@ -36,10 +36,12 @@ EditScene::EditScene() :
 	m_boxCol{},						// 立方体当たり判定
 	m_grassBox{ nullptr },			// モデル
 	m_grassDBox{ nullptr },			// モデル
-	m_saveTexPos{},					// 座標
+	m_saveTexPos{},					// 画像座標
 	m_cameraTexPos{},
+	m_penTexPos{},
 	is_saveFlag{},					// 選択フラグ
-	is_cameraFlag{false}
+	is_cameraFlag{true},			// カメラモードONでスタート
+	is_upFlag{true}					// ペンモードでスタート			
 {
 
 }
@@ -258,11 +260,12 @@ void EditScene::CreateWindowDependentResources()
 	// キー名　：　ファイルパス名　：　デバイス
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Save",  L"Resources/Textures/SaveFile.dds",device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Camera",L"Resources/Textures/Camera.dds",  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Pen", L"Resources/Textures/AddBlock.dds",  device);
 
 	// 座標情報
 	m_saveTexPos   = { width - 100, 80 };
 	m_cameraTexPos = { width - 100,208 };
-
+	m_penTexPos    = { width - 100,336 };
 }
 
 //--------------------------------------------------------//
@@ -484,6 +487,18 @@ void EditScene::DrawImages()
 			L"Camera",							// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,0.3f },			// 色
+			0.5f,								// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+
+	// ペンアイコン
+	if (is_upFlag)
+	{
+		GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Pen",								// 登録キー
+			m_penTexPos,						// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
 			0.5f,								// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);

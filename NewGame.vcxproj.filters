@@ -229,6 +229,9 @@
     <Image Include="Resources\Textures\Camera.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
+    <Image Include="Resources\Textures\AddBlock.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -259,5 +262,8 @@
     <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx">
       <Filter>Assets</Filter>
     </MeshContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="DevelopMemo.txt" />
   </ItemGroup>
 </Project>

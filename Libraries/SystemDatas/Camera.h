@@ -45,9 +45,6 @@ private:
 	// 注視点
 	DirectX::SimpleMath::Vector3 m_target;
 
-	// 画角
-	float m_viewAngle;
-
 	// カメラ動かすモード
 	bool is_moveMode;
 

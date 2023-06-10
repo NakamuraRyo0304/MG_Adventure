@@ -44,10 +44,12 @@ private:
 	// 画像の座標
 	DirectX::SimpleMath::Vector2 m_saveTexPos;
 	DirectX::SimpleMath::Vector2 m_cameraTexPos;
+	DirectX::SimpleMath::Vector2 m_penTexPos;
 
 	// フラグ
 	bool is_saveFlag;
 	bool is_cameraFlag;
+	bool is_upFlag;
 
 	// 現在のブロックステータス
 	int m_nowState;

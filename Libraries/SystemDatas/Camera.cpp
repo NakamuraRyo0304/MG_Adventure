@@ -10,7 +10,7 @@
 #include "Camera.h"
 
  // 定数の初期化
-const float Camera::DEFAULT_CAMERA_DISTANCE = 5.0f;
+const float Camera::DEFAULT_CAMERA_DISTANCE = 15.0f;
 
 const float Camera::DEFAULT_CAMERA_SPEED = 0.05f;
 
@@ -22,7 +22,6 @@ Camera::Camera():
 	m_eye{},					// カメラの座標
 	m_eyePos{},					// カメラの移動座標
 	m_prevMouse{},				// 過去のマウスの位置
-	m_viewAngle{},				// 画面の画角
 	m_scrollWheelValue{},		// マウスホイールの回転量
 	m_tempScrollValue{},		// マウスホイールの回転量(不動時の蓄積用)
 	m_prevScrollWheelValue{},	// マウスホイールの回転量(前回の保存用)
@@ -263,7 +262,6 @@ const DirectX::SimpleMath::Matrix& Camera::GetProjection(float width, float heig
 	// 画面サイズとアングルの保存
 	m_screenWidth = width;
 	m_screenHeight = height;
-	m_viewAngle = angle;
 
 	// 画角
 	float fieldOfView = DirectX::XMConvertToRadians(angle);
