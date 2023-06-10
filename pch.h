@@ -96,3 +96,4 @@ namespace DX
 #include "DDSTextureLoader.h"           // 画像読み込み（ddsファイル）
 #include "StepTimer.h"                  // 時間
 #include "Effects.h"                    // エフェクトを使用可能にする
+#include "VertexTypes.h"                // 板ポリゴンを描画するのに使用

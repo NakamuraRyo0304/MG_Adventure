@@ -39,7 +39,7 @@ private:
 	Collider::AABBCollider m_aabbCol;
 
 	// ƒ‚ƒfƒ‹
-	std::unique_ptr<DirectX::Model>m_grassBox;
+	std::unique_ptr<DirectX::Model>m_grassBox,m_grassDBox;
 	
 	// ‰æ‘œ‚ÌÀ•W
 	DirectX::SimpleMath::Vector2 m_saveTexPos;

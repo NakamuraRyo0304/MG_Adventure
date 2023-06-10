@@ -34,6 +34,7 @@ EditScene::EditScene() :
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
 	m_grassBox{ nullptr },			// モデル
+	m_grassDBox{ nullptr },			// モデル
 	m_saveTexPos{},					// 座標
 	m_cameraTexPos{},
 	is_saveFlag{},					// 選択フラグ
@@ -57,7 +58,7 @@ void EditScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetMoveMode(is_cameraFlag);	    // カメラ座標移動
+	GetSystemManager()->GetCamera()->SetMoveMode(false);				// カメラ座標移動
 	GetSystemManager()->GetCamera()->SetEagleMode(is_cameraFlag);		// カメラ視点移動
 
 	// スフィアの初期化(テスト)
@@ -96,17 +97,12 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	
 	// レイの更新
 	GetSystemManager()->GetRayCast()->Update(mouseState);
-
-	// 移動したい位置を設定
-	m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
-	m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
 	
 	// カメラモードじゃなければ編集できる
 	if (!is_cameraFlag)
 	{
 		EditMap(keyState);
 	}
-
 	
 	// 保存アイコンをクリック
 	is_saveFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
@@ -132,7 +128,6 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	{
 		is_cameraFlag = !is_cameraFlag;
 		auto camera = GetSystemManager()->GetCamera();
-		camera->SetMoveMode(is_cameraFlag);
 		camera->SetEagleMode(is_cameraFlag);
 	}
 
@@ -193,8 +188,7 @@ void EditScene::Draw()
 				// 描画処理
 				if (m_obj[y][x].hitFlag)
 				{
-
-					m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+					m_grassDBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
 				}
 				else
@@ -249,6 +243,10 @@ void EditScene::CreateWindowDependentResources()
 	m_grassBox = ModelFactory::GetModel(					// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
+	);
+	m_grassDBox = ModelFactory::GetModel(					// 草ブロック
+		device,
+		L"Resources/Models/GrassBlock_Dark.cmo"
 	);
 
 	// 画像の設定
@@ -325,14 +323,17 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 //--------------------------------------------------------//
 void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 {
-	if (keyState.Z) m_spherePos.y += 0.1f;
-	if (keyState.X) m_spherePos.y -= 0.1f;
-
 	// 当たり判定
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
+			// 移動処理
+			m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x / COMMON_SIZE;
+			m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z / COMMON_SIZE;
+			if (GetSystemManager()->GetStateTrack()->pressed.Z) m_spherePos.y += COMMON_SIZE / 225;
+			if (GetSystemManager()->GetStateTrack()->pressed.X) m_spherePos.y -= COMMON_SIZE / 225;
+
 			m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,							// スフィア＆ボックス
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },							// サイズ
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
@@ -342,13 +343,14 @@ void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 			m_obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
 
 			m_aabbCol.HitAABB_2D(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	    // サイズ
+				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
 				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
 			);
 
 			// 当っているときに左クリックで変動
 			if (m_obj[y][x].hitFlag &&
-				GetSystemManager()->GetMouseTrack()->leftButton && !keyState.LeftShift)
+				GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED && 
+				!keyState.LeftShift)
 			{
 				m_obj[y][x].state += 1;
 				if (m_obj[y][x].state > MapLoad::BoxState::GrassBox + 15)
@@ -357,7 +359,8 @@ void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 				}
 			}
 			if (m_obj[y][x].hitFlag &&
-				GetSystemManager()->GetMouseTrack()->leftButton && keyState.LeftShift)
+				GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
+				keyState.LeftShift)
 			{
 				m_obj[y][x].state -= 1;
 				if (m_obj[y][x].state < MapLoad::BoxState::GrassBox)

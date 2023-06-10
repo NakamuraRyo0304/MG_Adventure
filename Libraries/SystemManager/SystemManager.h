@@ -36,7 +36,8 @@ private:
 	std::unique_ptr<RayCast>									m_rayCast;
 	// ドロースプライト
 	std::unique_ptr<DrawSprite>									m_drawSprite;
-
+	// ベーシックエフェクト
+	std::unique_ptr<DirectX::BasicEffect>						m_effect;
 public:
 	// カメラ
 	Camera* m_camera = nullptr;
@@ -73,6 +74,9 @@ public: // ゲッター、セッター、ファクトリー
 
 	// カメラの取得
 	Camera*& GetCamera();
+
+	// エフェクトの取得
+	const std::unique_ptr<DirectX::BasicEffect>& GetBasicEffect();
 
 public:
 	~SystemManager();

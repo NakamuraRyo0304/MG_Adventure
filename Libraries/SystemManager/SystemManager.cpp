@@ -104,12 +104,20 @@ SystemManager::GetDrawSprite()
 	return m_drawSprite;
 }
 
-//--------------------------------------------------------//
-//カメラゲッター                                          //
-//--------------------------------------------------------//
+// Camera
 Camera*& SystemManager::GetCamera()
 {
 	return m_camera;
+}
+
+// BasicEffect
+const std::unique_ptr<DirectX::BasicEffect>& SystemManager::GetBasicEffect()
+{
+	if (!m_effect)
+	{
+		m_effect = std::make_unique<DirectX::BasicEffect>(GetDeviceResources()->GetD3DDevice());
+	}
+	return m_effect;
 }
 
 //--------------------------------------------------------//
@@ -145,4 +153,7 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 
 	// 画像の描画
 	m_drawSprite = std::make_unique<DrawSprite>();
+
+	// ベーシックエフェクト
+	m_effect = std::make_unique<DirectX::BasicEffect>(GetDeviceResources()->GetD3DDevice());
 }
