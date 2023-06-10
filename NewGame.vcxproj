@@ -253,13 +253,14 @@
     <None Include="packages.config" />
     <None Include="Resources\Fonts\myfile.spritefont" />
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />
-    <None Include="Resources\Models\Cube.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
     <None Include="Resources\Models\GrassBlock_Dark.cmo" />
     <None Include="Resources\Models\TestPlayer.cmo" />
   </ItemGroup>
   <ItemGroup>
-    <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx" />
+    <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </MeshContentTask>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

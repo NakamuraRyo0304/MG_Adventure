@@ -248,9 +248,6 @@
     <None Include="Resources\Models\GrassBlock.cmo">
       <Filter>Resources\Models</Filter>
     </None>
-    <None Include="Resources\Models\Cube.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
     <None Include="Resources\Models\GrassBlock_Dark.cmo">
       <Filter>Resources\Models</Filter>
     </None>
