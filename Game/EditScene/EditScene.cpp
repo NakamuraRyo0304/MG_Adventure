@@ -31,6 +31,7 @@ EditScene::EditScene() :
 	m_spherePos{},
 	m_box{},						// 箱
 	m_obj{},
+	m_nowState{},					// 現在のブロックの種類
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
 	m_grassBox{ nullptr },			// モデル
@@ -75,6 +76,9 @@ void EditScene::Initialize()
 
 	// マップ読み込み
 	LoadMap(GetStageNum());
+
+	// 初期値は草ブロック
+	m_nowState = MapLoad::BoxState::GrassBox;
 }
 
 //--------------------------------------------------------//
@@ -323,61 +327,68 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 //--------------------------------------------------------//
 void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 {
+	// 今のステートを保存する FIXED::ステータス変更できるボタンを作る
+	m_nowState = MapLoad::BoxState::GrassBox;
+
 	// 当たり判定
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			// 移動処理
-			m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x / COMMON_SIZE;
-			m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z / COMMON_SIZE;
-			if (GetSystemManager()->GetStateTrack()->pressed.Z) m_spherePos.y += COMMON_SIZE / 225;
-			if (GetSystemManager()->GetStateTrack()->pressed.X) m_spherePos.y -= COMMON_SIZE / 225;
-
-			m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,							// スフィア＆ボックス
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },							// サイズ
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
-			);
-
-			// 当っていたらTrueにする
-			m_obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
-
-			m_aabbCol.HitAABB_2D(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
-				DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
-			);
-
-			// 当っているときに左クリックで変動
-			if (m_obj[y][x].hitFlag &&
-				GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED && 
-				!keyState.LeftShift)
+			for (int h = 0; h < m_obj[y][x].state % 100; h++)
 			{
-				m_obj[y][x].state += 1;
-				if (m_obj[y][x].state > MapLoad::BoxState::GrassBox + 15)
+				m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
+
+				// 移動処理
+				m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x / COMMON_SIZE;
+				m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z / COMMON_SIZE;
+				if (GetSystemManager()->GetStateTrack()->pressed.Z) m_spherePos.y += COMMON_SIZE / 225;
+				if (GetSystemManager()->GetStateTrack()->pressed.X) m_spherePos.y -= COMMON_SIZE / 225;
+
+				m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,							// スフィア＆ボックス
+					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },							// サイズ
+					DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
+				);
+
+				// 当っていたらTrueにする
+				m_obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
+
+				m_aabbCol.HitAABB_2D(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
+					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
+					DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
+				);
+
+				// 左クリックでブロックの追加＆削除
+				if (m_obj[y][x].hitFlag &&
+					GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
+					!keyState.LeftShift)
 				{
-					m_obj[y][x].state = MapLoad::BoxState::GrassBox;
+					m_obj[y][x].state += 1;
 				}
-			}
-			if (m_obj[y][x].hitFlag &&
-				GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
-				keyState.LeftShift)
-			{
-				m_obj[y][x].state -= 1;
-				if (m_obj[y][x].state < MapLoad::BoxState::GrassBox)
+				if (m_obj[y][x].hitFlag &&
+					GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
+					keyState.LeftShift)
 				{
-					m_obj[y][x].state = MapLoad::BoxState::GrassBox + 15;
+					m_obj[y][x].state -= 1;
 				}
+
+				// ブロックの値が異なるため、現在のステータス分を減算
+				int temp = m_obj[y][x].state - m_nowState;
+				// クランプ処理
+				temp = UserUtillity::Clamp(temp, 1, 15);
+				// 現在のステータス分を加算
+				m_obj[y][x].state = m_nowState + temp;
+
+				// ポジションの変更
+				//m_obj[y][x].position =
+				//{
+				//	x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
+				//	COMMON_LOW + m_obj[y][x].state % 100 * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
+				//	y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
+				//};
 			}
-			// ポジションの変更
-			m_obj[y][x].position =
-			{
-				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-				COMMON_LOW + m_obj[y][x].state % 100 * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
-				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
-			};
 		}
 	}
-
 }
 
 //--------------------------------------------------------//

@@ -49,6 +49,9 @@ private:
 	bool is_saveFlag;
 	bool is_cameraFlag;
 
+	// 現在のブロックステータス
+	int m_nowState;
+
 public:
 
 	// コンストラクタ
