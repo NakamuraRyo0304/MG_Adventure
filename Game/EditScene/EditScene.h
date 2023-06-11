@@ -20,7 +20,7 @@ struct EditObject
 {
 	DirectX::SimpleMath::Vector3 position;		// 座標
 	bool hitFlag;								// 当たり判定フラグ
-	UINT state;									// マップのステータス
+	int state;									// マップのステータス
 };
 
 class EditScene : public IScene
@@ -81,13 +81,16 @@ public:
 	void DebugLog(DirectX::SimpleMath::Matrix view,DirectX::SimpleMath::Matrix proj);
 
 	// ステータスを変更する
-	void ChangeState(UINT State);
+	void ChangeState(const int& State);
 
 	// マップを編集
 	void EditMap(DirectX::Keyboard::State& keyState);
 
+	// 高さのクランプ
+	void ClampHeight(int& states, int id);
+
 	// マップ読み込み
-	void LoadMap(int num);
+	void LoadMap();
 
 	// ファイルをセーブする
 	void SaveFile();

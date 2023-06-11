@@ -21,6 +21,10 @@
 // 画像の中心位置
 #define			IMAGE_CENTER		128
 
+// ボックスの最大値と最小値
+#define			MAX_BOX				15
+#define			MIN_BOX				1
+
 
  //--------------------------------------------------------//
  //コンストラクタ                                          //
@@ -28,7 +32,7 @@
 EditScene::EditScene() :
 	IScene(),
 	m_sphere{},						// 球
-	m_spherePos{},
+	m_spherePos{0.0f,COMMON_LOW ,0.0f},
 	m_box{},						// 箱
 	m_grassObj{},
 	m_nowState{},					// 現在のブロックの種類
@@ -78,7 +82,7 @@ void EditScene::Initialize()
 	);
 
 	// マップ読み込み
-	LoadMap(GetStageNum());
+	LoadMap();
 
 	// 初期値は草ブロック
 	m_nowState = MapLoad::BoxState::GrassBox;
@@ -326,7 +330,7 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 //--------------------------------------------------------//
 //描画ボックスのステータスを変更する                      //
 //--------------------------------------------------------//
-void EditScene::ChangeState(UINT State)
+void EditScene::ChangeState(const int& State)
 {
 	m_nowState = State;
 }
@@ -336,6 +340,17 @@ void EditScene::ChangeState(UINT State)
 //--------------------------------------------------------//
 void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 {
+	auto mouse = DirectX::Mouse::Get().GetState();
+
+	// 移動処理
+	m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
+	m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
+	
+	if (!is_cameraFlag)
+	{
+		m_spherePos.y = UserUtillity::Lerp(m_spherePos.y, mouse.scrollWheelValue / 640 + COMMON_LOW, 0.1f);
+	}
+
 	// 当たり判定
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
@@ -345,13 +360,7 @@ void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 			{
 				m_grassObj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
 
-				// 移動処理
-				m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x / COMMON_SIZE;
-				m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z / COMMON_SIZE;
-				if (GetSystemManager()->GetStateTrack()->pressed.Z) m_spherePos.y += COMMON_SIZE / 225;
-				if (GetSystemManager()->GetStateTrack()->pressed.X) m_spherePos.y -= COMMON_SIZE / 225;
-
-				m_boxCol.PushBox(&m_spherePos, m_grassObj[y][x].position,							// スフィア＆ボックス
+				m_boxCol.PushBox(&m_spherePos, m_grassObj[y][x].position,						// スフィア＆ボックス
 					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },							// サイズ
 					DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
 				);
@@ -377,15 +386,28 @@ void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 				{
 					m_grassObj[y][x].state -= 1;
 				}
+
+				// クランプ処理
+				ClampHeight(m_grassObj[y][x].state, MapLoad::BoxState::GrassBox);
 			}
 		}
 	}
 }
 
 //--------------------------------------------------------//
+//クランプ処理                                            //
+//--------------------------------------------------------//
+void EditScene::ClampHeight(int& states, int id)
+{
+	int temp = states - id;
+	temp = UserUtillity::Clamp(temp, MIN_BOX, MAX_BOX);
+	states = id + temp;
+}
+
+//--------------------------------------------------------//
 //マップ読み込み                                          //
 //--------------------------------------------------------//
-void EditScene::LoadMap(int num)
+void EditScene::LoadMap()
 {
 	// 空のファイルパスを用意する
 	std::wstring filePath = L"";

@@ -12,7 +12,7 @@
 #include "Camera.h"
 
  // 定数の初期化
-const float Camera::DEFAULT_CAMERA_DISTANCE = 15.0f;
+const float Camera::DEFAULT_CAMERA_DISTANCE = 20.0f;
 
 const float Camera::DEFAULT_CAMERA_SPEED = 0.05f;
 
@@ -178,87 +178,7 @@ void Camera::CalculateViewMatrix()
 	m_eye = eye;
 	m_target = target;
 	m_view = DirectX::SimpleMath::Matrix::CreateLookAt(eye, target, up);
-
-
-	// 移動モードじゃなければ処理しない----------------------------------------------------
-	if (!is_moveMode)return;
-
-	// キーボードの取得
-	auto keyState = DirectX::Keyboard::Get().GetState();
-
-	// 移動モード起動中ならカメラ移動
-	MoveCamera(eye, up, keyState);
 }
-
-//--------------------------------------------------------//
-//カメラを動かす                                          //
-//--------------------------------------------------------//
-// 第１引数：カメラのレンズの位置 / 第２引数：カメラの傾き / 第３引数：キーボード
-void Camera::MoveCamera(DirectX::SimpleMath::Vector3 eye,DirectX::SimpleMath::Vector3 up,DirectX::Keyboard::State keyState)
-{
-	// カメラの方向ベクトルから正面方向ベクトルを取得する
-	DirectX::SimpleMath::Vector3 front = DirectX::SimpleMath::Vector3(-eye.x, 0.0f, -eye.z);
-	DirectX::SimpleMath::Vector3 updo = DirectX::SimpleMath::Vector3(0.0f, -eye.y, 0.0f);
-	
-	// 方向ベクトルを正規化
-	front.Normalize();
-	updo.Normalize();
-
-	// 正規化ベクトルを小さくして移動ベクトルに変換
-	DirectX::SimpleMath::Vector3 moveW = front * DEFAULT_CAMERA_SPEED;
-	DirectX::SimpleMath::Vector3 moveH = updo * DEFAULT_CAMERA_SPEED;
-
-	// 前後移動
-	if (keyState.W)
-	{
-		m_target += moveW;
-		m_eyePos += moveW;
-	}
-	if (keyState.S)
-	{
-		m_target -= moveW;
-		m_eyePos -= moveW;
-	}
-
-	// 左右移動
-	if (keyState.A)
-	{
-		DirectX::SimpleMath::Vector3 mX = DirectX::SimpleMath::Vector3::Zero;
-		mX.x = moveW.z;
-		mX.z = -moveW.x;
-		m_target += mX;
-		m_eyePos += mX;
-	}
-	if (keyState.D)
-	{
-		DirectX::SimpleMath::Vector3 mX = DirectX::SimpleMath::Vector3::Zero;
-		mX.x = moveW.z;
-		mX.z = -moveW.x;
-		m_target -= mX;
-		m_eyePos -= mX;
-	}
-
-	// 上下移動
-	if (keyState.Up)
-	{
-		DirectX::SimpleMath::Vector3 mY = DirectX::SimpleMath::Vector3::Zero;
-		mY.y += moveH.y;
-		m_target -= mY;
-		m_eyePos -= mY;
-	}
-	if (keyState.Down)
-	{
-		DirectX::SimpleMath::Vector3 mY = DirectX::SimpleMath::Vector3::Zero;
-		mY.y += moveH.y;
-		m_target += mY;
-		m_eyePos += mY;
-	}
-
-	m_eye = eye + m_eyePos;
-
-	m_view = DirectX::SimpleMath::Matrix::CreateLookAt(m_eye, m_target, up);
-}
-
 //--------------------------------------------------------//
 //カメラを揺らす関数                                      //
 //--------------------------------------------------------//
