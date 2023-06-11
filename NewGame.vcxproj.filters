@@ -235,6 +235,9 @@
     <Image Include="Resources\Textures\EraseBlock.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
+    <Image Include="Resources\Textures\CameraMove.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -260,11 +263,9 @@
     <None Include="Resources\Models\TestPlayer.cmo">
       <Filter>Resources\Models</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx">
-      <Filter>Assets</Filter>
-    </MeshContentTask>
+    <None Include="Resources\Models\Coin.cmo">
+      <Filter>Resources\Models</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />

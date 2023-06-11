@@ -34,8 +34,9 @@ EditScene::EditScene() :
 	m_nowState{},					// 現在のブロックの種類
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
-	m_grassBox{ nullptr },			// モデル
-	m_grassDBox{ nullptr },			// モデル
+	m_grassBlockModel{ nullptr },	// モデル
+	m_grassBlockModel_D{ nullptr },	
+	m_coinModel{ nullptr },
 	m_saveTexPos{},					// 画像座標
 	m_cameraTexPos{},
 	m_penTexPos{},
@@ -107,6 +108,12 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// UIの処理
 	ClickUserInterface(mouseState);
 	
+	// ステータス変更
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Right))
+	{
+		ChangeState(MapLoad::BoxState::CoinBox);
+	}
+
 	// カメラモードじゃなければ編集できる
 	if (!is_cameraFlag)
 	{
@@ -150,7 +157,11 @@ void EditScene::Draw()
 	// 球の描画
 	world *= DirectX::SimpleMath::Matrix::CreateTranslation(m_spherePos);
 
-	m_sphere->Draw(world, view, projection, DirectX::Colors::Red);
+	// 非カメラモードのみ描画
+	if (!is_cameraFlag)
+	{
+		m_sphere->Draw(world, view, projection, DirectX::Colors::Red);
+	}
 
 	// ボックスの描画
 	for (int y = 0; y < m_map.MAP_RAW; y++)
@@ -170,13 +181,27 @@ void EditScene::Draw()
 				// 描画処理
 				if (m_obj[y][x].hitFlag)
 				{
-					m_grassDBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+					m_grassBlockModel_D->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
 				}
 				else
 				{
-					m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+					// 草ブロック
+					if (m_obj[y][x].state - m_obj[y][x].state % 100 == MapLoad::BoxState::GrassBox)
+					{
+						m_grassBlockModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+							*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+					}
+					// 雲ブロック
+					else if (m_obj[y][x].state - m_obj[y][x].state % 100 == MapLoad::BoxState::ClowdBox)
+					{
+						m_coinModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+							*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+					}
+					else if (m_obj[y][x].state - m_obj[y][x].state % 100 == MapLoad::BoxState::CoinBox)
+					{
+
+					}
 				}
 			}
 		}
@@ -222,22 +247,28 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 	
 	// モデルを作成する
-	m_grassBox = ModelFactory::GetModel(					// 草ブロック
+	m_grassBlockModel = ModelFactory::GetModel(					// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
 	);
-	m_grassDBox = ModelFactory::GetModel(					// 草ブロック
+	m_grassBlockModel_D = ModelFactory::GetModel(				// 草選択ブロック
 		device,
 		L"Resources/Models/GrassBlock_Dark.cmo"
+	);
+	m_coinModel = ModelFactory::GetModel(						// コインブロック
+		device,
+		L"Resources/Models/Coin.cmo"
+
 	);
 
 	// 画像の設定
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(context);
 	// キー名　：　ファイルパス名　：　デバイス
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Save",  L"Resources/Textures/SaveFile.dds",  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Camera",L"Resources/Textures/Camera.dds",    device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Pen",   L"Resources/Textures/AddBlock.dds",  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds",device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Save", L"Resources/Textures/SaveFile.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Camera", L"Resources/Textures/Camera.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"CameraMove", L"Resources/Textures/CameraMove.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Pen", L"Resources/Textures/AddBlock.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds", device);
 
 	// 座標情報
 	m_saveTexPos   = { width - 100, 80 };
@@ -303,13 +334,18 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 }
 
 //--------------------------------------------------------//
+//描画ボックスのステータスを変更する                      //
+//--------------------------------------------------------//
+void EditScene::ChangeState(UINT State)
+{
+	m_nowState = State;
+}
+
+//--------------------------------------------------------//
 //マップを編集する                                        //
 //--------------------------------------------------------//
 void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 {
-	// 今のステートを保存する FIXED::ステータス変更できるボタンを作る
-	m_nowState = MapLoad::BoxState::GrassBox;
-
 	// 当たり判定
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
@@ -358,14 +394,6 @@ void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 				temp = UserUtillity::Clamp(temp, 1, 15);
 				// 現在のステータス分を加算
 				m_obj[y][x].state = m_nowState + temp;
-
-				// ポジションの変更
-				//m_obj[y][x].position =
-				//{
-				//	x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-				//	COMMON_LOW + m_obj[y][x].state % 100 * COMMON_SIZE,			// 最低高度 + 高度 * サイズ
-				//	y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
-				//};
 			}
 		}
 	}
@@ -451,7 +479,7 @@ void EditScene::DrawImages()
 	if (is_cameraFlag)
 	{
 		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Camera",							// 登録キー
+			L"CameraMove",						// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
 			0.5f,								// 拡大率

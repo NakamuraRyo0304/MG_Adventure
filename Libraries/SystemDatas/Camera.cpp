@@ -7,6 +7,8 @@
 
 #include "pch.h"
 
+#include "../UserUtility.h"
+
 #include "Camera.h"
 
  // 定数の初期化
@@ -68,7 +70,7 @@ void Camera::Update()
 	int scrollDelta = state.scrollWheelValue - m_prevScrollWheelValue;
 
 	// カメラモードの時の処理
-	if (is_eagleMode)
+	if (is_eagleMode && state.scrollWheelValue <= 1440)
 	{
 		// フラグがTrueの場合のみスクロール値を反映
 		m_scrollWheelValue += scrollDelta; // スクロール値の反映

@@ -245,6 +245,7 @@
     <Image Include="directx.ico" />
     <Image Include="Resources\Textures\AddBlock.dds" />
     <Image Include="Resources\Textures\Camera.dds" />
+    <Image Include="Resources\Textures\CameraMove.dds" />
     <Image Include="Resources\Textures\EraseBlock.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
   </ItemGroup>
@@ -255,14 +256,10 @@
     <None Include="packages.config" />
     <None Include="Resources\Fonts\myfile.spritefont" />
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />
+    <None Include="Resources\Models\Coin.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
     <None Include="Resources\Models\GrassBlock_Dark.cmo" />
     <None Include="Resources\Models\TestPlayer.cmo" />
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Resources\Models\GrassBlock_Dark.fbx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </MeshContentTask>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />

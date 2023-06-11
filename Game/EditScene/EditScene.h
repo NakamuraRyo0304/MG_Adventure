@@ -39,7 +39,7 @@ private:
 	Collider::AABBCollider m_aabbCol;
 
 	// モデル
-	std::unique_ptr<DirectX::Model>m_grassBox,m_grassDBox;
+	std::unique_ptr<DirectX::Model>m_grassBlockModel,m_grassBlockModel_D,m_coinModel;
 	
 	// 画像の座標
 	DirectX::SimpleMath::Vector2 m_saveTexPos;
@@ -79,6 +79,9 @@ public:
 
 	// デバッグ表示
 	void DebugLog(DirectX::SimpleMath::Matrix view,DirectX::SimpleMath::Matrix proj);
+
+	// ステータスを変更する
+	void ChangeState(UINT State);
 
 	// マップを編集
 	void EditMap(DirectX::Keyboard::State& keyState);

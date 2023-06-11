@@ -23,6 +23,8 @@ public:
 	struct BoxState
 	{
 		const static int GrassBox = 100;		// 草のブロック
+		const static int ClowdBox = 200;		// コインのブロック
+		const static int CoinBox  = 300;		// 雲のブロック
 		const static int None = 0;				// データなし
 	};
 
