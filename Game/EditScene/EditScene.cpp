@@ -34,6 +34,7 @@ EditScene::EditScene() :
 	m_sphere{},						// 球
 	m_spherePos{0.0f,COMMON_LOW ,0.0f},
 	m_box{},						// 箱
+	m_mapObj{},						// 格納配列
 	m_grassObj{},
 	m_nowState{},					// 現在のブロックの種類
 	m_map{},						// マップ
@@ -115,7 +116,20 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// ステータス変更
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Right))
 	{
-		ChangeState(MapLoad::BoxState::CoinBox);
+		switch (m_nowState)
+		{
+		case MapLoad::BoxState::GrassBox:
+			ChangeState(MapLoad::BoxState::CoinBox);
+			break;
+		case MapLoad::BoxState::CoinBox:
+			ChangeState(MapLoad::BoxState::ClowdBox);
+			break;
+		case MapLoad::BoxState::ClowdBox:
+			ChangeState(MapLoad::BoxState::GrassBox);
+			break;
+		default:
+			break;
+		}
 	}
 
 	// カメラモードじゃなければ編集できる
@@ -183,7 +197,7 @@ void EditScene::Draw()
 				if (m_grassObj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
 				
 				// 描画処理
-				if (m_grassObj[y][x].hitFlag)
+				if (m_grassObj[y][x].hitFlag && m_grassObj[y][x].state - m_grassObj[y][x].state % 100 == MapLoad::BoxState::GrassBox)
 				{
 					m_grassBlockModel_D->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
@@ -194,6 +208,12 @@ void EditScene::Draw()
 					if (m_grassObj[y][x].state - m_grassObj[y][x].state % 100 == MapLoad::BoxState::GrassBox)
 					{
 						m_grassBlockModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+							*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+					}
+					// コインブロック
+					if (m_grassObj[y][x].state - m_grassObj[y][x].state % 100 == MapLoad::BoxState::CoinBox)
+					{
+						m_coinModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 							*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
 					}
 				}
@@ -301,7 +321,7 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,40 }, mos);
 
 	// 保存された座標
-	swprintf_s(mos, 64, L"ClickPos = %f,%f,%f",
+	swprintf_s(mos, 64, L"SpherePosition = %f,%f,%f",
 		m_spherePos.x,
 		m_spherePos.y,
 		m_spherePos.z);
@@ -320,6 +340,14 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	swprintf_s(mw, 32, L"MouseWheel = %d", mouse.scrollWheelValue);
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,100 }, mw);
+
+	// 位置確認
+	wchar_t bs[32];
+	swprintf_s(bs, 32, L"BlockState = %d", m_nowState);
+
+	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,120 }, bs);
+
+
 
 	// デバイスコンテキストの取得：グリッドの描画に使用
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
@@ -360,18 +388,13 @@ void EditScene::EditMap()
 			{
 				m_grassObj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
 
-				m_boxCol.PushBox(&m_spherePos, m_grassObj[y][x].position,						// スフィア＆ボックス
-					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },							// サイズ
-					DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
+				m_boxCol.PushBox(&m_spherePos, m_grassObj[y][x].position,					// オブジェクト
+					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },						// サイズ
+					DirectX::SimpleMath::Vector3{ COMMON_SIZE }								// サイズ
 				);
 
 				// 当っていたらTrueにする
 				m_grassObj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
-
-				m_aabbCol.HitAABB_2D(m_spherePos, m_grassObj[y][x].position,	// スフィア＆ボックス
-					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
-					DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
-				);
 
 				// 左クリックでブロックの追加＆削除
 				if (m_grassObj[y][x].hitFlag &&
@@ -388,7 +411,7 @@ void EditScene::EditMap()
 				}
 
 				// クランプ処理
-				ClampHeight(m_grassObj[y][x].state, MapLoad::BoxState::GrassBox);
+				ClampHeight(m_grassObj[y][x].state, m_nowState);
 			}
 		}
 	}
@@ -446,7 +469,7 @@ void EditScene::SaveFile()
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			m_map.SetMapData(m_grassObj[y][x].state, x, y);
+			m_map.SetMapData(m_mapObj[y][x].state, x, y);
 		}
 	}
 	// ファイル書き出し

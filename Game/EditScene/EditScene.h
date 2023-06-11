@@ -30,6 +30,7 @@ private:
 	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere,m_box;
 	DirectX::SimpleMath::Vector3 m_spherePos;
 	EditObject m_grassObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
+	EditObject m_mapObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
 
 	// マップ
 	MapLoad m_map;
@@ -39,7 +40,8 @@ private:
 	Collider::AABBCollider m_aabbCol;
 
 	// モデル
-	std::unique_ptr<DirectX::Model>m_grassBlockModel,m_grassBlockModel_D,m_coinModel;
+	std::unique_ptr<DirectX::Model>m_grassBlockModel,m_grassBlockModel_D;	// 草モデル
+	std::unique_ptr<DirectX::Model>m_coinModel;								// コインモデル
 	
 	// 画像の座標
 	DirectX::SimpleMath::Vector2 m_saveTexPos;
