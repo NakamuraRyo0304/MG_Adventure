@@ -86,11 +86,6 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	if (keyState.A) m_playerPos.x -= 0.05f;
 	if (keyState.D) m_playerPos.x += 0.05f;
 
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Space))
-	{
-		m_playerPos.y += 1.5f;
-	}
-
 	m_gravity += 0.03f;
 
 	m_playerPos.y -= m_gravity;
@@ -98,7 +93,8 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// 当たり判定の更新
 	DoBoxCollision();
 
-	if (m_playerPos.y < -200.0f)
+	// 落下して下限についたらリスポーン
+	if (m_playerPos.y < -50.0f)
 	{
 		m_playerPos.y = 5.0f;
 		m_gravity = 0;
@@ -123,6 +119,9 @@ void PlayScene::Draw()
 	float width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
+	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto& states = *GetSystemManager()->GetCommonStates();
+
 	// カメラ用行列
 	DirectX::SimpleMath::Matrix world, view, projection;
 
@@ -141,8 +140,7 @@ void PlayScene::Draw()
 	// プレイヤの描画
 	DirectX::SimpleMath::Matrix playerWorldMat =
 		DirectX::SimpleMath::Matrix::CreateTranslation(m_playerPos);
-	m_player->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-		*GetSystemManager()->GetCommonStates(), playerWorldMat, view, projection, false);
+	m_player->Draw(context, states, playerWorldMat, view, projection, false);
 
 	// ボックスの描画
 	for (int y = 0; y < m_map.MAP_RAW; y++)
@@ -159,8 +157,7 @@ void PlayScene::Draw()
 
 				if (m_obj[y][x].state % 100 == MapLoad::BoxState::None) return;	// ボックスがなければ描画しない
 
-				m_grassBox->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-					*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+				m_grassBox->Draw(context, states, boxWorldMat, view, projection, false);
 
 			}
 		}

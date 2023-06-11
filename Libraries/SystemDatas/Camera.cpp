@@ -67,8 +67,8 @@ void Camera::Update()
 	}
 
 	// マウスの座標を前回の値として保存
-	m_prevMouse.x = state.x; // X座標を保存
-	m_prevMouse.y = state.y; // Y座標を保存
+	m_prevMouse.x = static_cast<float>(state.x); // X座標を保存
+	m_prevMouse.y = static_cast<float>(state.y); // Y座標を保存
 
 	// 以下、カメラの拡大率の計算
 
@@ -292,8 +292,8 @@ void Camera::ShakeCamera(float duration, float tremor, DirectX::SimpleMath::Vect
 const DirectX::SimpleMath::Matrix& Camera::GetProjection(float width, float height,float angle)
 {
 	// 画面サイズとアングルの保存
-	m_screenWidth = width;
-	m_screenHeight = height;
+	m_screenWidth = static_cast<int>(width);
+	m_screenHeight = static_cast<int>(height);
 
 	// 画角
 	float fieldOfView = DirectX::XMConvertToRadians(angle);
