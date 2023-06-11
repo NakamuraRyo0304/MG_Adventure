@@ -184,36 +184,17 @@ void EditScene::Draw()
 		m_sphere->Draw(world, view, projection, DirectX::Colors::Red);
 	}
 
+	// 描画用配列
+	DirectX::SimpleMath::Matrix objMat[2] = { view,projection };
+	
 	// 草オブジェクトの描画
-	for (int y = 0; y < m_map.MAP_RAW; y++)
-	{
-		for (int x = 0; x < m_map.MAP_COLUMN; x++)
-		{
-			for (int h = 0; h < m_grassObj[y][x].state % 100; h++)
-			{
-				m_grassObj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
-
-				// ボックスの移動
-				DirectX::SimpleMath::Matrix boxWorldMat =
-					DirectX::SimpleMath::Matrix::CreateTranslation(m_grassObj[y][x].position);
-
-				if (m_grassObj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
-				
-				// 描画処理
-				if (m_grassObj[y][x].hitFlag && m_grassObj[y][x].state - m_grassObj[y][x].state % 100 == MapLoad::BoxState::GrassBox)
-				{
-					m_grassBlockModel_D->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
-				}
-				else
-				{
-					m_grassBlockModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
-				
-				}
-			}
-		}
-	}
+	DrawObj(m_grassObj, MapLoad::BoxState::GrassBox, objMat,std::move(m_grassBlockModel));
+	
+	// 雲オブジェクトの描画
+	DrawObj(m_clowdObj, MapLoad::BoxState::ClowdBox, objMat, std::move(m_clowdModel));
+	
+	// コインオブジェクトの描画
+	DrawObj(m_coinObj, MapLoad::BoxState::CoinBox, objMat, std::move(m_coinModel));
 
 	// 画像の描画
 	DrawImages();
@@ -385,15 +366,15 @@ void EditScene::EditMap()
 		{
 			if (m_nowState == MapLoad::BoxState::GrassBox)
 			{
-				ChoiceObj(m_grassObj, x, y);
+				ChoiceObj(m_grassObj, x, y, MapLoad::BoxState::GrassBox);
 			}
 			if (m_nowState == MapLoad::BoxState::CoinBox)
 			{
-				ChoiceObj(m_coinObj, x, y);
+				ChoiceObj(m_coinObj, x, y, MapLoad::BoxState::CoinBox);
 			}
 			if (m_nowState == MapLoad::BoxState::ClowdBox)
 			{
-				ChoiceObj(m_clowdObj, x, y);
+				ChoiceObj(m_clowdObj, x, y, MapLoad::BoxState::ClowdBox);
 			}
 		}
 	}
@@ -470,7 +451,7 @@ void EditScene::LoadMap()
 //--------------------------------------------------------//
 //マウスとオブジェの当たり判定                            //
 //--------------------------------------------------------//
-void EditScene::ChoiceObj(EditObject(&obj)[15][15], int x, int y)
+void EditScene::ChoiceObj(EditObject(&obj)[15][15], int x, int y, int State)
 {
 	for (int h = 0; h < obj[y][x].state % 100; h++)
 	{
@@ -499,7 +480,7 @@ void EditScene::ChoiceObj(EditObject(&obj)[15][15], int x, int y)
 		}
 
 		// クランプ処理
-		ClampHeight(obj[y][x].state, m_nowState);
+		ClampHeight(obj[y][x].state, State);
 	}
 }
 
@@ -519,6 +500,38 @@ void EditScene::SaveFile()
 	}
 	// ファイル書き出し
 	m_map.WriteMap();
+}
+
+//--------------------------------------------------------//
+//オブジェクトの描画                                      //
+//--------------------------------------------------------//
+// 第１引数：描画したいオブジェクト配列 第２引数：マップのステータス 第３引数：(view,proj) 第４引数：モデル
+void EditScene::DrawObj(EditObject(&obj)[15][15], int State, DirectX::SimpleMath::Matrix matrix[2],
+	std::unique_ptr<DirectX::Model>&& model)
+{
+	for (int y = 0; y < m_map.MAP_RAW; y++)
+	{
+		for (int x = 0; x < m_map.MAP_COLUMN; x++)
+		{
+			for (int h = 0; h < obj[y][x].state % 100; h++)
+			{
+				obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
+
+				// ボックスの移動
+				DirectX::SimpleMath::Matrix boxWorldMat =
+					DirectX::SimpleMath::Matrix::CreateTranslation(obj[y][x].position);
+
+				if (obj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
+
+				// 描画処理
+				if (obj[y][x].state - obj[y][x].state % 100 == State)
+				{
+					model->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, matrix[0], matrix[1], false);
+				}
+			}
+		}
+	}
 }
 
 //--------------------------------------------------------//

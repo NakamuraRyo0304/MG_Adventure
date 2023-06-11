@@ -92,7 +92,7 @@ public:
 	void EditMap();
 
 	// 当たり判定関数
-	void ChoiceObj(EditObject (&obj)[15][15], int x, int y);
+	void ChoiceObj(EditObject (&obj)[15][15], int x, int y , int State);
 
 	// 高さのクランプ
 	void ClampHeight(int& states, int id);
@@ -102,6 +102,9 @@ public:
 
 	// ファイルをセーブする
 	void SaveFile();
+
+	// ボックスを描画
+	void DrawObj(EditObject(&obj)[15][15],int State,DirectX::SimpleMath::Matrix[2], std::unique_ptr<DirectX::Model>&&);
 
 	// 画像の描画
 	void DrawImages();
