@@ -270,4 +270,9 @@
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="Resources\Models\Clowd.fbx">
+      <Filter>Resources\Models</Filter>
+    </MeshContentTask>
+  </ItemGroup>
 </Project>

@@ -118,13 +118,13 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	{
 		switch (m_nowState)
 		{
-		case MapLoad::BoxState::GrassBox:
+		case MapLoad::BoxState::GrassBox:				// 草→コイン
 			ChangeState(MapLoad::BoxState::CoinBox);
 			break;
-		case MapLoad::BoxState::CoinBox:
+		case MapLoad::BoxState::CoinBox:				// コイン→雲
 			ChangeState(MapLoad::BoxState::ClowdBox);
 			break;
-		case MapLoad::BoxState::ClowdBox:
+		case MapLoad::BoxState::ClowdBox:				// 雲→草
 			ChangeState(MapLoad::BoxState::GrassBox);
 			break;
 		default:
