@@ -38,7 +38,7 @@ void MapLoad::LoadMap(std::wstring filename)
 	m_filename = filename;
 
 	// もしファイル名が空だったらダイアログを開く
-	if (filename == L"")
+	if (filename.empty())
 	{
 		LoadMapPath();
 	}
@@ -53,7 +53,7 @@ void MapLoad::LoadMap(std::wstring filename)
 	if (!ifs)
 	{
 		MessageBoxA(0, "ファイルを開けませんでした", NULL, MB_OK);
-		return;			// 早期リターン
+		return;         // 早期リターン
 	}
 
 	// 一行分（横方向）のデータを列数分（縦方向）入れる配列
@@ -62,7 +62,7 @@ void MapLoad::LoadMap(std::wstring filename)
 	for (int y = 0; y < MAP_RAW; y++)
 	{
 		// 一行分のデータを読み込む
-		ifs >> s[y];
+		std::getline(ifs, s[y]);
 
 		// カンマを空白に変更
 		std::string tmp = std::regex_replace(s[y], std::regex(","), " ");
@@ -93,20 +93,21 @@ void MapLoad::WriteMap()
 	// ファイルパスを指定
 	SaveMapPath(m_filename);
 
-	//　ファイルを開く
+	// ファイルを開く
 	std::ofstream ofs(m_filename);
 
-	//　１行書きだしたら次の列へ
+	// マップデータをファイルに書き出す
 	for (int y = 0; y < MAP_RAW; y++)
 	{
 		for (int x = 0; x < MAP_COLUMN; x++)
 		{
-			ofs << m_mapData[y][x] << ",";
+			// 0番目に高さ情報を格納している
+			ofs << m_mapData[y][x]<< ",";
 		}
 		ofs << std::endl;
 	}
 
-	//　ファイルを閉じる
+	// ファイルを閉じる
 	ofs.close();
 }
 
