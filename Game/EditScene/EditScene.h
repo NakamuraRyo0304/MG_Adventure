@@ -84,7 +84,7 @@ public:
 	void ChangeState(const int& State);
 
 	// マップを編集
-	void EditMap(DirectX::Keyboard::State& keyState);
+	void EditMap();
 
 	// 高さのクランプ
 	void ClampHeight(int& states, int id);

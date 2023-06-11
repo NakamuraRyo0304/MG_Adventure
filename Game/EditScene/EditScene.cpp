@@ -121,7 +121,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// カメラモードじゃなければ編集できる
 	if (!is_cameraFlag)
 	{
-		EditMap(keyState);
+		EditMap();
 	}
 
 	// ESCキーで終了
@@ -338,7 +338,7 @@ void EditScene::ChangeState(const int& State)
 //--------------------------------------------------------//
 //マップを編集する                                        //
 //--------------------------------------------------------//
-void EditScene::EditMap(DirectX::Keyboard::State& keyState)
+void EditScene::EditMap()
 {
 	auto mouse = DirectX::Mouse::Get().GetState();
 
@@ -348,7 +348,7 @@ void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 	
 	if (!is_cameraFlag)
 	{
-		m_spherePos.y = UserUtillity::Lerp(m_spherePos.y, mouse.scrollWheelValue / 640 + COMMON_LOW, 0.1f);
+		m_spherePos.y = UserUtillity::Lerp(m_spherePos.y, mouse.scrollWheelValue / 640.0f + COMMON_LOW, 0.1f);
 	}
 
 	// 当たり判定
