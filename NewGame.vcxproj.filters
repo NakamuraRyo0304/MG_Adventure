@@ -266,13 +266,11 @@
     <None Include="Resources\Models\Coin.cmo">
       <Filter>Resources\Models</Filter>
     </None>
+    <None Include="Resources\Models\Clowd.cmo">
+      <Filter>Resources\Models</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Resources\Models\Clowd.fbx">
-      <Filter>Resources\Models</Filter>
-    </MeshContentTask>
   </ItemGroup>
 </Project>

@@ -256,6 +256,7 @@
     <None Include="packages.config" />
     <None Include="Resources\Fonts\myfile.spritefont" />
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />
+    <None Include="Resources\Models\Clowd.cmo" />
     <None Include="Resources\Models\Coin.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
     <None Include="Resources\Models\GrassBlock_Dark.cmo" />
@@ -263,9 +264,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Resources\Models\Clowd.fbx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

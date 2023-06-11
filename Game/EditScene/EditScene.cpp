@@ -36,12 +36,15 @@ EditScene::EditScene() :
 	m_box{},						// 箱
 	m_mapObj{},						// 格納配列
 	m_grassObj{},
+	m_coinObj{},
+	m_clowdObj{},
 	m_nowState{},					// 現在のブロックの種類
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
 	m_grassBlockModel{ nullptr },	// モデル
 	m_grassBlockModel_D{ nullptr },	
 	m_coinModel{ nullptr },
+	m_clowdModel{ nullptr },
 	m_saveTexPos{},					// 画像座標
 	m_cameraTexPos{},
 	m_penTexPos{},
@@ -204,18 +207,9 @@ void EditScene::Draw()
 				}
 				else
 				{
-					// 草ブロック
-					if (m_grassObj[y][x].state - m_grassObj[y][x].state % 100 == MapLoad::BoxState::GrassBox)
-					{
-						m_grassBlockModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-							*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
-					}
-					// コインブロック
-					if (m_grassObj[y][x].state - m_grassObj[y][x].state % 100 == MapLoad::BoxState::CoinBox)
-					{
-						m_coinModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-							*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
-					}
+					m_grassBlockModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
+				
 				}
 			}
 		}
@@ -272,6 +266,11 @@ void EditScene::CreateWindowDependentResources()
 	m_coinModel = ModelFactory::GetModel(						// コインブロック
 		device,
 		L"Resources/Models/Coin.cmo"
+
+	);
+	m_clowdModel = ModelFactory::GetModel(						// 雲ブロック
+		device,
+		L"Resources/Models/Clowd.cmo"
 
 	);
 
@@ -384,34 +383,17 @@ void EditScene::EditMap()
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			for (int h = 0; h < m_grassObj[y][x].state % 100; h++)
+			if (m_nowState == MapLoad::BoxState::GrassBox)
 			{
-				m_grassObj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
-
-				m_boxCol.PushBox(&m_spherePos, m_grassObj[y][x].position,					// オブジェクト
-					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },						// サイズ
-					DirectX::SimpleMath::Vector3{ COMMON_SIZE }								// サイズ
-				);
-
-				// 当っていたらTrueにする
-				m_grassObj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
-
-				// 左クリックでブロックの追加＆削除
-				if (m_grassObj[y][x].hitFlag &&
-					GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
-					is_upFlag)
-				{
-					m_grassObj[y][x].state += 1;
-				}
-				if (m_grassObj[y][x].hitFlag &&
-					GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
-					!is_upFlag)
-				{
-					m_grassObj[y][x].state -= 1;
-				}
-
-				// クランプ処理
-				ClampHeight(m_grassObj[y][x].state, m_nowState);
+				ChoiceObj(m_grassObj, x, y);
+			}
+			if (m_nowState == MapLoad::BoxState::CoinBox)
+			{
+				ChoiceObj(m_coinObj, x, y);
+			}
+			if (m_nowState == MapLoad::BoxState::ClowdBox)
+			{
+				ChoiceObj(m_clowdObj, x, y);
 			}
 		}
 	}
@@ -445,17 +427,79 @@ void EditScene::LoadMap()
 		{			
 			// 配列のごみを除去
 			m_grassObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
+			m_clowdObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
+			m_coinObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
 
-			m_grassObj[y][x].state = m_map.GetMapData(x,y);
+			m_grassObj[y][x].state = m_map.GetMapData(x, y);
+			m_clowdObj[y][x].state = m_map.GetMapData(x, y);
+			m_coinObj[y][x].state = m_map.GetMapData(x, y);
 
-			// ボックスの位置を初期化
-			m_grassObj[y][x].position =
+			switch (m_map.GetMapData(x, y) - m_map.GetMapData(x, y) % 100)
 			{
-				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-				COMMON_LOW + COMMON_SIZE,									// ブロックの最低高度
-				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
-			};
+			case MapLoad::BoxState::GrassBox:
+				m_grassObj[y][x].position =
+				{
+					x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
+					COMMON_LOW + COMMON_SIZE,									// ブロックの最低高度
+					y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
+				};
+				break;
+			case MapLoad::BoxState::CoinBox:
+				m_coinObj[y][x].position =
+				{
+					x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
+					COMMON_LOW + COMMON_SIZE,									// ブロックの最低高度
+					y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
+				};
+				break;
+			case MapLoad::BoxState::ClowdBox:
+				m_clowdObj[y][x].position =
+				{
+					x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
+					COMMON_LOW + COMMON_SIZE,									// ブロックの最低高度
+					y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
+				};
+				break;
+			default:
+				break;
+			}
 		}
+	}
+}
+
+//--------------------------------------------------------//
+//マウスとオブジェの当たり判定                            //
+//--------------------------------------------------------//
+void EditScene::ChoiceObj(EditObject(&obj)[15][15], int x, int y)
+{
+	for (int h = 0; h < obj[y][x].state % 100; h++)
+	{
+		obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
+
+		m_boxCol.PushBox(&m_spherePos, obj[y][x].position,					// オブジェクト
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },						// サイズ
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE }								// サイズ
+		);
+
+		// 当っていたらTrueにする
+		obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
+
+		// 左クリックでブロックの追加＆削除
+		if (obj[y][x].hitFlag &&
+			GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
+			is_upFlag)
+		{
+			obj[y][x].state += 1;
+		}
+		if (obj[y][x].hitFlag &&
+			GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
+			!is_upFlag)
+		{
+			obj[y][x].state -= 1;
+		}
+
+		// クランプ処理
+		ClampHeight(obj[y][x].state, m_nowState);
 	}
 }
 
@@ -469,7 +513,8 @@ void EditScene::SaveFile()
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			m_map.SetMapData(m_mapObj[y][x].state, x, y);
+			// FIXED::テスト用のため、草ブロックを格納している
+			m_map.SetMapData(m_grassObj[y][x].state, x, y);
 		}
 	}
 	// ファイル書き出し

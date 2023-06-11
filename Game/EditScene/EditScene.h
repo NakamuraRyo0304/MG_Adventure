@@ -30,6 +30,8 @@ private:
 	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere,m_box;
 	DirectX::SimpleMath::Vector3 m_spherePos;
 	EditObject m_grassObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
+	EditObject m_coinObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
+	EditObject m_clowdObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
 	EditObject m_mapObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
 
 	// マップ
@@ -42,6 +44,7 @@ private:
 	// モデル
 	std::unique_ptr<DirectX::Model>m_grassBlockModel,m_grassBlockModel_D;	// 草モデル
 	std::unique_ptr<DirectX::Model>m_coinModel;								// コインモデル
+	std::unique_ptr<DirectX::Model>m_clowdModel;							// 雲モデル
 	
 	// 画像の座標
 	DirectX::SimpleMath::Vector2 m_saveTexPos;
@@ -87,6 +90,9 @@ public:
 
 	// マップを編集
 	void EditMap();
+
+	// 当たり判定関数
+	void ChoiceObj(EditObject (&obj)[15][15], int x, int y);
 
 	// 高さのクランプ
 	void ClampHeight(int& states, int id);
