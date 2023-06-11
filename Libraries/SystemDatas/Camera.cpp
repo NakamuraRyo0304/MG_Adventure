@@ -16,6 +16,10 @@ const float Camera::DEFAULT_CAMERA_DISTANCE = 15.0f;
 
 const float Camera::DEFAULT_CAMERA_SPEED = 0.05f;
 
+// スクロール値の上限と下限を定義
+const int Camera::MAX_SCROLL_VALUE = 1440;
+const int Camera::MIN_SCROLL_VALUE = -1440;
+
 //--------------------------------------------------------//
 //コンストラクタ                                          //
 //--------------------------------------------------------//
@@ -59,39 +63,65 @@ void Camera::Update()
 	if (state.leftButton)
 	{
 		// マウスのドラッグによるカメラ移動
-		DraggedDistance(state.x, state.y); 
+		DraggedDistance(state.x, state.y);
 	}
 
 	// マウスの座標を前回の値として保存
 	m_prevMouse.x = state.x; // X座標を保存
 	m_prevMouse.y = state.y; // Y座標を保存
 
+	// 以下、カメラの拡大率の計算
+
 	// マウスホイールのスクロール値の差分を計算
 	int scrollDelta = state.scrollWheelValue - m_prevScrollWheelValue;
 
 	// カメラモードの時の処理
-	if (is_eagleMode && state.scrollWheelValue <= 1440)
+	if (is_eagleMode)
 	{
-		// フラグがTrueの場合のみスクロール値を反映
-		m_scrollWheelValue += scrollDelta; // スクロール値の反映
+		// スクロール値を一時変数に保存
+		int newScrollValue = m_scrollWheelValue + scrollDelta;
+
+		// スクロール値が上限・下限を超えないように制限
+		newScrollValue = UserUtillity::Clamp(newScrollValue, MIN_SCROLL_VALUE, MAX_SCROLL_VALUE);
+
+		// スクロール値が上限・下限に達していない場合にのみ反映する
+		if (newScrollValue != MAX_SCROLL_VALUE && newScrollValue != MIN_SCROLL_VALUE)
+		{
+			m_scrollWheelValue = newScrollValue;
+		}
+		else
+		{
+			// 上限・下限に達した場合はスクロール値をそのままにする
+			scrollDelta = 0;
+		}
 
 		// マウスホイールの前回のTrueの値を保持
 		m_tempScrollValue = m_scrollWheelValue;
+
+		// スクロールがクランプされている間に回された分を戻す
+		if (m_scrollWheelValue == MAX_SCROLL_VALUE && scrollDelta > 0)
+		{
+			m_scrollWheelValue -= scrollDelta;
+		}
+		else if (m_scrollWheelValue == MIN_SCROLL_VALUE && scrollDelta < 0)
+		{
+			m_scrollWheelValue -= scrollDelta;
+		}
 	}
 	// 非カメラモードの時の処理
 	else
 	{
 		// フラグがFalseの場合は前回のTrueの値を代入
-		m_scrollWheelValue = m_tempScrollValue; 
+		m_scrollWheelValue = m_tempScrollValue;
 	}
 
 	// ビュー行列の算出
 	CalculateViewMatrix();
 
 	// 前回のフラグを更新
-	is_prevEagleMode = is_eagleMode; 
+	is_prevEagleMode = is_eagleMode;
 
-	// マウスホイールの前回の値を更新
+	// マウスホイールの前回の値を更新(一連の作業が終わってから更新する)
 	m_prevScrollWheelValue = state.scrollWheelValue;
 
 }

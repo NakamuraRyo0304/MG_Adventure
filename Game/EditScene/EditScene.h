@@ -29,7 +29,7 @@ private:
 	// ボックスとスフィア
 	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere,m_box;
 	DirectX::SimpleMath::Vector3 m_spherePos;
-	EditObject m_obj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
+	EditObject m_grassObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
 
 	// マップ
 	MapLoad m_map;

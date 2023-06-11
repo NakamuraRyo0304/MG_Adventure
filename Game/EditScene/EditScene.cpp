@@ -30,7 +30,7 @@ EditScene::EditScene() :
 	m_sphere{},						// 球
 	m_spherePos{},
 	m_box{},						// 箱
-	m_obj{},
+	m_grassObj{},
 	m_nowState{},					// 現在のブロックの種類
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
@@ -163,23 +163,23 @@ void EditScene::Draw()
 		m_sphere->Draw(world, view, projection, DirectX::Colors::Red);
 	}
 
-	// ボックスの描画
+	// 草オブジェクトの描画
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			for (int h = 0; h < m_obj[y][x].state % 100; h++)
+			for (int h = 0; h < m_grassObj[y][x].state % 100; h++)
 			{
-				m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
+				m_grassObj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
 
 				// ボックスの移動
 				DirectX::SimpleMath::Matrix boxWorldMat =
-					DirectX::SimpleMath::Matrix::CreateTranslation(m_obj[y][x].position);
+					DirectX::SimpleMath::Matrix::CreateTranslation(m_grassObj[y][x].position);
 
-				if (m_obj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
+				if (m_grassObj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
 				
 				// 描画処理
-				if (m_obj[y][x].hitFlag)
+				if (m_grassObj[y][x].hitFlag)
 				{
 					m_grassBlockModel_D->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 						*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
@@ -187,20 +187,10 @@ void EditScene::Draw()
 				else
 				{
 					// 草ブロック
-					if (m_obj[y][x].state - m_obj[y][x].state % 100 == MapLoad::BoxState::GrassBox)
+					if (m_grassObj[y][x].state - m_grassObj[y][x].state % 100 == MapLoad::BoxState::GrassBox)
 					{
 						m_grassBlockModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 							*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
-					}
-					// 雲ブロック
-					else if (m_obj[y][x].state - m_obj[y][x].state % 100 == MapLoad::BoxState::ClowdBox)
-					{
-						m_coinModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-							*GetSystemManager()->GetCommonStates(), boxWorldMat, view, projection, false);
-					}
-					else if (m_obj[y][x].state - m_obj[y][x].state % 100 == MapLoad::BoxState::CoinBox)
-					{
-
 					}
 				}
 			}
@@ -351,9 +341,9 @@ void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			for (int h = 0; h < m_obj[y][x].state % 100; h++)
+			for (int h = 0; h < m_grassObj[y][x].state % 100; h++)
 			{
-				m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
+				m_grassObj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
 
 				// 移動処理
 				m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x / COMMON_SIZE;
@@ -361,39 +351,32 @@ void EditScene::EditMap(DirectX::Keyboard::State& keyState)
 				if (GetSystemManager()->GetStateTrack()->pressed.Z) m_spherePos.y += COMMON_SIZE / 225;
 				if (GetSystemManager()->GetStateTrack()->pressed.X) m_spherePos.y -= COMMON_SIZE / 225;
 
-				m_boxCol.PushBox(&m_spherePos, m_obj[y][x].position,							// スフィア＆ボックス
+				m_boxCol.PushBox(&m_spherePos, m_grassObj[y][x].position,							// スフィア＆ボックス
 					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },							// サイズ
 					DirectX::SimpleMath::Vector3{ COMMON_SIZE }									// サイズ
 				);
 
 				// 当っていたらTrueにする
-				m_obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
+				m_grassObj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
 
-				m_aabbCol.HitAABB_2D(m_spherePos, m_obj[y][x].position,	// スフィア＆ボックス
+				m_aabbCol.HitAABB_2D(m_spherePos, m_grassObj[y][x].position,	// スフィア＆ボックス
 					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },	// サイズ
 					DirectX::SimpleMath::Vector3{ COMMON_SIZE }			// サイズ
 				);
 
 				// 左クリックでブロックの追加＆削除
-				if (m_obj[y][x].hitFlag &&
+				if (m_grassObj[y][x].hitFlag &&
 					GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
 					is_upFlag)
 				{
-					m_obj[y][x].state += 1;
+					m_grassObj[y][x].state += 1;
 				}
-				if (m_obj[y][x].hitFlag &&
+				if (m_grassObj[y][x].hitFlag &&
 					GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
 					!is_upFlag)
 				{
-					m_obj[y][x].state -= 1;
+					m_grassObj[y][x].state -= 1;
 				}
-
-				// ブロックの値が異なるため、現在のステータス分を減算
-				int temp = m_obj[y][x].state - m_nowState;
-				// クランプ処理
-				temp = UserUtillity::Clamp(temp, 1, 15);
-				// 現在のステータス分を加算
-				m_obj[y][x].state = m_nowState + temp;
 			}
 		}
 	}
@@ -416,12 +399,12 @@ void EditScene::LoadMap(int num)
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{			
 			// 配列のごみを除去
-			m_obj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
+			m_grassObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
 
-			m_obj[y][x].state = m_map.GetMapData(x,y);
+			m_grassObj[y][x].state = m_map.GetMapData(x,y);
 
 			// ボックスの位置を初期化
-			m_obj[y][x].position =
+			m_grassObj[y][x].position =
 			{
 				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
 				COMMON_LOW + COMMON_SIZE,									// ブロックの最低高度
@@ -441,7 +424,7 @@ void EditScene::SaveFile()
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			m_map.SetMapData(m_obj[y][x].state, x, y);
+			m_map.SetMapData(m_grassObj[y][x].state, x, y);
 		}
 	}
 	// ファイル書き出し

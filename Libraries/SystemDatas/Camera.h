@@ -18,6 +18,10 @@ public:
 	// カメラの移動速度
 	const static float DEFAULT_CAMERA_SPEED;
 
+	// カメラホイール上下限
+	const static int MAX_SCROLL_VALUE;
+	const static int MIN_SCROLL_VALUE;
+
 private:
 	// 回転角
 	DirectX::SimpleMath::Vector2 m_angle;
