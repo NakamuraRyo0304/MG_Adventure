@@ -43,6 +43,16 @@ private:
 	// 重力
 	float m_gravity;
 
+	// マップサイズ(Stage)
+	const float COMMON_SIZE = 1.0f;
+
+	// 最低高度
+	const float	COMMON_LOW = COMMON_SIZE / 2;
+
+	// カメラアングル
+	const float	CAMERA_ANGLE = 45.0f;
+
+
 public:
 
 	// コンストラクタ

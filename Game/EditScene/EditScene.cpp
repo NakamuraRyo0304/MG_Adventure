@@ -9,26 +9,9 @@
 
 #include "EditScene.h"
 
-// マップサイズ(Stage)
-#define			COMMON_SIZE			1.0f
-
-// 最低高度
-#define			COMMON_LOW			COMMON_SIZE / 2
-
-// カメラアングル
-#define			CAMERA_ANGLE		45.0f
-
-// 画像の中心位置
-#define			IMAGE_CENTER		128
-
-// ボックスの最大値と最小値
-#define			MAX_BOX				15
-#define			MIN_BOX				1
-
-
- //--------------------------------------------------------//
- //コンストラクタ                                          //
- //--------------------------------------------------------//
+//--------------------------------------------------------//
+//コンストラクタ                                          //
+//--------------------------------------------------------//
 EditScene::EditScene() :
 	IScene(),
 	m_sphere{},						// 球
@@ -115,11 +98,6 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	// UIの処理
 	ClickUserInterface(mouseState);
-
-	for (int y = 0; y < 10; y++)
-	{
-		m_coinObj[y][y].position.y += sinf(elapsedTime);
-	}
 
 	// ファイルの読み込み
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Left))
@@ -438,7 +416,7 @@ void EditScene::LoadMap(std::wstring filename)
 //--------------------------------------------------------//
 void EditScene::ChoiceObj(EditObject(&obj)[15][15], int x, int y, int State)
 {
-	for (int h = 0; h < obj[y][x].state % 100; h++)
+	for (int h = 0; h < m_map.MAP_HEIGHT; h++)
 	{
 		obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
 

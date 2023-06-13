@@ -9,16 +9,6 @@
 
 #include "PlayScene.h"
 
- // マップサイズ(Stage)
-#define			COMMON_SIZE			1.0f
-
-// 最低高度
-#define			COMMON_LOW			COMMON_SIZE / 2
-
-// カメラアングル
-#define			CAMERA_ANGLE		45.0f
-
-
  //--------------------------------------------------------//
  //コンストラクタ                                          //
  //--------------------------------------------------------//
@@ -221,7 +211,7 @@ void PlayScene::DoBoxCollision()
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{
-			for (int h = 0; h < m_obj[y][x].state % 100; h++)
+			for (int h = 0; h < static_cast<int>(m_obj[y][x].state % 100); h++)
 			{
 				m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE; // 最低座標＋任意の高さ
 
