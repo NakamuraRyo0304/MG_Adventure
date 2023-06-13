@@ -23,6 +23,7 @@ private:
 	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere,m_box;
 	DirectX::SimpleMath::Vector3 m_spherePos;
 
+	// ブロックの配列
 	std::vector<Object> m_mapObj;
 
 	// マップ

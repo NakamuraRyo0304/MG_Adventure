@@ -45,6 +45,8 @@ void MapLoad::LoadMap(std::wstring filename)
 
 	std::string line;
 
+	std::vector<Object> newObj;
+
 	while (std::getline(ifs, line)) 
 	{
 		// カンマを空白に変更
@@ -55,28 +57,17 @@ void MapLoad::LoadMap(std::wstring filename)
 
 		Object obj;
 
-		// マップステータスID データを読み終わったら終了
-		if (!(iss >> obj.id)) 
-		{
-			return;
-		}
-		// 座標情報 データを読み終わったら終了
-		if (!(iss >> obj.position.x)) 
-		{
-			return;
-		}
-		if (!(iss >> obj.position.y)) 
-		{
-			return;
-		}
-		if (!(iss >> obj.position.z)) 
-		{
-			return;
-		}
+		// データがなくなったら処理しない
+		if (!(iss >> obj.id)) return;
 
-		// 読み込んだデータを格納する
-		m_mapData.push_back(obj);
+		// 読み込んだデータを保存
+		iss >> obj.id >> obj.position.x >> obj.position.y >> obj.position.z;
+	
+		newObj.push_back(obj);
 	}
+
+	// 読み込んだ値を格納する
+	m_mapData = newObj;
 
 	// 開いたファイルを閉じる
 	ifs.close();

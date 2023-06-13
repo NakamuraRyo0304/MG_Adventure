@@ -66,7 +66,7 @@ void EditScene::Initialize()
 	);
 
 	// マップ読み込み
-	m_map.LoadMap(L"");
+	LoadMap(L"");
 
 	// 初期値は草ブロック
 	m_nowState = MapLoad::BoxState::GrassBox;
@@ -101,7 +101,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	{
 		m_map.CreateNewMap();			// ファイル新規作成
 		m_mapObj = m_map.GetMapData();	// 読み込み
-		OffsetPosition_Read(&m_mapObj);		// 座標補正
+		OffsetPosition_Read(&m_mapObj);	// 座標補正
 	}
 
 	// ステータス変更
@@ -166,14 +166,15 @@ void EditScene::Draw()
 	// 非カメラモードのみ描画
 	if (!is_cameraFlag)
 	{
-		m_sphere->Draw(world, view, projection, DirectX::Colors::Red);
+		m_sphere->Draw(world, view, projection, DirectX::Colors::Black);
 	}
 		
 	// オブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
 		DirectX::SimpleMath::Matrix boxMat = 
-			DirectX::SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position * COMMON_SIZE);
+			DirectX::SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+
 		if (m_mapObj[i].id == MapLoad::BoxState::GrassBox)
 		{
 			m_grassBlockModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
