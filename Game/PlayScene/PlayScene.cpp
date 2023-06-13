@@ -132,28 +132,6 @@ void PlayScene::Draw()
 		DirectX::SimpleMath::Matrix::CreateTranslation(m_playerPos);
 	m_player->Draw(context, states, playerWorldMat, view, projection, false);
 
-	// ボックスの描画
-	for (int y = 0; y < m_map.MAP_RAW; y++)
-	{
-		for (int x = 0; x < m_map.MAP_COLUMN; x++)
-		{
-			for (int h = 0; h < m_obj[y][x].state % 100; h++)
-			{
-				m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE; // 最低座標＋任意の高さ
-
-				// ボックスの移動
-				DirectX::SimpleMath::Matrix boxWorldMat =
-					DirectX::SimpleMath::Matrix::CreateTranslation(m_obj[y][x].position);
-
-				if (m_obj[y][x].state % 100 == MapLoad::BoxState::None) return;	// ボックスがなければ描画しない
-
-				m_grassBox->Draw(context, states, boxWorldMat, view, projection, false);
-
-			}
-		}
-	}
-
-	// デバッグ表示
 	DebugLog(view, projection);
 }
 
@@ -206,23 +184,23 @@ void PlayScene::CreateWindowDependentResources()
 void PlayScene::DoBoxCollision()
 {
 	m_boxCol.SetPushMode(true);
-	// 当たり判定
-	for (int y = 0; y < m_map.MAP_RAW; y++)
-	{
-		for (int x = 0; x < m_map.MAP_COLUMN; x++)
-		{
-			for (int h = 0; h < static_cast<int>(m_obj[y][x].state % 100); h++)
-			{
-				m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE; // 最低座標＋任意の高さ
+	//// 当たり判定
+	//for (int y = 0; y < m_map.MAP_RAW; y++)
+	//{
+	//	for (int x = 0; x < m_map.MAP_COLUMN; x++)
+	//	{
+	//		for (int h = 0; h < static_cast<int>(m_obj[y][x].state % 100); h++)
+	//		{
+	//			m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE; // 最低座標＋任意の高さ
 
-				m_boxCol.PushBox(&m_playerPos, m_obj[y][x].position,   // プレイヤ＆ボックス
-					DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},	   // サイズ
-					DirectX::SimpleMath::Vector3{ COMMON_SIZE }		   // サイズ
-				);
-			}
-		}
-	}
-	
+	//			m_boxCol.PushBox(&m_playerPos, m_obj[y][x].position,   // プレイヤ＆ボックス
+	//				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},	   // サイズ
+	//				DirectX::SimpleMath::Vector3{ COMMON_SIZE }		   // サイズ
+	//			);
+	//		}
+	//	}
+	//}
+	//
 	// 上に当たったら重力をリセット
 	if (m_boxCol.GetHitFace() != Collider::BoxCollider::HIT_FACE::DOWN)
 	{
@@ -307,25 +285,25 @@ void PlayScene::LoadMap(int num)
 	// マップの読み込み
 	m_map.LoadMap(filePath);
 
-	// マップの格納
-	for (int y = 0; y < m_map.MAP_RAW; y++)
-	{
-		for (int x = 0; x < m_map.MAP_COLUMN; x++)
-		{
-			// ステートをセット
-			m_obj[y][x].state = m_map.GetMapData(x, y);
+	//// マップの格納
+	//for (int y = 0; y < m_map.MAP_RAW; y++)
+	//{
+	//	for (int x = 0; x < m_map.MAP_COLUMN; x++)
+	//	{
+	//		// ステートをセット
+	//		m_obj[y][x].state = m_map.GetMapData(x, y);
 
-			// 配列のごみを除去
-			m_obj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
-								
-			// ボックスの位置を初期化
-			m_obj[y][x].position =
-			{
-				x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),							// ブロックの位置 - オフセット
-				COMMON_LOW,						 												// ブロック初期位置
-				y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)								// ブロックの位置 - オフセット
-			};
-			
-		}
-	}
+	//		// 配列のごみを除去
+	//		m_obj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
+	//							
+	//		// ボックスの位置を初期化
+	//		m_obj[y][x].position =
+	//		{
+	//			x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),							// ブロックの位置 - オフセット
+	//			COMMON_LOW,						 												// ブロック初期位置
+	//			y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)								// ブロックの位置 - オフセット
+	//		};
+	//		
+	//	}
+	//}
 }

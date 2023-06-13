@@ -15,15 +15,12 @@
 EditScene::EditScene() :
 	IScene(),
 	m_sphere{},						// 球
-	m_spherePos{0.0f,COMMON_LOW ,0.0f},
+	m_spherePos{0.0f,0.0f,0.0f},
 	m_box{},						// 箱
 	m_mapObj{},						// 格納配列
-	m_grassObj{},
-	m_coinObj{},
-	m_clowdObj{},
 	m_nowState{},					// 現在のブロックの種類
 	m_map{},						// マップ
-	m_boxCol{},						// 立方体当たり判定
+	is_boxCol{},						// 立方体当たり判定
 	m_grassBlockModel{ nullptr },	// モデル
 	m_grassBlockModel_D{ nullptr },	
 	m_coinModel{ nullptr },
@@ -69,7 +66,7 @@ void EditScene::Initialize()
 	);
 
 	// マップ読み込み
-	LoadMap(L"Resources/Maps/Stage1.csv");
+	m_map.LoadMap(L"");
 
 	// 初期値は草ブロック
 	m_nowState = MapLoad::BoxState::GrassBox;
@@ -102,7 +99,9 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// ファイルの読み込み
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Left))
 	{
-		LoadMap(L""); // 空白の時はダイアログを開く
+		m_map.CreateNewMap();			// ファイル新規作成
+		m_mapObj = m_map.GetMapData();	// 読み込み
+		OffsetPosition_Read(&m_mapObj);		// 座標補正
 	}
 
 	// ステータス変更
@@ -169,15 +168,23 @@ void EditScene::Draw()
 	{
 		m_sphere->Draw(world, view, projection, DirectX::Colors::Red);
 	}
-
-	// 描画用配列
-	DirectX::SimpleMath::Matrix objMat[2] = { view,projection };
-	
-	// 草オブジェクトの描画
-	DrawObj(m_grassObj, MapLoad::BoxState::GrassBox, objMat,std::move(m_grassBlockModel));
-	
-	// コインオブジェクトの描画
-	DrawObj(m_coinObj, MapLoad::BoxState::CoinBox, objMat, std::move(m_coinModel));
+		
+	// オブジェクトの描画
+	for (int i = 0; i < m_mapObj.size(); i++)
+	{
+		DirectX::SimpleMath::Matrix boxMat = 
+			DirectX::SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position * COMMON_SIZE);
+		if (m_mapObj[i].id == MapLoad::BoxState::GrassBox)
+		{
+			m_grassBlockModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+				*GetSystemManager()->GetCommonStates(), boxMat, view, projection);
+		}
+		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
+		{
+			m_coinModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+				*GetSystemManager()->GetCommonStates(), boxMat, view, projection);
+		}
+	}
 
 	// 画像の描画
 	DrawImages();
@@ -336,37 +343,54 @@ void EditScene::EditMap()
 	// 移動処理
 	m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
 	m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
-	
-	if (!is_cameraFlag)
-	{
-		m_spherePos.y = UserUtillity::Lerp(m_spherePos.y, mouse.scrollWheelValue / 640.0f + COMMON_LOW, 0.1f);
-	}
 
-	// 当たり判定
-	for (int y = 0; y < m_map.MAP_RAW; y++)
+	// カメラモードは処理しない
+	if (is_cameraFlag) return;
+
+	// マウスカーソルで移動
+	m_spherePos.y = UserUtillity::Lerp(m_spherePos.y, mouse.scrollWheelValue / 640.0f + COMMON_LOW, 0.1f);
+
+	// マップとの当たり判定
+	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		for (int x = 0; x < m_map.MAP_COLUMN; x++)
+		// 押し戻し処理を無効化
+		is_boxCol.SetPushMode(false);
+
+		// 当たり判定を取る
+		is_boxCol.PushBox(&m_spherePos, m_mapObj[i].position,
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE });
+		bool hit = is_boxCol.GetHitBoxFlag();
+		
+		if (hit && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
 		{
-			if (m_nowState == MapLoad::BoxState::GrassBox)
-			{
-				ChoiceObj(m_grassObj, x, y, MapLoad::BoxState::GrassBox);
-			}
-			if (m_nowState == MapLoad::BoxState::CoinBox)
-			{
-				ChoiceObj(m_coinObj, x, y, MapLoad::BoxState::CoinBox);
-			}
+			m_mapObj[i].id = m_nowState;
 		}
 	}
 }
 
 //--------------------------------------------------------//
-//クランプ処理                                            //
+//座標の補正                                              //
 //--------------------------------------------------------//
-void EditScene::ClampHeight(int& states, int id)
+// 読み込み時
+void EditScene::OffsetPosition_Read(std::vector<Object>* obj)
 {
-	int temp = states - id;
-	temp = UserUtillity::Clamp(temp, MIN_BOX, MAX_BOX);
-	states = id + temp;
+	for (int i = 0; i < (*obj).size(); i++)
+	{
+		(*obj)[i].position.x -= (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
+		(*obj)[i].position.y += COMMON_LOW;
+		(*obj)[i].position.z -= (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
+	}
+}
+// 書き込み時
+void EditScene::OffsetPosition_Write(std::vector<Object>* obj)
+{
+	for (int i = 0; i < (*obj).size(); i++)
+	{
+		(*obj)[i].position.x += (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
+		(*obj)[i].position.y -= COMMON_LOW;
+		(*obj)[i].position.z += (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
+	}
 }
 
 //--------------------------------------------------------//
@@ -376,157 +400,18 @@ void EditScene::LoadMap(std::wstring filename)
 {
 	// マップの読み込み
 	m_map.LoadMap(filename);
-
-	// マップの格納
-	for (int y = 0; y < m_map.MAP_RAW; y++)
-	{
-		for (int x = 0; x < m_map.MAP_COLUMN; x++)
-		{			
-			switch (m_map.GetMapData(x, y) - m_map.GetMapData(x, y) % 100)
-			{
-			case MapLoad::BoxState::GrassBox: // 草ブロック
-				m_grassObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
-				m_grassObj[y][x].state = m_map.GetMapData(x, y);
-				m_grassObj[y][x].position =
-				{
-					x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-					COMMON_LOW + COMMON_SIZE,									// ブロックの最低高度
-					y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
-				};
-				break;
-			case MapLoad::BoxState::CoinBox: // コイン
-				m_coinObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
-				m_coinObj[y][x].state = m_map.GetMapData(x, y);
-				m_coinObj[y][x].position =
-				{
-					x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-					COMMON_LOW + COMMON_SIZE,									// ブロックの最低高度
-					y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
-				};
-				break;
-			default:
-				break;
-			}
-		}
-	}
-}
-
-//--------------------------------------------------------//
-//マウスとオブジェの当たり判定                            //
-//--------------------------------------------------------//
-void EditScene::ChoiceObj(EditObject(&obj)[15][15], int x, int y, int State)
-{
-	for (int h = 0; h < m_map.MAP_HEIGHT; h++)
-	{
-		obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
-
-		m_boxCol.PushBox(&m_spherePos, obj[y][x].position,					// オブジェクト
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },				// サイズ
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE }						// サイズ
-		);
-
-		// 当っていたらTrueにする
-		obj[y][x].hitFlag = m_boxCol.GetHitBoxFlag();
-
-		// 左クリックでブロックの追加＆削除
-		if (obj[y][x].hitFlag &&
-			GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
-			is_upFlag)
-		{
-			obj[y][x].state += 1;
-		}
-		if (obj[y][x].hitFlag &&
-			GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED &&
-			!is_upFlag)
-		{
-			obj[y][x].state -= 1;
-		}
-
-		// クランプ処理
-		ClampHeight(obj[y][x].state, State);
-	}
+	m_mapObj = m_map.GetMapData();
 }
 
 //--------------------------------------------------------//
 //ファイルを書きだす                                      //
 //--------------------------------------------------------//
 void EditScene::SaveFile()
-{
-	// 内容を記録
-	for (int y = 0; y < m_map.MAP_RAW; y++)
-	{
-		for (int x = 0; x < m_map.MAP_COLUMN; x++)
-		{
-			// FIXED::テスト用のため、草ブロックを格納している
-			m_map.SetMapData(m_grassObj[y][x].state, x, y);
-		}
-	}
+{	
 	// ファイル書き出し
-	m_map.WriteMap();
-}
-
-//--------------------------------------------------------//
-//オブジェクトの描画                                      //
-//--------------------------------------------------------//
-// 第１引数：描画したいオブジェクト配列 第２引数：マップのステータス 第３引数：(view,proj) 第４引数：モデル
-void EditScene::DrawObj(EditObject(&obj)[15][15], int State, DirectX::SimpleMath::Matrix matrix[2],
-	std::unique_ptr<DirectX::Model>&& model)
-{
-	switch (State)
-	{
-	case MapLoad::BoxState::GrassBox:
-		for (int y = 0; y < m_map.MAP_RAW; y++)
-		{
-			for (int x = 0; x < m_map.MAP_COLUMN; x++)
-			{
-				for (int h = 0; h < obj[y][x].state % 100; h++)
-				{
-					obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
-
-					// ボックスの移動
-					DirectX::SimpleMath::Matrix boxWorldMat =
-						DirectX::SimpleMath::Matrix::CreateTranslation(obj[y][x].position);
-
-					if (obj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
-
-					// 描画処理
-					if (obj[y][x].state - obj[y][x].state % 100 == State)
-					{
-						model->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-							*GetSystemManager()->GetCommonStates(), boxWorldMat, matrix[0], matrix[1], false);
-					}
-				}
-			}
-		}
-		break;
-		
-	case MapLoad::BoxState::CoinBox:
-		for (int y = 0; y < m_map.MAP_RAW; y++)
-		{
-			for (int x = 0; x < m_map.MAP_COLUMN; x++)
-			{
-				obj[y][x].position.y = COMMON_LOW + obj[y][x].state % 100 * COMMON_SIZE;
-
-				// ボックスの移動
-				DirectX::SimpleMath::Matrix boxWorldMat =
-					DirectX::SimpleMath::Matrix::CreateTranslation(obj[y][x].position);
-
-				if (obj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
-
-				// 描画処理
-				if (obj[y][x].state - obj[y][x].state % 100 == State)
-				{
-					model->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-						*GetSystemManager()->GetCommonStates(), boxWorldMat, matrix[0], matrix[1], false);
-				}				
-			}
-		}
-		break;
-
-	default:
-		break;
-	}
-	
+	OffsetPosition_Write(&m_mapObj);		// 書き出し用に座標補正
+	m_map.WriteMap(m_mapObj);				// ファイルの書き出し
+	OffsetPosition_Read(&m_mapObj);			// エディット用に座標補正
 }
 
 //--------------------------------------------------------//

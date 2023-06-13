@@ -16,29 +16,20 @@
 
 #include "../../Libraries/SystemDatas/Collider.h"
 
-struct EditObject
-{
-	DirectX::SimpleMath::Vector3 position;		// 座標
-	bool hitFlag;								// 当たり判定フラグ
-	int state;									// マップのステータス
-};
-
 class EditScene : public IScene
 {
 private:
 	// ボックスとスフィア
 	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere,m_box;
 	DirectX::SimpleMath::Vector3 m_spherePos;
-	EditObject m_grassObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
-	EditObject m_coinObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
-	EditObject m_clowdObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
-	EditObject m_mapObj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
+
+	std::vector<Object> m_mapObj;
 
 	// マップ
 	MapLoad m_map;
 
 	// 当たり判定
-	Collider::BoxCollider m_boxCol;
+	Collider::BoxCollider is_boxCol;
 	Collider::AABBCollider m_aabbCol;
 
 	// モデル
@@ -108,20 +99,15 @@ public:
 	// マップを編集
 	void EditMap();
 
-	// 当たり判定関数
-	void ChoiceObj(EditObject (&obj)[15][15], int x, int y , int State);
-
-	// 高さのクランプ
-	void ClampHeight(int& states, int id);
-
+	// 座標補正関数
+	void OffsetPosition_Read(std::vector<Object>* obj);
+	void OffsetPosition_Write(std::vector<Object>* obj);
+	
 	// マップ読み込み
 	void LoadMap(std::wstring filename);
 
 	// ファイルをセーブする
 	void SaveFile();
-
-	// ボックスを描画
-	void DrawObj(EditObject(&obj)[15][15],int State,DirectX::SimpleMath::Matrix[2], std::unique_ptr<DirectX::Model>&&);
 
 	// 画像の描画
 	void DrawImages();

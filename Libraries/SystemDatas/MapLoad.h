@@ -9,6 +9,14 @@
 #ifndef MAPLOAD
 #define MAPLOAD
 
+#include <vector>
+
+struct Object
+{
+	int id = 0;									// マップID
+	DirectX::SimpleMath::Vector3 position;		// 座標
+};
+
 class MapLoad
 {
 public:
@@ -22,15 +30,15 @@ public:
 	// エリアボックスのステータス
 	struct BoxState
 	{
-		static const int GrassBox = 100;		// 草のブロック
-		static const int ClowdBox = 200;		// コインのブロック
-		static const int CoinBox  = 300;		// 雲のブロック
-		static const int None = 0;				// データなし
+		static const int GrassBox = 1;		// 草のブロック
+		static const int ClowdBox = 2;		// コインのブロック
+		static const int CoinBox  = 3;		// 雲のブロック
+		static const int None = 0;			// データなし
 	};
 
 private:
 	// マップデータ格納用配列
-	int m_mapData[MAP_RAW][MAP_COLUMN];
+	std::vector<Object> m_mapData;
 
 	// 保存先ファイルパス
 	std::wstring m_filename;
@@ -53,16 +61,13 @@ public:
 	void LoadMap(std::wstring filename);
 
 	// マップの書き出し
-	void WriteMap();
-
-	// マップデータの保存
-	void SetMapData(int state, int x, int y);
+	void WriteMap(std::vector<Object> obj);
 
 	// エディットモード切替
 	void SetEditMode(const bool& flag) { is_editMode = flag; }
 
 	// マップのデータを渡す
-	int GetMapData(int x, int y) { return m_mapData[y][x]; }
+	std::vector<Object> GetMapData() { return m_mapData; }
 
 	// マップのパス名を渡す
 	std::wstring GetFilePath() { return m_filename; }
@@ -76,6 +81,10 @@ private:
 
 	// 拡張子がついていない場合に自動で拡張子を追加する関数
 	std::wstring AutoAddExtension(const std::wstring& filePath, const std::wstring& extension);
+
+public:
+	// 新しくマップを作成する
+	void CreateNewMap();
 
 };
 

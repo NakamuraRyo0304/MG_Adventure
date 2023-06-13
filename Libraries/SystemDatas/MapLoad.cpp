@@ -34,53 +34,50 @@ MapLoad::MapLoad() :
  //--------------------------------------------------------//
 void MapLoad::LoadMap(std::wstring filename)
 {
-	// ファイル名の保存
 	m_filename = filename;
 
-	// もしファイル名が空だったらダイアログを開く
-	if (filename.empty())
+	std::ifstream ifs(m_filename);
+
+	if (!ifs) 
 	{
 		LoadMapPath();
 	}
 
-	// ファイル読み込み変数定義
-	std::ifstream ifs;
+	std::string line;
 
-	// ファイルを読み取り専用で開く
-	ifs.open(m_filename, std::ios::in | std::ios::binary);
-
-	// ファイルが開けなかった場合はエラーメッセージを出す
-	if (!ifs)
+	while (std::getline(ifs, line)) 
 	{
-		MessageBoxA(0, "ファイルを開けませんでした", NULL, MB_OK);
-		return;         // 早期リターン
-	}
-
-	// 一行分（横方向）のデータを列数分（縦方向）入れる配列
-	std::string s[MAP_RAW];
-
-	for (int y = 0; y < MAP_RAW; y++)
-	{
-		// 一行分のデータを読み込む
-		std::getline(ifs, s[y]);
-
 		// カンマを空白に変更
-		std::string tmp = std::regex_replace(s[y], std::regex(","), " ");
+		std::string tmp = std::regex_replace(line, std::regex(","), " ");
 
 		// 空白で分割する
 		std::istringstream iss(tmp);
-		for (int x = 0; x < MAP_COLUMN; x++)
+
+		Object obj;
+
+		// マップステータスID データを読み終わったら終了
+		if (!(iss >> obj.id)) 
 		{
-			// null(-1)を入れる
-			int num = -1;
-
-			// 空白までのデータ（一つ分のデータ）を読み込む
-			iss >> num;
-
-			// 読み込んだデータを格納する
-			m_mapData[y][x] = num;
+			return;
 		}
+		// 座標情報 データを読み終わったら終了
+		if (!(iss >> obj.position.x)) 
+		{
+			return;
+		}
+		if (!(iss >> obj.position.y)) 
+		{
+			return;
+		}
+		if (!(iss >> obj.position.z)) 
+		{
+			return;
+		}
+
+		// 読み込んだデータを格納する
+		m_mapData.push_back(obj);
 	}
+
 	// 開いたファイルを閉じる
 	ifs.close();
 }
@@ -88,36 +85,26 @@ void MapLoad::LoadMap(std::wstring filename)
 //--------------------------------------------------------//
 //ファイルを書きだす関数                                  //
 //--------------------------------------------------------//
-void MapLoad::WriteMap()
+void MapLoad::WriteMap(std::vector<Object> obj)
 {
 	// ファイルパスを指定
 	SaveMapPath(m_filename);
 
-	// ファイルを開く
-	std::ofstream ofs(m_filename);
+	// ファイル出力変数を定義
+	std::ofstream outputFile(m_filename);
 
-	// マップデータをファイルに書き出す
-	for (int y = 0; y < MAP_RAW; y++)
+	// ファイルがなければ処理しない
+	if (!outputFile)return;
+
+	// ファイルを出力する
+	for (const auto& o : obj)
 	{
-		for (int x = 0; x < MAP_COLUMN; x++)
-		{
-			// 0番目に高さ情報を格納している
-			ofs << m_mapData[y][x]<< ",";
-		}
-		ofs << std::endl;
+		std::ostringstream oss;
+		oss << o.id << "," << o.position.x << "," << o.position.y << "," << o.position.z << ",\n";
+		outputFile << oss.str();
 	}
 
-	// ファイルを閉じる
-	ofs.close();
-}
-
-//--------------------------------------------------------//
-//マップデータの格納                                      //
-//--------------------------------------------------------//
-// 第１引数：マップの値 第２、３引数：配列番号
-void MapLoad::SetMapData(int state, int x, int y)
-{
-	m_mapData[y][x] = state;
+	outputFile.close();
 }
 
 //--------------------------------------------------------//
@@ -291,6 +278,10 @@ bool MapLoad::LoadMapPath()
 			}
 			pShell->Release();
 		}
+		else
+		{
+			CreateNewMap();
+		}
 	}
 
 	// pFileDialogの解放
@@ -324,4 +315,35 @@ std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::
 		result += extension;
 	}
 	return result;
+}
+
+//--------------------------------------------------------//
+//新しくマップを作る                                      //
+//--------------------------------------------------------//
+void MapLoad::CreateNewMap()
+{
+	std::vector<Object> obj;
+
+	const int initialNumber = 15;
+
+	for (int x = 0; x < initialNumber; ++x)
+	{
+		for (int y = 0; y < initialNumber; ++y)
+		{
+			for (int z = 0; z < initialNumber; ++z)
+			{
+				Object newObj;
+
+				newObj.id = BoxState::None;
+				newObj.position.x = x;
+				newObj.position.y = y;
+				newObj.position.z = z;
+				
+				obj.push_back(newObj);
+			}
+		}
+	}
+
+	// 作ったデータを格納
+	m_mapData = obj;
 }

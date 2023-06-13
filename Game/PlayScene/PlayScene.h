@@ -16,13 +16,6 @@
 
 #include "../../Libraries/SystemDatas/Collider.h"
 
-struct Object
-{
-	DirectX::SimpleMath::Vector3 position;		// 座標
-	bool hitFlag;								// 当たり判定フラグ
-	UINT state;									// マップのステータス
-};
-
 class PlayScene : public IScene
 {
 private:
