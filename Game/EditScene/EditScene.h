@@ -98,7 +98,7 @@ public:
 	void ClampHeight(int& states, int id);
 
 	// マップ読み込み
-	void LoadMap();
+	void LoadMap(std::wstring filename);
 
 	// ファイルをセーブする
 	void SaveFile();

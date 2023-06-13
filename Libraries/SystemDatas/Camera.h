@@ -13,14 +13,14 @@ class Camera
 {
 public:
 	// カメラの距離
-	const static float DEFAULT_CAMERA_DISTANCE;
+	static const float DEFAULT_CAMERA_DISTANCE;
 
 	// カメラの移動速度
-	const static float DEFAULT_CAMERA_SPEED;
+	static const float DEFAULT_CAMERA_SPEED;
 
 	// カメラホイール上下限
-	const static int MAX_SCROLL_VALUE;
-	const static int MIN_SCROLL_VALUE;
+	static const int MAX_SCROLL_VALUE;
+	static const int MIN_SCROLL_VALUE;
 
 private:
 	// 回転角

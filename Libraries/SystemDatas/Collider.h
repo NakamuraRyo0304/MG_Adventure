@@ -28,13 +28,13 @@ namespace Collider
 		// 当った位置
 		struct HIT_FACE
 		{
-			const static unsigned int RIGHT = 11;		// 右
-			const static unsigned int LEFT  = 22;		// 左
-			const static unsigned int UP    = 33;		// 上
-			const static unsigned int DOWN  = 44;		// 下
-			const static unsigned int FRONT = 55;		// 前
-			const static unsigned int BACK  = 66;		// 後ろ
-			const static unsigned int NONE  = 99;		// 当っていない
+			static const unsigned int RIGHT = 11;		// 右
+			static const unsigned int LEFT  = 22;		// 左
+			static const unsigned int UP    = 33;		// 上
+			static const unsigned int DOWN  = 44;		// 下
+			static const unsigned int FRONT = 55;		// 前
+			static const unsigned int BACK  = 66;		// 後ろ
+			static const unsigned int NONE  = 99;		// 当っていない
 		};
 
 	public:

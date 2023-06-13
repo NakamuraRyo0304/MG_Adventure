@@ -86,7 +86,7 @@ void EditScene::Initialize()
 	);
 
 	// マップ読み込み
-	LoadMap();
+	LoadMap(L"Resources/Maps/Stage1.csv");
 
 	// 初期値は草ブロック
 	m_nowState = MapLoad::BoxState::GrassBox;
@@ -115,7 +115,18 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	// UIの処理
 	ClickUserInterface(mouseState);
-	
+
+	for (int y = 0; y < 10; y++)
+	{
+		m_coinObj[y][y].position.y += sinf(elapsedTime);
+	}
+
+	// ファイルの読み込み
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Left))
+	{
+		LoadMap(L""); // 空白の時はダイアログを開く
+	}
+
 	// ステータス変更
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Right))
 	{
@@ -124,10 +135,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 		case MapLoad::BoxState::GrassBox:				// 草→コイン
 			ChangeState(MapLoad::BoxState::CoinBox);
 			break;
-		case MapLoad::BoxState::CoinBox:				// コイン→雲
-			ChangeState(MapLoad::BoxState::ClowdBox);
-			break;
-		case MapLoad::BoxState::ClowdBox:				// 雲→草
+		case MapLoad::BoxState::CoinBox:				// コイン→草
 			ChangeState(MapLoad::BoxState::GrassBox);
 			break;
 		default:
@@ -189,9 +197,6 @@ void EditScene::Draw()
 	
 	// 草オブジェクトの描画
 	DrawObj(m_grassObj, MapLoad::BoxState::GrassBox, objMat,std::move(m_grassBlockModel));
-	
-	// 雲オブジェクトの描画
-	DrawObj(m_clowdObj, MapLoad::BoxState::ClowdBox, objMat, std::move(m_clowdModel));
 	
 	// コインオブジェクトの描画
 	DrawObj(m_coinObj, MapLoad::BoxState::CoinBox, objMat, std::move(m_coinModel));
@@ -372,10 +377,6 @@ void EditScene::EditMap()
 			{
 				ChoiceObj(m_coinObj, x, y, MapLoad::BoxState::CoinBox);
 			}
-			if (m_nowState == MapLoad::BoxState::ClowdBox)
-			{
-				ChoiceObj(m_clowdObj, x, y, MapLoad::BoxState::ClowdBox);
-			}
 		}
 	}
 }
@@ -393,31 +394,21 @@ void EditScene::ClampHeight(int& states, int id)
 //--------------------------------------------------------//
 //マップ読み込み                                          //
 //--------------------------------------------------------//
-void EditScene::LoadMap()
+void EditScene::LoadMap(std::wstring filename)
 {
-	// 空のファイルパスを用意する
-	std::wstring filePath = L"";
-
 	// マップの読み込み
-	m_map.LoadMap(filePath);
+	m_map.LoadMap(filename);
 
 	// マップの格納
 	for (int y = 0; y < m_map.MAP_RAW; y++)
 	{
 		for (int x = 0; x < m_map.MAP_COLUMN; x++)
 		{			
-			// 配列のごみを除去
-			m_grassObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
-			m_clowdObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
-			m_coinObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
-
-			m_grassObj[y][x].state = m_map.GetMapData(x, y);
-			m_clowdObj[y][x].state = m_map.GetMapData(x, y);
-			m_coinObj[y][x].state = m_map.GetMapData(x, y);
-
 			switch (m_map.GetMapData(x, y) - m_map.GetMapData(x, y) % 100)
 			{
-			case MapLoad::BoxState::GrassBox:
+			case MapLoad::BoxState::GrassBox: // 草ブロック
+				m_grassObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
+				m_grassObj[y][x].state = m_map.GetMapData(x, y);
 				m_grassObj[y][x].position =
 				{
 					x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
@@ -425,16 +416,10 @@ void EditScene::LoadMap()
 					y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
 				};
 				break;
-			case MapLoad::BoxState::CoinBox:
+			case MapLoad::BoxState::CoinBox: // コイン
+				m_coinObj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
+				m_coinObj[y][x].state = m_map.GetMapData(x, y);
 				m_coinObj[y][x].position =
-				{
-					x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
-					COMMON_LOW + COMMON_SIZE,									// ブロックの最低高度
-					y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)			// ブロックの位置 - オフセット
-				};
-				break;
-			case MapLoad::BoxState::ClowdBox:
-				m_clowdObj[y][x].position =
 				{
 					x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),		// ブロックの位置 - オフセット
 					COMMON_LOW + COMMON_SIZE,									// ブロックの最低高度
@@ -458,8 +443,8 @@ void EditScene::ChoiceObj(EditObject(&obj)[15][15], int x, int y, int State)
 		obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
 
 		m_boxCol.PushBox(&m_spherePos, obj[y][x].position,					// オブジェクト
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },						// サイズ
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE }								// サイズ
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },				// サイズ
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE }						// サイズ
 		);
 
 		// 当っていたらTrueにする
@@ -509,13 +494,40 @@ void EditScene::SaveFile()
 void EditScene::DrawObj(EditObject(&obj)[15][15], int State, DirectX::SimpleMath::Matrix matrix[2],
 	std::unique_ptr<DirectX::Model>&& model)
 {
-	for (int y = 0; y < m_map.MAP_RAW; y++)
+	switch (State)
 	{
-		for (int x = 0; x < m_map.MAP_COLUMN; x++)
+	case MapLoad::BoxState::GrassBox:
+		for (int y = 0; y < m_map.MAP_RAW; y++)
 		{
-			for (int h = 0; h < obj[y][x].state % 100; h++)
+			for (int x = 0; x < m_map.MAP_COLUMN; x++)
 			{
-				obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
+				for (int h = 0; h < obj[y][x].state % 100; h++)
+				{
+					obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE;
+
+					// ボックスの移動
+					DirectX::SimpleMath::Matrix boxWorldMat =
+						DirectX::SimpleMath::Matrix::CreateTranslation(obj[y][x].position);
+
+					if (obj[y][x].state % 100 == 0) return;	// ボックスがなければ描画しない
+
+					// 描画処理
+					if (obj[y][x].state - obj[y][x].state % 100 == State)
+					{
+						model->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+							*GetSystemManager()->GetCommonStates(), boxWorldMat, matrix[0], matrix[1], false);
+					}
+				}
+			}
+		}
+		break;
+		
+	case MapLoad::BoxState::CoinBox:
+		for (int y = 0; y < m_map.MAP_RAW; y++)
+		{
+			for (int x = 0; x < m_map.MAP_COLUMN; x++)
+			{
+				obj[y][x].position.y = COMMON_LOW + obj[y][x].state % 100 * COMMON_SIZE;
 
 				// ボックスの移動
 				DirectX::SimpleMath::Matrix boxWorldMat =
@@ -528,10 +540,15 @@ void EditScene::DrawObj(EditObject(&obj)[15][15], int State, DirectX::SimpleMath
 				{
 					model->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
 						*GetSystemManager()->GetCommonStates(), boxWorldMat, matrix[0], matrix[1], false);
-				}
+				}				
 			}
 		}
+		break;
+
+	default:
+		break;
 	}
+	
 }
 
 //--------------------------------------------------------//

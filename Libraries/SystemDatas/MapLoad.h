@@ -13,19 +13,19 @@ class MapLoad
 {
 public:
 	// 横の長さ
-	const static int MAP_COLUMN = 15;
+	static const int MAP_COLUMN = 15;
 	// 縦の長さ
-	const static int MAP_RAW = 15;
+	static const int MAP_RAW = 15;
 	// 足場の高さ
-	const static int MAP_HEIGHT = 15;
+	static const int MAP_HEIGHT = 15;
 
 	// エリアボックスのステータス
 	struct BoxState
 	{
-		const static int GrassBox = 100;		// 草のブロック
-		const static int ClowdBox = 200;		// コインのブロック
-		const static int CoinBox  = 300;		// 雲のブロック
-		const static int None = 0;				// データなし
+		static const int GrassBox = 100;		// 草のブロック
+		static const int ClowdBox = 200;		// コインのブロック
+		static const int CoinBox  = 300;		// 雲のブロック
+		static const int None = 0;				// データなし
 	};
 
 private:
