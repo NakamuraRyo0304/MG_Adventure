@@ -51,6 +51,9 @@ private:
 	// 現在のブロックステータス
 	int m_nowState;
 
+	// パスの格納
+	std::wstring m_filePath;
+
 private:
 	// マップサイズ(Stage)
 	const float	COMMON_SIZE = 1.0f;

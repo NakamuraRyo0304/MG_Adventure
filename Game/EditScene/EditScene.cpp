@@ -65,8 +65,8 @@ void EditScene::Initialize()
 		DirectX::XMFLOAT3(COMMON_SIZE, COMMON_SIZE, COMMON_SIZE)
 	);
 
-	// マップ読み込み
-	LoadMap(L"");
+	// マップ読み込み//初回読み込み
+	LoadMap(L"Resources/Maps/Stage1.csv");
 
 	// 初期値は草ブロック
 	m_nowState = MapLoad::BoxState::GrassBox;
@@ -112,7 +112,10 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 		case MapLoad::BoxState::GrassBox:				// 草→コイン
 			ChangeState(MapLoad::BoxState::CoinBox);
 			break;
-		case MapLoad::BoxState::CoinBox:				// コイン→草
+		case MapLoad::BoxState::CoinBox:				// コイン→消しゴム
+			ChangeState(MapLoad::BoxState::None);
+			break;
+		case MapLoad::BoxState::None:					// 消しゴム→草
 			ChangeState(MapLoad::BoxState::GrassBox);
 			break;
 		default:
@@ -401,7 +404,9 @@ void EditScene::LoadMap(std::wstring filename)
 {
 	// マップの読み込み
 	m_map.LoadMap(filename);
-	m_mapObj = m_map.GetMapData();
+	m_filePath = m_map.GetFilePath();
+	m_mapObj = m_map.GetMapData();	// 読み込み
+	OffsetPosition_Read(&m_mapObj);	// 座標補正
 }
 
 //--------------------------------------------------------//
