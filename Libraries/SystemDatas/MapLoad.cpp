@@ -38,14 +38,20 @@ void MapLoad::LoadMap(std::wstring filename)
 
 	std::ifstream ifs(m_filename);
 
-	if (!ifs) 
+	if (!ifs)
 	{
+		m_mapData.clear();
 		LoadMapPath();
+		return;
 	}
+
+	// マップデータをクリア
+	m_mapData.clear(); 
 
 	std::string line;
 
-	while (std::getline(ifs, line)) 
+	// データがなくなるまで格納
+	for (; std::getline(ifs, line); )
 	{
 		// カンマを空白に変更
 		std::string tmp = std::regex_replace(line, std::regex(","), " ");
@@ -55,22 +61,19 @@ void MapLoad::LoadMap(std::wstring filename)
 
 		Object obj;
 
-		// マップステータスID データを読み終わったら終了
-		if (!(iss >> obj.id)) 
+		// マップステータスID
+		if (!(iss >> obj.id))
 		{
+			ifs.close();
+			m_mapData.clear();
 			return;
 		}
-		// 座標情報 データを読み終わったら終了
-		if (!(iss >> obj.position.x)) 
+
+		// 座標情報
+		if (!(iss >> obj.position.x) || !(iss >> obj.position.y) || !(iss >> obj.position.z))
 		{
-			return;
-		}
-		if (!(iss >> obj.position.y)) 
-		{
-			return;
-		}
-		if (!(iss >> obj.position.z)) 
-		{
+			ifs.close();
+			m_mapData.clear();
 			return;
 		}
 
@@ -91,20 +94,20 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 	SaveMapPath(m_filename);
 
 	// ファイル出力変数を定義
-	std::ofstream outputFile(m_filename);
+	std::ofstream ofs(m_filename);
 
 	// ファイルがなければ処理しない
-	if (!outputFile)return;
+	if (!ofs)return;
 
 	// ファイルを出力する
 	for (const auto& o : obj)
 	{
 		std::ostringstream oss;
 		oss << o.id << "," << o.position.x << "," << o.position.y << "," << o.position.z << ",\n";
-		outputFile << oss.str();
+		ofs << oss.str();
 	}
 
-	outputFile.close();
+	ofs.close();
 }
 
 //--------------------------------------------------------//
@@ -334,7 +337,7 @@ void MapLoad::CreateNewMap()
 			{
 				Object newObj;
 
-				newObj.id = BoxState::None;
+				newObj.id = BoxState::GrassBox;
 				newObj.position.x = x;
 				newObj.position.y = y;
 				newObj.position.z = z;

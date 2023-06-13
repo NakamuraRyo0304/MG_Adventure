@@ -14,7 +14,7 @@
  //--------------------------------------------------------//
 PlayScene::PlayScene() :
 	IScene(),
-	m_obj{},						// マップのブロック
+	m_mapObj{},						// マップのブロック
 	m_map{},						// マップ
 	m_boxCol{},						// 立方体当たり判定
 	m_player{ nullptr },			// プレイヤのモデル
@@ -184,23 +184,16 @@ void PlayScene::CreateWindowDependentResources()
 void PlayScene::DoBoxCollision()
 {
 	m_boxCol.SetPushMode(true);
-	//// 当たり判定
-	//for (int y = 0; y < m_map.MAP_RAW; y++)
-	//{
-	//	for (int x = 0; x < m_map.MAP_COLUMN; x++)
-	//	{
-	//		for (int h = 0; h < static_cast<int>(m_obj[y][x].state % 100); h++)
-	//		{
-	//			m_obj[y][x].position.y = COMMON_LOW + h * COMMON_SIZE; // 最低座標＋任意の高さ
-
-	//			m_boxCol.PushBox(&m_playerPos, m_obj[y][x].position,   // プレイヤ＆ボックス
-	//				DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2},	   // サイズ
-	//				DirectX::SimpleMath::Vector3{ COMMON_SIZE }		   // サイズ
-	//			);
-	//		}
-	//	}
-	//}
-	//
+	
+	// 当たり判定
+	for (int i = 0; i < m_mapObj.size(); i++)
+	{
+		m_boxCol.PushBox(&m_playerPos, m_mapObj[i].position,
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE }
+		);
+	}
+	
 	// 上に当たったら重力をリセット
 	if (m_boxCol.GetHitFace() != Collider::BoxCollider::HIT_FACE::DOWN)
 	{
@@ -285,25 +278,14 @@ void PlayScene::LoadMap(int num)
 	// マップの読み込み
 	m_map.LoadMap(filePath);
 
-	//// マップの格納
-	//for (int y = 0; y < m_map.MAP_RAW; y++)
-	//{
-	//	for (int x = 0; x < m_map.MAP_COLUMN; x++)
-	//	{
-	//		// ステートをセット
-	//		m_obj[y][x].state = m_map.GetMapData(x, y);
+	// マップの格納
+	m_mapObj = m_map.GetMapData();
 
-	//		// 配列のごみを除去
-	//		m_obj[y][x].position = DirectX::SimpleMath::Vector3::Zero;
-	//							
-	//		// ボックスの位置を初期化
-	//		m_obj[y][x].position =
-	//		{
-	//			x * COMMON_SIZE - (m_map.MAP_COLUMN / 2 * COMMON_SIZE),							// ブロックの位置 - オフセット
-	//			COMMON_LOW,						 												// ブロック初期位置
-	//			y * COMMON_SIZE - (m_map.MAP_RAW / 2 * COMMON_SIZE)								// ブロックの位置 - オフセット
-	//		};
-	//		
-	//	}
-	//}
+	// 座標補正
+	for (int i = 0; i < m_mapObj.size(); i++)
+	{
+		m_mapObj[i].position.x -= (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
+		m_mapObj[i].position.y += COMMON_LOW;
+		m_mapObj[i].position.z -= (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
+	}
 }

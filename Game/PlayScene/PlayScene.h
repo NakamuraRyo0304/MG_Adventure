@@ -21,8 +21,8 @@ class PlayScene : public IScene
 private:
 	// プレイヤ
 	DirectX::SimpleMath::Vector3 m_playerPos;
-	// ボックス
-	Object m_obj[MapLoad::MAP_RAW][MapLoad::MAP_COLUMN];
+	// ブロック
+	std::vector<Object> m_mapObj;
 
 	// マップ
 	MapLoad m_map;
