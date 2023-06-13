@@ -46,7 +46,7 @@ private:
     SCENE m_nextScene;
 
 	// 現在処理するシーン
-    IScene* m_pNowScene;
+    std::unique_ptr<IScene> m_pNowScene;
 
     // ステージ番号を保存する
     int m_num;

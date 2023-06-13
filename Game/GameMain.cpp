@@ -121,27 +121,27 @@ void GameMain::CreateScene()
 	{
 		case SCENE::TITLE:		// タイトルシーン
 		{
-			m_pNowScene = new TitleScene();
+			m_pNowScene = std::make_unique<TitleScene>();
 			break;
 		}
 		case SCENE::SELECT:		// ステージセレクトシーン
 		{
-			m_pNowScene = new SelectScene();
+			m_pNowScene = std::make_unique<SelectScene>();
 			break;
 		}
 		case SCENE::PLAY:		// ゲームシーン
 		{
-			m_pNowScene = new PlayScene();
+			m_pNowScene = std::make_unique<PlayScene>();
 			break;
 		}
 		case SCENE::RESULT:		// リザルトシーン
 		{
-			m_pNowScene = new ResultScene();
+			m_pNowScene = std::make_unique<ResultScene>();
 			break;
 		}
 		case SCENE::EDIT:		// ステージエディットシーン
 		{
-			m_pNowScene = new EditScene();
+			m_pNowScene = std::make_unique<EditScene>();
 			break;
 		}
 		default:
@@ -182,8 +182,7 @@ void GameMain::DeleteScene()
 	m_pNowScene->Finalize();
 
 	// 現シーンの完全削除
-	delete m_pNowScene;
-	m_pNowScene = nullptr;
+	m_pNowScene.reset();
 }
 
 //--------------------------------------------------------//
