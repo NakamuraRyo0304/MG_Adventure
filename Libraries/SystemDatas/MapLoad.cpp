@@ -338,9 +338,9 @@ void MapLoad::CreateNewMap()
 				Object newObj;
 
 				newObj.id = BoxState::GrassBox;
-				newObj.position.x = x;
-				newObj.position.y = y;
-				newObj.position.z = z;
+				newObj.position.x = static_cast<float>(x);
+				newObj.position.y = static_cast<float>(y);
+				newObj.position.z = static_cast<float>(z);
 				
 				obj.push_back(newObj);
 			}

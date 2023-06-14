@@ -284,8 +284,8 @@ void PlayScene::LoadMap(int num)
 	// ç¿ïWï‚ê≥
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		m_mapObj[i].position.x -= (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
-		m_mapObj[i].position.y += COMMON_LOW;
-		m_mapObj[i].position.z -= (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
+		m_mapObj[i].position.x -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		m_mapObj[i].position.y += static_cast<float>(COMMON_LOW);
+		m_mapObj[i].position.z -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
 	}
 }

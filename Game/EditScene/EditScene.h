@@ -46,7 +46,7 @@ private:
 	// フラグ
 	bool is_saveFlag;
 	bool is_cameraFlag;
-	bool is_upFlag;
+	bool is_drawFlag;
 
 	// 現在のブロックステータス
 	int m_nowState;

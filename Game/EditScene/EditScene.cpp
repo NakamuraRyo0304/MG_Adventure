@@ -30,7 +30,7 @@ EditScene::EditScene() :
 	m_penTexPos{},
 	is_saveFlag{},					// 選択フラグ
 	is_cameraFlag{true},			// カメラモードONでスタート
-	is_upFlag{true}					// ペンモードでスタート			
+	is_drawFlag{true}				// ペンモードでスタート			
 {
 
 }
@@ -104,7 +104,14 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 		OffsetPosition_Read(&m_mapObj);	// 座標補正
 	}
 
-	// ステータス変更
+	// シフトを押している間はカメラモードをTrueにする
+	if (keyState.LeftShift)
+	{
+		is_cameraFlag = true;
+		GetSystemManager()->GetCamera()->SetEagleMode(true);
+	}
+
+	// ステータス変更 // 要修正
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Right))
 	{
 		switch (m_nowState)
@@ -112,8 +119,8 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 		case MapLoad::BoxState::GrassBox:				// 草→コイン
 			ChangeState(MapLoad::BoxState::CoinBox);
 			break;
-		case MapLoad::BoxState::CoinBox:				// コイン→消しゴム
-			ChangeState(MapLoad::BoxState::None);
+		case MapLoad::BoxState::CoinBox:				// コイン→草
+			ChangeState(MapLoad::BoxState::GrassBox);
 			break;
 		case MapLoad::BoxState::None:					// 消しゴム→草
 			ChangeState(MapLoad::BoxState::GrassBox);
@@ -121,6 +128,10 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 		default:
 			break;
 		}
+	}
+	if(!is_drawFlag)
+	{
+		ChangeState(MapLoad::BoxState::None);
 	}
 
 	// カメラモードじゃなければ編集できる
@@ -381,9 +392,9 @@ void EditScene::OffsetPosition_Read(std::vector<Object>* obj)
 {
 	for (int i = 0; i < (*obj).size(); i++)
 	{
-		(*obj)[i].position.x -= (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
-		(*obj)[i].position.y += COMMON_LOW;
-		(*obj)[i].position.z -= (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
+		(*obj)[i].position.x -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		(*obj)[i].position.y += static_cast<float>(COMMON_LOW);
+		(*obj)[i].position.z -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
 	}
 }
 // 書き込み時
@@ -391,9 +402,9 @@ void EditScene::OffsetPosition_Write(std::vector<Object>* obj)
 {
 	for (int i = 0; i < (*obj).size(); i++)
 	{
-		(*obj)[i].position.x += (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
-		(*obj)[i].position.y -= COMMON_LOW;
-		(*obj)[i].position.z += (m_map.MAP_COLUMN / 2 * COMMON_SIZE);
+		(*obj)[i].position.x += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		(*obj)[i].position.y -= static_cast<float>(COMMON_LOW);
+		(*obj)[i].position.z += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
 	}
 }
 
@@ -470,7 +481,7 @@ void EditScene::DrawImages()
 	}
 
 	// ペンアイコン
-	if (is_upFlag)
+	if (is_drawFlag)
 	{
 		GetSystemManager()->GetDrawSprite()->DrawTexture(
 			L"Pen",								// 登録キー
@@ -533,6 +544,6 @@ void EditScene::ClickUserInterface(DirectX::Mouse::State& mouseState)
 	// 描画モード切り替え
 	if (toolFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
 	{
-		is_upFlag = !is_upFlag;
+		is_drawFlag = !is_drawFlag;
 	}
 }
