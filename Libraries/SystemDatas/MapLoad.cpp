@@ -36,17 +36,15 @@ void MapLoad::LoadMap(std::wstring filename)
 {
 	m_filename = filename;
 
-	std::ifstream ifs(m_filename);
-
-	if (!ifs)
+	// ファイル名が空白ならダイアログからファイル名を取得する
+	if (m_filename == L"")
 	{
 		m_mapData.clear();
 		LoadMapPath();
-		return;
 	}
 
-	// マップデータをクリア
-	m_mapData.clear(); 
+	// ファイルを開く
+	std::ifstream ifs(m_filename);
 
 	std::string line;
 

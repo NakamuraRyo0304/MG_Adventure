@@ -46,6 +46,11 @@ namespace Collider
 		       const DirectX::SimpleMath::Vector3& constObj, 
 		       const DirectX::SimpleMath::Vector3& sz1, 
 		       const DirectX::SimpleMath::Vector3& sz2);
+		// “–‚½‚è”»’è‚Ì‚ÝŽæ‚é
+		void PushBox(DirectX::SimpleMath::Vector3& moveObj, 
+		       const DirectX::SimpleMath::Vector3& constObj, 
+		       const DirectX::SimpleMath::Vector3& sz1, 
+		       const DirectX::SimpleMath::Vector3& sz2);
 
 		// “–‚Á‚½ˆÊ’u‚ð•Ô‚·
 		unsigned int GetHitFace() { return m_hitFace; }

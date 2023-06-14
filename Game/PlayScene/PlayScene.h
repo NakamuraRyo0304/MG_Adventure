@@ -28,10 +28,10 @@ private:
 	MapLoad m_map;
 
 	// 当たり判定
-	Collider::BoxCollider m_boxCol;
+	Collider::BoxCollider is_boxCol;
 
 	// モデル
-	std::unique_ptr<DirectX::Model> m_player, m_grassBox;
+	std::unique_ptr<DirectX::Model> m_playerModel, m_grassModel, m_coinModel,m_clowdModel;
 
 	// 重力
 	float m_gravity;
@@ -44,7 +44,6 @@ private:
 
 	// カメラアングル
 	const float	CAMERA_ANGLE = 45.0f;
-
 
 public:
 

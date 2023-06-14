@@ -99,7 +99,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// ファイルの読み込み
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Left))
 	{
-		m_map.CreateNewMap();			// ファイル新規作成
+		m_map.LoadMap(L"");			// ファイル新規作成
 		m_mapObj = m_map.GetMapData();	// 読み込み
 		OffsetPosition_Read(&m_mapObj);	// 座標補正
 	}
@@ -252,12 +252,10 @@ void EditScene::CreateWindowDependentResources()
 	m_coinModel = ModelFactory::GetModel(						// コインブロック
 		device,
 		L"Resources/Models/Coin.cmo"
-
 	);
 	m_clowdModel = ModelFactory::GetModel(						// 雲ブロック
 		device,
 		L"Resources/Models/Clowd.cmo"
-
 	);
 
 	// 画像の設定

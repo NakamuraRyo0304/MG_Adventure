@@ -16,10 +16,12 @@ PlayScene::PlayScene() :
 	IScene(),
 	m_mapObj{},						// マップのブロック
 	m_map{},						// マップ
-	m_boxCol{},						// 立方体当たり判定
-	m_player{ nullptr },			// プレイヤのモデル
+	is_boxCol{},					// 立方体当たり判定
+	m_playerModel{ nullptr },		// プレイヤのモデル
 	m_playerPos{},					// プレイヤの位置
-	m_grassBox{ nullptr },			// 草ブロックのモデル
+	m_grassModel{ nullptr },		// 草ブロックのモデル
+	m_coinModel{ nullptr },			// コインブロックのモデル
+	m_clowdModel{ nullptr },		// 雲ブロックのモデル
 	m_gravity{}
 {
 
@@ -76,24 +78,23 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	if (keyState.A) m_playerPos.x -= 0.05f;
 	if (keyState.D) m_playerPos.x += 0.05f;
 
-	m_gravity += 0.03f;
+	m_gravity += 0.01f;
 
 	m_playerPos.y -= m_gravity;
 
 	// 当たり判定の更新
 	DoBoxCollision();
 
-	// 落下して下限についたらリスポーン
-	if (m_playerPos.y < -50.0f)
+
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
 	{
-		m_playerPos.y = 5.0f;
-		m_gravity = 0;
+		GoNextScene(SCENE::PLAY);
 	}
 
 	// ESCキーで終了
 	if (keyState.Escape) ExitApp();
 
-	// Spaceキーでシーン切り替え
+	// Enterキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Enter))
 	{
 		GoNextScene(SCENE::RESULT);
@@ -130,7 +131,25 @@ void PlayScene::Draw()
 	// プレイヤの描画
 	DirectX::SimpleMath::Matrix playerWorldMat =
 		DirectX::SimpleMath::Matrix::CreateTranslation(m_playerPos);
-	m_player->Draw(context, states, playerWorldMat, view, projection, false);
+	m_coinModel->Draw(context, states, playerWorldMat, view, projection, false);
+
+	// オブジェクトの描画
+	for (int i = 0; i < m_mapObj.size(); i++)
+	{
+		DirectX::SimpleMath::Matrix boxMat =
+			DirectX::SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+
+		if (m_mapObj[i].id == MapLoad::BoxState::GrassBox)
+		{
+			m_grassModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+				*GetSystemManager()->GetCommonStates(), boxMat, view, projection);
+		}
+		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
+		{
+			m_coinModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
+				*GetSystemManager()->GetCommonStates(), boxMat, view, projection);
+		}
+	}
 
 	DebugLog(view, projection);
 }
@@ -168,13 +187,21 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 
 	// モデルを作成する
-	m_player = ModelFactory::GetModel(						// プレイヤ
+	m_playerModel = ModelFactory::GetModel(						// プレイヤ
 		device,
 		L"Resources/Models/TestPlayer.cmo"
 	);
-	m_grassBox = ModelFactory::GetModel(					// 草ブロック
+	m_grassModel = ModelFactory::GetModel(						// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
+	);
+	m_coinModel = ModelFactory::GetModel(						// コインブロック
+		device,
+		L"Resources/Models/Coin.cmo"
+	);
+	m_clowdModel = ModelFactory::GetModel(						// 雲ブロック
+		device,
+		L"Resources/Models/Clowd.cmo"
 	);
 }
 
@@ -183,21 +210,26 @@ void PlayScene::CreateWindowDependentResources()
 //--------------------------------------------------------//
 void PlayScene::DoBoxCollision()
 {
-	m_boxCol.SetPushMode(true);
-	
-	// 当たり判定
+	// マップとの当たり判定
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		m_boxCol.PushBox(&m_playerPos, m_mapObj[i].position,
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE }
-		);
-	}
-	
-	// 上に当たったら重力をリセット
-	if (m_boxCol.GetHitFace() != Collider::BoxCollider::HIT_FACE::DOWN)
-	{
-		m_gravity = 0.0f;
+		// 当たり判定を取る
+		is_boxCol.PushBox(m_playerPos, m_mapObj[i].position,
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE },
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE });
+
+		if (is_boxCol.GetHitBoxFlag()&& m_mapObj[i].id == MapLoad::BoxState::GrassBox)
+		{
+			switch (is_boxCol.GetHitFace())
+			{
+			case Collider::BoxCollider::HIT_FACE::UP:
+				m_gravity = 0.0f;
+				m_playerPos.y = m_mapObj[i].position.y + COMMON_SIZE;
+				break;
+			default:
+				break;
+			}
+		}
 	}
 }
 
@@ -242,7 +274,6 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	swprintf_s(plr, 64, L"Player = %f,%f,%f", m_playerPos.x,m_playerPos.y,m_playerPos.z);
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,80 }, plr);
-
 
 	// デバイスコンテキストの取得：グリッドの描画に使用
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();

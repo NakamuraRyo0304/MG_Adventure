@@ -106,6 +106,59 @@ void Collider::BoxCollider::PushBox(DirectX::SimpleMath::Vector3* moveObj,
 	}
 }
 
+// 第１引数：オブジェ１ 第２引数：オブジェ２ 第３、４引数：対応したサイズ
+void Collider::BoxCollider::PushBox(DirectX::SimpleMath::Vector3& moveObj,
+	const DirectX::SimpleMath::Vector3& constObj,
+	const DirectX::SimpleMath::Vector3& sz1,
+	const DirectX::SimpleMath::Vector3& sz2)
+{
+	// 当っていない
+	is_hitFlag = false;
+
+	// 当たり判定を取る
+	if (!(moveObj.x - sz1.x / 2 < constObj.x + sz2.x / 2 &&
+		moveObj.x + sz1.x / 2 > constObj.x - sz2.x / 2 &&
+		moveObj.z - sz1.z / 2 < constObj.z + sz2.z / 2 &&
+		moveObj.z + sz1.z / 2 > constObj.z - sz2.z / 2 &&
+		moveObj.y - sz1.y / 2 < constObj.y + sz2.y / 2 &&
+		moveObj.y + sz1.y / 2 > constObj.y - sz2.y / 2))return;
+
+	// 当っている位置を初期化
+	m_hitFace = HIT_FACE::NONE;
+
+	// 当っている
+	is_hitFlag = true;
+
+	// 自身の幅と高さを計算
+	float lenghtX = (moveObj.x + sz1.x / 2) - (moveObj.x - sz1.x / 2);
+	float lengthY = (moveObj.y + sz1.y / 2) - (moveObj.y - sz1.y / 2);
+	float lengthZ = (moveObj.z + sz1.z / 2) - (moveObj.z - sz1.z / 2);
+
+	// 各方向のめり込み具合
+	float leftRatio = ((moveObj.x + sz1.x / 2) - (constObj.x - sz2.x / 2)) / lenghtX;
+	float rightRatio = ((constObj.x + sz2.x / 2) - (moveObj.x - sz1.x / 2)) / lenghtX;
+
+	float upRatio = ((moveObj.y + sz1.y / 2) - (constObj.y - sz2.y / 2)) / lengthY;
+	float downRatio = ((constObj.y + sz2.y / 2) - (moveObj.y - sz1.y / 2)) / lengthY;
+
+	float frontRatio = ((moveObj.z + sz1.z / 2) - (constObj.z - sz2.z / 2)) / lengthZ;
+	float backRatio = ((constObj.z + sz2.z / 2) - (moveObj.z - sz1.z / 2)) / lengthZ;
+
+	// 最大値を算出
+	float maxRatio = std::max({ leftRatio, rightRatio,
+								upRatio,   downRatio,
+								frontRatio,backRatio });
+
+	// 当っている位置を格納する
+	if (maxRatio == leftRatio)	m_hitFace = HIT_FACE::LEFT;		// 当った位置：左
+	if (maxRatio == rightRatio)	m_hitFace = HIT_FACE::RIGHT;	// 当った位置：右
+	if (maxRatio == upRatio)	m_hitFace = HIT_FACE::UP;		// 当った位置：上
+	if (maxRatio == downRatio)	m_hitFace = HIT_FACE::DOWN;		// 当った位置：下
+	if (maxRatio == frontRatio)	m_hitFace = HIT_FACE::FRONT;	// 当った位置：前
+	if (maxRatio == backRatio)	m_hitFace = HIT_FACE::BACK;		// 当った位置：後
+}
+
+
 
 //--------------------------------------------------------//
 //コンストラクタスフィア                                  //
