@@ -29,6 +29,7 @@ private:
 
 	// 当たり判定
 	Collider::BoxCollider is_boxCol;
+	std::vector<Object> m_colObjList;
 
 	// モデル
 	std::unique_ptr<DirectX::Model> m_playerModel, m_grassModel, m_coinModel,m_clowdModel;
@@ -70,6 +71,9 @@ public:
 
 	// 当たり判定
 	void DoBoxCollision();
+
+	// 押し戻し処理
+	void ApplyPushBack(const Object& obj);
 
 	// デバッグ表示
 	void DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);

@@ -16,6 +16,7 @@ PlayScene::PlayScene() :
 	IScene(),
 	m_mapObj{},						// マップのブロック
 	m_map{},						// マップ
+	m_colObjList{},			// 当っているオブジェクトの格納
 	is_boxCol{},					// 立方体当たり判定
 	m_playerModel{ nullptr },		// プレイヤのモデル
 	m_playerPos{},					// プレイヤの位置
@@ -49,6 +50,9 @@ void PlayScene::Initialize()
 	LoadMap(GetStageNum());
 
 	m_playerPos = { 0.0f,5.0f,0.0f };
+
+	// 判定の初期化
+	m_colObjList.clear();
 }
 
 //--------------------------------------------------------//
@@ -85,6 +89,11 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// 当たり判定の更新
 	DoBoxCollision();
 
+	// 衝突したオブジェクトごとに押し戻し処理を行う
+	for (auto& obj : m_colObjList)
+	{
+		ApplyPushBack(obj);
+	}
 
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
 	{
@@ -210,27 +219,57 @@ void PlayScene::CreateWindowDependentResources()
 //--------------------------------------------------------//
 void PlayScene::DoBoxCollision()
 {
-	// マップとの当たり判定
-	for (int i = 0; i < m_mapObj.size(); i++)
-	{
-		// 当たり判定を取る
-		is_boxCol.PushBox(m_playerPos, m_mapObj[i].position,
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE },
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE });
+	// 衝突したオブジェクトリストを初期化
+	m_colObjList.clear(); 
 
-		if (is_boxCol.GetHitBoxFlag()&& m_mapObj[i].id == MapLoad::BoxState::GrassBox)
+	// 当たり判定を取る
+	for (auto& obj : m_mapObj)
+	{
+		is_boxCol.SetPushMode(false);
+		is_boxCol.PushBox(m_playerPos, obj.position,
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE }
+		);
+
+		if (is_boxCol.GetHitBoxFlag())
 		{
-			switch (is_boxCol.GetHitFace())
-			{
-			case Collider::BoxCollider::HIT_FACE::UP:
-				m_gravity = 0.0f;
-				m_playerPos.y = m_mapObj[i].position.y + COMMON_SIZE;
-				break;
-			default:
-				break;
-			}
+			// 衝突したオブジェクトをリストに追加
+			m_colObjList.push_back(obj);
 		}
 	}
+}
+
+//--------------------------------------------------------//
+//押し戻しをする                                          //
+//--------------------------------------------------------//
+void PlayScene::ApplyPushBack(const Object& obj)
+{
+	// 当っているオブジェクトが空気以外の場合は押し戻しを有効にする
+	if (obj.id != MapLoad::BoxState::None)
+	{
+		is_boxCol.SetPushMode(true);
+	}
+	else
+	{
+		is_boxCol.SetPushMode(false);
+	}
+
+	// 当っているのが空気の場合は処理しない
+	if (obj.id == MapLoad::BoxState::None) return;
+
+	// 当たり判定を取る
+	is_boxCol.PushBox(&m_playerPos, obj.position,
+		DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
+		DirectX::SimpleMath::Vector3{ COMMON_SIZE });
+
+	// ブロックの上に当たっていたら重力を初期化
+	if (is_boxCol.GetHitFace() == Collider::BoxCollider::HIT_FACE::UP)
+	{
+		m_gravity = 0.0f;
+	}
+
+	// 処理が終わったら要素を破棄
+	m_colObjList.pop_back();
 }
 
 //--------------------------------------------------------//
