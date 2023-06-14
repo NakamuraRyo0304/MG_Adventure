@@ -11,11 +11,7 @@
 
 #include "../IScene.h"
 
- // CSV読み込み
-#include "../../Libraries/SystemDatas/MapLoad.h"
-
-#include "../../Libraries/SystemDatas/Collider.h"
-
+class Player;
 class PlayScene : public IScene
 {
 private:
@@ -27,12 +23,15 @@ private:
 	// マップ
 	MapLoad m_map;
 
+	// プレイヤ
+	std::unique_ptr<Player> m_player;
+
 	// 当たり判定
 	Collider::BoxCollider is_boxCol;
 	std::vector<Object> m_colObjList;
 
 	// モデル
-	std::unique_ptr<DirectX::Model> m_playerModel, m_grassModel, m_coinModel,m_clowdModel;
+	std::unique_ptr<DirectX::Model> m_grassModel, m_coinModel,m_clowdModel;
 
 	// 重力
 	float m_gravity;

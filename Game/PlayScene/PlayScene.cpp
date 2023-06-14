@@ -7,6 +7,15 @@
 
 #include "pch.h"
 
+ // CSV読み込み
+#include "../../Libraries/SystemDatas/MapLoad.h"
+
+// コライダークラス
+#include "../../Libraries/SystemDatas/Collider.h"
+
+// プレイヤクラス
+#include "Objects/Player.h"
+
 #include "PlayScene.h"
 
  //--------------------------------------------------------//
@@ -16,9 +25,8 @@ PlayScene::PlayScene() :
 	IScene(),
 	m_mapObj{},						// マップのブロック
 	m_map{},						// マップ
-	m_colObjList{},			// 当っているオブジェクトの格納
+	m_colObjList{},					// 当っているオブジェクトの格納
 	is_boxCol{},					// 立方体当たり判定
-	m_playerModel{ nullptr },		// プレイヤのモデル
 	m_playerPos{},					// プレイヤの位置
 	m_grassModel{ nullptr },		// 草ブロックのモデル
 	m_coinModel{ nullptr },			// コインブロックのモデル
@@ -49,7 +57,9 @@ void PlayScene::Initialize()
 	// マップ読み込み
 	LoadMap(GetStageNum());
 
-	m_playerPos = { 0.0f,5.0f,0.0f };
+	// プレイヤの初期化
+	m_player->Initialize();
+	m_player->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f,5.0f,0.0f });
 
 	// 判定の初期化
 	m_colObjList.clear();
@@ -76,15 +86,8 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// レイの更新
 	GetSystemManager()->GetRayCast()->Update(mouseState);
 
-	//　クラス分け　Player Boxも作る
-	if (keyState.W) m_playerPos.z -= 0.05f;
-	if (keyState.S) m_playerPos.z += 0.05f;
-	if (keyState.A) m_playerPos.x -= 0.05f;
-	if (keyState.D) m_playerPos.x += 0.05f;
-
-	m_gravity += 0.01f;
-
-	m_playerPos.y -= m_gravity;
+	// プレイヤの更新
+	m_player->Update(keyState);
 
 	// 当たり判定の更新
 	DoBoxCollision();
@@ -123,7 +126,7 @@ void PlayScene::Draw()
 	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	DirectX::SimpleMath::Matrix world, view, projection;
+	DirectX::SimpleMath::Matrix world, view, proj;
 
 	// ワールド行列
 	world = DirectX::SimpleMath::Matrix::Identity;
@@ -132,15 +135,13 @@ void PlayScene::Draw()
 	view = GetSystemManager()->GetCamera()->GetView();
 
 	// プロジェクション行列
-	projection = GetSystemManager()->GetCamera()->GetProjection(width, height, CAMERA_ANGLE);
+	proj = GetSystemManager()->GetCamera()->GetProjection(width, height, CAMERA_ANGLE);
 
 	// レイの設定
-	GetSystemManager()->GetRayCast()->SetMatrix(view, projection);
+	GetSystemManager()->GetRayCast()->SetMatrix(view, proj);
 
 	// プレイヤの描画
-	DirectX::SimpleMath::Matrix playerWorldMat =
-		DirectX::SimpleMath::Matrix::CreateTranslation(m_playerPos);
-	m_coinModel->Draw(context, states, playerWorldMat, view, projection, false);
+	m_player->Render(context, states, view, proj);
 
 	// オブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
@@ -151,16 +152,16 @@ void PlayScene::Draw()
 		if (m_mapObj[i].id == MapLoad::BoxState::GrassBox)
 		{
 			m_grassModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-				*GetSystemManager()->GetCommonStates(), boxMat, view, projection);
+				*GetSystemManager()->GetCommonStates(), boxMat, view, proj);
 		}
 		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
 		{
 			m_coinModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-				*GetSystemManager()->GetCommonStates(), boxMat, view, projection);
+				*GetSystemManager()->GetCommonStates(), boxMat, view, proj);
 		}
 	}
 
-	DebugLog(view, projection);
+	DebugLog(view, proj);
 }
 
 //--------------------------------------------------------//
@@ -168,6 +169,13 @@ void PlayScene::Draw()
 //--------------------------------------------------------//
 void PlayScene::Finalize()
 {
+	// プレイヤの後処理
+	m_player->Finalize();
+
+	// モデルのリリース
+	m_grassModel.release();
+	m_coinModel.release();
+	m_clowdModel.release();
 }
 
 //--------------------------------------------------------//
@@ -196,10 +204,6 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 
 	// モデルを作成する
-	m_playerModel = ModelFactory::GetModel(						// プレイヤ
-		device,
-		L"Resources/Models/TestPlayer.cmo"
-	);
 	m_grassModel = ModelFactory::GetModel(						// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
@@ -212,10 +216,19 @@ void PlayScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Clowd.cmo"
 	);
+
+	// プレイヤの作成
+	std::unique_ptr<DirectX::Model> playerModel = ModelFactory::GetModel(
+		device,
+		L"Resources/Models/TestPlayer.cmo"
+	);
+	// モデルデータを渡す(move必要)
+	m_player = std::make_unique<Player>(std::move(playerModel));
+
 }
 
 //--------------------------------------------------------//
-//当たり判定の処理をまとめた関数                          //
+//当っていたらリストに追加する                            //
 //--------------------------------------------------------//
 void PlayScene::DoBoxCollision()
 {
@@ -225,12 +238,15 @@ void PlayScene::DoBoxCollision()
 	// 当たり判定を取る
 	for (auto& obj : m_mapObj)
 	{
-		is_boxCol.SetPushMode(false);
-		is_boxCol.PushBox(m_playerPos, obj.position,
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE }
+		// 判定を取る
+		is_boxCol.PushBox(
+			m_player->GetPosition(),								// プレイヤ座標
+			obj.position,											// ブロック座標
+			DirectX::SimpleMath::Vector3{ m_player->GetSize() },	// プレイヤサイズ
+			DirectX::SimpleMath::Vector3{ COMMON_SIZE }				// ブロックサイズ
 		);
 
+		// 当たっていたら処理する
 		if (is_boxCol.GetHitBoxFlag())
 		{
 			// 衝突したオブジェクトをリストに追加
@@ -257,15 +273,24 @@ void PlayScene::ApplyPushBack(const Object& obj)
 	// 当っているのが空気の場合は処理しない
 	if (obj.id == MapLoad::BoxState::None) return;
 
-	// 当たり判定を取る
-	is_boxCol.PushBox(&m_playerPos, obj.position,
-		DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
-		DirectX::SimpleMath::Vector3{ COMMON_SIZE });
+	// プレイヤのポジションを保存
+	DirectX::SimpleMath::Vector3 playerPos = m_player->GetPosition();
+
+	// 当たり判定を取って押し戻す
+	is_boxCol.PushBox(
+		&playerPos,												// プレイヤ座標
+		obj.position,											// ブロック座標
+		DirectX::SimpleMath::Vector3{ m_player->GetSize() },	// プレイヤサイズ
+		DirectX::SimpleMath::Vector3{ COMMON_SIZE }				// ブロックサイズ
+	);
+
+	// 変更後のプレイヤのポジションを反映
+	m_player->SetPosition(playerPos);
 
 	// ブロックの上に当たっていたら重力を初期化
 	if (is_boxCol.GetHitFace() == Collider::BoxCollider::HIT_FACE::UP)
 	{
-		m_gravity = 0.0f;
+		m_player->ResetGravity();
 	}
 
 	// 処理が終わったら要素を破棄
@@ -310,9 +335,15 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	
 	// プレイヤの座標
 	wchar_t plr[64];
-	swprintf_s(plr, 64, L"Player = %f,%f,%f", m_playerPos.x,m_playerPos.y,m_playerPos.z);
+	swprintf_s(plr, 64, L"PlayerPosition = %f,%f,%f", m_player->GetPosition().x, m_player->GetPosition().y, m_player->GetPosition().z);
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,80 }, plr);
+	
+	// プレイヤの重力
+	wchar_t gra[32];
+	swprintf_s(gra, 32, L"Gravity = %f", m_player->GetGravity());
+
+	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,100 }, gra);
 
 	// デバイスコンテキストの取得：グリッドの描画に使用
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();

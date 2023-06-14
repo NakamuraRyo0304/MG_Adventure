@@ -40,7 +40,7 @@ private:
 	std::unique_ptr<DirectX::BasicEffect>						m_effect;
 public:
 	// カメラ
-	Camera* m_camera = nullptr;
+	Camera* m_pCamera = nullptr;
 
 public: // ゲッター、セッター、ファクトリー
 	// 共通のメイクユニーク
