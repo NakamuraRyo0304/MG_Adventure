@@ -277,14 +277,16 @@ void PlayScene::ApplyPushBack(Object& obj)
 	// 当っているのが空気の場合は処理しない
 	if (obj.id == MapLoad::BoxState::None) return;
 
+	// コインの処理
 	if (obj.id == MapLoad::BoxState::CoinBox)
 	{ 
+		// 該当コインの検索＆獲得処理
 		for (auto& i : m_mapObj)
 		{
 			if (i == obj)
 			{
-				test_count += 1;
-				i.id = MapLoad::BoxState::None;
+				test_count += 1;				// 獲得数加算
+				i.id = MapLoad::BoxState::None;	// 獲得したらコインを削除
 			}
 		}
 		return;

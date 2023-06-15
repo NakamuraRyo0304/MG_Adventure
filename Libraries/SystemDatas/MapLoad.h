@@ -11,6 +11,7 @@
 
 #include <vector>
 
+// マップブロックの構造体
 struct Object
 {
 	int id = 0;									// マップID
