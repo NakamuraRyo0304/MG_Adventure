@@ -15,6 +15,12 @@ struct Object
 {
 	int id = 0;									// マップID
 	DirectX::SimpleMath::Vector3 position;		// 座標
+
+	// 演算子のオーバーロード
+	bool operator==(const Object& name) const
+	{
+		return id == name.id && position == name.position;
+	}
 };
 
 class MapLoad

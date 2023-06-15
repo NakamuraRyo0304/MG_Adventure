@@ -33,9 +33,10 @@ private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_grassModel, m_coinModel,m_clowdModel;
 
-	// 重力
-	float m_gravity;
+	// テストカウント
+	int test_count;
 
+private:
 	// マップサイズ(Stage)
 	const float COMMON_SIZE = 1.0f;
 
@@ -72,7 +73,7 @@ public:
 	void DoBoxCollision();
 
 	// 押し戻し処理
-	void ApplyPushBack(const Object& obj);
+	void ApplyPushBack(Object& obj);
 
 	// デバッグ表示
 	void DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);

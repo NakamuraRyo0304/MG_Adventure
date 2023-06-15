@@ -31,7 +31,7 @@ PlayScene::PlayScene() :
 	m_grassModel{ nullptr },		// 草ブロックのモデル
 	m_coinModel{ nullptr },			// コインブロックのモデル
 	m_clowdModel{ nullptr },		// 雲ブロックのモデル
-	m_gravity{}
+	test_count{}
 {
 
 }
@@ -172,6 +172,10 @@ void PlayScene::Finalize()
 	// プレイヤの後処理
 	m_player->Finalize();
 
+	// メモリ解放
+	m_colObjList.clear();
+	m_colObjList.shrink_to_fit();
+
 	// モデルのリリース
 	m_grassModel.release();
 	m_coinModel.release();
@@ -258,7 +262,7 @@ void PlayScene::DoBoxCollision()
 //--------------------------------------------------------//
 //押し戻しをする                                          //
 //--------------------------------------------------------//
-void PlayScene::ApplyPushBack(const Object& obj)
+void PlayScene::ApplyPushBack(Object& obj)
 {
 	// 当っているオブジェクトが空気以外の場合は押し戻しを有効にする
 	if (obj.id != MapLoad::BoxState::None)
@@ -272,6 +276,19 @@ void PlayScene::ApplyPushBack(const Object& obj)
 
 	// 当っているのが空気の場合は処理しない
 	if (obj.id == MapLoad::BoxState::None) return;
+
+	if (obj.id == MapLoad::BoxState::CoinBox)
+	{ 
+		for (auto& i : m_mapObj)
+		{
+			if (i == obj)
+			{
+				test_count += 1;
+				i.id = MapLoad::BoxState::None;
+			}
+		}
+		return;
+	}
 
 	// プレイヤのポジションを保存
 	DirectX::SimpleMath::Vector3 playerPos = m_player->GetPosition();
@@ -344,6 +361,12 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 	swprintf_s(gra, 32, L"Gravity = %f", m_player->GetGravity());
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,100 }, gra);
+		
+	// コインテスト
+	wchar_t coi[32];
+	swprintf_s(coi, 32, L"Coin = %d", test_count);
+
+	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,120 }, coi);
 
 	// デバイスコンテキストの取得：グリッドの描画に使用
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();

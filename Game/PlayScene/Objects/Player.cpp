@@ -7,6 +7,8 @@
 
 #include "pch.h"
 
+#include "../../../Libraries/UserUtility.h"
+
 #include "Player.h"
 
 //--------------------------------------------------------//
@@ -50,7 +52,7 @@ void Player::Update(DirectX::Keyboard::State& keyState)
 
 	m_parameter.position.y -= m_parameter.gravity;
 
-	if (m_parameter.position.y < -7.0f) m_parameter.position.y = 5.0f;
+	if (m_parameter.position.y < -7.0f) m_parameter.position.y = 10.0f;
 }
 
 //--------------------------------------------------------//
