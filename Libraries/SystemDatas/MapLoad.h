@@ -62,7 +62,7 @@ private:
 public:
 
 	MapLoad();
-	~MapLoad() = default;
+	~MapLoad();
 
 	// ƒ}ƒbƒv‚Ì“Ç‚İ‚İ
 	void LoadMap(std::wstring filename);

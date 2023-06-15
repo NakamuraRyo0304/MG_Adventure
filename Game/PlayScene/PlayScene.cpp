@@ -41,6 +41,7 @@ PlayScene::PlayScene() :
 //--------------------------------------------------------//
 PlayScene::~PlayScene()
 {
+	Finalize();
 }
 
 //--------------------------------------------------------//
@@ -172,9 +173,11 @@ void PlayScene::Finalize()
 	// プレイヤの後処理
 	m_player->Finalize();
 
-	// メモリ解放
+	// マップの解放
+	m_mapObj.clear();
+
+	// 判定用配列を解放
 	m_colObjList.clear();
-	m_colObjList.shrink_to_fit();
 
 	// モデルのリリース
 	m_grassModel.release();

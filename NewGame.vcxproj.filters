@@ -282,7 +282,4 @@
       <Filter>Resources\Models</Filter>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="DevelopMemo.txt" />
-  </ItemGroup>
 </Project>

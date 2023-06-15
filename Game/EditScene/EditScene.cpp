@@ -40,6 +40,7 @@ EditScene::EditScene() :
 //--------------------------------------------------------//
 EditScene::~EditScene()
 {
+	Finalize();
 }
 
 //--------------------------------------------------------//
@@ -213,6 +214,14 @@ void EditScene::Draw()
 //--------------------------------------------------------//
 void EditScene::Finalize()
 {
+	// マップの解放
+	m_mapObj.clear();
+
+	// モデルオブジェクトの解放
+	m_grassBlockModel.release();
+	m_grassBlockModel_D.release();
+	m_coinModel.release();
+	m_clowdModel.release();
 }
 
 //--------------------------------------------------------//
