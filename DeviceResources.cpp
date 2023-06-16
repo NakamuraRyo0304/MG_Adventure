@@ -386,7 +386,7 @@ void DeviceResources::SetWindow(HWND window, int width, int height)
 // This method is called when the Win32 window changes size
 bool DeviceResources::WindowSizeChanged(int width, int height)
 {
-    RECT newRc;
+    RECT newRc = { 0 };
     newRc.left = newRc.top = 0;
     newRc.right = width;
     newRc.bottom = height;
