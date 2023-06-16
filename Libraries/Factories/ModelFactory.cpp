@@ -29,6 +29,9 @@ std::unique_ptr<DirectX::DX11::Model> ModelFactory::GetModel(ID3D11Device1* devi
 		*fx
 	);
 
+	// fx インスタンスは使用後に解放する
+	fx.reset();
+
 	// 作成したモデルを返却
 	return model;
 }

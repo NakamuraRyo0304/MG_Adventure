@@ -40,6 +40,7 @@ EditScene::EditScene() :
 //--------------------------------------------------------//
 EditScene::~EditScene()
 {
+	m_map.~MapLoad();
 	Finalize();
 }
 
@@ -216,6 +217,7 @@ void EditScene::Finalize()
 {
 	// マップの解放
 	m_mapObj.clear();
+	m_map.ReleaseMemory();
 
 	// モデルオブジェクトの解放
 	m_grassBlockModel.release();

@@ -198,6 +198,7 @@
     <ClInclude Include="Game\SelectScene\SelectScene.h" />
     <ClInclude Include="Game\TitleScene\TitleScene.h" />
     <ClInclude Include="Libraries\Factories\ModelFactory.h" />
+    <ClInclude Include="Libraries\MemoryLeak.h" />
     <ClInclude Include="Libraries\SystemDatas\Collider.h" />
     <ClInclude Include="Libraries\SystemDatas\Camera.h" />
     <ClInclude Include="Libraries\SystemDatas\DrawSprite.h" />

@@ -56,7 +56,7 @@ void PlayScene::Initialize()
 	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
 
 	// マップ読み込み
-	LoadMap(GetStageNum());
+//	LoadMap(GetStageNum());
 
 	// プレイヤの初期化
 	m_player->Initialize();
@@ -175,9 +175,11 @@ void PlayScene::Finalize()
 
 	// マップの解放
 	m_mapObj.clear();
+	std::vector<Object>(m_mapObj).swap(m_mapObj);
 
 	// 判定用配列を解放
 	m_colObjList.clear();
+	std::vector<Object>(m_colObjList).swap(m_colObjList);
 
 	// モデルのリリース
 	m_grassModel.release();
@@ -410,6 +412,9 @@ void PlayScene::LoadMap(int num)
 	// マップの格納
 	m_mapObj = m_map.GetMapData();
 
+	// メモリの解放
+	m_map.ReleaseMemory();
+	
 	// 座標補正
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{

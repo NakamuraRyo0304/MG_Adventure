@@ -7,7 +7,9 @@
 
 #include "pch.h"
 
-#include "SimpleMath.h"
+#include "CommonStates.h"
+#include "SpriteBatch.h"
+#include "SpriteFont.h"
 
 #include "DrawString.h"
 
@@ -16,6 +18,13 @@
 //--------------------------------------------------------//
 DrawString::DrawString():
 	m_fontColor{DirectX::Colors::Black}
+{
+}
+
+//--------------------------------------------------------//
+//デストラクタ                                            //
+//--------------------------------------------------------//
+DrawString::~DrawString()
 {
 }
 

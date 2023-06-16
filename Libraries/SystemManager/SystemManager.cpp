@@ -44,7 +44,7 @@ SystemManager::GetStateTrack()
 {
 	if (!m_keyboardStateTracker)
 	{
-		return nullptr;
+		throw;
 	}
 	return m_keyboardStateTracker;
 }
@@ -55,7 +55,7 @@ SystemManager::GetString()
 {
 	if (!m_drawString)
 	{
-		return nullptr;
+		throw;
 	}
 	return m_drawString;
 }
@@ -66,7 +66,7 @@ SystemManager::GetMouseTrack()
 {
 	if (!m_mouseStateTracker)
 	{
-		return nullptr;
+		throw;
 	}
 	return m_mouseStateTracker;
 }
@@ -77,7 +77,7 @@ SystemManager::GetGridFloor()
 {
 	if (!m_gridFloor)
 	{
-		return nullptr;
+		throw;
 	}
 	return m_gridFloor;
 }
@@ -88,7 +88,7 @@ SystemManager::GetRayCast()
 {
 	if (!m_rayCast)
 	{
-		return nullptr;
+		throw;
 	}
 	return m_rayCast;
 }
@@ -99,7 +99,7 @@ SystemManager::GetDrawSprite()
 {
 	if (!m_drawSprite)
 	{
-		return nullptr;
+		throw;
 	}
 	return m_drawSprite;
 }

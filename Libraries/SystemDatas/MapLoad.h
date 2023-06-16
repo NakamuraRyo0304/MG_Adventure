@@ -79,6 +79,9 @@ public:
 	// マップのパス名を渡す
 	std::wstring GetFilePath() { return m_filename; }
 
+	// メモリの解放
+	void ReleaseMemory() { m_mapData.swap(m_mapData); m_mapData.shrink_to_fit(); }
+
 private:
 	// マップの保存パス指定
 	bool SaveMapPath(std::wstring& filePath);

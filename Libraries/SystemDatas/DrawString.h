@@ -9,10 +9,6 @@
 #ifndef DRAWSTRING
 #define DRAWSTRING
 
-#include "CommonStates.h"
-#include "SpriteBatch.h"
-#include "SpriteFont.h"
-
 class DrawString
 {
 private:
@@ -22,6 +18,7 @@ private:
 	DirectX::XMVECTORF32 m_fontColor;
 public:
 	DrawString();
+	~DrawString();
 
 	// ƒtƒHƒ“ƒg‚Ì‰Šú‰»
 	void CreateString(ID3D11Device1* device, ID3D11DeviceContext1* context);

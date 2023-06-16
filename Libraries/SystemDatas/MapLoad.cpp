@@ -34,6 +34,7 @@ MapLoad::MapLoad() :
 MapLoad::~MapLoad()
 {
 	m_mapData.clear();
+	std::vector<Object>(m_mapData).swap(m_mapData);
 }
 
 
@@ -114,9 +115,6 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 	}
 
 	ofs.close();
-
-	// ‘‚«‚İI‚í‚Á‚½‚ç”jŠü
-	obj.clear();
 }
 
 //--------------------------------------------------------//
@@ -358,4 +356,7 @@ void MapLoad::CreateNewMap()
 
 	// ì‚Á‚½ƒf[ƒ^‚ğŠi”[
 	m_mapData = obj;
+
+	obj.clear();
+	std::vector<Object>(obj).swap(obj);
 }
