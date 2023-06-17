@@ -16,6 +16,9 @@
 
 #include "../../Libraries/SystemDatas/Collider.h"
 
+// エイリアス
+using MapState = MapLoad::BoxState;
+
 class EditScene : public IScene
 {
 private:
@@ -34,7 +37,7 @@ private:
 	Collider::AABBCollider m_aabbCol;
 
 	// モデル
-	std::unique_ptr<DirectX::Model>m_grassBlockModel,m_grassBlockModel_D;	// 草モデル
+	std::unique_ptr<DirectX::Model>m_grassModel,m_grassModel_black;	// 草モデル
 	std::unique_ptr<DirectX::Model>m_coinModel;								// コインモデル
 	std::unique_ptr<DirectX::Model>m_clowdModel;							// 雲モデル
 	

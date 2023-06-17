@@ -52,11 +52,10 @@ void PlayScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetMoveMode(false);    	// カメラ座標移動
 	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
 
 	// マップ読み込み
-//	LoadMap(GetStageNum());
+	LoadMap(GetStageNum());
 
 	// プレイヤの初期化
 	m_player->Initialize();
@@ -83,9 +82,6 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
-
-	// レイの更新
-	GetSystemManager()->GetRayCast()->Update(mouseState);
 
 	// プレイヤの更新
 	m_player->Update(keyState);
@@ -122,7 +118,7 @@ void PlayScene::Draw()
 	// 画面サイズの格納
 	float width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
-
+	// 描画関連
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& states = *GetSystemManager()->GetCommonStates();
 
@@ -138,9 +134,6 @@ void PlayScene::Draw()
 	// プロジェクション行列
 	proj = GetSystemManager()->GetCamera()->GetProjection(width, height, CAMERA_ANGLE);
 
-	// レイの設定
-	GetSystemManager()->GetRayCast()->SetMatrix(view, proj);
-
 	// プレイヤの描画
 	m_player->Render(context, states, view, proj);
 
@@ -152,13 +145,11 @@ void PlayScene::Draw()
 
 		if (m_mapObj[i].id == MapLoad::BoxState::GrassBox)
 		{
-			m_grassModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-				*GetSystemManager()->GetCommonStates(), boxMat, view, proj);
+			m_grassModel->Draw(context, states, boxMat, view, proj);
 		}
 		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
 		{
-			m_coinModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-				*GetSystemManager()->GetCommonStates(), boxMat, view, proj);
+			m_coinModel->Draw(context, states, boxMat, view, proj);
 		}
 	}
 
@@ -182,9 +173,9 @@ void PlayScene::Finalize()
 	std::vector<Object>(m_colObjList).swap(m_colObjList);
 
 	// モデルのリリース
-	m_grassModel.release();
-	m_coinModel.release();
-	m_clowdModel.release();
+	ModelFactory::DeleteModel(m_grassModel);
+	ModelFactory::DeleteModel(m_coinModel);
+	ModelFactory::DeleteModel(m_clowdModel);
 }
 
 //--------------------------------------------------------//
@@ -208,9 +199,6 @@ void PlayScene::CreateWindowDependentResources()
 
 	// 文字の設定
 	GetSystemManager()->GetString()->CreateString(device, context);
-
-	// レイが及ぶ範囲を設定
-	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 
 	// モデルを作成する
 	m_grassModel = ModelFactory::GetModel(						// 草ブロック
@@ -326,10 +314,12 @@ void PlayScene::ApplyPushBack(Object& obj)
 //--------------------------------------------------------//
 void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
+	auto state = GetSystemManager()->GetCommonStates().get();
+
 	GetSystemManager()->GetString()->ChangeFontColor(DirectX::Colors::Black);
 
 	// シーン名の表示
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,0 }, L"PlayScene");
+	GetSystemManager()->GetString()->DrawFormatString(state, { 0,0 }, L"PlayScene");
 
 	// 文字数設定
 	wchar_t cam[64];
@@ -340,45 +330,36 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 		static_cast<int>(GetSystemManager()->GetCamera()->GetEyePosition().y),
 		static_cast<int>(GetSystemManager()->GetCamera()->GetEyePosition().z)
 	);
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,20 }, cam);
-
-	// マウスのワールド座標
-	wchar_t mos[64];
-	swprintf_s(mos, 64, L"WorldMousePos = %f,%f,%f",
-		GetSystemManager()->GetRayCast()->GetWorldMousePosition().x,
-		GetSystemManager()->GetRayCast()->GetWorldMousePosition().y,
-		GetSystemManager()->GetRayCast()->GetWorldMousePosition().z);
-
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,40 }, mos);
+	GetSystemManager()->GetString()->DrawFormatString(state, { 0,20 }, cam);
 
 	// ステージ番号確認
 	wchar_t num[32];
 	swprintf_s(num, 32, L"StageNum = %d", GetStageNum());
 
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,60 }, num);
+	GetSystemManager()->GetString()->DrawFormatString(state, { 0,40 }, num);
 	
 	// プレイヤの座標
 	wchar_t plr[64];
 	swprintf_s(plr, 64, L"PlayerPosition = %f,%f,%f", m_player->GetPosition().x, m_player->GetPosition().y, m_player->GetPosition().z);
 
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,80 }, plr);
+	GetSystemManager()->GetString()->DrawFormatString(state, { 0,60 }, plr);
 	
 	// プレイヤの重力
 	wchar_t gra[32];
 	swprintf_s(gra, 32, L"Gravity = %f", m_player->GetGravity());
 
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,100 }, gra);
+	GetSystemManager()->GetString()->DrawFormatString(state, { 0,80 }, gra);
 		
 	// コインテスト
 	wchar_t coi[32];
 	swprintf_s(coi, 32, L"Coin = %d", test_count);
 
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,120 }, coi);
+	GetSystemManager()->GetString()->DrawFormatString(state, { 0,100 }, coi);
 
 	// デバイスコンテキストの取得：グリッドの描画に使用
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	// デバッググリッドの表示
-	GetSystemManager()->GetGridFloor()->Draw(context, GetSystemManager()->GetCommonStates().get(), view, proj);
+	GetSystemManager()->GetGridFloor()->Draw(context, state, view, proj);
 }
 
 //--------------------------------------------------------//

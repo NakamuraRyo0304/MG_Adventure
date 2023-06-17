@@ -38,9 +38,8 @@ private:
 	std::unique_ptr<DrawSprite>									m_drawSprite;
 	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect>						m_effect;
-public:
 	// カメラ
-	Camera* m_pCamera = nullptr;
+	std::unique_ptr<Camera>										m_camera;
 
 public: // ゲッター、セッター、ファクトリー
 	// 共通のメイクユニーク
@@ -73,12 +72,13 @@ public: // ゲッター、セッター、ファクトリー
 	const std::unique_ptr<DrawSprite>& GetDrawSprite();
 
 	// カメラの取得
-	Camera*& GetCamera();
+	const std::unique_ptr<Camera>& GetCamera();
 
 	// エフェクトの取得
 	const std::unique_ptr<DirectX::BasicEffect>& GetBasicEffect();
 
 public:
+	SystemManager();
 	~SystemManager();
 
 	// ポインタの削除
