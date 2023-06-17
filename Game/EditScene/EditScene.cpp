@@ -17,12 +17,12 @@ EditScene::EditScene() :
 	m_sphere{},						// 球
 	m_spherePos{0.0f,0.0f,0.0f},
 	m_box{},						// 箱
-	m_mapObj{},						// 格納配列
+	m_mapObj{0},					// 格納配列
 	m_nowState{},					// 現在のブロックの種類
 	m_map{},						// マップ
-	is_boxCol{},						// 立方体当たり判定
-	m_grassBlockModel{ nullptr },	// モデル
-	m_grassBlockModel_D{ nullptr },	
+	is_boxCol{},					// 立方体当たり判定
+	m_grassModel{ nullptr },	// モデル
+	m_grassModel_black{ nullptr },	
 	m_coinModel{ nullptr },
 	m_clowdModel{ nullptr },
 	m_saveTexPos{},					// 画像座標
@@ -32,7 +32,6 @@ EditScene::EditScene() :
 	is_cameraFlag{true},			// カメラモードONでスタート
 	is_drawFlag{true}				// ペンモードでスタート			
 {
-
 }
 
 //--------------------------------------------------------//
@@ -71,7 +70,7 @@ void EditScene::Initialize()
 	LoadMap(L"Resources/Maps/Stage1.csv");
 
 	// 初期値は草ブロック
-	m_nowState = MapLoad::BoxState::GrassBox;
+	m_nowState = MapState::GrassBox;
 }
 
 //--------------------------------------------------------//
@@ -101,7 +100,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	// ファイルの読み込み
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Left))
 	{
-		m_map.LoadMap(L"");			// ファイル新規作成
+		m_map.LoadMap(L"");				// ファイル新規作成
 		m_mapObj = m_map.GetMapData();	// 読み込み
 		OffsetPosition_Read(&m_mapObj);	// 座標補正
 	}
@@ -118,14 +117,14 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	{
 		switch (m_nowState)
 		{
-		case MapLoad::BoxState::GrassBox:				// 草→コイン
-			ChangeState(MapLoad::BoxState::CoinBox);
+		case MapState::GrassBox:				// 草→コイン
+			ChangeState(MapState::CoinBox);
 			break;
-		case MapLoad::BoxState::CoinBox:				// コイン→草
-			ChangeState(MapLoad::BoxState::GrassBox);
+		case MapState::CoinBox:				// コイン→草
+			ChangeState(MapState::GrassBox);
 			break;
-		case MapLoad::BoxState::None:					// 消しゴム→草
-			ChangeState(MapLoad::BoxState::GrassBox);
+		case MapState::None:					// 消しゴム→草
+			ChangeState(MapState::GrassBox);
 			break;
 		default:
 			break;
@@ -133,7 +132,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	}
 	if(!is_drawFlag)
 	{
-		ChangeState(MapLoad::BoxState::None);
+		ChangeState(MapState::None);
 	}
 
 	// カメラモードじゃなければ編集できる
@@ -160,6 +159,9 @@ void EditScene::Draw()
 	// 画面サイズの格納
 	float width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
+	// 描画関連
+	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
 	DirectX::SimpleMath::Matrix world, view, projection;
@@ -191,15 +193,13 @@ void EditScene::Draw()
 		DirectX::SimpleMath::Matrix boxMat = 
 			DirectX::SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
-		if (m_mapObj[i].id == MapLoad::BoxState::GrassBox)
+		if (m_mapObj[i].id == MapState::GrassBox)
 		{
-			m_grassBlockModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-				*GetSystemManager()->GetCommonStates(), boxMat, view, projection);
+			m_grassModel->Draw(context, states, boxMat, view, projection);
 		}
-		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
+		if (m_mapObj[i].id == MapState::CoinBox)
 		{
-			m_coinModel->Draw(GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(),
-				*GetSystemManager()->GetCommonStates(), boxMat, view, projection);
+			m_coinModel->Draw(context, states, boxMat, view, projection);
 		}
 	}
 
@@ -217,13 +217,12 @@ void EditScene::Finalize()
 {
 	// マップの解放
 	m_mapObj.clear();
-	m_map.ReleaseMemory();
 
-	// モデルオブジェクトの解放
-	m_grassBlockModel.release();
-	m_grassBlockModel_D.release();
-	m_coinModel.release();
-	m_clowdModel.release();
+	// モデルの破棄
+	ModelFactory::DeleteModel(m_grassModel);
+	ModelFactory::DeleteModel(m_grassModel_black);
+	ModelFactory::DeleteModel(m_coinModel);
+	ModelFactory::DeleteModel(m_clowdModel);
 }
 
 //--------------------------------------------------------//
@@ -252,11 +251,11 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 	
 	// モデルを作成する
-	m_grassBlockModel = ModelFactory::GetModel(					// 草ブロック
+	m_grassModel = ModelFactory::GetModel(					// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
 	);
-	m_grassBlockModel_D = ModelFactory::GetModel(				// 草選択ブロック
+	m_grassModel_black = ModelFactory::GetModel(				// 草選択ブロック
 		device,
 		L"Resources/Models/GrassBlock_Dark.cmo"
 	);
@@ -375,20 +374,20 @@ void EditScene::EditMap()
 	m_spherePos.y = UserUtillity::Lerp(m_spherePos.y, mouse.scrollWheelValue / 640.0f + COMMON_LOW, 0.1f);
 
 	// マップとの当たり判定
-	for (int i = 0; i < m_mapObj.size(); i++)
+	for (auto& i : m_mapObj)
 	{
 		// 押し戻し処理を無効化
 		is_boxCol.SetPushMode(false);
 
 		// 当たり判定を取る
-		is_boxCol.PushBox(&m_spherePos, m_mapObj[i].position,
+		is_boxCol.PushBox(&m_spherePos, i.position,
 			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			DirectX::SimpleMath::Vector3{ COMMON_SIZE });
 		bool hit = is_boxCol.GetHitBoxFlag();
 		
 		if (hit && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
 		{
-			m_mapObj[i].id = m_nowState;
+			i.id = m_nowState;
 		}
 	}
 }
@@ -399,21 +398,21 @@ void EditScene::EditMap()
 // 読み込み時
 void EditScene::OffsetPosition_Read(std::vector<Object>* obj)
 {
-	for (int i = 0; i < (*obj).size(); i++)
+	for (auto& i : *obj)
 	{
-		(*obj)[i].position.x -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
-		(*obj)[i].position.y += static_cast<float>(COMMON_LOW);
-		(*obj)[i].position.z -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		i.position.x -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		i.position.y += static_cast<float>(COMMON_LOW);
+		i.position.z -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
 	}
 }
 // 書き込み時
 void EditScene::OffsetPosition_Write(std::vector<Object>* obj)
 {
-	for (int i = 0; i < (*obj).size(); i++)
+	for (auto& i : *obj)
 	{
-		(*obj)[i].position.x += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
-		(*obj)[i].position.y -= static_cast<float>(COMMON_LOW);
-		(*obj)[i].position.z += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		i.position.x += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		i.position.y -= static_cast<float>(COMMON_LOW);
+		i.position.z += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
 	}
 }
 
@@ -421,7 +420,7 @@ void EditScene::OffsetPosition_Write(std::vector<Object>* obj)
 //マップ読み込み                                          //
 //--------------------------------------------------------//
 void EditScene::LoadMap(std::wstring filename)
-{
+{ 
 	// マップの読み込み
 	m_map.LoadMap(filename);
 	m_filePath = m_map.GetFilePath();
@@ -540,8 +539,8 @@ void EditScene::ClickUserInterface(DirectX::Mouse::State& mouseState)
 	if (cameraFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
 	{
 		is_cameraFlag = !is_cameraFlag;
-		auto camera = GetSystemManager()->GetCamera();
-		camera->SetEagleMode(is_cameraFlag);
+		GetSystemManager()->GetCamera();
+		GetSystemManager()->GetCamera()->SetEagleMode(is_cameraFlag);
 	}
 
 	// ペン/消しゴムアイコンをクリック

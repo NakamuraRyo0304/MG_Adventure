@@ -9,10 +9,25 @@
 
 #include "SystemManager.h"
 
+// コンストラクタ
+SystemManager::SystemManager()
+	:m_commonState{nullptr}
+	,m_drawSprite{nullptr}
+	,m_drawString{nullptr}
+	,m_effect{nullptr}
+	,m_gridFloor{nullptr}
+	,m_keyboardStateTracker{nullptr}
+	,m_mouseStateTracker{nullptr}
+	,m_camera{nullptr}
+	,m_pDR{nullptr}
+	,m_rayCast{nullptr}
+{
+}
+
 // デストラクタ
 SystemManager::~SystemManager()
 {
-	DeletePointer(m_pCamera);
+
 }
 
 
@@ -105,9 +120,14 @@ SystemManager::GetDrawSprite()
 }
 
 // Camera
-Camera*& SystemManager::GetCamera()
+const std::unique_ptr<Camera>&
+SystemManager::GetCamera()
 {
-	return m_pCamera;
+	if (!m_camera)
+	{
+		m_camera = std::make_unique<Camera>();
+	}
+	return m_camera;
 }
 
 // BasicEffect
@@ -139,7 +159,7 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 	m_drawString = std::make_unique<DrawString>();
 
 	// カメラの初期化
-	m_pCamera = new Camera();
+	m_camera = std::make_unique<Camera>();
 
 	// マウス
 	m_mouseStateTracker

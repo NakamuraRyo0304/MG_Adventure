@@ -74,7 +74,7 @@ void Player::Render(ID3D11DeviceContext* context, DirectX::DX11::CommonStates& s
 //--------------------------------------------------------//
 void Player::Finalize()
 {
-	m_model.release();
+	m_model.reset();
 	m_parameter.reset();
 }
 

@@ -118,6 +118,14 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 }
 
 //--------------------------------------------------------//
+//メモリの解放                                            //
+//--------------------------------------------------------//
+void MapLoad::ReleaseMemory()
+{
+	std::vector<Object>().swap(m_mapData);
+}
+
+//--------------------------------------------------------//
 //ファイルパスをセーブする関数                            //
 //--------------------------------------------------------//
 // private
@@ -334,7 +342,8 @@ void MapLoad::CreateNewMap()
 {
 	std::vector<Object> obj;
 
-	const int initialNumber = 15;
+	// 最大マスのサイズにする
+	const int initialNumber = MAP_COLUMN;
 
 	for (int x = 0; x < initialNumber; ++x)
 	{

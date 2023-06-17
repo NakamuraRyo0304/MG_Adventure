@@ -80,7 +80,7 @@ public:
 	std::wstring GetFilePath() { return m_filename; }
 
 	// メモリの解放
-	void ReleaseMemory() { m_mapData.swap(m_mapData); m_mapData.shrink_to_fit(); }
+	void ReleaseMemory();
 
 private:
 	// マップの保存パス指定

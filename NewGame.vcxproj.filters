@@ -158,7 +158,7 @@
       <Filter>Objects\Player</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\MemoryLeak.h">
-      <Filter>Common\HeaderOnly</Filter>
+      <Filter>SystemManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
