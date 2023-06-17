@@ -11,7 +11,7 @@
 
 #include "../IScene.h"
 
-// CSV読み込み
+ // CSV読み込み
 #include "../../Libraries/SystemDatas/MapLoad.h"
 
 #include "../../Libraries/SystemDatas/Collider.h"
@@ -23,7 +23,7 @@ class EditScene : public IScene
 {
 private:
 	// ボックスとスフィア
-	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere,m_box;
+	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere;
 	DirectX::SimpleMath::Vector3 m_spherePos;
 
 	// ブロックの配列
@@ -37,7 +37,8 @@ private:
 	Collider::AABBCollider m_aabbCol;
 
 	// モデル
-	std::unique_ptr<DirectX::Model>m_grassModel,m_grassModel_black;	// 草モデル
+	std::unique_ptr<DirectX::Model>m_grassModel;							// 草モデル
+	std::unique_ptr<DirectX::Model>m_noneModel;								// 判定モデル
 	std::unique_ptr<DirectX::Model>m_coinModel;								// コインモデル
 	std::unique_ptr<DirectX::Model>m_clowdModel;							// 雲モデル
 	

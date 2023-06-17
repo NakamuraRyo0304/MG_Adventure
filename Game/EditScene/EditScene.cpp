@@ -16,13 +16,12 @@ EditScene::EditScene() :
 	IScene(),
 	m_sphere{},						// 球
 	m_spherePos{0.0f,0.0f,0.0f},
-	m_box{},						// 箱
 	m_mapObj{0},					// 格納配列
 	m_nowState{},					// 現在のブロックの種類
 	m_map{},						// マップ
 	is_boxCol{},					// 立方体当たり判定
-	m_grassModel{ nullptr },	// モデル
-	m_grassModel_black{ nullptr },	
+	m_grassModel{ nullptr },		// モデル
+	m_noneModel{ nullptr },	
 	m_coinModel{ nullptr },
 	m_clowdModel{ nullptr },
 	m_saveTexPos{},					// 画像座標
@@ -58,12 +57,6 @@ void EditScene::Initialize()
 	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
 		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), 
 		COMMON_SIZE / 2
-	);
-
-	// ボックスの初期化(テスト)
-	m_box = DirectX::GeometricPrimitive::CreateBox(
-		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), 
-		DirectX::XMFLOAT3(COMMON_SIZE, COMMON_SIZE, COMMON_SIZE)
 	);
 
 	// マップ読み込み//初回読み込み
@@ -120,7 +113,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 		case MapState::GrassBox:				// 草→コイン
 			ChangeState(MapState::CoinBox);
 			break;
-		case MapState::CoinBox:				// コイン→草
+		case MapState::CoinBox:					// コイン→草
 			ChangeState(MapState::GrassBox);
 			break;
 		case MapState::None:					// 消しゴム→草
@@ -161,6 +154,7 @@ void EditScene::Draw()
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 	// 描画関連
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
 	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
@@ -220,7 +214,7 @@ void EditScene::Finalize()
 
 	// モデルの破棄
 	ModelFactory::DeleteModel(m_grassModel);
-	ModelFactory::DeleteModel(m_grassModel_black);
+	ModelFactory::DeleteModel(m_noneModel);
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_clowdModel);
 }
@@ -251,19 +245,19 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 	
 	// モデルを作成する
+	m_noneModel = ModelFactory::GetModel(					// 判定ブロック
+		device,
+		L"Resources/Models/GlassCube.cmo"
+	);
 	m_grassModel = ModelFactory::GetModel(					// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
 	);
-	m_grassModel_black = ModelFactory::GetModel(				// 草選択ブロック
-		device,
-		L"Resources/Models/GrassBlock_Dark.cmo"
-	);
-	m_coinModel = ModelFactory::GetModel(						// コインブロック
+	m_coinModel = ModelFactory::GetModel(					// コインブロック
 		device,
 		L"Resources/Models/Coin.cmo"
 	);
-	m_clowdModel = ModelFactory::GetModel(						// 雲ブロック
+	m_clowdModel = ModelFactory::GetModel(					// 雲ブロック
 		device,
 		L"Resources/Models/Clowd.cmo"
 	);
@@ -278,9 +272,9 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds", device);
 
 	// 座標情報
-	m_saveTexPos   = { width - 100, 80 };
-	m_cameraTexPos = { width - 100,208 };
-	m_penTexPos    = { width - 100,336 };
+	m_saveTexPos   = { 80  , 80};
+	m_cameraTexPos = { 208 , 80};
+	m_penTexPos    = { 336 , 80};
 }
 
 //--------------------------------------------------------//
@@ -384,7 +378,8 @@ void EditScene::EditMap()
 			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			DirectX::SimpleMath::Vector3{ COMMON_SIZE });
 		bool hit = is_boxCol.GetHitBoxFlag();
-		
+		i.hit = hit;
+
 		if (hit && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
 		{
 			i.id = m_nowState;
@@ -451,7 +446,7 @@ void EditScene::DrawImages()
 			L"Save",							// 登録キー
 			m_saveTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.5f,								// 拡大率
+			0.55f,								// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -473,7 +468,7 @@ void EditScene::DrawImages()
 			L"CameraMove",						// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.5f,								// 拡大率
+			0.55,								// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -495,7 +490,7 @@ void EditScene::DrawImages()
 			L"Pen",								// 登録キー
 			m_penTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.5f,								// 拡大率
+			0.55f,								// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -518,7 +513,7 @@ void EditScene::ClickUserInterface(DirectX::Mouse::State& mouseState)
 {
 	// 保存アイコンをクリック
 	is_saveFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-		{ m_saveTexPos.x,0,m_saveTexPos.y },		        // 画像の位置
+		{ m_saveTexPos.x,0,m_saveTexPos.y },		    // 画像の位置
 		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
 		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
 	// 当っていてクリックした時処理
