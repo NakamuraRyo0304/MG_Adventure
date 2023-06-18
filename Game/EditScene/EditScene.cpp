@@ -19,16 +19,17 @@ EditScene::EditScene() :
 	IScene(),
 	m_userInterface{},				// UI
 	m_sphere{},						// 球
-	m_spherePos{0.0f,0.0f,0.0f},
+	m_cursorPos{0.0f,0.0f,0.0f},
 	m_mapObj{0},					// 格納配列
 	m_nowState{},					// 現在のブロックの種類
+	m_angle{},
 	m_map{},						// マップ
 	is_boxCol{},					// 立方体当たり判定
 	m_grassModel{ nullptr },		// モデル
 	m_noneModel{ nullptr },	
 	m_coinModel{ nullptr },
 	m_clowdModel{ nullptr },
-	m_systemForUI{}
+	m_sharedSystem{}
 	
 {
 }
@@ -73,7 +74,7 @@ void EditScene::Initialize()
 void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keyState,
 	DirectX::Mouse::State& mouseState)
 {
-	elapsedTime;
+	m_angle = elapsedTime;
 
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
@@ -114,28 +115,32 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 		GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
 	}
 
-	// ステータス変更 // 要修正
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Right))
+	// ステータス変更
+	if (GetSystemManager()->GetMouseTrack()->rightButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
 	{
 		switch (m_nowState)
 		{
 		case MapState::GrassBox:				// 草→コイン
 			ChangeState(MapState::CoinBox);
 			break;
-		case MapState::CoinBox:					// コイン→草
-			ChangeState(MapState::GrassBox);
+		case MapState::CoinBox:					// コイン→消しゴム
+			ChangeState(MapState::None);
+			m_userInterface->SetDrawFlag(false);
 			break;
 		case MapState::None:					// 消しゴム→草
 			ChangeState(MapState::GrassBox);
+			m_userInterface->SetDrawFlag(true);
 			break;
 		default:
 			break;
 		}
 	}
-	if(!m_userInterface->GetDrawFlag())
+	// 消しゴムモードなら、選択ブロックを消しゴムにする
+	if (!m_userInterface->GetDrawFlag())
 	{
 		ChangeState(MapState::None);
 	}
+
 
 	// カメラモードじゃなければ編集できる
 	if (!m_userInterface->GetCameraFlag())
@@ -177,13 +182,29 @@ void EditScene::Draw()
 	// レイの設定
 	GetSystemManager()->GetRayCast()->SetMatrix(view, projection);
 
-	// 球の描画
-	world *= DirectX::SimpleMath::Matrix::CreateTranslation(m_spherePos);
+	// 選択しているブロックの描画
+	DirectX::SimpleMath::Matrix scale = DirectX::SimpleMath::Matrix::CreateScale(0.5f);
+	DirectX::SimpleMath::Matrix rotate = DirectX::SimpleMath::Matrix::CreateRotationY(m_angle);
+	DirectX::SimpleMath::Matrix trans = DirectX::SimpleMath::Matrix::CreateTranslation(m_cursorPos);
 
-	// 非カメラモードのみ描画
+	// サイズ　×　回転　×　移動
+	world *= scale * rotate * trans;
+
+	// カメラモードのみ描画
 	if (!m_userInterface->GetCameraFlag())
 	{
-		m_sphere->Draw(world, view, projection, DirectX::Colors::Black);
+		if (m_nowState == MapState::GrassBox)
+		{
+			m_grassModel->Draw(context, states, world, view, projection);
+		}
+		if (m_nowState == MapState::CoinBox)
+		{
+			m_coinModel->Draw(context, states, world, view, projection);
+		}
+		if (m_nowState == MapState::None)
+		{
+			m_noneModel->Draw(context, states, world, view, projection);
+		}
 	}
 		
 	// オブジェクトの描画
@@ -198,7 +219,7 @@ void EditScene::Draw()
 		}
 		if (m_mapObj[i].id == MapState::CoinBox)
 		{
-			m_coinModel->Draw(context, states, boxMat, view, projection);
+			m_coinModel->Draw(context, states, rotate * boxMat, view, projection);
 		}
 	}
 
@@ -236,6 +257,11 @@ void EditScene::CreateWindowDependentResources()
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(device, context);
 
+	// UIの初期化
+	m_userInterface = std::make_unique<UserInterface>();
+	m_sharedSystem = GetSystemManager();
+	m_userInterface->Initialize(m_sharedSystem, context, device);
+
 	// 画面サイズの格納
 	float width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
@@ -250,9 +276,9 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 	
 	// モデルを作成する
-	m_noneModel = ModelFactory::GetModel(					// 判定ブロック
+	m_noneModel = ModelFactory::GetModel(					// 消しゴムブロック
 		device,
-		L"Resources/Models/GlassCube.cmo"
+		L"Resources/Models/Eraser.cmo"
 	);
 	m_grassModel = ModelFactory::GetModel(					// 草ブロック
 		device,
@@ -266,11 +292,6 @@ void EditScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Clowd.cmo"
 	);
-
-	// UIの初期化
-	m_userInterface = std::make_unique<UserInterface>();
-	m_systemForUI = GetSystemManager();
-	m_userInterface->Initialize(m_systemForUI, context, device);
 }
 
 //--------------------------------------------------------//
@@ -305,9 +326,9 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 
 	// 保存された座標
 	swprintf_s(mos, 64, L"SpherePosition = %f,%f,%f",
-		m_spherePos.x,
-		m_spherePos.y,
-		m_spherePos.z);
+		m_cursorPos.x,
+		m_cursorPos.y,
+		m_cursorPos.z);
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,60 }, mos);
 
@@ -354,14 +375,18 @@ void EditScene::EditMap()
 	auto mouse = DirectX::Mouse::Get().GetState();
 
 	// 移動処理
-	m_spherePos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
-	m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
+	m_cursorPos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
+	m_cursorPos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
 
 	// カメラモードは処理しない
 	if (m_userInterface->GetCameraFlag()) return;
 
 	// マウスカーソルで移動
-	m_spherePos.y = UserUtillity::Lerp(m_spherePos.y, mouse.scrollWheelValue / 640.0f + COMMON_LOW, 0.1f);
+	m_cursorPos.y = UserUtillity::Lerp(
+		m_cursorPos.y,															// 開始地点
+		static_cast<float>(mouse.scrollWheelValue / WHEEL_SPAWN) + COMMON_LOW,	// 終了地点
+		0.1f																	// 速度
+	);
 
 	// マップとの当たり判定
 	for (auto& i : m_mapObj)
@@ -370,7 +395,7 @@ void EditScene::EditMap()
 		is_boxCol.SetPushMode(false);
 
 		// 当たり判定を取る
-		is_boxCol.PushBox(&m_spherePos, i.position,
+		is_boxCol.PushBox(&m_cursorPos, i.position,
 			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			DirectX::SimpleMath::Vector3{ COMMON_SIZE });
 		bool hit = is_boxCol.GetHitBoxFlag();

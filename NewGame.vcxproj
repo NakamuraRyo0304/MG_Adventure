@@ -263,6 +263,7 @@
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />
     <None Include="Resources\Models\Clowd.cmo" />
     <None Include="Resources\Models\Coin.cmo" />
+    <None Include="Resources\Models\Eraser.cmo" />
     <None Include="Resources\Models\GlassCube.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
     <None Include="Resources\Models\TestPlayer.cmo" />

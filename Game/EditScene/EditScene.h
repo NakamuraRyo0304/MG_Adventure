@@ -25,7 +25,7 @@ class EditScene : public IScene
 private:
 	// ボックスとスフィア
 	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere;
-	DirectX::SimpleMath::Vector3 m_spherePos;
+	DirectX::SimpleMath::Vector3 m_cursorPos;
 
 	// ブロックの配列
 	std::vector<Object> m_mapObj;
@@ -38,7 +38,7 @@ private:
 
 	// UI
 	std::unique_ptr<UserInterface> m_userInterface;
-	std::shared_ptr<SystemManager> m_systemForUI;
+	std::shared_ptr<SystemManager> m_sharedSystem;
 
 	// モデル
 	std::unique_ptr<DirectX::Model>m_grassModel;							// 草モデル
@@ -46,9 +46,9 @@ private:
 	std::unique_ptr<DirectX::Model>m_coinModel;								// コインモデル
 	std::unique_ptr<DirectX::Model>m_clowdModel;							// 雲モデル
 
-
 	// 現在のブロックステータス
 	int m_nowState;
+	float m_angle;
 
 	// パスの格納
 	std::wstring m_filePath;
@@ -63,10 +63,8 @@ private:
 	// カメラアングル
 	const float	CAMERA_ANGLE = 45.0f;
 
-	// ボックスの最大値と最小値
-	const int	MIN_BOX = 1;
-	const int	MAX_BOX = 15;
-
+	// ホイールのスパン
+	const int WHEEL_SPAWN = 640;
 public:
 
 	// コンストラクタ
