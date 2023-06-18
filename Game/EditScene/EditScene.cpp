@@ -154,7 +154,6 @@ void EditScene::Draw()
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 	// 描画関連
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
-	auto device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
 	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列

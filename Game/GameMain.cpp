@@ -53,6 +53,9 @@ void GameMain::Initialize()
 //--------------------------------------------------------//
 void GameMain::Update(const DX::StepTimer& timer)
 {
+	// 時間を更新する
+	float time = static_cast<float>(timer.GetTotalSeconds());
+
 	// キー入力情報を取得する
 	auto keyState = DirectX::Keyboard::Get().GetState();
 	
@@ -77,7 +80,7 @@ void GameMain::Update(const DX::StepTimer& timer)
 	if (m_pNowScene != nullptr)
 	{
 		// タイマーとキーボードの受け渡し
-		m_pNowScene->Update(static_cast<float>(timer.GetElapsedSeconds()), keyState,mouseState);
+		m_pNowScene->Update(time, keyState,mouseState);
 				
 		// NONE以外が入ったら処理
 		m_nextScene = m_pNowScene->GetNextScene();

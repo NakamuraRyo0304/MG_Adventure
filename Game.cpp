@@ -44,6 +44,7 @@ void Game::Initialize(HWND window, int width, int height)
 
     // 可変タイマーを使わない場合はタイマーのコメントアウトを外す
 
+    m_timer.ResetElapsedTime();
     m_timer.SetFixedTimeStep(true);
     m_timer.SetTargetElapsedSeconds(1.0 / 60);
 
@@ -72,11 +73,6 @@ void Game::Tick()
 //--------------------------------------------------------//
 void Game::Update(DX::StepTimer const& timer)
 {
-    float elapsedTime = float(timer.GetElapsedSeconds());
-
-    // アップデートの追加はここから行う
-    elapsedTime;
-
     mGameMain->Update(timer);
 }
 #pragma endregion
