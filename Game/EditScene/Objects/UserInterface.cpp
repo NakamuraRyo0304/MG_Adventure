@@ -66,10 +66,10 @@ void UserInterface::Update(DirectX::Mouse::State& mouseState)
 {
 	// ファイルを開くアイコン
 	bool open = false;
-	open = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-		{ m_openTexPos.x,0,m_openTexPos.y },		    // 画像の位置
-		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
-		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
+	open = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
+		{ m_openTexPos.x,m_openTexPos.y },		    // 画像の位置
+		DirectX::SimpleMath::Vector2{ 5.0f },		    // サイズ
+		DirectX::SimpleMath::Vector2{ 100.0f });	    // サイズ
 	if (open)
 	{
 		is_openFlag = true;
@@ -82,10 +82,10 @@ void UserInterface::Update(DirectX::Mouse::State& mouseState)
 
 	// 保存アイコンをクリック
 	bool save = false;
-	save = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-		{ m_saveTexPos.x,0,m_saveTexPos.y },		    // 画像の位置
-		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
-		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
+	save = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
+		{ m_saveTexPos.x,m_saveTexPos.y },		    // 画像の位置
+		DirectX::SimpleMath::Vector2{ 5.0f },		    // サイズ
+		DirectX::SimpleMath::Vector2{ 100.0f });	    // サイズ
 	// 当っていてクリックした時処理
 	if (save)
 	{
@@ -97,10 +97,10 @@ void UserInterface::Update(DirectX::Mouse::State& mouseState)
 	}
 
 	// カメラアイコンをクリック
-	bool camera = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-		{ m_cameraTexPos.x,0,m_cameraTexPos.y },	 	// 画像の位置
-		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
-		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
+	bool camera = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
+		{ m_cameraTexPos.x,m_cameraTexPos.y },	 									// 画像の位置
+		DirectX::SimpleMath::Vector2{ 5.0f }, 										// サイズ
+		DirectX::SimpleMath::Vector2{ 100.0f });									// サイズ
 
 	// カメラ移動モード切り替え
 	if (camera && m_systemManager->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
@@ -110,10 +110,10 @@ void UserInterface::Update(DirectX::Mouse::State& mouseState)
 	}
 
 	// ペン/消しゴムアイコンをクリック
-	bool tool = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-		{ m_penTexPos.x,0,m_penTexPos.y },	        	// 画像の位置
-		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
-		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
+	bool tool = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
+		{ m_penTexPos.x,m_penTexPos.y },	        							 // 画像の位置
+		DirectX::SimpleMath::Vector2{ 5.0f },									 // サイズ
+		DirectX::SimpleMath::Vector2{ 100.0f });								 // サイズ
 
 	// 描画モード切り替え
 	if (tool && m_systemManager->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)

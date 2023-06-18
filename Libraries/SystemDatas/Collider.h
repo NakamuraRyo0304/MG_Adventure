@@ -97,10 +97,10 @@ namespace Collider
 		~AABBCollider() = default;
 
 		// “–‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ð•Ô‚·
-		bool HitAABB_2D(const DirectX::SimpleMath::Vector3& pos1,
-			const DirectX::SimpleMath::Vector3& pos2,
-			const DirectX::SimpleMath::Vector3& sz1,
-			const DirectX::SimpleMath::Vector3& sz2);
+		bool HitAABB_2D(const DirectX::SimpleMath::Vector2& pos1,
+			const DirectX::SimpleMath::Vector2& pos2,
+			const DirectX::SimpleMath::Vector2& sz1,
+			const DirectX::SimpleMath::Vector2& sz2);
 	};
 }
 

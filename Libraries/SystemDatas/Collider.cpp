@@ -225,16 +225,16 @@ Collider::AABBCollider::AABBCollider()
 //当っているかどうかを返す                                //
 //--------------------------------------------------------//
 // 第１、２引数：座標 第３、４引数：サイズ
-bool Collider::AABBCollider::HitAABB_2D(const DirectX::SimpleMath::Vector3& pos1, 
-								     const DirectX::SimpleMath::Vector3& pos2,
-								     const DirectX::SimpleMath::Vector3& sz1, 
-								     const DirectX::SimpleMath::Vector3& sz2)
+bool Collider::AABBCollider::HitAABB_2D(const DirectX::SimpleMath::Vector2& pos1, 
+								     const DirectX::SimpleMath::Vector2& pos2,
+								     const DirectX::SimpleMath::Vector2& sz1, 
+								     const DirectX::SimpleMath::Vector2& sz2)
 {
 	// XZ平面における当たり判定
 	if (pos1.x - sz1.x / 2 < pos2.x + sz2.x / 2 &&
 		pos1.x + sz1.x / 2 > pos2.x - sz2.x / 2 &&
-		pos1.z - sz1.z / 2 < pos2.z + sz2.z / 2 &&
-		pos1.z + sz1.z / 2 > pos2.z - sz2.z / 2)return true;
+		pos1.y - sz1.y / 2 < pos2.y + sz2.y / 2 &&
+		pos1.y + sz1.y / 2 > pos2.y - sz2.y / 2)return true;
 
 	return false;
 }

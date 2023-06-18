@@ -49,7 +49,11 @@ void MapLoad::LoadMap(std::wstring filename)
 	if (m_filename == L"")
 	{
 		m_mapData.clear();
-		LoadMapPath();
+		
+		if (LoadMapPath() == false)
+		{
+			CreateNewMap();
+		}
 	}
 
 	// ファイルを開く
@@ -353,7 +357,14 @@ void MapLoad::CreateNewMap()
 			{
 				Object newObj;
 
-				newObj.id = BoxState::GrassBox;
+				if (y == 1)
+				{
+					newObj.id = BoxState::GrassBox;
+				}
+				else
+				{
+					newObj.id = BoxState::None;
+				}
 				newObj.position.x = static_cast<float>(x);
 				newObj.position.y = static_cast<float>(y);
 				newObj.position.z = static_cast<float>(z);

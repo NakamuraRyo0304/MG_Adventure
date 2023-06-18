@@ -209,7 +209,7 @@ void EditScene::Draw()
 	// サイズ　×　回転　×　移動
 	world *= scale * rotateX * rotateY * rotateZ * trans;
 
-	// 選択しているオブジェを描画
+	// 選択しているオブジェを描画 
 	if (m_nowState == MapState::GrassBox)
 	{
 		m_grassModel->Draw(context, states, world, view, projection);
@@ -459,9 +459,15 @@ void EditScene::LoadMap(std::wstring filename)
 { 
 	// マップの読み込み
 	m_map.LoadMap(filename);
+
+	// パスが取得できなければ新しく平面のマップを作成する
 	m_filePath = m_map.GetFilePath();
-	m_mapObj = m_map.GetMapData();	// 読み込み
-	OffsetPosition_Read(&m_mapObj);	// 座標補正
+
+	// マップを格納する
+	m_mapObj = m_map.GetMapData();
+
+	// 座標補正
+	OffsetPosition_Read(&m_mapObj);
 }
 // 書き込み時
 void EditScene::SaveFile()
