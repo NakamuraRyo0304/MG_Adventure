@@ -71,12 +71,12 @@ public:
 
 	// ビュー行列を計算する
 	void CalculateViewMatrix();
-
-	// カメラを移動させる
-	void MoveCamera(DirectX::SimpleMath::Vector3 eye,DirectX::SimpleMath::Vector3 up,DirectX::Keyboard::State keyState);
-	
+		
 	// カメラを揺らす処理
 	void ShakeCamera(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
+
+	// カメラとオブジェクトの距離を求める
+	float CalculateDistanceToObject(const DirectX::SimpleMath::Vector3& objPos);
 
 
 //--------------------------------------------------------//
@@ -94,7 +94,8 @@ public:
 	void SetTargetPosition(const DirectX::SimpleMath::Vector3& pos) { m_target = pos; }
 
 	// 射影行列の取得
-	const DirectX::SimpleMath::Matrix& GetProjection(float width, float height,float angle);
+	const DirectX::SimpleMath::Matrix& CreateProjection(float width, float height,float angle = 45.0f);
+	const DirectX::SimpleMath::Matrix& GetProjection() { return m_proj; }
 
 	// カメラ移動モード切替
 	void SetMoveMode(bool flag) { is_moveMode = flag; }

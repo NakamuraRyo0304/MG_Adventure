@@ -105,6 +105,6 @@ void TitleScene::CreateWindowDependentResources()
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// ƒJƒƒ‰‚ÌÝ’è
-	GetSystemManager()->GetCamera()->GetProjection(width, height, 45.0f);
+	GetSystemManager()->GetCamera()->CreateProjection(width, height, 45.0f);
 
 }

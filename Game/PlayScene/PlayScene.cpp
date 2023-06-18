@@ -115,9 +115,6 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 //--------------------------------------------------------//
 void PlayScene::Draw()
 {
-	// 画面サイズの格納
-	float width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 	// 描画関連
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& states = *GetSystemManager()->GetCommonStates();
@@ -132,7 +129,7 @@ void PlayScene::Draw()
 	view = GetSystemManager()->GetCamera()->GetView();
 
 	// プロジェクション行列
-	proj = GetSystemManager()->GetCamera()->GetProjection(width, height, CAMERA_ANGLE);
+	proj = GetSystemManager()->GetCamera()->GetProjection();
 
 	// プレイヤの描画
 	m_player->Render(context, states, view, proj);
@@ -195,7 +192,7 @@ void PlayScene::CreateWindowDependentResources()
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// カメラの設定
-	GetSystemManager()->GetCamera()->GetProjection(width, height, CAMERA_ANGLE);
+	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
 	// 文字の設定
 	GetSystemManager()->GetString()->CreateString(device, context);

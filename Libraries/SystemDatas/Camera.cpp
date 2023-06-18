@@ -204,12 +204,11 @@ void Camera::ShakeCamera(float duration, float tremor, DirectX::SimpleMath::Vect
 	}
 }
 
-
 //--------------------------------------------------------//
 //射影行列の作成と取得                                    //
 //--------------------------------------------------------//
 // 第１引数：画面横幅 / 第２引数：画面縦幅 / 第３引数：カメラ画角(float値を変換なしで渡す)
-const DirectX::SimpleMath::Matrix& Camera::GetProjection(float width, float height,float angle)
+const DirectX::SimpleMath::Matrix& Camera::CreateProjection(float width, float height,float angle)
 {
 	// 画面サイズとアングルの保存
 	m_screenWidth = static_cast<int>(width);
@@ -222,7 +221,7 @@ const DirectX::SimpleMath::Matrix& Camera::GetProjection(float width, float heig
 	float aspectRatio = width / height;
 	
 	// カメラから一番近い投影面
-	float nearPlane = 1.0f;
+	float nearPlane = 0.1f;
 
 	// カメラから一番遠い投影面
 	float farPlane = 100.0f;
@@ -236,9 +235,22 @@ const DirectX::SimpleMath::Matrix& Camera::GetProjection(float width, float heig
 			farPlane
 	);
 
+	m_angle.x = angle;
+
 	// カメラ内で使う変数
 	m_proj = projection;
 
 	// プロジェクション行列を返却
 	return m_proj;
+}
+
+//--------------------------------------------------------//
+//カメラとオブジェクトの距離を求める                      //
+//--------------------------------------------------------//
+float Camera::CalculateDistanceToObject(const DirectX::SimpleMath::Vector3& objPos)
+{
+	DirectX::SimpleMath::Vector3 distanceVector = objPos - m_eye;
+	float distance = distanceVector.Length();
+
+	return distance;
 }

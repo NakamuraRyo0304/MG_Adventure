@@ -9,11 +9,15 @@
 
 #include "SelectScene.h"
 
+// 角度
+const float SelectScene::CAMERA_ANGLE = 45.0f;
+
 //--------------------------------------------------------//
 //コンストラクタ                                          //
 //--------------------------------------------------------//
 SelectScene::SelectScene():
-	IScene()
+	IScene(),
+	m_tea{}
 {
 }
 
@@ -32,8 +36,9 @@ void SelectScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetMoveMode(false);		// カメラ座標移動
-	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetMoveMode(true);		// カメラ座標移動
+	GetSystemManager()->GetCamera()->SetEagleMode(false);	// カメラ視点移動
+
 }
 
 //--------------------------------------------------------//
@@ -115,6 +120,40 @@ void SelectScene::Draw()
 		{ 0,20 },
 		num
 	);
+
+	// カメラ用行列
+	DirectX::SimpleMath::Matrix world, view, projection;
+
+	// ワールド行列
+	world = DirectX::SimpleMath::Matrix::Identity;
+
+	// ビュー行列
+	view = GetSystemManager()->GetCamera()->GetView();
+
+	// プロジェクション行列
+	projection = GetSystemManager()->GetCamera()->GetProjection();
+
+
+	// 箱の描画
+	world *= DirectX::SimpleMath::Matrix::CreateTranslation(0,0,0);
+	switch (m_stageNum)
+	{
+	case 0:
+		m_tea->Draw(world, view, projection, DirectX::Colors::Black);
+		break;
+	case 1:
+		m_tea->Draw(world, view, projection, DirectX::Colors::Red);
+		break;
+	case 2:
+		m_tea->Draw(world, view, projection, DirectX::Colors::Blue);
+		break;
+	case 3:
+		m_tea->Draw(world, view, projection, DirectX::Colors::Green);
+		break;
+	default:
+		break;
+	}
+	
 }
 
 //--------------------------------------------------------//
@@ -144,6 +183,8 @@ void SelectScene::CreateWindowDependentResources()
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// カメラの設定
-	GetSystemManager()->GetCamera()->GetProjection(width, height, 45.0f);
+	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
+
+	m_tea = DirectX::GeometricPrimitive::CreateTeapot(context);
 
 }

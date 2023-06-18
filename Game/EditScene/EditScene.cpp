@@ -149,9 +149,6 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 //--------------------------------------------------------//
 void EditScene::Draw()
 {
-	// 画面サイズの格納
-	float width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 	// 描画関連
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& states = *GetSystemManager()->GetCommonStates();
@@ -166,7 +163,7 @@ void EditScene::Draw()
 	view = GetSystemManager()->GetCamera()->GetView();
 
 	// プロジェクション行列
-	projection = GetSystemManager()->GetCamera()->GetProjection(width, height, CAMERA_ANGLE);
+	projection = GetSystemManager()->GetCamera()->GetProjection();
 
 	// レイの設定
 	GetSystemManager()->GetRayCast()->SetMatrix(view, projection);
@@ -235,7 +232,7 @@ void EditScene::CreateWindowDependentResources()
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 	
 	// カメラの設定
-	GetSystemManager()->GetCamera()->GetProjection(width, height, CAMERA_ANGLE);
+	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
 	// 文字の設定
 	GetSystemManager()->GetString()->CreateString(device, context);
