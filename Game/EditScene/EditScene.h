@@ -48,7 +48,7 @@ private:
 
 	// 現在のブロックステータス
 	int m_nowState;
-	float m_angle;
+	float m_timer;
 
 	// パスの格納
 	std::wstring m_filePath;
@@ -58,10 +58,10 @@ private:
 	const float	COMMON_SIZE = 1.0f;
 
 	// 最低高度
-	const float COMMON_LOW = COMMON_SIZE / 2;
+	const float COMMON_LOW = COMMON_SIZE / 2; 
 
 	// カメラアングル
-	const float	CAMERA_ANGLE = 45.0f;
+	const float	CAMERA_ANGLE = 44.5f;
 
 	// ホイールのスパン
 	const int WHEEL_SPAWN = 640;

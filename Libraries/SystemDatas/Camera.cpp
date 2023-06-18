@@ -17,7 +17,7 @@ const float Camera::DEFAULT_CAMERA_DISTANCE = 20.0f;
 const float Camera::DEFAULT_CAMERA_SPEED = 0.05f;
 
 // スクロール値の上限と下限を定義
-const int Camera::MAX_SCROLL_VALUE = 1440;
+const int Camera::MAX_SCROLL_VALUE = 1640;
 const int Camera::MIN_SCROLL_VALUE = -1440;
 
 //--------------------------------------------------------//
@@ -148,6 +148,10 @@ void Camera::DraggedDistance(int x, int y)
 		m_angle.x += angleX;
 		m_angle.y += angleY;
 	}
+
+	// カメラの角度をクランプ
+	m_angle.x = UserUtillity::Clamp(m_angle.x, 43.5f, 45.5f);
+
 }
 
 //-------------------------------------------------------------------

@@ -22,7 +22,7 @@ EditScene::EditScene() :
 	m_cursorPos{0.0f,0.0f,0.0f},
 	m_mapObj{0},					// 格納配列
 	m_nowState{},					// 現在のブロックの種類
-	m_angle{},
+	m_timer{},
 	m_map{},						// マップ
 	is_boxCol{},					// 立方体当たり判定
 	m_grassModel{ nullptr },		// モデル
@@ -74,7 +74,7 @@ void EditScene::Initialize()
 void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keyState,
 	DirectX::Mouse::State& mouseState)
 {
-	m_angle = elapsedTime;
+	m_timer = elapsedTime;
 
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
@@ -182,31 +182,13 @@ void EditScene::Draw()
 	// レイの設定
 	GetSystemManager()->GetRayCast()->SetMatrix(view, projection);
 
-	// 選択しているブロックの描画
-	DirectX::SimpleMath::Matrix scale = DirectX::SimpleMath::Matrix::CreateScale(0.5f);
-	DirectX::SimpleMath::Matrix rotate = DirectX::SimpleMath::Matrix::CreateRotationY(m_angle);
+	// 行列計算
+	DirectX::SimpleMath::Matrix scale = DirectX::SimpleMath::Matrix::CreateScale(COMMON_SIZE / 2);
+	DirectX::SimpleMath::Matrix rotateX = DirectX::SimpleMath::Matrix::CreateRotationX(m_timer);
+	DirectX::SimpleMath::Matrix rotateY = DirectX::SimpleMath::Matrix::CreateRotationY(m_timer);
+	DirectX::SimpleMath::Matrix rotateZ = DirectX::SimpleMath::Matrix::CreateRotationZ(m_timer);
 	DirectX::SimpleMath::Matrix trans = DirectX::SimpleMath::Matrix::CreateTranslation(m_cursorPos);
 
-	// サイズ　×　回転　×　移動
-	world *= scale * rotate * trans;
-
-	// カメラモードのみ描画
-	if (!m_userInterface->GetCameraFlag())
-	{
-		if (m_nowState == MapState::GrassBox)
-		{
-			m_grassModel->Draw(context, states, world, view, projection);
-		}
-		if (m_nowState == MapState::CoinBox)
-		{
-			m_coinModel->Draw(context, states, world, view, projection);
-		}
-		if (m_nowState == MapState::None)
-		{
-			m_noneModel->Draw(context, states, world, view, projection);
-		}
-	}
-		
 	// オブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
@@ -219,9 +201,29 @@ void EditScene::Draw()
 		}
 		if (m_mapObj[i].id == MapState::CoinBox)
 		{
-			m_coinModel->Draw(context, states, rotate * boxMat, view, projection);
+			m_coinModel->Draw(context, states, rotateY * boxMat, view, projection);
 		}
 	}
+
+
+	// サイズ　×　回転　×　移動
+	world *= scale * rotateX * rotateY * rotateZ * trans;
+
+	// 選択しているオブジェを描画
+	if (m_nowState == MapState::GrassBox)
+	{
+		m_grassModel->Draw(context, states, world, view, projection);
+	}
+	if (m_nowState == MapState::CoinBox)
+	{
+		m_coinModel->Draw(context, states, world, view, projection);
+	}
+	if (m_nowState == MapState::None)
+	{
+		m_noneModel->Draw(context, states, world, view, projection);
+	}
+
+
 
 	// 画像の描画
 	m_userInterface->Render();
@@ -351,6 +353,18 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,120 }, bs);
 
+	// 経過時間
+	wchar_t sec[32];
+	swprintf_s(sec, 32, L"Time = %f", m_timer);
+
+	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,140 }, sec);
+
+	// カメラの角度
+	wchar_t ang[32];
+	swprintf_s(ang, 32, L"CameraAngle = %f", GetSystemManager()->GetCamera()->GetCameraAngle());
+
+	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,160 }, ang);
+
 
 
 	// デバイスコンテキストの取得：グリッドの描画に使用
@@ -374,12 +388,12 @@ void EditScene::EditMap()
 {
 	auto mouse = DirectX::Mouse::Get().GetState();
 
+	// カメラモードは処理しない
+	if (m_userInterface->GetCameraFlag()) return;
+
 	// 移動処理
 	m_cursorPos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
 	m_cursorPos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
-
-	// カメラモードは処理しない
-	if (m_userInterface->GetCameraFlag()) return;
 
 	// マウスカーソルで移動
 	m_cursorPos.y = UserUtillity::Lerp(
@@ -387,6 +401,9 @@ void EditScene::EditMap()
 		static_cast<float>(mouse.scrollWheelValue / WHEEL_SPAWN) + COMMON_LOW,	// 終了地点
 		0.1f																	// 速度
 	);
+
+	// 制限をつける
+	m_cursorPos.y = UserUtillity::Clamp(m_cursorPos.y, -2.0f, 15.0f);
 
 	// マップとの当たり判定
 	for (auto& i : m_mapObj)
@@ -398,6 +415,8 @@ void EditScene::EditMap()
 		is_boxCol.PushBox(&m_cursorPos, i.position,
 			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			DirectX::SimpleMath::Vector3{ COMMON_SIZE });
+
+		// 瞬間の当たり判定を取得
 		bool hit = is_boxCol.GetHitBoxFlag();
 		i.hit = hit;
 
@@ -433,8 +452,9 @@ void EditScene::OffsetPosition_Write(std::vector<Object>* obj)
 }
 
 //--------------------------------------------------------//
-//マップ読み込み                                          //
+//マップ読み書き                                          //
 //--------------------------------------------------------//
+// 読み込み時
 void EditScene::LoadMap(std::wstring filename)
 { 
 	// マップの読み込み
@@ -443,10 +463,7 @@ void EditScene::LoadMap(std::wstring filename)
 	m_mapObj = m_map.GetMapData();	// 読み込み
 	OffsetPosition_Read(&m_mapObj);	// 座標補正
 }
-
-//--------------------------------------------------------//
-//ファイルを書きだす                                      //
-//--------------------------------------------------------//
+// 書き込み時
 void EditScene::SaveFile()
 {	
 	// ファイル書き出し

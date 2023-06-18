@@ -98,6 +98,8 @@ public:
 	void SetEagleMode(bool flag) { is_eagleMode = flag; }
 	const bool GetEagleMode() { return is_eagleMode; }
 
+	// ƒJƒƒ‰‚ÌŠp“x‚ğæ“¾
+	const float& GetCameraAngle() { return m_angle.x; }
 };
 
 #endif // CAMERA

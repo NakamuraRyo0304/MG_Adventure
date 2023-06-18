@@ -44,7 +44,7 @@ private:
 	const float	COMMON_LOW = COMMON_SIZE / 2;
 
 	// ƒJƒƒ‰ƒAƒ“ƒOƒ‹
-	const float	CAMERA_ANGLE = 45.0f;
+	const float	CAMERA_ANGLE = 44.5f;
 
 public:
 

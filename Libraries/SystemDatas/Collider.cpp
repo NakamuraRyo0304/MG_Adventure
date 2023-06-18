@@ -71,7 +71,7 @@ void Collider::BoxCollider::PushBox(DirectX::SimpleMath::Vector3* moveObj,
 	// 当っている位置を格納する
 	if (maxRatio == leftRatio)	m_hitFace = HIT_FACE::LEFT;		// 当った位置：左
 	if (maxRatio == rightRatio)	m_hitFace = HIT_FACE::RIGHT;	// 当った位置：右
-	if (maxRatio == upRatio)	m_hitFace = HIT_FACE::UP;		// 当った位置：上
+	if (maxRatio == upRatio)		m_hitFace = HIT_FACE::UP;		// 当った位置：上
 	if (maxRatio == downRatio)	m_hitFace = HIT_FACE::DOWN;		// 当った位置：下
 	if (maxRatio == frontRatio)	m_hitFace = HIT_FACE::FRONT;	// 当った位置：前
 	if (maxRatio == backRatio)	m_hitFace = HIT_FACE::BACK;		// 当った位置：後
