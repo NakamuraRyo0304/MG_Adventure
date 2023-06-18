@@ -131,7 +131,7 @@ SystemManager::GetCamera()
 }
 
 // BasicEffect
-std::unique_ptr<DirectX::BasicEffect>& 
+const std::unique_ptr<DirectX::BasicEffect>&
 SystemManager::GetBasicEffect()
 {
 	if (!m_effect)

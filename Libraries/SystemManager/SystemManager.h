@@ -75,7 +75,7 @@ public: // ゲッター、セッター、ファクトリー
 	const std::unique_ptr<Camera>& GetCamera();
 
 	// エフェクトの取得
-	std::unique_ptr<DirectX::BasicEffect>& GetBasicEffect();
+	const std::unique_ptr<DirectX::BasicEffect>& GetBasicEffect();
 
 public:
 	SystemManager();
