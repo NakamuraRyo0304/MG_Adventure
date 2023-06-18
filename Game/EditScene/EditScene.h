@@ -19,6 +19,7 @@
 // エイリアス
 using MapState = MapLoad::BoxState;
 
+class UserInterface;
 class EditScene : public IScene
 {
 private:
@@ -34,23 +35,17 @@ private:
 
 	// 当たり判定
 	Collider::BoxCollider is_boxCol;
-	Collider::AABBCollider m_aabbCol;
+
+	// UI
+	std::unique_ptr<UserInterface> m_userInterface;
+	std::shared_ptr<SystemManager> m_systemForUI;
 
 	// モデル
 	std::unique_ptr<DirectX::Model>m_grassModel;							// 草モデル
 	std::unique_ptr<DirectX::Model>m_noneModel;								// 判定モデル
 	std::unique_ptr<DirectX::Model>m_coinModel;								// コインモデル
 	std::unique_ptr<DirectX::Model>m_clowdModel;							// 雲モデル
-	
-	// 画像の座標
-	DirectX::SimpleMath::Vector2 m_saveTexPos;
-	DirectX::SimpleMath::Vector2 m_cameraTexPos;
-	DirectX::SimpleMath::Vector2 m_penTexPos;
 
-	// フラグ
-	bool is_saveFlag;
-	bool is_cameraFlag;
-	bool is_drawFlag;
 
 	// 現在のブロックステータス
 	int m_nowState;
@@ -67,9 +62,6 @@ private:
 
 	// カメラアングル
 	const float	CAMERA_ANGLE = 45.0f;
-
-	// 画像の中心位置
-	const float	IMAGE_CENTER = 128;
 
 	// ボックスの最大値と最小値
 	const int	MIN_BOX = 1;
@@ -116,12 +108,6 @@ public:
 
 	// ファイルをセーブする
 	void SaveFile();
-
-	// 画像の描画
-	void DrawImages();
-
-	// UIのクリック
-	void ClickUserInterface(DirectX::Mouse::State& mouseState);
 
 };
 

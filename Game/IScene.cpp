@@ -13,12 +13,12 @@
 //コンストラクタ                                          //
 //--------------------------------------------------------//
 IScene::IScene():
-	m_systemManager{std::make_unique<SystemManager>()},
+	m_systemManager{std::make_shared<SystemManager>()},
 	m_nextScene{SCENE::NONE}
 {
 	// 作成されていなければシステムを作成
 	if (!m_systemManager)
 	{
-		m_systemManager = std::make_unique<SystemManager>();
+		m_systemManager = std::make_shared<SystemManager>();
 	}
 }

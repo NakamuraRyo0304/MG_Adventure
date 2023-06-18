@@ -20,7 +20,7 @@ class IScene
 {
 private:
 	// システムマネージャ
-	std::unique_ptr<SystemManager> m_systemManager;
+	std::shared_ptr<SystemManager> m_systemManager;
 
 	// 次のシーンを指定する
 	SCENE m_nextScene;
@@ -66,7 +66,7 @@ public:
 	SCENE GetNextScene() { return m_nextScene; }
 
 	// システムマネージャをゲット
-	std::unique_ptr<SystemManager>& GetSystemManager() { return m_systemManager; }
+	std::shared_ptr<SystemManager>& GetSystemManager() { return m_systemManager; }
 };
 
 #endif // ISCENE

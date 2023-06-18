@@ -80,14 +80,17 @@
     <Filter Include="Common\DrawSprite">
       <UniqueIdentifier>{358594c6-9a83-47e0-b9bc-f4b09b8969aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects">
+    <Filter Include="Scenes\PlayScene\Objects">
       <UniqueIdentifier>{4d0fee0f-0e97-4487-87c4-46947366d327}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects\Player">
+    <Filter Include="Scenes\PlayScene\Objects\Player">
       <UniqueIdentifier>{93ed7396-01d0-44f0-be58-a6e499032fe0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects\UserInterface">
-      <UniqueIdentifier>{0a5ff8fd-dacb-455f-9214-9e25b66ba591}</UniqueIdentifier>
+    <Filter Include="Scenes\EditScene\Objects">
+      <UniqueIdentifier>{0b6acfe5-f1a3-4424-873c-3f20290cf034}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\EditScene\Objects\UserInterface">
+      <UniqueIdentifier>{1ac4315d-6ab2-417c-9d03-6a3aee9cdf73}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -158,10 +161,10 @@
       <Filter>Common\DrawSprite</Filter>
     </ClInclude>
     <ClInclude Include="Game\PlayScene\Objects\Player.h">
-      <Filter>Objects\Player</Filter>
+      <Filter>Scenes\PlayScene\Objects\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Game\PlayScene\Objects\UserInterface.h">
-      <Filter>Objects\UserInterface</Filter>
+    <ClInclude Include="Game\EditScene\Objects\UserInterface.h">
+      <Filter>Scenes\EditScene\Objects\UserInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -226,10 +229,10 @@
       <Filter>Common\DrawSprite</Filter>
     </ClCompile>
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp">
-      <Filter>Objects\Player</Filter>
+      <Filter>Scenes\PlayScene\Objects\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Game\PlayScene\Objects\UserInterface.cpp">
-      <Filter>Objects\UserInterface</Filter>
+    <ClCompile Include="Game\EditScene\Objects\UserInterface.cpp">
+      <Filter>Scenes\EditScene\Objects\UserInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -257,6 +260,9 @@
       <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\CameraMove.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\OpenFile.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>

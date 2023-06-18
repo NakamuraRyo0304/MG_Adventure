@@ -49,9 +49,6 @@ private:
 	// 注視点
 	DirectX::SimpleMath::Vector3 m_target;
 
-	// カメラ動かすモード
-	bool is_moveMode;
-
 	// 視点移動モード
 	bool is_eagleMode;
 	bool is_prevEagleMode;
@@ -96,10 +93,6 @@ public:
 	// 射影行列の取得
 	const DirectX::SimpleMath::Matrix& CreateProjection(float width, float height,float angle = 45.0f);
 	const DirectX::SimpleMath::Matrix& GetProjection() { return m_proj; }
-
-	// カメラ移動モード切替
-	void SetMoveMode(bool flag) { is_moveMode = flag; }
-	const bool GetMoveMode() { return is_moveMode; }
 
 	// カメラ視点移動モード切替
 	void SetEagleMode(bool flag) { is_eagleMode = flag; }

@@ -16,6 +16,7 @@ class SelectScene : public IScene
 private:
 	static const float CAMERA_ANGLE;
 	std::unique_ptr<DirectX::GeometricPrimitive> m_tea;
+	float m_angle;
 public:
 
 	// コンストラクタ

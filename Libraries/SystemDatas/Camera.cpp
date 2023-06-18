@@ -34,7 +34,6 @@ Camera::Camera():
 	m_target{},					// 注視点
 	m_view{},					// ビュー行列
 	m_proj{},					// プロジェクション行列
-	is_moveMode{false},			// カメラを動かすフラグ
 	is_eagleMode{false},		// カメラの視点移動フラグマウスホイールを使用する
 	is_prevEagleMode{false},	// カメラの視点移動フラグマウスホイールを使用する(前回の保存用)
 	m_screenHeight{},			// 画面の高さ

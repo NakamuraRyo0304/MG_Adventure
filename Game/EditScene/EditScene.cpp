@@ -7,6 +7,9 @@
 
 #include "pch.h"
 
+// UI
+#include "Objects/UserInterface.h"
+
 #include "EditScene.h"
 
 //--------------------------------------------------------//
@@ -14,6 +17,7 @@
 //--------------------------------------------------------//
 EditScene::EditScene() :
 	IScene(),
+	m_userInterface{},				// UI
 	m_sphere{},						// 球
 	m_spherePos{0.0f,0.0f,0.0f},
 	m_mapObj{0},					// 格納配列
@@ -24,12 +28,8 @@ EditScene::EditScene() :
 	m_noneModel{ nullptr },	
 	m_coinModel{ nullptr },
 	m_clowdModel{ nullptr },
-	m_saveTexPos{},					// 画像座標
-	m_cameraTexPos{},
-	m_penTexPos{},
-	is_saveFlag{},					// 選択フラグ
-	is_cameraFlag{true},			// カメラモードONでスタート
-	is_drawFlag{true}				// ペンモードでスタート			
+	m_systemForUI{}
+	
 {
 }
 
@@ -50,8 +50,8 @@ void EditScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetMoveMode(false);				// カメラ座標移動
-	GetSystemManager()->GetCamera()->SetEagleMode(is_cameraFlag);		// カメラ視点移動
+	// カメラ視点移動を有効にする
+	GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
 
 	// スフィアの初期化(テスト)
 	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
@@ -88,10 +88,18 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	GetSystemManager()->GetRayCast()->Update(mouseState);
 
 	// UIの処理
-	ClickUserInterface(mouseState);
+	m_userInterface->Update(mouseState);
 
-	// ファイルの読み込み
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Left))
+	// セーブフラグがたったらファイルを保存
+	if (m_userInterface->GetSaveFlag() && 
+		GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
+	{
+		SaveFile();
+	}
+
+	// オープンフラグがたったらファイルを開く
+	if (m_userInterface->GetOpenFlag() &&
+		GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
 	{
 		m_map.LoadMap(L"");				// ファイル新規作成
 		m_mapObj = m_map.GetMapData();	// 読み込み
@@ -99,10 +107,11 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	}
 
 	// シフトを押している間はカメラモードをTrueにする
-	if (keyState.LeftShift)
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::LeftShift))
 	{
-		is_cameraFlag = true;
-		GetSystemManager()->GetCamera()->SetEagleMode(true);
+		// インターフェースでカメラのフラグを取得
+		m_userInterface->SetCameraFlag(!m_userInterface->GetCameraFlag());
+		GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
 	}
 
 	// ステータス変更 // 要修正
@@ -123,13 +132,13 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 			break;
 		}
 	}
-	if(!is_drawFlag)
+	if(!m_userInterface->GetDrawFlag())
 	{
 		ChangeState(MapState::None);
 	}
 
 	// カメラモードじゃなければ編集できる
-	if (!is_cameraFlag)
+	if (!m_userInterface->GetCameraFlag())
 	{
 		EditMap();
 	}
@@ -172,7 +181,7 @@ void EditScene::Draw()
 	world *= DirectX::SimpleMath::Matrix::CreateTranslation(m_spherePos);
 
 	// 非カメラモードのみ描画
-	if (!is_cameraFlag)
+	if (!m_userInterface->GetCameraFlag())
 	{
 		m_sphere->Draw(world, view, projection, DirectX::Colors::Black);
 	}
@@ -194,7 +203,7 @@ void EditScene::Draw()
 	}
 
 	// 画像の描画
-	DrawImages();
+	m_userInterface->Render();
 
 	// デバッグ表示
 	DebugLog(view, projection);
@@ -258,19 +267,10 @@ void EditScene::CreateWindowDependentResources()
 		L"Resources/Models/Clowd.cmo"
 	);
 
-	// 画像の設定
-	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(context);
-	// キー名　：　ファイルパス名　：　デバイス
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Save", L"Resources/Textures/SaveFile.dds", device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Camera", L"Resources/Textures/Camera.dds", device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"CameraMove", L"Resources/Textures/CameraMove.dds", device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Pen", L"Resources/Textures/AddBlock.dds", device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds", device);
-
-	// 座標情報
-	m_saveTexPos   = { 80  , 80};
-	m_cameraTexPos = { 208 , 80};
-	m_penTexPos    = { 336 , 80};
+	// UIの初期化
+	m_userInterface = std::make_unique<UserInterface>();
+	m_systemForUI = GetSystemManager();
+	m_userInterface->Initialize(m_systemForUI, context, device);
 }
 
 //--------------------------------------------------------//
@@ -358,7 +358,7 @@ void EditScene::EditMap()
 	m_spherePos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
 
 	// カメラモードは処理しない
-	if (is_cameraFlag) return;
+	if (m_userInterface->GetCameraFlag()) return;
 
 	// マウスカーソルで移動
 	m_spherePos.y = UserUtillity::Lerp(m_spherePos.y, mouse.scrollWheelValue / 640.0f + COMMON_LOW, 0.1f);
@@ -428,121 +428,4 @@ void EditScene::SaveFile()
 	OffsetPosition_Write(&m_mapObj);		// 書き出し用に座標補正
 	m_map.WriteMap(m_mapObj);				// ファイルの書き出し
 	OffsetPosition_Read(&m_mapObj);			// エディット用に座標補正
-}
-
-//--------------------------------------------------------//
-//画像の描画                                              //
-//--------------------------------------------------------//
-void EditScene::DrawImages()
-{
-	// ファイルアイコン
-	if (is_saveFlag)
-	{
-		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Save",							// 登録キー
-			m_saveTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.55f,								// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Save",							// 登録キー
-			m_saveTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,0.3f },			// 色
-			0.5f,								// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-
-	// カメラアイコン
-	if (is_cameraFlag)
-	{
-		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"CameraMove",						// 登録キー
-			m_cameraTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.55,								// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Camera",							// 登録キー
-			m_cameraTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,0.3f },			// 色
-			0.5f,								// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-
-	// ペンアイコン
-	if (is_drawFlag)
-	{
-		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Pen",								// 登録キー
-			m_penTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.55f,								// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Erase",							// 登録キー
-			m_penTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.5f,								// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-}
-
-//--------------------------------------------------------//
-//UIのクリック                                            //
-//--------------------------------------------------------//
-void EditScene::ClickUserInterface(DirectX::Mouse::State& mouseState)
-{
-	// 保存アイコンをクリック
-	is_saveFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-		{ m_saveTexPos.x,0,m_saveTexPos.y },		    // 画像の位置
-		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
-		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
-	// 当っていてクリックした時処理
-	if (is_saveFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
-	{
-		is_saveFlag = true;
-		// ダイアログを表示してマップを出力
-		SaveFile();
-	}
-
-	// カメラアイコンをクリック
-	bool cameraFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-		{ m_cameraTexPos.x,0,m_cameraTexPos.y },	 	// 画像の位置
-		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
-		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
-
-	// カメラ移動モード切り替え
-	if (cameraFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
-	{
-		is_cameraFlag = !is_cameraFlag;
-		GetSystemManager()->GetCamera();
-		GetSystemManager()->GetCamera()->SetEagleMode(is_cameraFlag);
-	}
-
-	// ペン/消しゴムアイコンをクリック
-	bool toolFlag = m_aabbCol.HitAABB_2D({ (float)mouseState.x,0.0f,(float)mouseState.y },// マウスの位置
-		{ m_penTexPos.x,0,m_penTexPos.y },	        	// 画像の位置
-		DirectX::SimpleMath::Vector3{ 5.0f },		    // サイズ
-		DirectX::SimpleMath::Vector3{ 100.0f });	    // サイズ
-
-	// 描画モード切り替え
-	if (toolFlag && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
-	{
-		is_drawFlag = !is_drawFlag;
-	}
 }

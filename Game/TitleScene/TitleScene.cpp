@@ -32,7 +32,6 @@ void TitleScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetMoveMode(false);		// カメラ座標移動
 	GetSystemManager()->GetCamera()->SetEagleMode(false);		// カメラ視点移動
 }
 

@@ -17,7 +17,8 @@ const float SelectScene::CAMERA_ANGLE = 45.0f;
 //--------------------------------------------------------//
 SelectScene::SelectScene():
 	IScene(),
-	m_tea{}
+	m_tea{},
+	m_angle{}
 {
 }
 
@@ -36,7 +37,6 @@ void SelectScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetMoveMode(true);		// カメラ座標移動
 	GetSystemManager()->GetCamera()->SetEagleMode(false);	// カメラ視点移動
 
 }
@@ -48,7 +48,7 @@ void SelectScene::Initialize()
 void SelectScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keyState,
 	DirectX::Mouse::State& mouseState)
 {
-	elapsedTime;
+	m_angle = elapsedTime;
 
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
@@ -135,6 +135,7 @@ void SelectScene::Draw()
 
 
 	// 箱の描画
+	world *= DirectX::SimpleMath::Matrix::CreateRotationY(m_angle);
 	world *= DirectX::SimpleMath::Matrix::CreateTranslation(0,0,0);
 	switch (m_stageNum)
 	{
@@ -185,6 +186,6 @@ void SelectScene::CreateWindowDependentResources()
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
-	m_tea = DirectX::GeometricPrimitive::CreateTeapot(context);
+	m_tea = DirectX::GeometricPrimitive::CreateTeapot(context,2.0f);
 
 }
