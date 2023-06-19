@@ -31,7 +31,7 @@ RayCast::~RayCast()
 //--------------------------------------------------------//
 //更新処理                                                //
 //--------------------------------------------------------//
-void RayCast::Update(DirectX::Mouse::State& mouseState)
+void RayCast::Update(Mouse::State& mouseState)
 {
 	// クリックしてるときはTrueを返す
 	is_clickFlag = mouseState.leftButton;
@@ -43,19 +43,19 @@ void RayCast::Update(DirectX::Mouse::State& mouseState)
 //--------------------------------------------------------//
 //マウスのスクリーン座標をワールド座標に変換する          //
 //--------------------------------------------------------//
-DirectX::SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
-	int width, int height, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
+	int width, int height, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	// 各行列の逆行列を算出
-	DirectX::XMMATRIX InvView, InvProj, VP, InvViewport = DirectX::XMMATRIX::XMMATRIX();
+	XMMATRIX InvView, InvProj, VP, InvViewport = XMMATRIX::XMMATRIX();
 
 	// 逆行列に変換
-	InvView = DirectX::XMMatrixInverse(nullptr, view);
-	InvProj = DirectX::XMMatrixInverse(nullptr, proj);
+	InvView = XMMatrixInverse(nullptr, view);
+	InvProj = XMMatrixInverse(nullptr, proj);
 
-	VP = DirectX::XMMatrixIdentity();
+	VP = XMMatrixIdentity();
 
-	DirectX::XMFLOAT4X4 matrix = DirectX::XMFLOAT4X4::XMFLOAT4X4();
+	XMFLOAT4X4 matrix = XMFLOAT4X4::XMFLOAT4X4();
 
 	// スケールとオフセットを変換
 	matrix._11 =   width / 2.0f;
@@ -63,15 +63,15 @@ DirectX::SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float
 	matrix._41 =   width / 2.0f;
 	matrix._42 =  height / 2.0f;
 
-	VP += DirectX::XMLoadFloat4x4(&matrix);
+	VP += XMLoadFloat4x4(&matrix);
 
-	InvViewport = DirectX::XMMatrixInverse(nullptr,VP);
+	InvViewport = XMMatrixInverse(nullptr,VP);
 
 	// 逆変換
-	DirectX::SimpleMath::Matrix tmp = InvViewport * InvProj * InvView;
+	SimpleMath::Matrix tmp = InvViewport * InvProj * InvView;
 
-	DirectX::SimpleMath::Vector3 value = DirectX::XMVector3TransformCoord(
-		DirectX::SimpleMath::Vector3(static_cast<float>(mx), static_cast<float>(my), fz), tmp);
+	SimpleMath::Vector3 value = XMVector3TransformCoord(
+		SimpleMath::Vector3(static_cast<float>(mx), static_cast<float>(my), fz), tmp);
 
 	return value;
 }
@@ -79,12 +79,12 @@ DirectX::SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float
 //--------------------------------------------------------//
 //レイを飛ばして面との交点を求める                        //
 //--------------------------------------------------------//
-DirectX::SimpleMath::Vector3 RayCast::ShotRayToWorld(int mx, int my)
+SimpleMath::Vector3 RayCast::ShotRayToWorld(int mx, int my)
 {
 	// 最近、最遠、レイを定義
-	DirectX::SimpleMath::Vector3 nearpos;
-	DirectX::SimpleMath::Vector3 farpos;
-	DirectX::SimpleMath::Vector3 ray;
+	SimpleMath::Vector3 nearpos;
+	SimpleMath::Vector3 farpos;
+	SimpleMath::Vector3 ray;
 
 	// 最近距離をコンバート
 	nearpos = ConvertScreenToWorld(mx, my, 0.0f,
@@ -101,14 +101,14 @@ DirectX::SimpleMath::Vector3 RayCast::ShotRayToWorld(int mx, int my)
 	ray.Normalize();
 
 	// Y座標打消しの初期化
-	DirectX::SimpleMath::Vector3 output = DirectX::SimpleMath::Vector3::Zero;
+	SimpleMath::Vector3 output = SimpleMath::Vector3::Zero;
 
 	// 床との交差が起きている場合は交点、起きていない場合は遠くの壁との交点を出力
 	if (ray.y <= 0) 
 	{
 		// 床交点
-		DirectX::SimpleMath::Vector3 rDot = DirectX::XMVector3Dot(     ray, DirectX::SimpleMath::Vector3(0, 1, 0));
-		DirectX::SimpleMath::Vector3 nDot = DirectX::XMVector3Dot(-nearpos, DirectX::SimpleMath::Vector3(0, 1, 0));
+		SimpleMath::Vector3 rDot = XMVector3Dot(     ray, SimpleMath::Vector3(0, 1, 0));
+		SimpleMath::Vector3 nDot = XMVector3Dot(-nearpos, SimpleMath::Vector3(0, 1, 0));
   		output = nearpos + (nDot / rDot) * ray;
 
 

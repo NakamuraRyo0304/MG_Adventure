@@ -57,12 +57,12 @@ void GameMain::Update(const DX::StepTimer& timer)
 	float time = static_cast<float>(timer.GetTotalSeconds());
 
 	// キー入力情報を取得する
-	auto keyState = DirectX::Keyboard::Get().GetState();
+	auto keyState = Keyboard::Get().GetState();
 	
 	m_keyboardStateTracker->Update(keyState);
 
 	// マウス入力情報を取得する
-	auto mouseState = DirectX::Mouse::Get().GetState();
+	auto mouseState = Mouse::Get().GetState();
 
 	m_mouseStateTracker->Update(mouseState);
 
@@ -200,11 +200,11 @@ void GameMain::CreateWindowDependentResources(const int& screenWidth, const int&
 	m_screenHeight = screenHeight;
 
 	// キーボード関連
-	m_keyboard = std::make_unique<DirectX::Keyboard>();
-	m_keyboardStateTracker = std::make_unique<DirectX::Keyboard::KeyboardStateTracker>();
+	m_keyboard = std::make_unique<Keyboard>();
+	m_keyboardStateTracker = std::make_unique<Keyboard::KeyboardStateTracker>();
 
 	// マウス関連
-	m_mouse = std::make_unique<DirectX::Mouse>();
-	m_mouseStateTracker = std::make_unique<DirectX::Mouse::ButtonStateTracker>();
+	m_mouse = std::make_unique<Mouse>();
+	m_mouseStateTracker = std::make_unique<Mouse::ButtonStateTracker>();
 	m_mouse->SetWindow(pDR->GetHwnd());
 }

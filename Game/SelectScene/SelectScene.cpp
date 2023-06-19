@@ -45,8 +45,8 @@ void SelectScene::Initialize()
 //更新処理                                                //
 //--------------------------------------------------------//
 // 第１引数：時間(60FPS = 1sec) / 第２引数：キーボードのポインタ / 第３引数：マウスのポインタ
-void SelectScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keyState,
-	DirectX::Mouse::State& mouseState)
+void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
+	Mouse::State& mouseState)
 {
 	m_angle = elapsedTime;
 
@@ -63,11 +63,11 @@ void SelectScene::Update(const float& elapsedTime, DirectX::Keyboard::State& key
 	if (keyState.Escape) ExitApp();
 
 	// ステージ番号変更
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Right))
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Right))
 	{
 		m_stageNum++;
 	}
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(DirectX::Keyboard::Left))
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Left))
 	{
 		m_stageNum--;
 	}
@@ -84,7 +84,7 @@ void SelectScene::Update(const float& elapsedTime, DirectX::Keyboard::State& key
 	if (keyState.Escape) ExitApp();
 
 	// Spaceキーでシーン切り替え
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		if (m_stageNum == 0)
 		{
@@ -104,7 +104,7 @@ void SelectScene::Update(const float& elapsedTime, DirectX::Keyboard::State& key
 void SelectScene::Draw()
 {
 	// デバッグフォント
-	GetSystemManager()->GetString()->ChangeFontColor(DirectX::Colors::Black);
+	GetSystemManager()->GetString()->ChangeFontColor(Colors::Black);
 	GetSystemManager()->GetString()->DrawFormatString(
 		GetSystemManager()->GetCommonStates().get(),
 		{ 0,0 },
@@ -122,10 +122,10 @@ void SelectScene::Draw()
 	);
 
 	// カメラ用行列
-	DirectX::SimpleMath::Matrix world, view, projection;
+	SimpleMath::Matrix world, view, projection;
 
 	// ワールド行列
-	world = DirectX::SimpleMath::Matrix::Identity;
+	world = SimpleMath::Matrix::Identity;
 
 	// ビュー行列
 	view = GetSystemManager()->GetCamera()->GetView();
@@ -135,21 +135,21 @@ void SelectScene::Draw()
 
 
 	// 箱の描画
-	world *= DirectX::SimpleMath::Matrix::CreateRotationY(m_angle);
-	world *= DirectX::SimpleMath::Matrix::CreateTranslation(0,0,0);
+	world *= SimpleMath::Matrix::CreateRotationY(m_angle);
+	world *= SimpleMath::Matrix::CreateTranslation(0,0,0);
 	switch (m_stageNum)
 	{
 	case 0:
-		m_tea->Draw(world, view, projection, DirectX::Colors::Black);
+		m_tea->Draw(world, view, projection, Colors::Black);
 		break;
 	case 1:
-		m_tea->Draw(world, view, projection, DirectX::Colors::Red);
+		m_tea->Draw(world, view, projection, Colors::Red);
 		break;
 	case 2:
-		m_tea->Draw(world, view, projection, DirectX::Colors::Blue);
+		m_tea->Draw(world, view, projection, Colors::Blue);
 		break;
 	case 3:
-		m_tea->Draw(world, view, projection, DirectX::Colors::Green);
+		m_tea->Draw(world, view, projection, Colors::Green);
 		break;
 	default:
 		break;
@@ -186,6 +186,6 @@ void SelectScene::CreateWindowDependentResources()
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
-	m_tea = DirectX::GeometricPrimitive::CreateTeapot(context,2.0f);
+	m_tea = GeometricPrimitive::CreateTeapot(context,2.0f);
 
 }

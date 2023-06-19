@@ -43,18 +43,18 @@ SystemManager::GetDeviceResources()
 }
 
 // CommonStates
-const std::unique_ptr<DirectX::CommonStates>&
+const std::unique_ptr<CommonStates>&
 SystemManager::GetCommonStates()
 {
 	if (!m_commonState)
 	{
-		m_commonState = std::make_unique<DirectX::CommonStates>(GetDeviceResources()->GetD3DDevice());
+		m_commonState = std::make_unique<CommonStates>(GetDeviceResources()->GetD3DDevice());
 	}
 	return m_commonState;
 }
 
 // KeyboardStateTracker
-const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>&
+const std::unique_ptr<Keyboard::KeyboardStateTracker>&
 SystemManager::GetStateTrack()
 {
 	if (!m_keyboardStateTracker)
@@ -76,7 +76,7 @@ SystemManager::GetString()
 }
 
 // MouseTracker
-const std::unique_ptr<DirectX::Mouse::ButtonStateTracker>&
+const std::unique_ptr<Mouse::ButtonStateTracker>&
 SystemManager::GetMouseTrack()
 {
 	if (!m_mouseStateTracker)
@@ -131,12 +131,12 @@ SystemManager::GetCamera()
 }
 
 // BasicEffect
-const std::unique_ptr<DirectX::BasicEffect>&
+const std::unique_ptr<BasicEffect>&
 SystemManager::GetBasicEffect()
 {
 	if (!m_effect)
 	{
-		m_effect = std::make_unique<DirectX::BasicEffect>(GetDeviceResources()->GetD3DDevice());
+		m_effect = std::make_unique<BasicEffect>(GetDeviceResources()->GetD3DDevice());
 	}
 	return m_effect;
 }
@@ -150,11 +150,11 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 	m_pDR = DX::DeviceResources::GetInstance();
 
 	// ３Ｄレンダリング
-	m_commonState = std::make_unique<DirectX::CommonStates>(device);
+	m_commonState = std::make_unique<CommonStates>(device);
 
 	// キーボード
 	m_keyboardStateTracker
-		= std::make_unique<DirectX::Keyboard::KeyboardStateTracker>();
+		= std::make_unique<Keyboard::KeyboardStateTracker>();
 
 	// 文字の描画
 	m_drawString = std::make_unique<DrawString>();
@@ -164,7 +164,7 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 
 	// マウス
 	m_mouseStateTracker
-		= std::make_unique<DirectX::Mouse::ButtonStateTracker>();
+		= std::make_unique<Mouse::ButtonStateTracker>();
 
 	// グリッドフロア 30 x 30
 	m_gridFloor = std::make_unique<GridFloor>(device, context, 30, 30);
@@ -176,5 +176,5 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 	m_drawSprite = std::make_unique<DrawSprite>();
 
 	// ベーシックエフェクト
-	m_effect = std::make_unique<DirectX::BasicEffect>(device);
+	m_effect = std::make_unique<BasicEffect>(device);
 }

@@ -8,8 +8,6 @@
 #include "pch.h"
 #include "Game.h"
 
-using namespace DirectX;
-
 // TODO: ウィンドウタイトルの設定
 const wchar_t* Game::TITLE = L"DirectXTemp";
 // TODO: スクリーンサイズの設定

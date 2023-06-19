@@ -14,13 +14,13 @@
 struct PlayerParameter
 {
 	DirectX::SimpleMath::Vector3 position;		// 座標
-	float velocity;								// 移動量
+	DirectX::SimpleMath::Vector3 velocity;		// 移動量
 	float gravity;								// 重力
 	float accelerate;							// 加速度
 	void reset()								// リセット関数
 	{
 		position = DirectX::SimpleMath::Vector3::Zero;
-		velocity = 0.0f;
+		velocity = DirectX::SimpleMath::Vector3::Zero;
 		gravity = 0.0f;
 		accelerate = 0.0f;
 	}
@@ -38,6 +38,8 @@ private:
 	// モデルデータ
 	std::unique_ptr<DirectX::Model> m_model;
 
+	// 摩擦係数
+	const float DECELERATION = 0.879f;
 	// プレイヤのサイズ
 	const float SIZE = 0.95f;
 	// プレイヤの浮遊

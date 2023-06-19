@@ -40,7 +40,7 @@ Camera::Camera():
 	m_screenWidth{}				// 画面の幅
 {
 	// マウスの回転量をリセット
-	DirectX::Mouse::Get().ResetScrollWheelValue();
+	Mouse::Get().ResetScrollWheelValue();
 }
 
 //--------------------------------------------------------//
@@ -56,7 +56,7 @@ Camera::~Camera()
 void Camera::Update()
 {
 	// マウスのインスタンス取得
-	auto state = DirectX::Mouse::Get().GetState();
+	auto state = Mouse::Get().GetState();
 
 	// マウスの左クリック＆ドラッグでカメラ座標を更新する
 	if (state.leftButton)
@@ -141,8 +141,8 @@ void Camera::DraggedDistance(int x, int y)
 	if (dx != 0.0f || dy != 0.0f)
 	{
 		// マウスポインタの変位を元に、Ｘ軸Ｙ軸の回転角を求める
-		float angleX = dy * DirectX::XM_PI / 180.0f;
-		float angleY = dx * DirectX::XM_PI / 180.0f;
+		float angleX = dy * XM_PI / 180.0f;
+		float angleY = dx * XM_PI / 180.0f;
 
 		// 角度の更新
 		m_angle.x += angleX;
@@ -160,40 +160,40 @@ void Camera::DraggedDistance(int x, int y)
 void Camera::CalculateViewMatrix()
 {
 	// ビュー行列を算出する
-	DirectX::SimpleMath::Matrix rotY = DirectX::SimpleMath::Matrix::CreateRotationY(m_angle.y);
-	DirectX::SimpleMath::Matrix rotX = DirectX::SimpleMath::Matrix::CreateRotationX(m_angle.x);
+	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_angle.y);
+	SimpleMath::Matrix rotX = SimpleMath::Matrix::CreateRotationX(m_angle.x);
 
 	// 回転量を計算
-	DirectX::SimpleMath::Matrix rt = rotY * rotX;
+	SimpleMath::Matrix rt = rotY * rotX;
 
 	// ポジション
-	DirectX::SimpleMath::Vector3    eye(0.0f, 0.1f, 1.0f);
+	SimpleMath::Vector3    eye(0.0f, 0.1f, 1.0f);
 
 	// カメラの傾き（目線の角度）:0.1.0で正位置
-	DirectX::SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
-	DirectX::SimpleMath::Vector3 target(m_target);
+	SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
+	SimpleMath::Vector3 target(m_target);
 
-	eye = DirectX::SimpleMath::Vector3::Transform(eye, rt.Invert());
+	eye = SimpleMath::Vector3::Transform(eye, rt.Invert());
 	eye *= (DEFAULT_CAMERA_DISTANCE - static_cast<float>(m_scrollWheelValue / 100));
-	up  = DirectX::SimpleMath::Vector3::Transform(up,  rt.Invert());
+	up  = SimpleMath::Vector3::Transform(up,  rt.Invert());
 
 	// デフォルトの初期位置
 	m_eye = eye;
 	m_target = target;
-	m_view = DirectX::SimpleMath::Matrix::CreateLookAt(eye, target, up);
+	m_view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
 }
 //--------------------------------------------------------//
 //カメラを揺らす関数                                      //
 //--------------------------------------------------------//
 // 第１引数：持続時間(60FPS = 1sec) / 第２引数：揺れ幅 / 第３引数：対象のポジション
-void Camera::ShakeCamera(float duration, float tremor, DirectX::SimpleMath::Vector3* pos)
+void Camera::ShakeCamera(float duration, float tremor, SimpleMath::Vector3* pos)
 {
 	int counta = 0;
 	counta++;
 
 	float d = (rand() % 10) * 0.01f * tremor;
 
-	DirectX::SimpleMath::Vector3 sav = (*pos);
+	SimpleMath::Vector3 sav = (*pos);
 
 	if (counta > duration)
 	{
@@ -211,14 +211,14 @@ void Camera::ShakeCamera(float duration, float tremor, DirectX::SimpleMath::Vect
 //射影行列の作成と取得                                    //
 //--------------------------------------------------------//
 // 第１引数：画面横幅 / 第２引数：画面縦幅 / 第３引数：カメラ画角(float値を変換なしで渡す)
-const DirectX::SimpleMath::Matrix& Camera::CreateProjection(float width, float height,float angle)
+const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,float angle)
 {
 	// 画面サイズとアングルの保存
 	m_screenWidth = static_cast<int>(width);
 	m_screenHeight = static_cast<int>(height);
 
 	// 画角
-	float fieldOfView = DirectX::XMConvertToRadians(angle);
+	float fieldOfView = XMConvertToRadians(angle);
 	
 	// 画面縦横比
 	float aspectRatio = width / height;
@@ -230,8 +230,8 @@ const DirectX::SimpleMath::Matrix& Camera::CreateProjection(float width, float h
 	float farPlane = 100.0f;
 	
 	// カメラのレンズの作成
-	DirectX::SimpleMath::Matrix projection = 
-	DirectX::SimpleMath::Matrix::CreatePerspectiveFieldOfView(
+	SimpleMath::Matrix projection = 
+	SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 			fieldOfView, 
 			aspectRatio, 
 			nearPlane, 
@@ -250,9 +250,9 @@ const DirectX::SimpleMath::Matrix& Camera::CreateProjection(float width, float h
 //--------------------------------------------------------//
 //カメラとオブジェクトの距離を求める                      //
 //--------------------------------------------------------//
-float Camera::CalculateDistanceToObject(const DirectX::SimpleMath::Vector3& objPos)
+float Camera::CalculateDistanceToObject(const SimpleMath::Vector3& objPos)
 {
-	DirectX::SimpleMath::Vector3 distanceVector = objPos - m_eye;
+	SimpleMath::Vector3 distanceVector = objPos - m_eye;
 	float distance = distanceVector.Length();
 
 	return distance;

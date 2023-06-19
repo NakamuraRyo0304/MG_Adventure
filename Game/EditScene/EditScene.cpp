@@ -55,7 +55,7 @@ void EditScene::Initialize()
 	GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
 
 	// スフィアの初期化(テスト)
-	m_sphere = DirectX::GeometricPrimitive::CreateSphere(
+	m_sphere = GeometricPrimitive::CreateSphere(
 		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), 
 		COMMON_SIZE / 2
 	);
@@ -71,8 +71,8 @@ void EditScene::Initialize()
 //更新処理                                                //
 //--------------------------------------------------------//
 // 第１引数：時間(60FPS = 1sec) / 第２引数：キーボードのポインタ / 第３引数：マウスのポインタ
-void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keyState,
-	DirectX::Mouse::State& mouseState)
+void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
+	Mouse::State& mouseState)
 {
 	m_timer = elapsedTime;
 
@@ -93,14 +93,14 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 
 	// セーブフラグがたったらファイルを保存
 	if (m_userInterface->GetSaveFlag() && 
-		GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
+		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		SaveFile();
 	}
 
 	// オープンフラグがたったらファイルを開く
 	if (m_userInterface->GetOpenFlag() &&
-		GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
+		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		m_map.LoadMap(L"");				// ファイル新規作成
 		m_mapObj = m_map.GetMapData();	// 読み込み
@@ -108,7 +108,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	}
 
 	// シフトを押している間はカメラモードをTrueにする
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::LeftShift))
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::LeftShift))
 	{
 		// インターフェースでカメラのフラグを取得
 		m_userInterface->SetCameraFlag(!m_userInterface->GetCameraFlag());
@@ -116,7 +116,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	}
 
 	// ステータス変更
-	if (GetSystemManager()->GetMouseTrack()->rightButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
+	if (GetSystemManager()->GetMouseTrack()->rightButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		switch (m_nowState)
 		{
@@ -152,7 +152,7 @@ void EditScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	if (keyState.Escape) ExitApp();
 
 	// Spaceキーでシーン切り替え
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		GoNextScene(SCENE::SELECT);
 	}
@@ -168,10 +168,10 @@ void EditScene::Draw()
 	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	DirectX::SimpleMath::Matrix world, view, projection;
+	SimpleMath::Matrix world, view, projection;
 
 	// ワールド行列
-	world = DirectX::SimpleMath::Matrix::Identity;
+	world = SimpleMath::Matrix::Identity;
 
 	// ビュー行列
 	view = GetSystemManager()->GetCamera()->GetView();
@@ -183,17 +183,17 @@ void EditScene::Draw()
 	GetSystemManager()->GetRayCast()->SetMatrix(view, projection);
 
 	// 行列計算
-	DirectX::SimpleMath::Matrix scale = DirectX::SimpleMath::Matrix::CreateScale(COMMON_SIZE / 2);
-	DirectX::SimpleMath::Matrix rotateX = DirectX::SimpleMath::Matrix::CreateRotationX(m_timer);
-	DirectX::SimpleMath::Matrix rotateY = DirectX::SimpleMath::Matrix::CreateRotationY(m_timer);
-	DirectX::SimpleMath::Matrix rotateZ = DirectX::SimpleMath::Matrix::CreateRotationZ(m_timer);
-	DirectX::SimpleMath::Matrix trans = DirectX::SimpleMath::Matrix::CreateTranslation(m_cursorPos);
+	SimpleMath::Matrix scale = SimpleMath::Matrix::CreateScale(COMMON_SIZE / 2);
+	SimpleMath::Matrix rotateX = SimpleMath::Matrix::CreateRotationX(m_timer);
+	SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(m_timer);
+	SimpleMath::Matrix rotateZ = SimpleMath::Matrix::CreateRotationZ(m_timer);
+	SimpleMath::Matrix trans = SimpleMath::Matrix::CreateTranslation(m_cursorPos);
 
 	// オブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		DirectX::SimpleMath::Matrix boxMat = 
-			DirectX::SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+		SimpleMath::Matrix boxMat = 
+			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
 		if (m_mapObj[i].id == MapState::GrassBox)
 		{
@@ -299,9 +299,9 @@ void EditScene::CreateWindowDependentResources()
 //--------------------------------------------------------//
 //デバッグ表示                                            //
 //--------------------------------------------------------//
-void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void EditScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
-	GetSystemManager()->GetString()->ChangeFontColor(DirectX::Colors::Black);
+	GetSystemManager()->GetString()->ChangeFontColor(Colors::Black);
 
 	// シーン名の表示
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,0 }, L"EditScene");
@@ -334,7 +334,7 @@ void EditScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,60 }, mos);
 
-	auto mouse = DirectX::Mouse::Get().GetState();
+	auto mouse = Mouse::Get().GetState();
 	// マウス位置確認
 	wchar_t num[32];
 	swprintf_s(num, 32, L"Mouse = %d:%d", mouse.x, mouse.y);
@@ -386,7 +386,7 @@ void EditScene::ChangeState(const int& State)
 //--------------------------------------------------------//
 void EditScene::EditMap()
 {
-	auto mouse = DirectX::Mouse::Get().GetState();
+	auto mouse = Mouse::Get().GetState();
 
 	// カメラモードは処理しない
 	if (m_userInterface->GetCameraFlag()) return;
@@ -413,14 +413,14 @@ void EditScene::EditMap()
 
 		// 当たり判定を取る
 		is_boxCol.PushBox(&m_cursorPos, i.position,
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE / 2 },
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE });
+			SimpleMath::Vector3{ COMMON_SIZE / 2 },
+			SimpleMath::Vector3{ COMMON_SIZE });
 
 		// 瞬間の当たり判定を取得
 		bool hit = is_boxCol.GetHitBoxFlag();
 		i.hit = hit;
 
-		if (hit && GetSystemManager()->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
+		if (hit && GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 		{
 			i.id = m_nowState;
 		}

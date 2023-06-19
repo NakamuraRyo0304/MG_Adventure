@@ -62,14 +62,14 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,ID3D11
 //--------------------------------------------------------//
 //更新処理                                                //
 //--------------------------------------------------------//
-void UserInterface::Update(DirectX::Mouse::State& mouseState)
+void UserInterface::Update(Mouse::State& mouseState)
 {
 	// ファイルを開くアイコン
 	bool open = false;
 	open = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_openTexPos.x,m_openTexPos.y },		    // 画像の位置
-		DirectX::SimpleMath::Vector2{ 5.0f },		    // サイズ
-		DirectX::SimpleMath::Vector2{ 100.0f });	    // サイズ
+		SimpleMath::Vector2{ 5.0f },		    // サイズ
+		SimpleMath::Vector2{ 100.0f });	    // サイズ
 	if (open)
 	{
 		is_openFlag = true;
@@ -84,8 +84,8 @@ void UserInterface::Update(DirectX::Mouse::State& mouseState)
 	bool save = false;
 	save = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_saveTexPos.x,m_saveTexPos.y },		    // 画像の位置
-		DirectX::SimpleMath::Vector2{ 5.0f },		    // サイズ
-		DirectX::SimpleMath::Vector2{ 100.0f });	    // サイズ
+		SimpleMath::Vector2{ 5.0f },		    // サイズ
+		SimpleMath::Vector2{ 100.0f });	    // サイズ
 	// 当っていてクリックした時処理
 	if (save)
 	{
@@ -99,11 +99,11 @@ void UserInterface::Update(DirectX::Mouse::State& mouseState)
 	// カメラアイコンをクリック
 	bool camera = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_cameraTexPos.x,m_cameraTexPos.y },	 									// 画像の位置
-		DirectX::SimpleMath::Vector2{ 5.0f }, 										// サイズ
-		DirectX::SimpleMath::Vector2{ 100.0f });									// サイズ
+		SimpleMath::Vector2{ 5.0f }, 										// サイズ
+		SimpleMath::Vector2{ 100.0f });									// サイズ
 
 	// カメラ移動モード切り替え
-	if (camera && m_systemManager->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
+	if (camera && m_systemManager->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		is_cameraFlag = !is_cameraFlag;
 		m_systemManager->GetCamera()->SetEagleMode(is_cameraFlag);
@@ -112,11 +112,11 @@ void UserInterface::Update(DirectX::Mouse::State& mouseState)
 	// ペン/消しゴムアイコンをクリック
 	bool tool = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_penTexPos.x,m_penTexPos.y },	        							 // 画像の位置
-		DirectX::SimpleMath::Vector2{ 5.0f },									 // サイズ
-		DirectX::SimpleMath::Vector2{ 100.0f });								 // サイズ
+		SimpleMath::Vector2{ 5.0f },									 // サイズ
+		SimpleMath::Vector2{ 100.0f });								 // サイズ
 
 	// 描画モード切り替え
-	if (tool && m_systemManager->GetMouseTrack()->leftButton == DirectX::Mouse::ButtonStateTracker::RELEASED)
+	if (tool && m_systemManager->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		is_drawFlag = !is_drawFlag;
 	}

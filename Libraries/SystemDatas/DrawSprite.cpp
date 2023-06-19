@@ -33,7 +33,7 @@ DrawSprite::~DrawSprite()
 //--------------------------------------------------------//
 void DrawSprite::MakeSpriteBatch(ID3D11DeviceContext1* context)
 {
-	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
+	m_spriteBatch = std::make_unique<SpriteBatch>(context);
 }
 
 //--------------------------------------------------------//
@@ -49,7 +49,7 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 	{
 
 		// ‰æ‘œ‚Ì“o˜^
-		DirectX::CreateDDSTextureFromFile(
+		CreateDDSTextureFromFile(
 			device,
 			it->second,	// ƒeƒNƒXƒ`ƒƒ‚ÌƒpƒX
 			nullptr,
@@ -62,8 +62,8 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 //‰æ‘œ‚ð•`‰æ‚·‚é                                          //
 //--------------------------------------------------------//
 // ‘æ‚Pˆø”FƒL[ ‘æ‚Qˆø”F•\Ž¦À•W ‘æ‚Rˆø”FF ‘æ‚Sˆø”FŠg‘å—¦ ‘æ‚Tˆø”F’†SˆÊ’u
-void DrawSprite::DrawTexture(const wchar_t* key, DirectX::SimpleMath::Vector2 pos, 
-	DirectX::SimpleMath::Vector4 color, float rate, DirectX::SimpleMath::Vector2 origin)
+void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos, 
+	SimpleMath::Vector4 color, float rate, SimpleMath::Vector2 origin)
 {
 	m_spriteBatch->Begin();
 
@@ -79,7 +79,7 @@ void DrawSprite::DrawTexture(const wchar_t* key, DirectX::SimpleMath::Vector2 po
 		0.0f,									// ‰ñ“]
 		origin,									// ‰æ‘œ‚ÌŒ´“_
 		rate,									// Šg‘å—¦
-		DirectX::SpriteEffects_None, 0.0f		// •`‰æƒŒƒCƒ„[
+		SpriteEffects_None, 0.0f		// •`‰æƒŒƒCƒ„[
 	);
 
 	m_spriteBatch->End();

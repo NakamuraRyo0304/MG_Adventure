@@ -26,10 +26,10 @@ Collider::BoxCollider::BoxCollider():
 //ボックスの当たり判定                                    //
 //--------------------------------------------------------//
 // 第１引数：押し戻したいオブジェ 第２引数：ぶつかる対象オブジェ 第３、４引数：対応したサイズ
-void Collider::BoxCollider::PushBox(DirectX::SimpleMath::Vector3* moveObj,
-			                        const DirectX::SimpleMath::Vector3& constObj,
-			                        const DirectX::SimpleMath::Vector3& sz1, 
-	                                const DirectX::SimpleMath::Vector3& sz2)
+void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
+			                        const SimpleMath::Vector3& constObj,
+			                        const SimpleMath::Vector3& sz1, 
+	                                const SimpleMath::Vector3& sz2)
 {
 	// 当っていない
 	is_hitFlag = false;
@@ -107,10 +107,10 @@ void Collider::BoxCollider::PushBox(DirectX::SimpleMath::Vector3* moveObj,
 }
 
 // 第１引数：オブジェ１ 第２引数：オブジェ２ 第３、４引数：対応したサイズ
-void Collider::BoxCollider::PushBox(DirectX::SimpleMath::Vector3& moveObj,
-	const DirectX::SimpleMath::Vector3& constObj,
-	const DirectX::SimpleMath::Vector3& sz1,
-	const DirectX::SimpleMath::Vector3& sz2)
+void Collider::BoxCollider::PushBox(SimpleMath::Vector3& moveObj,
+	const SimpleMath::Vector3& constObj,
+	const SimpleMath::Vector3& sz1,
+	const SimpleMath::Vector3& sz2)
 {
 	// 当っていない
 	is_hitFlag = false;
@@ -175,12 +175,12 @@ Collider::SphereCollider::SphereCollider() :
 //球同士の当たり判定                                      //
 //--------------------------------------------------------//
 // 第１引数：球１の座標 第２引数：球２の座標 第３、４引数：球の半径
-void Collider::SphereCollider::PushSphere(DirectX::SimpleMath::Vector3& pos1, 
-	                                      DirectX::SimpleMath::Vector3& pos2, 
+void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1, 
+	                                      SimpleMath::Vector3& pos2, 
 	                                      float radius1, float radius2)
 {
 	// 二つの球の距離を計算
-	float distance = DirectX::SimpleMath::Vector3::Distance(pos1, pos2);
+	float distance = SimpleMath::Vector3::Distance(pos1, pos2);
 
 	// 二つの球の半径の和を計算
 	float sumOfRadius = radius1 + radius2;
@@ -189,7 +189,7 @@ void Collider::SphereCollider::PushSphere(DirectX::SimpleMath::Vector3& pos1,
 	if (distance <= sumOfRadius) 
 	{
 		// 衝突した球の方向ベクトルを計算
-		DirectX::SimpleMath::Vector3 collisionDirection = pos2 - pos1;
+		SimpleMath::Vector3 collisionDirection = pos2 - pos1;
 
 		// 正規化する
 		collisionDirection.Normalize();
@@ -225,10 +225,10 @@ Collider::AABBCollider::AABBCollider()
 //当っているかどうかを返す                                //
 //--------------------------------------------------------//
 // 第１、２引数：座標 第３、４引数：サイズ
-bool Collider::AABBCollider::HitAABB_2D(const DirectX::SimpleMath::Vector2& pos1, 
-								     const DirectX::SimpleMath::Vector2& pos2,
-								     const DirectX::SimpleMath::Vector2& sz1, 
-								     const DirectX::SimpleMath::Vector2& sz2)
+bool Collider::AABBCollider::HitAABB_2D(const SimpleMath::Vector2& pos1, 
+								     const SimpleMath::Vector2& pos2,
+								     const SimpleMath::Vector2& sz1, 
+								     const SimpleMath::Vector2& sz2)
 {
 	// XZ平面における当たり判定
 	if (pos1.x - sz1.x / 2 < pos2.x + sz2.x / 2 &&

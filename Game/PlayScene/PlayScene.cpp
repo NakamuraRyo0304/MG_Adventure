@@ -59,7 +59,7 @@ void PlayScene::Initialize()
 
 	// プレイヤの初期化
 	m_player->Initialize();
-	m_player->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f,5.0f,0.0f });
+	m_player->SetPosition(SimpleMath::Vector3{ 0.0f,5.0f,0.0f });
 
 	// 判定の初期化
 	m_colObjList.clear();
@@ -69,8 +69,8 @@ void PlayScene::Initialize()
 //更新処理                                                //
 //--------------------------------------------------------//
 // 第１引数：時間(60FPS = 1sec) / 第２引数：キーボードのポインタ / 第３引数：マウスのポインタ
-void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keyState,
-	DirectX::Mouse::State& mouseState)
+void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
+	Mouse::State& mouseState)
 {
 	m_timer = elapsedTime;
 
@@ -95,7 +95,7 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 		ApplyPushBack(obj);
 	}
 
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		GoNextScene(SCENE::PLAY);
 	}
@@ -104,7 +104,7 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	if (keyState.Escape) ExitApp();
 
 	// Enterキーでシーン切り替え
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Enter))
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Enter))
 	{
 		GoNextScene(SCENE::RESULT);
 	}
@@ -120,10 +120,10 @@ void PlayScene::Draw()
 	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	DirectX::SimpleMath::Matrix world, view, proj;
+	SimpleMath::Matrix world, view, proj;
 
 	// ワールド行列
-	world = DirectX::SimpleMath::Matrix::Identity;
+	world = SimpleMath::Matrix::Identity;
 
 	// ビュー行列
 	view = GetSystemManager()->GetCamera()->GetView();
@@ -135,13 +135,13 @@ void PlayScene::Draw()
 	m_player->Render(context, states, view, proj);
 
 	// 回転行列
-	DirectX::SimpleMath::Matrix rotateY = DirectX::SimpleMath::Matrix::CreateRotationY(m_timer);
+	SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(m_timer);
 
 	// オブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		DirectX::SimpleMath::Matrix boxMat =
-			DirectX::SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+		SimpleMath::Matrix boxMat =
+			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
 		if (m_mapObj[i].id == MapLoad::BoxState::GrassBox)
 		{
@@ -215,7 +215,7 @@ void PlayScene::CreateWindowDependentResources()
 	);
 
 	// プレイヤの作成
-	std::unique_ptr<DirectX::Model> playerModel = ModelFactory::GetModel(
+	std::unique_ptr<Model> playerModel = ModelFactory::GetModel(
 		device,
 		L"Resources/Models/Character.cmo"
 	);
@@ -239,8 +239,8 @@ void PlayScene::DoBoxCollision()
 		is_boxCol.PushBox(
 			m_player->GetPosition(),								// プレイヤ座標
 			obj.position,											// ブロック座標
-			DirectX::SimpleMath::Vector3{ m_player->GetSize() },	// プレイヤサイズ
-			DirectX::SimpleMath::Vector3{ COMMON_SIZE }				// ブロックサイズ
+			SimpleMath::Vector3{ m_player->GetSize() },	// プレイヤサイズ
+			SimpleMath::Vector3{ COMMON_SIZE }				// ブロックサイズ
 		);
 
 		// 当たっていたら処理する
@@ -286,14 +286,14 @@ void PlayScene::ApplyPushBack(Object& obj)
 	}
 
 	// プレイヤのポジションを保存
-	DirectX::SimpleMath::Vector3 playerPos = m_player->GetPosition();
+	SimpleMath::Vector3 playerPos = m_player->GetPosition();
 
 	// 当たり判定を取って押し戻す
 	is_boxCol.PushBox(
 		&playerPos,												// プレイヤ座標
 		obj.position,											// ブロック座標
-		DirectX::SimpleMath::Vector3{ m_player->GetSize() },	// プレイヤサイズ
-		DirectX::SimpleMath::Vector3{ COMMON_SIZE }				// ブロックサイズ
+		SimpleMath::Vector3{ m_player->GetSize() },	// プレイヤサイズ
+		SimpleMath::Vector3{ COMMON_SIZE }				// ブロックサイズ
 	);
 
 	// 変更後のプレイヤのポジションを反映
@@ -312,11 +312,11 @@ void PlayScene::ApplyPushBack(Object& obj)
 //--------------------------------------------------------//
 //デバッグ表示                                            //
 //--------------------------------------------------------//
-void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	auto state = GetSystemManager()->GetCommonStates().get();
 
-	GetSystemManager()->GetString()->ChangeFontColor(DirectX::Colors::Black);
+	GetSystemManager()->GetString()->ChangeFontColor(Colors::Black);
 
 	// シーン名の表示
 	GetSystemManager()->GetString()->DrawFormatString(state, { 0,0 }, L"PlayScene");

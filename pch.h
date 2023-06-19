@@ -83,6 +83,7 @@ namespace DX
     }
 }
 
+using namespace DirectX;
 #include "Keyboard.h"                   // キーボード
 #include "Mouse.h"                      // マウス
 #include "GeometricPrimitive.h"         // 図形描画

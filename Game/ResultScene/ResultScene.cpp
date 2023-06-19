@@ -39,8 +39,8 @@ void ResultScene::Initialize()
 //更新処理                                                //
 //--------------------------------------------------------//
 // 第１引数：時間(60FPS = 1sec) / 第２引数：キーボードのポインタ / 第３引数：マウスのポインタ
-void ResultScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keyState, 
-	DirectX::Mouse::State& mouseState)
+void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState, 
+	Mouse::State& mouseState)
 {
 	elapsedTime;
 
@@ -57,7 +57,7 @@ void ResultScene::Update(const float& elapsedTime, DirectX::Keyboard::State& key
 	if (keyState.Escape) ExitApp();
 
 	// Spaceキーでシーン切り替え
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(DirectX::Keyboard::Space))
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		GoNextScene(SCENE::TITLE);
 	}
@@ -69,7 +69,7 @@ void ResultScene::Update(const float& elapsedTime, DirectX::Keyboard::State& key
 void ResultScene::Draw()
 {
 	// デバッグフォント
-	GetSystemManager()->GetString()->ChangeFontColor(DirectX::Colors::Black);
+	GetSystemManager()->GetString()->ChangeFontColor(Colors::Black);
 	GetSystemManager()->GetString()->DrawFormatString(
 		GetSystemManager()->GetCommonStates().get(), 
 		{ 0,0 }, 
