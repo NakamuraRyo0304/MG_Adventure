@@ -15,8 +15,9 @@ class Player;
 class PlayScene : public IScene
 {
 private:
-	// プレイヤ
-	DirectX::SimpleMath::Vector3 m_playerPos;
+	// タイマー
+	float m_timer;
+
 	// ブロック
 	std::vector<Object> m_mapObj;
 
@@ -33,12 +34,12 @@ private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_grassModel, m_coinModel,m_clowdModel;
 
-	// テストカウント
-	int test_count;
+	// コインカウンタ
+	int m_coinCount;
 
 private:
 	// マップサイズ(Stage)
-	const float COMMON_SIZE = 1.0f;
+	const float COMMON_SIZE = 0.9f;
 
 	// 最低高度
 	const float	COMMON_LOW = COMMON_SIZE / 2;

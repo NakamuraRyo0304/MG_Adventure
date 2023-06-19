@@ -284,19 +284,16 @@
     <None Include="Resources\Models\GrassBlock.cmo">
       <Filter>Resources\Models</Filter>
     </None>
-    <None Include="Resources\Models\TestPlayer.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
     <None Include="Resources\Models\Coin.cmo">
       <Filter>Resources\Models</Filter>
     </None>
     <None Include="Resources\Models\Clowd.cmo">
       <Filter>Resources\Models</Filter>
     </None>
-    <None Include="Resources\Models\GlassCube.cmo">
+    <None Include="Resources\Models\Eraser.cmo">
       <Filter>Resources\Models</Filter>
     </None>
-    <None Include="Resources\Models\Eraser.cmo">
+    <None Include="Resources\Models\Character.cmo">
       <Filter>Resources\Models</Filter>
     </None>
   </ItemGroup>

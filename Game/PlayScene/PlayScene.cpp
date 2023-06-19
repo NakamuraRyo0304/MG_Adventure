@@ -23,15 +23,15 @@
  //--------------------------------------------------------//
 PlayScene::PlayScene() :
 	IScene(),
+	m_timer{},
 	m_mapObj{},						// マップのブロック
 	m_map{},						// マップ
 	m_colObjList{},					// 当っているオブジェクトの格納
 	is_boxCol{},					// 立方体当たり判定
-	m_playerPos{},					// プレイヤの位置
 	m_grassModel{ nullptr },		// 草ブロックのモデル
 	m_coinModel{ nullptr },			// コインブロックのモデル
 	m_clowdModel{ nullptr },		// 雲ブロックのモデル
-	test_count{}
+	m_coinCount{}
 {
 
 }
@@ -72,7 +72,7 @@ void PlayScene::Initialize()
 void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keyState,
 	DirectX::Mouse::State& mouseState)
 {
-	elapsedTime;
+	m_timer = elapsedTime;
 
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
@@ -84,7 +84,7 @@ void PlayScene::Update(const float& elapsedTime, DirectX::Keyboard::State& keySt
 	GetSystemManager()->GetCamera()->Update();
 
 	// プレイヤの更新
-	m_player->Update(keyState);
+	m_player->Update(keyState, elapsedTime);
 
 	// 当たり判定の更新
 	DoBoxCollision();
@@ -134,6 +134,9 @@ void PlayScene::Draw()
 	// プレイヤの描画
 	m_player->Render(context, states, view, proj);
 
+	// 回転行列
+	DirectX::SimpleMath::Matrix rotateY = DirectX::SimpleMath::Matrix::CreateRotationY(m_timer);
+
 	// オブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
@@ -146,7 +149,7 @@ void PlayScene::Draw()
 		}
 		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
 		{
-			m_coinModel->Draw(context, states, boxMat, view, proj);
+			m_coinModel->Draw(context, states, rotateY * boxMat, view, proj);
 		}
 	}
 
@@ -214,7 +217,7 @@ void PlayScene::CreateWindowDependentResources()
 	// プレイヤの作成
 	std::unique_ptr<DirectX::Model> playerModel = ModelFactory::GetModel(
 		device,
-		L"Resources/Models/TestPlayer.cmo"
+		L"Resources/Models/Character.cmo"
 	);
 	// モデルデータを渡す(move必要)
 	m_player = std::make_unique<Player>(std::move(playerModel));
@@ -275,7 +278,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 		{
 			if (i == obj)
 			{
-				test_count += 1;				// 獲得数加算
+				m_coinCount += 1;				// 獲得数加算
 				i.id = MapLoad::BoxState::None;	// 獲得したらコインを削除
 			}
 		}
@@ -349,7 +352,7 @@ void PlayScene::DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::
 		
 	// コインテスト
 	wchar_t coi[32];
-	swprintf_s(coi, 32, L"Coin = %d", test_count);
+	swprintf_s(coi, 32, L"Coin = %d", m_coinCount);
 
 	GetSystemManager()->GetString()->DrawFormatString(state, { 0,100 }, coi);
 

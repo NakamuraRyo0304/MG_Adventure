@@ -29,6 +29,9 @@ struct PlayerParameter
 class Player
 {
 private:
+	// 時間
+	float m_timer;
+
 	// プレイヤのパラメータ
 	PlayerParameter m_parameter;
 
@@ -36,7 +39,11 @@ private:
 	std::unique_ptr<DirectX::Model> m_model;
 
 	// プレイヤのサイズ
-	const float SIZE = 0.5f;
+	const float SIZE = 0.95f;
+	// プレイヤの浮遊
+	const float OFFSET_Y = 0.2f;
+
+
 public:
 	// コンストラクタ（モデルデータ）
 	Player(std::unique_ptr<DirectX::Model> model);
@@ -46,7 +53,7 @@ public:
 	void Initialize();
 
 	// 更新処理（キーボード）
-	void Update(DirectX::Keyboard::State& keyState);
+	void Update(DirectX::Keyboard::State& keyState,float timer);
 	
 	// 描画処理（コンテキスト、ステート、ビュー行列、射影行列）
 	void Render(ID3D11DeviceContext* context, DirectX::DX11::CommonStates& states, 

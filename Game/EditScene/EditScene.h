@@ -23,6 +23,9 @@ class UserInterface;
 class EditScene : public IScene
 {
 private:
+	// タイマー
+	float m_timer;
+
 	// ボックスとスフィア
 	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere;
 	DirectX::SimpleMath::Vector3 m_cursorPos;
@@ -48,7 +51,6 @@ private:
 
 	// 現在のブロックステータス
 	int m_nowState;
-	float m_timer;
 
 	// パスの格納
 	std::wstring m_filePath;

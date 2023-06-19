@@ -40,8 +40,10 @@ void Player::Initialize()
 //--------------------------------------------------------//
 //更新処理                                                //
 //--------------------------------------------------------//
-void Player::Update(DirectX::Keyboard::State& keyState)
+void Player::Update(DirectX::Keyboard::State& keyState, float timer)
 {
+	m_timer = timer;
+
 	// 移動処理
 	if (keyState.W) m_parameter.position.z -= 0.05f;
 	if (keyState.S) m_parameter.position.z += 0.05f;
@@ -63,7 +65,11 @@ void Player::Render(ID3D11DeviceContext* context, DirectX::DX11::CommonStates& s
 {
 	// ワールド行列
 	DirectX::SimpleMath::Matrix world =
-		DirectX::SimpleMath::Matrix::CreateTranslation(m_parameter.position);
+		DirectX::SimpleMath::Matrix::CreateTranslation(
+			m_parameter.position.x,
+			m_parameter.position.y + sinf(m_timer) / 10.0f + OFFSET_Y,
+			m_parameter.position.z
+		);
 
 	// モデルの描画
 	m_model->Draw(context, states, world, view, proj, false);
