@@ -75,6 +75,8 @@ public:
 	// カメラとオブジェクトの距離を求める
 	float CalculateDistanceToObject(const DirectX::SimpleMath::Vector3& objPos);
 
+	// カメラの向いている方向に座標を正規化する関数
+	DirectX::SimpleMath::Vector3 NormalizePosition(const DirectX::SimpleMath::Vector3& position);
 
 //--------------------------------------------------------//
 //アクセサ                                                //
@@ -99,7 +101,10 @@ public:
 	const bool GetEagleMode() { return is_eagleMode; }
 
 	// カメラの角度を取得
-	const float& GetCameraAngle() { return m_angle.x; }
+	const DirectX::SimpleMath::Vector2& GetCameraAngle() { return m_angle; }
+
+	// カメラの回転角度を取得
+	const SimpleMath::Quaternion& GetCameraRotation();
 };
 
 #endif // CAMERA

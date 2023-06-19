@@ -248,6 +248,36 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,flo
 }
 
 //--------------------------------------------------------//
+//カメラの回転を取得                                      //
+//--------------------------------------------------------//
+const SimpleMath::Quaternion& Camera::GetCameraRotation()
+{
+	SimpleMath::Matrix rotX = SimpleMath::Matrix::CreateRotationX(m_angle.x);
+	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_angle.y);
+
+	SimpleMath::Matrix rt = rotY * rotX;
+	
+	SimpleMath::Quaternion rotation;
+	
+	// 回転行列をクオータニオンに変換
+	rotation = SimpleMath::Quaternion::CreateFromRotationMatrix(rt);
+	
+	return rotation;
+}
+
+//--------------------------------------------------------//
+//座標を正規化する関数                                    //
+//--------------------------------------------------------//
+SimpleMath::Vector3 Camera::NormalizePosition(const SimpleMath::Vector3& position)
+{
+	SimpleMath::Vector3 direction = position - m_eye;
+
+	direction.Normalize();
+
+	return direction;
+}
+
+//--------------------------------------------------------//
 //カメラとオブジェクトの距離を求める                      //
 //--------------------------------------------------------//
 float Camera::CalculateDistanceToObject(const SimpleMath::Vector3& objPos)

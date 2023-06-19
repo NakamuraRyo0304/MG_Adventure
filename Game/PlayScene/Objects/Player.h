@@ -26,6 +26,7 @@ struct PlayerParameter
 	}
 };
 
+class SystemManager;
 class Player
 {
 private:
@@ -38,8 +39,11 @@ private:
 	// モデルデータ
 	std::unique_ptr<DirectX::Model> m_model;
 
+	// システム
+	std::shared_ptr<SystemManager> m_system;
+
 	// 摩擦係数
-	const float DECELERATION = 0.879f;
+	const float DECELERATION = 0.842f;
 	// プレイヤのサイズ
 	const float SIZE = 0.95f;
 	// プレイヤの浮遊
@@ -52,7 +56,7 @@ public:
 	~Player();
 
 	// 初期化処理
-	void Initialize();
+	void Initialize(std::shared_ptr<SystemManager> system);
 
 	// 更新処理（キーボード）
 	void Update(DirectX::Keyboard::State& keyState,float timer);

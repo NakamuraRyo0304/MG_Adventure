@@ -361,7 +361,7 @@ void EditScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 
 	// ƒJƒƒ‰‚ÌŠp“x
 	wchar_t ang[32];
-	swprintf_s(ang, 32, L"CameraAngle = %f", GetSystemManager()->GetCamera()->GetCameraAngle());
+	swprintf_s(ang, 32, L"CameraAngle = %f", GetSystemManager()->GetCamera()->GetCameraAngle().x);
 
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,160 }, ang);
 

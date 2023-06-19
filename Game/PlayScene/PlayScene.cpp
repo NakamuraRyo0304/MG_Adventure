@@ -58,7 +58,9 @@ void PlayScene::Initialize()
 	LoadMap(GetStageNum());
 
 	// ƒvƒŒƒCƒ„‚Ì‰Šú‰»
-	m_player->Initialize();
+	std::shared_ptr<SystemManager> shareSystem = std::make_shared<SystemManager>();
+
+	m_player->Initialize(shareSystem);
 	m_player->SetPosition(SimpleMath::Vector3{ 0.0f,5.0f,0.0f });
 
 	// ”»’è‚Ì‰Šú‰»

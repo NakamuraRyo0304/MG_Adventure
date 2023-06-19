@@ -7,6 +7,10 @@
 
 #include "pch.h"
 
+// システム
+#include "../../../Libraries/SystemManager/SystemManager.h"
+
+// インライン関数群
 #include "../../../Libraries/UserUtility.h"
 
 #include "Player.h"
@@ -16,7 +20,8 @@
 //--------------------------------------------------------//
 Player::Player(std::unique_ptr<Model> model):
 	m_model{std::move(model)},
-	m_parameter{}
+	m_parameter{},
+	m_system{nullptr}
 {
 }
 
@@ -31,10 +36,16 @@ Player::~Player()
 //--------------------------------------------------------//
 //初期化処理                                              //
 //--------------------------------------------------------//
-void Player::Initialize()
+void Player::Initialize(std::shared_ptr<SystemManager> system)
 {
+	// システムの取得
+	m_system = system;
+
 	// パラメータのリセット
 	m_parameter.reset();
+
+	// 加速度の設定
+	m_parameter.accelerate = 0.05f;
 }
 
 //--------------------------------------------------------//
@@ -47,38 +58,19 @@ void Player::Update(Keyboard::State& keyState, float timer)
 	// 移動処理
 	if (keyState.W)
 	{
-		m_parameter.velocity.z--;
-		// 速度を加速
-		if (m_parameter.velocity.z < -m_parameter.accelerate)
-		{
-			m_parameter.velocity.z = -m_parameter.accelerate;
-		}
+		m_parameter.velocity.z -= m_parameter.accelerate;
 	}
 	if (keyState.S)
 	{
-		m_parameter.velocity.z++;
-		if (m_parameter.velocity.z > m_parameter.accelerate)
-		{
-			m_parameter.velocity.z = m_parameter.accelerate;
-		}
+		m_parameter.velocity.z += m_parameter.accelerate;
 	}
-	if (keyState.A) 
+	if (keyState.A)
 	{
-		m_parameter.velocity.x--;
-		// 速度を加速
-		if (m_parameter.velocity.x < -m_parameter.accelerate)
-		{
-			m_parameter.velocity.x = -m_parameter.accelerate;
-		}
+		m_parameter.velocity.x -= m_parameter.accelerate;
 	}
 	if (keyState.D)
 	{
-		m_parameter.velocity.x++;
-		// 速度を加速
-		if (m_parameter.velocity.x > m_parameter.accelerate)
-		{
-			m_parameter.velocity.x = m_parameter.accelerate;
-		}
+		m_parameter.velocity.x += m_parameter.accelerate;
 	}
 
 	// 移動量の計算
@@ -134,7 +126,4 @@ void Player::Spawn(SimpleMath::Vector3 spawnPosition)
 
 	// 座標の設定
 	m_parameter.position = spawnPosition;
-
-	// 加速度の設定
-	m_parameter.accelerate = 0.05f;
 }
