@@ -328,9 +328,9 @@ void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 
 	// カメラのポジション
 	swprintf_s(cam, 64, L"CameraPos = %d,%d,%d",
-		static_cast<int>(GetSystemManager()->GetCamera()->GetEyePosition().x),
-		static_cast<int>(GetSystemManager()->GetCamera()->GetEyePosition().y),
-		static_cast<int>(GetSystemManager()->GetCamera()->GetEyePosition().z)
+		static_cast<int>(GetSystemManager()->GetCamera()->GetEye().x),
+		static_cast<int>(GetSystemManager()->GetCamera()->GetEye().y),
+		static_cast<int>(GetSystemManager()->GetCamera()->GetEye().z)
 	);
 	GetSystemManager()->GetString()->DrawFormatString(state, { 0,20 }, cam);
 

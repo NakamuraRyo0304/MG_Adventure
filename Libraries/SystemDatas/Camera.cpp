@@ -255,24 +255,20 @@ const SimpleMath::Quaternion& Camera::GetCameraRotation()
 	SimpleMath::Matrix rotX = SimpleMath::Matrix::CreateRotationX(m_angle.x);
 	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_angle.y);
 
-	SimpleMath::Matrix rt = rotY * rotX;
-	
-	SimpleMath::Quaternion rotation;
-	
-	// 回転行列をクオータニオンに変換
-	rotation = SimpleMath::Quaternion::CreateFromRotationMatrix(rt);
-	
-	return rotation;
+	// 回転行列をクオータニオンに変換して返却
+	return SimpleMath::Quaternion::CreateFromRotationMatrix(rotY * rotX);
 }
 
 //--------------------------------------------------------//
 //座標を正規化する関数                                    //
 //--------------------------------------------------------//
-SimpleMath::Vector3 Camera::NormalizePosition(const SimpleMath::Vector3& position)
+SimpleMath::Vector3 Camera::NormalizePosition()
 {
-	SimpleMath::Vector3 direction = position - m_eye;
+	SimpleMath::Vector3 direction = m_target - m_eye;
 
 	direction.Normalize();
+
+	direction.y = 0.0f;
 
 	return direction;
 }

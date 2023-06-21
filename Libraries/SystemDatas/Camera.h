@@ -76,7 +76,7 @@ public:
 	float CalculateDistanceToObject(const DirectX::SimpleMath::Vector3& objPos);
 
 	// カメラの向いている方向に座標を正規化する関数
-	DirectX::SimpleMath::Vector3 NormalizePosition(const DirectX::SimpleMath::Vector3& position);
+	DirectX::SimpleMath::Vector3 NormalizePosition();
 
 //--------------------------------------------------------//
 //アクセサ                                                //
@@ -85,8 +85,11 @@ public:
 	const DirectX::SimpleMath::Matrix& GetView() { return m_view; }
 
 	// カメラの座標を取得する
-	const DirectX::SimpleMath::Vector3& GetEyePosition() { return m_eye; }
-	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_eye = pos;}
+	const DirectX::SimpleMath::Vector3& GetEye() { return m_eye; }
+	void SetEye(const DirectX::SimpleMath::Vector3& pos){ m_eye = pos;}
+
+	const DirectX::SimpleMath::Vector3& GetEyePosition() { return m_eyePos; }
+	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_eyePos = pos;}
 	
 	// カメラの注視点座標を取得する
 	const DirectX::SimpleMath::Vector3& GetTargetPosition() { return m_target; }
