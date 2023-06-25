@@ -29,6 +29,7 @@ EditScene::EditScene() :
 	m_noneModel{ nullptr },	
 	m_coinModel{ nullptr },
 	m_clowdModel{ nullptr },
+	m_switchModel{ nullptr },
 	m_sharedSystem{}
 	
 {
@@ -123,7 +124,10 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		case MapState::GrassBox:				// 草→コイン
 			ChangeState(MapState::CoinBox);
 			break;
-		case MapState::CoinBox:					// コイン→消しゴム
+		case MapState::CoinBox:					// コイン→スイッチ
+			ChangeState(MapState::SwitchBox);
+			break;
+		case MapState::SwitchBox:				// スイッチ→消しゴム
 			ChangeState(MapState::None);
 			m_userInterface->SetDrawFlag(false);
 			break;
@@ -203,6 +207,10 @@ void EditScene::Draw()
 		{
 			m_coinModel->Draw(context, states, rotateY * boxMat, view, projection);
 		}
+		if (m_mapObj[i].id == MapState::SwitchBox)
+		{
+			m_switchModel->Draw(context, states, boxMat, view, projection);
+		}
 	}
 
 
@@ -217,6 +225,10 @@ void EditScene::Draw()
 	if (m_nowState == MapState::CoinBox)
 	{
 		m_coinModel->Draw(context, states, world, view, projection);
+	}
+	if (m_nowState == MapState::SwitchBox)
+	{
+		m_switchModel->Draw(context, states, world, view, projection);
 	}
 	if (m_nowState == MapState::None)
 	{
@@ -245,6 +257,7 @@ void EditScene::Finalize()
 	ModelFactory::DeleteModel(m_noneModel);
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_clowdModel);
+	ModelFactory::DeleteModel(m_switchModel);
 }
 
 //--------------------------------------------------------//
@@ -293,6 +306,10 @@ void EditScene::CreateWindowDependentResources()
 	m_clowdModel = ModelFactory::GetModel(					// 雲ブロック
 		device,
 		L"Resources/Models/Clowd.cmo"
+	);
+	m_switchModel = ModelFactory::GetModel(					// スイッチブロック
+		device,
+		L"Resources/Models/Switch.cmo"
 	);
 }
 

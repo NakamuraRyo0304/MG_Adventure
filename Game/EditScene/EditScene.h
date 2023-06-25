@@ -48,6 +48,7 @@ private:
 	std::unique_ptr<DirectX::Model>m_noneModel;								// 判定モデル
 	std::unique_ptr<DirectX::Model>m_coinModel;								// コインモデル
 	std::unique_ptr<DirectX::Model>m_clowdModel;							// 雲モデル
+	std::unique_ptr<DirectX::Model>m_switchModel;							// スイッチモデル
 
 	// 現在のブロックステータス
 	int m_nowState;

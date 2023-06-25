@@ -38,10 +38,11 @@ public:
 	// エリアボックスのステータス
 	struct BoxState
 	{
-		static const int GrassBox = 1;		// 草のブロック
-		static const int ClowdBox = 2;		// コインのブロック
-		static const int CoinBox  = 3;		// 雲のブロック
-		static const int None = 0;			// データなし
+		static const int GrassBox	= 1;		// 草のブロック
+		static const int ClowdBox	= 2;		// コインのブロック
+		static const int CoinBox	= 3;		// 雲のブロック
+		static const int SwitchBox	= 4;		// スイッチのブロック
+		static const int None		= 0;		// データなし
 	};
 
 private:

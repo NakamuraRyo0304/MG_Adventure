@@ -272,6 +272,20 @@ void PlayScene::ApplyPushBack(Object& obj)
 	// 当っているのが空気の場合は処理しない
 	if (obj.id == MapLoad::BoxState::None) return;
 
+	// スイッチを押しているとき対象ブロックを移動
+	if (obj.id == MapLoad::BoxState::SwitchBox)
+	{
+		// 該当ブロック検索＆移動処理
+		for (auto& i : m_mapObj)
+		{
+			if (i == obj)
+			{
+				i.position.x += 0.001f;
+			}
+		}
+		return;
+	}
+
 	// コインの処理
 	if (obj.id == MapLoad::BoxState::CoinBox)
 	{ 
@@ -294,8 +308,8 @@ void PlayScene::ApplyPushBack(Object& obj)
 	is_boxCol.PushBox(
 		&playerPos,												// プレイヤ座標
 		obj.position,											// ブロック座標
-		SimpleMath::Vector3{ m_player->GetSize() },	// プレイヤサイズ
-		SimpleMath::Vector3{ COMMON_SIZE }				// ブロックサイズ
+		SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
+		SimpleMath::Vector3{ COMMON_SIZE }						// ブロックサイズ
 	);
 
 	// 変更後のプレイヤのポジションを反映
