@@ -45,7 +45,7 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 	m_parameter.reset();
 
 	// 加速度の設定
-	m_parameter.accelerate = 0.05f;
+	m_parameter.accelerate = 0.01f;
 }
 
 //--------------------------------------------------------//
@@ -55,22 +55,27 @@ void Player::Update(Keyboard::State& keyState, float timer)
 {
 	m_timer = timer;
 
+	SimpleMath::Vector3 vec = m_system->GetCamera()->NormalizePosition();
+
+	// 重力処理
+	UpdateGravity();
+
 	// 移動処理
 	if (keyState.W)
 	{
-		m_parameter.velocity.z -= m_parameter.accelerate;
+		m_parameter.velocity.z -= m_parameter.accelerate * vec.z;
 	}
 	if (keyState.S)
 	{
-		m_parameter.velocity.z += m_parameter.accelerate;
+		m_parameter.velocity.z += m_parameter.accelerate * vec.z;
 	}
 	if (keyState.A)
 	{
-		m_parameter.velocity.x -= m_parameter.accelerate;
+		m_parameter.velocity.x -= m_parameter.accelerate * vec.x;
 	}
 	if (keyState.D)
 	{
-		m_parameter.velocity.x += m_parameter.accelerate;
+		m_parameter.velocity.x += m_parameter.accelerate * vec.x;
 	}
 
 	// 移動量の計算
@@ -81,12 +86,6 @@ void Player::Update(Keyboard::State& keyState, float timer)
 	{
 		m_parameter.velocity *= DECELERATION;
 	}
-	m_parameter.gravity += 0.015f;
-
-	m_parameter.position.y -= m_parameter.gravity;
-
-	// デバッグ用
-	if (m_parameter.position.y < -7.0f) m_parameter.position.y = 10.0f;
 }
 
 //--------------------------------------------------------//
@@ -114,6 +113,19 @@ void Player::Finalize()
 {
 	m_model.reset();
 	m_parameter.reset();
+}
+
+//--------------------------------------------------------//
+//重力処理                                                //
+//--------------------------------------------------------//
+void Player::UpdateGravity()
+{
+	m_parameter.gravity += 0.015f;
+
+	m_parameter.position.y -= m_parameter.gravity;
+
+	// デバッグ用
+	if (m_parameter.position.y < -7.0f) m_parameter.position.y = 10.0f;
 }
 
 //--------------------------------------------------------//

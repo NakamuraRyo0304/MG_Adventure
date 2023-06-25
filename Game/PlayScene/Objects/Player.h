@@ -68,6 +68,9 @@ public:
 	// 終了処理
 	void Finalize();
 
+	// 重力処理
+	void UpdateGravity();
+
 	// モデルのセット
 	void SetModel(std::unique_ptr<DirectX::Model> model) { m_model = std::move(model); }
 

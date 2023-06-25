@@ -10,9 +10,7 @@
 #include<iostream>    // string,cout,cinに使用
 #include<regex>       // 文字列の置換に使用
 #include<sstream>     // ファイルの保存に使用
-#include<ostream>     // ファイルの保存に使用
 #include<fstream>     // ファイルの保存に使用
-#include<Windows.h>   // WindowsAPIに使用
 #include<shobjidl.h>  // IFileSaveDialogに使用
 
 #include "MapLoad.h"
@@ -357,7 +355,7 @@ void MapLoad::CreateNewMap()
 			{
 				Object newObj;
 
-				if (y == 1)
+				if (y == 0)
 				{
 					newObj.id = BoxState::GrassBox;
 				}
