@@ -44,6 +44,9 @@ private:
 	// システム
 	std::weak_ptr<SystemManager> m_system;
 
+	// 死亡判定
+	bool is_deathFlag;
+
 	// プレイヤのサイズ
 	const float SIZE = 0.95f;
 	// 回転速度
@@ -52,6 +55,8 @@ private:
 	const float DECELERATION = 0.842f;
 	// プレイヤの浮遊
 	const float OFFSET_Y = 0.2f;
+	// 死亡ライン
+	const float DEATH_LINE = -10.0f;
 
 
 public:
@@ -93,6 +98,9 @@ public:
 
 	// サイズアクセサ
 	const float& GetSize() { return SIZE; }
+
+	// 死亡判定ゲッター
+	const bool& GetDeathFlag() { return is_deathFlag; }
 };
 
 #endif // PLAYER

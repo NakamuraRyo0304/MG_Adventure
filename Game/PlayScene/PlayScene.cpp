@@ -96,8 +96,8 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	{
 		ApplyPushBack(obj);
 	}
-
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
+	
+	if (m_player->GetDeathFlag())
 	{
 		GoNextScene(SCENE::PLAY);
 	}

@@ -21,7 +21,8 @@
 Player::Player(std::unique_ptr<Model> model):
 	m_model{std::move(model)},
 	m_parameter{},
-	m_system{}
+	m_system{},
+	is_deathFlag{}
 {
 }
 
@@ -46,6 +47,9 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 
 	// 加速度の設定
 	m_parameter.accelerate = 0.01f;
+
+	// 死亡判定の初期化
+	is_deathFlag = false;
 }
 
 //--------------------------------------------------------//
@@ -133,12 +137,17 @@ void Player::Finalize()
 //--------------------------------------------------------//
 void Player::UpdateGravity()
 {
+	// 重力の加算
 	m_parameter.gravity += 0.015f;
 
+	// 重力の反映
 	m_parameter.position.y -= m_parameter.gravity;
 
-	// デバッグ用
-	if (m_parameter.position.y < -7.0f) m_parameter.position.y = 10.0f;
+	// 死亡判定
+	if (m_parameter.position.y < DEATH_LINE)
+	{
+		is_deathFlag = true;
+	}
 }
 
 //--------------------------------------------------------//
