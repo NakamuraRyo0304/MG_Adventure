@@ -41,13 +41,12 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	// プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
+	// 回転量
+	DirectX::SimpleMath::Matrix m_rot;
 
 	// カメラの座標
 	DirectX::SimpleMath::Vector3 m_eye;	
 	DirectX::SimpleMath::Vector3 m_eyePos;	
-
-	// 注視点
-	DirectX::SimpleMath::Vector3 m_target;
 
 	// 視点移動モード
 	bool is_eagleMode;
@@ -75,9 +74,6 @@ public:
 	// カメラとオブジェクトの距離を求める
 	float CalculateDistanceToObject(const DirectX::SimpleMath::Vector3& objPos);
 
-	// カメラの向いている方向に座標を正規化する関数
-	DirectX::SimpleMath::Vector3 NormalizePosition();
-
 //--------------------------------------------------------//
 //アクセサ                                                //
 //--------------------------------------------------------//
@@ -91,10 +87,6 @@ public:
 	const DirectX::SimpleMath::Vector3& GetEyePosition() { return m_eyePos; }
 	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_eyePos = pos;}
 	
-	// カメラの注視点座標を取得する
-	const DirectX::SimpleMath::Vector3& GetTargetPosition() { return m_target; }
-	void SetTargetPosition(const DirectX::SimpleMath::Vector3& pos) { m_target = pos; }
-
 	// 射影行列の取得
 	const DirectX::SimpleMath::Matrix& CreateProjection(float width, float height,float angle = 45.0f);
 	const DirectX::SimpleMath::Matrix& GetProjection() { return m_proj; }
@@ -105,9 +97,9 @@ public:
 
 	// カメラの角度を取得
 	const DirectX::SimpleMath::Vector2& GetCameraAngle() { return m_angle; }
+	// 回転行列を取得
+	const DirectX::SimpleMath::Matrix& GetRotateMatrix() { return m_rot; }
 
-	// カメラの回転角度を取得
-	const SimpleMath::Quaternion& GetCameraRotation();
 };
 
 #endif // CAMERA

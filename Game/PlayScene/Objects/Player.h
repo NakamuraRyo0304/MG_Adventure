@@ -15,6 +15,7 @@ struct PlayerParameter
 {
 	DirectX::SimpleMath::Vector3 position;		// 座標
 	DirectX::SimpleMath::Vector3 velocity;		// 移動量
+	DirectX::SimpleMath::Quaternion rotate;		// 向いている方向
 	float gravity;								// 重力
 	float accelerate;							// 加速度
 	void reset()								// リセット関数
@@ -23,6 +24,7 @@ struct PlayerParameter
 		velocity = DirectX::SimpleMath::Vector3::Zero;
 		gravity = 0.0f;
 		accelerate = 0.0f;
+		rotate = SimpleMath::Quaternion::Identity;
 	}
 };
 
@@ -40,12 +42,14 @@ private:
 	std::unique_ptr<DirectX::Model> m_model;
 
 	// システム
-	std::shared_ptr<SystemManager> m_system;
+	std::weak_ptr<SystemManager> m_system;
 
-	// 摩擦係数
-	const float DECELERATION = 0.842f;
 	// プレイヤのサイズ
 	const float SIZE = 0.95f;
+	// 回転速度
+	const float ROT_SPEED = 0.05f;
+	// 摩擦係数
+	const float DECELERATION = 0.842f;
 	// プレイヤの浮遊
 	const float OFFSET_Y = 0.2f;
 

@@ -219,7 +219,7 @@ void PlayScene::CreateWindowDependentResources()
 	// プレイヤの作成
 	std::unique_ptr<Model> playerModel = ModelFactory::GetModel(
 		device,
-		L"Resources/Models/Character.cmo"
+		L"Resources/Models/CatClean.cmo"
 	);
 	// モデルデータを渡す(move必要)
 	m_player = std::make_unique<Player>(std::move(playerModel));

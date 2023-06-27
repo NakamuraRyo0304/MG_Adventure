@@ -31,13 +31,13 @@ Camera::Camera():
 	m_scrollWheelValue{},		// マウスホイールの回転量
 	m_tempScrollValue{},		// マウスホイールの回転量(不動時の蓄積用)
 	m_prevScrollWheelValue{},	// マウスホイールの回転量(前回の保存用)
-	m_target{},					// 注視点
 	m_view{},					// ビュー行列
 	m_proj{},					// プロジェクション行列
 	is_eagleMode{false},		// カメラの視点移動フラグマウスホイールを使用する
 	is_prevEagleMode{false},	// カメラの視点移動フラグマウスホイールを使用する(前回の保存用)
 	m_screenHeight{},			// 画面の高さ
-	m_screenWidth{}				// 画面の幅
+	m_screenWidth{},			// 画面の幅
+	m_rot{}						// 回転量
 {
 	// マウスの回転量をリセット
 	Mouse::Get().ResetScrollWheelValue();
@@ -165,13 +165,14 @@ void Camera::CalculateViewMatrix()
 
 	// 回転量を計算
 	SimpleMath::Matrix rt = rotY * rotX;
+	m_rot = rt;
 
 	// ポジション
 	SimpleMath::Vector3    eye(0.0f, 0.1f, 1.0f);
 
-	// カメラの傾き（目線の角度）:0.1.0で正位置
+	// カメラの傾き（目線の角度)
 	SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
-	SimpleMath::Vector3 target(m_target);
+	SimpleMath::Vector3 target(0.0f, 0.0f, 0.0f);
 
 	eye = SimpleMath::Vector3::Transform(eye, rt.Invert());
 	eye *= (DEFAULT_CAMERA_DISTANCE - static_cast<float>(m_scrollWheelValue / 100));
@@ -179,9 +180,10 @@ void Camera::CalculateViewMatrix()
 
 	// デフォルトの初期位置
 	m_eye = eye;
-	m_target = target;
 	m_view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
+
 }
+
 //--------------------------------------------------------//
 //カメラを揺らす関数                                      //
 //--------------------------------------------------------//
@@ -245,32 +247,6 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,flo
 
 	// プロジェクション行列を返却
 	return m_proj;
-}
-
-//--------------------------------------------------------//
-//カメラの回転を取得                                      //
-//--------------------------------------------------------//
-const SimpleMath::Quaternion& Camera::GetCameraRotation()
-{
-	SimpleMath::Matrix rotX = SimpleMath::Matrix::CreateRotationX(m_angle.x);
-	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_angle.y);
-
-	// 回転行列をクオータニオンに変換して返却
-	return SimpleMath::Quaternion::CreateFromRotationMatrix(rotY * rotX);
-}
-
-//--------------------------------------------------------//
-//座標を正規化する関数                                    //
-//--------------------------------------------------------//
-SimpleMath::Vector3 Camera::NormalizePosition()
-{
-	SimpleMath::Vector3 direction = m_target - m_eye;
-
-	direction.Normalize();
-
-	direction.y = 0.0f;
-
-	return direction;
 }
 
 //--------------------------------------------------------//
