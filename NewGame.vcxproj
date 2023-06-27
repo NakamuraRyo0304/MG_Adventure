@@ -203,6 +203,7 @@
     <ClInclude Include="Libraries\SystemDatas\Camera.h" />
     <ClInclude Include="Libraries\SystemDatas\DrawSprite.h" />
     <ClInclude Include="Libraries\SystemDatas\DrawString.h" />
+    <ClInclude Include="Libraries\SystemDatas\Fade.h" />
     <ClInclude Include="Libraries\SystemDatas\GridFloor.h" />
     <ClInclude Include="Libraries\SystemDatas\MapLoad.h" />
     <ClInclude Include="Libraries\SystemDatas\RayCast.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="Libraries\SystemDatas\Camera.cpp" />
     <ClCompile Include="Libraries\SystemDatas\DrawSprite.cpp" />
     <ClCompile Include="Libraries\SystemDatas\DrawString.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\Fade.cpp" />
     <ClCompile Include="Libraries\SystemDatas\GridFloor.cpp" />
     <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp" />
     <ClCompile Include="Libraries\SystemDatas\RayCast.cpp" />
