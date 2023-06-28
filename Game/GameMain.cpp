@@ -9,6 +9,8 @@
 
 #include "GameMain.h"
 
+#include "../Libraries/SystemDatas/Fade.h"
+
 // TODO: シーン２：シーンのインクルード
 #include "Game/TitleScene/TitleScene.h"
 #include "Game/SelectScene/SelectScene.h"
@@ -20,11 +22,12 @@
 //コンストラクタ                                          //
 //--------------------------------------------------------//
 GameMain::GameMain():
-	m_nextScene(SCENE::TITLE),
-	m_pNowScene(nullptr),
-	m_num(1),
-	m_screenWidth(),
-	m_screenHeight()
+	m_nextScene{ SCENE::SELECT },
+	m_nowScene{ nullptr },
+	m_num{1},
+	m_screenWidth{},
+	m_screenHeight{},
+	is_fadeOutFlag{}
 {
 }
 
@@ -44,6 +47,10 @@ void GameMain::Initialize()
 	// シーン作成
 	CreateScene();
 
+	// フェードイン
+	m_fade->SetFadeIn();
+	is_fadeOutFlag = false;
+
 	// ステージ番号
 	m_num = 1;
 }
@@ -53,6 +60,9 @@ void GameMain::Initialize()
 //--------------------------------------------------------//
 void GameMain::Update(const DX::StepTimer& timer)
 {
+	// フェードの更新
+	m_fade->Update(FADE_SPEED);
+
 	// 時間を更新する
 	float time = static_cast<float>(timer.GetTotalSeconds());
 
@@ -65,25 +75,28 @@ void GameMain::Update(const DX::StepTimer& timer)
 	auto mouseState = Mouse::Get().GetState();
 
 	m_mouseStateTracker->Update(mouseState);
-
+	
 	// 次のシーンが設定されていたらシーン切り替え
-	if (m_nextScene != SCENE::NONE)
+	if (m_nextScene != SCENE::NONE && m_fade->GetEndFlag())
 	{
 		// シーン削除
 		DeleteScene();
-		
-		// シーン作成
-		CreateScene();
+	
+		if (m_fade->GetEndFlag())
+		{
+			// シーン作成
+			CreateScene();
+		}
 	}
 
 	// 実態があれば更新
-	if (m_pNowScene != nullptr)
+	if (m_nowScene != nullptr)
 	{
 		// タイマーとキーボードの受け渡し
-		m_pNowScene->Update(time, keyState,mouseState);
-				
+		m_nowScene->Update(time, keyState, mouseState);
+
 		// NONE以外が入ったら処理
-		m_nextScene = m_pNowScene->GetNextScene();
+		m_nextScene = m_nowScene->GetNextScene();
 	}
 }
 
@@ -93,10 +106,13 @@ void GameMain::Update(const DX::StepTimer& timer)
 void GameMain::Draw()
 {
 	// 実態があれば描画
-	if (m_pNowScene != nullptr)
+	if (m_nowScene != nullptr)
 	{
-		m_pNowScene->Draw();
+		m_nowScene->Draw();
 	}
+
+	// フェードの描画
+	m_fade->Draw();
 }
 
 //--------------------------------------------------------//
@@ -114,51 +130,50 @@ void GameMain::Finalize()
 void GameMain::CreateScene()
 {
 	// シーンが作成されているときは処理しない
-	if (m_pNowScene != nullptr)
+	if (m_nowScene != nullptr)
 	{
 		return;
 	}	
-
+	
 	// TODO: シーン３：シーンはここから追加
 	switch (m_nextScene)
 	{
 		case SCENE::TITLE:		// タイトルシーン
 		{
-			m_pNowScene = std::make_unique<TitleScene>();
+			m_nowScene = std::make_unique<TitleScene>();
 			break;
 		}
 		case SCENE::SELECT:		// ステージセレクトシーン
 		{
-			m_pNowScene = std::make_unique<SelectScene>();
+			m_nowScene = std::make_unique<SelectScene>();
 			break;
 		}
 		case SCENE::PLAY:		// ゲームシーン
 		{
-			m_pNowScene = std::make_unique<PlayScene>();
+			m_nowScene = std::make_unique<PlayScene>();
+			m_nowScene->SetStageNum(m_num);
 			break;
 		}
 		case SCENE::RESULT:		// リザルトシーン
 		{
-			m_pNowScene = std::make_unique<ResultScene>();
+			m_nowScene = std::make_unique<ResultScene>();
 			break;
 		}
 		case SCENE::EDIT:		// ステージエディットシーン
 		{
-			m_pNowScene = std::make_unique<EditScene>();
+			m_nowScene = std::make_unique<EditScene>();
 			break;
 		}
 		default:
-			break;
-	}
-
-	// プレイシーンになったら受け渡し
-	if (m_nextScene == SCENE::PLAY)
-	{
-		m_pNowScene->SetStageNum(m_num);
+			break;	
 	}
 
 	// 作成したシーンを初期化
-	m_pNowScene->Initialize();
+	m_nowScene->Initialize();
+
+	// フェードイン
+	m_fade->Reset();
+	m_fade->SetFadeIn();
 
 	// 次へのシーン情報を初期化
 	m_nextScene = SCENE::NONE;
@@ -170,7 +185,7 @@ void GameMain::CreateScene()
 void GameMain::DeleteScene()
 {
 	// シーンが作成されていなければ処理しない
-	if (m_pNowScene == nullptr)
+	if (m_nowScene == nullptr)
 	{
 		return;
 	}
@@ -178,14 +193,14 @@ void GameMain::DeleteScene()
 	// 現在がセレクトシーンなら保持
 	if (m_nextScene == SCENE::PLAY)
 	{
-		m_num = m_pNowScene->GetStageNum();
+		m_num = m_nowScene->GetStageNum();
 	}
 
 	// 現シーンの終了処理
-	m_pNowScene->Finalize();
+	m_nowScene->Finalize();
 
 	// 現シーンの完全削除
-	m_pNowScene.reset();
+	m_nowScene.reset();
 }
 
 //--------------------------------------------------------//
@@ -194,6 +209,8 @@ void GameMain::DeleteScene()
 void GameMain::CreateWindowDependentResources(const int& screenWidth, const int& screenHeight)
 {
 	DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();
+	auto device = pDR->GetD3DDevice();
+	auto context = pDR->GetD3DDeviceContext();
 
 	// スクリーンサイズの設定
 	m_screenWidth = screenWidth;
@@ -207,4 +224,8 @@ void GameMain::CreateWindowDependentResources(const int& screenWidth, const int&
 	m_mouse = std::make_unique<Mouse>();
 	m_mouseStateTracker = std::make_unique<Mouse::ButtonStateTracker>();
 	m_mouse->SetWindow(pDR->GetHwnd());
+
+	// フェードオブジェクトの初期化
+	m_fade = std::make_unique<Fade>();
+	m_fade->Initialize(context, device);
 }

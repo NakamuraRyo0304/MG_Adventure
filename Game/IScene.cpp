@@ -14,7 +14,8 @@
 //--------------------------------------------------------//
 IScene::IScene():
 	m_systemManager{std::make_shared<SystemManager>()},
-	m_nextScene{SCENE::NONE}
+	m_nextScene{SCENE::NONE},
+	is_changeFlag{false}
 {
 	// ì¬‚³‚ê‚Ä‚¢‚È‚¯‚ê‚ÎƒVƒXƒeƒ€‚ğì¬
 	if (!m_systemManager)

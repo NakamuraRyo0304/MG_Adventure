@@ -92,6 +92,9 @@
     <Filter Include="Scenes\EditScene\Objects\UserInterface">
       <UniqueIdentifier>{1ac4315d-6ab2-417c-9d03-6a3aee9cdf73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Fade">
+      <UniqueIdentifier>{7c91f0be-f5e3-4cf5-b110-ada0c1ed334d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -166,7 +169,9 @@
     <ClInclude Include="Game\EditScene\Objects\UserInterface.h">
       <Filter>Scenes\EditScene\Objects\UserInterface</Filter>
     </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\Fade.h" />
+    <ClInclude Include="Libraries\SystemDatas\Fade.h">
+      <Filter>Common\Fade</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -235,7 +240,9 @@
     <ClCompile Include="Game\EditScene\Objects\UserInterface.cpp">
       <Filter>Scenes\EditScene\Objects\UserInterface</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\Fade.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\Fade.cpp">
+      <Filter>Common\Fade</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Icon\Icon.rc">
@@ -265,6 +272,9 @@
       <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\OpenFile.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\FadeBlind.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
@@ -301,11 +311,6 @@
     <None Include="Resources\Models\CatClean.cmo">
       <Filter>Resources\Models</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Resources\Models\CatClean.fbx">
-      <Filter>Resources\Models</Filter>
-    </MeshContentTask>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">

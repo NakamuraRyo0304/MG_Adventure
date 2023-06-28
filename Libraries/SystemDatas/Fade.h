@@ -12,6 +12,12 @@
 class Fade
 {
 private:
+	// スプライトバッチへのポインタ
+	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+
+	// 画像情報
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_SRV;
+
 	// フェードインを開始するフラグ
 	bool is_fadeInFlag;
 
@@ -32,8 +38,14 @@ public:
 	Fade();
 	~Fade();
 
+	// 初期化処理
+	void Initialize(ID3D11DeviceContext1* context,ID3D11Device1* device);
+
 	// 更新処理
 	void Update(float speed);
+
+	// 描画処理
+	void Draw();
 
 	// フェードインを開始する関数
 	void SetFadeIn();
@@ -41,8 +53,14 @@ public:
 	// フェードアウトを開始する関数
 	void SetFadeOut();
 
+	// 値のリセットをかける関数
+	void Reset();
+		
 	// フェード終了を判定する関数
 	const bool& GetEndFlag() { return is_endFlag; }
+
+	// フェードの数値の取得関数
+	const float& GetFadeNum() { return m_fadeNum; }
 };
 
 #endif // FADE
