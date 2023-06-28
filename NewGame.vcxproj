@@ -269,6 +269,7 @@
     <None Include="Resources\Models\Coin.cmo" />
     <None Include="Resources\Models\Eraser.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
+    <None Include="Resources\Models\ShineSky.cmo" />
     <None Include="Resources\Models\Switch.cmo" />
   </ItemGroup>
   <ItemGroup>

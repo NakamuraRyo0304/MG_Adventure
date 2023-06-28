@@ -31,6 +31,7 @@ PlayScene::PlayScene() :
 	m_grassModel{ nullptr },		// 草ブロックのモデル
 	m_coinModel{ nullptr },			// コインブロックのモデル
 	m_clowdModel{ nullptr },		// 雲ブロックのモデル
+	m_skyDomeModel{ nullptr },		// スカイドームモデル
 	m_coinCount{}
 {
 
@@ -155,6 +156,10 @@ void PlayScene::Draw()
 		}
 	}
 
+	// スカイドームの描画
+	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
+	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
+
 	DebugLog(view, proj);
 }
 
@@ -215,6 +220,28 @@ void PlayScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Clowd.cmo"
 	);
+	m_skyDomeModel = ModelFactory::GetModel(							// スカイドーム
+		device,
+		L"Resources/Models/ShineSky.cmo"
+	);
+	m_skyDomeModel->UpdateEffects([](IEffect* effect)
+		{
+			auto lights = dynamic_cast<IEffectLights*>(effect);
+			if (lights)
+			{
+				lights->SetLightEnabled(0, false);
+				lights->SetLightEnabled(1, false);
+				lights->SetLightEnabled(2, false);
+			}
+			// 自己発光する
+			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (basicEffect)
+			{
+				basicEffect->SetEmissiveColor(Colors::White);
+			}
+		}
+	);
+
 
 	// プレイヤの作成
 	std::unique_ptr<Model> playerModel = ModelFactory::GetModel(

@@ -229,7 +229,7 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,flo
 	float nearPlane = 0.1f;
 
 	// ƒJƒƒ‰‚©‚çˆê”Ô‰“‚¢“Š‰e–Ê
-	float farPlane = 100.0f;
+	float farPlane = 250.0f;
 	
 	// ƒJƒƒ‰‚ÌƒŒƒ“ƒY‚Ìì¬
 	SimpleMath::Matrix projection = 
