@@ -150,7 +150,7 @@ void Camera::DraggedDistance(int x, int y)
 	}
 
 	// カメラの角度をクランプ
-	m_angle.x = UserUtillity::Clamp(m_angle.x, 43.5f, 45.5f);
+	m_angle.x = UserUtillity::Clamp(m_angle.x, 44.0f, 45.5f);
 
 }
 
