@@ -166,6 +166,7 @@
     <ClInclude Include="Game\EditScene\Objects\UserInterface.h">
       <Filter>Scenes\EditScene\Objects\UserInterface</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\Fade.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -234,6 +235,7 @@
     <ClCompile Include="Game\EditScene\Objects\UserInterface.cpp">
       <Filter>Scenes\EditScene\Objects\UserInterface</Filter>
     </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\Fade.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Icon\Icon.rc">

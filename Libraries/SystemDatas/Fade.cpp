@@ -18,6 +18,7 @@ Fade::Fade():
 	is_fadeOutFlag{},
 	is_endFlag{}
 {
+	m_fadeNum = MAX_NUM;
 }
 
 //--------------------------------------------------------//
@@ -32,7 +33,29 @@ Fade::~Fade()
 //--------------------------------------------------------//
 void Fade::Update(float speed)
 {
-	speed;
+	// フェードが終わっていたら処理しない
+	if (is_endFlag) return;
+
+	// フェードイン
+	if (is_fadeInFlag)
+	{
+		m_fadeNum -= speed;
+		if (m_fadeNum <= MIN_NUM)
+		{
+			m_fadeNum = MIN_NUM;
+			is_endFlag = true;
+		}
+	}
+	// フェードアウト
+	if (is_fadeOutFlag)
+	{
+		m_fadeNum += speed;
+		if (m_fadeNum >= MAX_NUM)
+		{
+			m_fadeNum = MAX_NUM;
+			is_endFlag = true;
+		}
+	}
 }
 
 //--------------------------------------------------------//
@@ -40,6 +63,9 @@ void Fade::Update(float speed)
 //--------------------------------------------------------//
 void Fade::SetFadeIn()
 {
+	m_fadeNum = MAX_NUM;
+	is_fadeInFlag = true;
+	is_endFlag = false;
 }
 
 //--------------------------------------------------------//
@@ -47,4 +73,7 @@ void Fade::SetFadeIn()
 //--------------------------------------------------------//
 void Fade::SetFadeOut()
 {
+	m_fadeNum = MIN_NUM;
+	is_fadeOutFlag = true;
+	is_endFlag = false;
 }
