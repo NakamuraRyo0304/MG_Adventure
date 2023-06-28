@@ -9,8 +9,6 @@
 #ifndef PLAYER
 #define PLAYER
 
-#include "../../../Libraries/SystemDatas/Collider.h"
-
 struct PlayerParameter
 {
 	DirectX::SimpleMath::Vector3 position;		// ç¿ïW

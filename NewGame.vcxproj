@@ -253,6 +253,7 @@
     <Image Include="Resources\Textures\Camera.dds" />
     <Image Include="Resources\Textures\CameraMove.dds" />
     <Image Include="Resources\Textures\EraseBlock.dds" />
+    <Image Include="Resources\Textures\FadeBlind.dds" />
     <Image Include="Resources\Textures\OpenFile.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
   </ItemGroup>
@@ -269,9 +270,6 @@
     <None Include="Resources\Models\Eraser.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
     <None Include="Resources\Models\Switch.cmo" />
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Resources\Models\CatClean.fbx" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />

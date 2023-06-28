@@ -47,7 +47,6 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 
 	for (std::map<const wchar_t*, const wchar_t*>::const_iterator it = m_textures.begin(); it != m_textures.end(); ++it)
 	{
-
 		// ‰æ‘œ‚Ì“o˜^
 		CreateDDSTextureFromFile(
 			device,
@@ -79,7 +78,7 @@ void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos,
 		0.0f,									// ‰ñ“]
 		origin,									// ‰æ‘œ‚ÌŒ´“_
 		rate,									// Šg‘å—¦
-		SpriteEffects_None, 0.0f		// •`‰æƒŒƒCƒ„[
+		SpriteEffects_None, 0.0f				// •`‰æƒŒƒCƒ„[
 	);
 
 	m_spriteBatch->End();

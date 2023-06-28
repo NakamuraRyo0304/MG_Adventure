@@ -25,6 +25,9 @@ private:
 	// 次のシーンを指定する
 	SCENE m_nextScene;
 
+	// シーン切り替え判定フラグ
+	bool is_changeFlag;
+
 public:
 	IScene();
 
@@ -57,7 +60,11 @@ public:
 
 public:
 	// 遷移先のシーン設定
-	void GoNextScene(SCENE nextScene) {	m_nextScene = nextScene; }
+	void GoNextScene(SCENE nextScene)
+	{	
+		m_nextScene = nextScene;
+		is_changeFlag = true;
+	}
 
 	// ソフト終了
 	void ExitApp(){	PostQuitMessage(0);	}
@@ -67,6 +74,9 @@ public:
 
 	// システムマネージャをゲット
 	std::shared_ptr<SystemManager>& GetSystemManager() { return m_systemManager; }
+
+	// シーンフラグをゲット
+	const bool& GetChangeSceneFlag() { return is_changeFlag; }
 };
 
 #endif // ISCENE

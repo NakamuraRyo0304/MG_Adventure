@@ -11,6 +11,7 @@
 
  // 前方宣言
 class IScene;
+class Fade;
 
 // TODO: シーン１：シーンIDの追加
 enum class SCENE : int
@@ -46,7 +47,14 @@ private:
     SCENE m_nextScene;
 
 	// 現在処理するシーン
-    std::unique_ptr<IScene> m_pNowScene;
+    std::unique_ptr<IScene> m_nowScene;
+
+    // フェードオブジェクト
+    std::unique_ptr<Fade> m_fade;
+    // フェードの速度
+    const float FADE_SPEED = 4.0f;
+    // フェードアウトフラグ
+    bool is_fadeOutFlag;
 
     // ステージ番号を保存する
     int m_num;
