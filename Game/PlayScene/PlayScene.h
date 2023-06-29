@@ -32,10 +32,16 @@ private:
 	std::vector<Object> m_colObjList;
 
 	// モデル
-	std::unique_ptr<DirectX::Model> m_grassModel, m_coinModel,m_clowdModel;
+	std::unique_ptr<DirectX::Model> m_grassModel;
+	std::unique_ptr<DirectX::Model> m_coinModel;
+	std::unique_ptr<DirectX::Model> m_clowdModel;
+	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
 	// コインカウンタ
 	int m_coinCount;
+
+	// スカイドームの回転速度
+	const float SKY_ROT_SPEED = 0.02f;
 
 private:
 	// マップサイズ(Stage)

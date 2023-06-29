@@ -150,7 +150,7 @@ void Camera::DraggedDistance(int x, int y)
 	}
 
 	// カメラの角度をクランプ
-	m_angle.x = UserUtillity::Clamp(m_angle.x, 44.0f, 45.5f);
+	m_angle.x = UserUtillity::Clamp(m_angle.x, ANGLEX_MIN, ANGLEX_MAX);
 
 }
 
@@ -226,10 +226,10 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,flo
 	float aspectRatio = width / height;
 	
 	// カメラから一番近い投影面
-	float nearPlane = 0.1f;
+	float nearPlane = NEAR_PLANE;
 
 	// カメラから一番遠い投影面
-	float farPlane = 100.0f;
+	float farPlane = FAR_PLANE;
 	
 	// カメラのレンズの作成
 	SimpleMath::Matrix projection = 
