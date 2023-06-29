@@ -53,8 +53,6 @@ private:
     std::unique_ptr<Fade> m_fade;
     // フェードの速度
     const float FADE_SPEED = 4.0f;
-    // フェードアウトフラグ
-    bool is_fadeOutFlag;
 
     // ステージ番号を保存する
     int m_num;

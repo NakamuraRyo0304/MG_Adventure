@@ -27,8 +27,7 @@ GameMain::GameMain():
 	m_nowScene{ nullptr },
 	m_num{1},
 	m_screenWidth{},
-	m_screenHeight{},
-	is_fadeOutFlag{}
+	m_screenHeight{}
 {
 }
 
@@ -50,7 +49,6 @@ void GameMain::Initialize()
 
 	// フェードイン
 	m_fade->SetFadeIn();
-	is_fadeOutFlag = false;
 
 	// ステージ番号
 	m_num = 1;
@@ -68,17 +66,15 @@ void GameMain::Update(const DX::StepTimer& timer)
 	float time = static_cast<float>(timer.GetTotalSeconds());
 
 	// キー入力情報を取得する
-	auto keyState = Keyboard::Get().GetState();
-
-	m_keyboardStateTracker->Update(keyState);
+	auto kb = Keyboard::Get().GetState();
+	m_keyboardStateTracker->Update(kb);
 
 	// マウス入力情報を取得する
-	auto mouseState = Mouse::Get().GetState();
-
-	m_mouseStateTracker->Update(mouseState);
+	auto ms = Mouse::Get().GetState();
+	m_mouseStateTracker->Update(ms);
 
 	// エスケープでゲーム終了
-	if (keyState.Escape)
+	if (kb.Escape)
 	{
 		m_nowScene->ExitApp();
 	}
@@ -97,9 +93,9 @@ void GameMain::Update(const DX::StepTimer& timer)
 	if (m_nowScene != nullptr)
 	{
 		// シーンの更新処理
-		m_nowScene->Update(time, keyState, mouseState);
+		m_nowScene->Update(time, kb, ms);
 
-		// NONE以外が入ったら処理
+		// フェードが終わっていたらシーンを切り替える
 		if (m_fade->GetEndFlag())
 		{
 			m_nextScene = m_nowScene->GetNextScene();
@@ -141,10 +137,7 @@ void GameMain::Finalize()
 void GameMain::CreateScene()
 {
 	// シーンが作成されているときは処理しない
-	if (m_nowScene != nullptr)
-	{
-		return;
-	}	
+	if (m_nowScene != nullptr) return;
 	
 	// TODO: シーン３：シーンはここから追加
 	switch (m_nextScene)
