@@ -53,6 +53,9 @@ public:
 	// フェードアウトを開始する関数
 	void SetFadeOut();
 
+	// フェードアウトの値を返す
+	const float& GetMaxValue() { return MAX_NUM; }
+	
 	// 値のリセットをかける関数
 	void Reset();
 		
@@ -61,6 +64,7 @@ public:
 
 	// フェードの数値の取得関数
 	const float& GetFadeNum() { return m_fadeNum; }
+
 };
 
 #endif // FADE

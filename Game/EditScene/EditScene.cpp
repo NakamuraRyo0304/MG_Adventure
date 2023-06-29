@@ -145,15 +145,11 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		ChangeState(MapState::None);
 	}
 
-
 	// カメラモードじゃなければ編集できる
 	if (!m_userInterface->GetCameraFlag())
 	{
 		EditMap();
 	}
-
-	// ESCキーで終了
-	if (keyState.Escape) ExitApp();
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
@@ -234,8 +230,6 @@ void EditScene::Draw()
 	{
 		m_noneModel->Draw(context, states, world, view, projection);
 	}
-
-
 
 	// 画像の描画
 	m_userInterface->Render();

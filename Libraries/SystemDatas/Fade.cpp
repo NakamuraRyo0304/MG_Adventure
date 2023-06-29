@@ -13,10 +13,10 @@
 //コンストラクタ                                          //
 //--------------------------------------------------------//
 Fade::Fade():
-	m_fadeNum{},
-	is_fadeInFlag{},
-	is_fadeOutFlag{},
-	is_endFlag{}
+	m_fadeNum{},			// フェードカウンタ
+	is_fadeInFlag{},		// フェードインフラグ
+	is_fadeOutFlag{},		// フェードアウトフラグ
+	is_endFlag{}			// 終了判定フラグ
 {
 	m_fadeNum = MAX_NUM;
 }

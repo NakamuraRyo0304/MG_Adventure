@@ -60,23 +60,30 @@ public:
 
 public:
 	// 遷移先のシーン設定
-	void GoNextScene(SCENE nextScene)
+	inline void GoNextScene(SCENE nextScene)
 	{	
 		m_nextScene = nextScene;
 		is_changeFlag = true;
 	}
 
+	// フェード用遷移阻止関数
+	inline void StopNextScene()
+	{
+		m_nextScene = SCENE::NONE;
+		is_changeFlag = false;
+	}
+	
 	// ソフト終了
-	void ExitApp(){	PostQuitMessage(0);	}
+	inline void ExitApp(){	PostQuitMessage(0);	}
 
 	// 次のシーンをゲット
-	SCENE GetNextScene() { return m_nextScene; }
+	inline SCENE GetNextScene() { return m_nextScene; }
 
 	// システムマネージャをゲット
-	std::shared_ptr<SystemManager>& GetSystemManager() { return m_systemManager; }
+	inline std::shared_ptr<SystemManager>& GetSystemManager() { return m_systemManager; }
 
 	// シーンフラグをゲット
-	const bool& GetChangeSceneFlag() { return is_changeFlag; }
+	inline const bool& GetChangeSceneFlag() { return is_changeFlag; }
 };
 
 #endif // ISCENE

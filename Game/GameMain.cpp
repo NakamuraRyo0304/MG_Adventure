@@ -9,6 +9,7 @@
 
 #include "GameMain.h"
 
+// フェードオブジェクト
 #include "../Libraries/SystemDatas/Fade.h"
 
 // TODO: シーン２：シーンのインクルード
@@ -22,7 +23,7 @@
 //コンストラクタ                                          //
 //--------------------------------------------------------//
 GameMain::GameMain():
-	m_nextScene{ SCENE::SELECT },
+	m_nextScene{ SCENE::TITLE },
 	m_nowScene{ nullptr },
 	m_num{1},
 	m_screenWidth{},
@@ -68,35 +69,45 @@ void GameMain::Update(const DX::StepTimer& timer)
 
 	// キー入力情報を取得する
 	auto keyState = Keyboard::Get().GetState();
-	
+
 	m_keyboardStateTracker->Update(keyState);
 
 	// マウス入力情報を取得する
 	auto mouseState = Mouse::Get().GetState();
 
 	m_mouseStateTracker->Update(mouseState);
-	
+
+	// エスケープでゲーム終了
+	if (keyState.Escape)
+	{
+		m_nowScene->ExitApp();
+	}
+
 	// 次のシーンが設定されていたらシーン切り替え
 	if (m_nextScene != SCENE::NONE && m_fade->GetEndFlag())
 	{
 		// シーン削除
 		DeleteScene();
-	
-		if (m_fade->GetEndFlag())
-		{
-			// シーン作成
-			CreateScene();
-		}
+
+		// シーン作成
+		CreateScene();
 	}
 
-	// 実態があれば更新
+	// 実体があれば更新
 	if (m_nowScene != nullptr)
 	{
-		// タイマーとキーボードの受け渡し
+		// シーンの更新処理
 		m_nowScene->Update(time, keyState, mouseState);
 
 		// NONE以外が入ったら処理
-		m_nextScene = m_nowScene->GetNextScene();
+		if (m_fade->GetEndFlag())
+		{
+			m_nextScene = m_nowScene->GetNextScene();
+		}
+		else
+		{
+			m_nowScene->StopNextScene();
+		}
 	}
 }
 
@@ -185,10 +196,7 @@ void GameMain::CreateScene()
 void GameMain::DeleteScene()
 {
 	// シーンが作成されていなければ処理しない
-	if (m_nowScene == nullptr)
-	{
-		return;
-	}
+	if (!m_nowScene) return;
 
 	// 現在がセレクトシーンなら保持
 	if (m_nextScene == SCENE::PLAY)
@@ -197,10 +205,17 @@ void GameMain::DeleteScene()
 	}
 
 	// 現シーンの終了処理
-	m_nowScene->Finalize();
-
-	// 現シーンの完全削除
-	m_nowScene.reset();
+	if (m_fade->GetFadeNum() >= m_fade->GetMaxValue())
+	{
+		// 現シーンの完全削除
+		m_nowScene->Finalize();
+		m_nowScene.reset();
+	}
+	else // フェードアウト
+	{		
+		m_fade->Reset();
+		m_fade->SetFadeOut();
+	}
 }
 
 //--------------------------------------------------------//

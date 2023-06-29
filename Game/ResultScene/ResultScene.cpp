@@ -53,9 +53,6 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
-	// ESCキーで終了
-	if (keyState.Escape) ExitApp();
-
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{

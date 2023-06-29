@@ -82,6 +82,9 @@ public:
 	// カメラとオブジェクトの距離を求める
 	float CalculateDistanceToObject(const DirectX::SimpleMath::Vector3& objPos);
 
+	// マウスホイールの拡縮処理
+	void RollWheelToRate(DirectX::Mouse::State state);
+
 //--------------------------------------------------------//
 //アクセサ                                                //
 //--------------------------------------------------------//

@@ -103,9 +103,6 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		GoNextScene(SCENE::PLAY);
 	}
 
-	// ESCキーで終了
-	if (keyState.Escape) ExitApp();
-
 	// Enterキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Enter))
 	{
@@ -286,18 +283,18 @@ void PlayScene::DoBoxCollision()
 //--------------------------------------------------------//
 void PlayScene::ApplyPushBack(Object& obj)
 {
-	// 当っているオブジェクトが空気以外の場合は押し戻しを有効にする
+	// 当っているオブジェが空気の場合は処理しない
+	if (obj.id == MapLoad::BoxState::None)
+	{
+		is_boxCol.SetPushMode(false);
+		return;
+	}
+
+	// 空気以外の場合は押し戻しを有効にする
 	if (obj.id != MapLoad::BoxState::None)
 	{
 		is_boxCol.SetPushMode(true);
 	}
-	else
-	{
-		is_boxCol.SetPushMode(false);
-	}
-
-	// 当っているのが空気の場合は処理しない
-	if (obj.id == MapLoad::BoxState::None) return;
 
 	// スイッチを押しているとき対象ブロックを移動
 	if (obj.id == MapLoad::BoxState::SwitchBox)

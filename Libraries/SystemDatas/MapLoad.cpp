@@ -32,7 +32,6 @@ MapLoad::MapLoad() :
 MapLoad::~MapLoad()
 {
 	m_mapData.clear();
-	std::vector<Object>(m_mapData).swap(m_mapData);
 }
 
 
@@ -376,5 +375,4 @@ void MapLoad::CreateNewMap()
 	m_mapData = obj;
 
 	obj.clear();
-	std::vector<Object>(obj).swap(obj);
 }

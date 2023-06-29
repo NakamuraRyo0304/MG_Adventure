@@ -72,16 +72,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		m_stageNum--;
 	}
 	
-	auto clamp = [](int value, int min, int max)
-	{
-		if (min > value) return min;
-		if (max < value) return max;
-		return value;
-	};
-	m_stageNum = clamp(m_stageNum, 0, 3);
-
-	// ESCキーで終了
-	if (keyState.Escape) ExitApp();
+	m_stageNum = UserUtillity::Clamp(m_stageNum, 0, 3);
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
