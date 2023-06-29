@@ -22,6 +22,14 @@ public:
 	static const int MAX_SCROLL_VALUE;
 	static const int MIN_SCROLL_VALUE;
 
+	// ƒJƒƒ‰•\¦‹——£
+	const float NEAR_PLANE = 0.1f;
+	const float FAR_PLANE = 250.0f;
+
+	// ƒJƒƒ‰‰æŠpã‰ºŒÀ
+	const float ANGLEX_MIN = 44.0f;
+	const float ANGLEX_MAX = 45.5f;
+
 private:
 	// ‰ñ“]Šp
 	DirectX::SimpleMath::Vector2 m_angle;
