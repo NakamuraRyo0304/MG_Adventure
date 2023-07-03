@@ -21,6 +21,8 @@ private:
 	std::unique_ptr<DirectX::Model> m_titleLogoModel;
 	// タイトルステージモデル
 	std::unique_ptr<DirectX::Model> m_miniatureModel;
+	// スカイドーム
+	std::unique_ptr<DirectX::Model> m_skydomeModel;
 
 public:
 
