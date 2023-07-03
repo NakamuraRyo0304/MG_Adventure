@@ -14,7 +14,11 @@
 class TitleScene : public IScene
 {
 private:
+	// タイマー
+	float m_timer;
 
+	// タイトルロゴモデル
+	std::unique_ptr<DirectX::Model> m_titleLogo;
 public:
 
 	// コンストラクタ

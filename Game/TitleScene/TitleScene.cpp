@@ -13,7 +13,9 @@
  //コンストラクタ                                          //
  //--------------------------------------------------------//
 TitleScene::TitleScene():
-	IScene()
+	IScene(),
+	m_titleLogo{},
+	m_timer{0.0f}
 {
 }
 
@@ -22,6 +24,7 @@ TitleScene::TitleScene():
 //--------------------------------------------------------//
 TitleScene::~TitleScene()
 {
+	Finalize();
 }
 
 //--------------------------------------------------------//
@@ -32,7 +35,10 @@ void TitleScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetEagleMode(false);		// カメラ視点移動
+	// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetEagleMode(false);
+	// カメラ座標設定
+	GetSystemManager()->GetCamera()->SetEyePosition(SimpleMath::Vector3(0.0f, -20.0f, -20.0f));
 }
 
 //--------------------------------------------------------//
@@ -42,7 +48,7 @@ void TitleScene::Initialize()
 void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	Mouse::State& mouseState)
 {
-	elapsedTime;
+	m_timer = elapsedTime;
 
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
@@ -72,6 +78,39 @@ void TitleScene::Draw()
 		{ 0,0 }, 
 		L"TitleScene"
 	);
+
+	// 描画関連
+	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto& states = *GetSystemManager()->GetCommonStates();
+
+	// カメラ用行列
+	SimpleMath::Matrix world, view, proj;
+
+	// 移動、回転行列
+	SimpleMath::Matrix trans, rotate;
+
+	// ワールド行列
+	world = SimpleMath::Matrix::Identity;
+
+	// 回転行列
+	rotate = SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
+
+	// 移動行列
+	trans = SimpleMath::Matrix::CreateTranslation(0.0f, 2.0f, cosf(m_timer) * 0.5f);
+
+	world *= rotate * trans;
+
+	// ビュー行列
+	SimpleMath::Vector3    eye(0.0f, 0.1f, 8.0f);
+	SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
+	SimpleMath::Vector3 target(0.0f, 0.0f, 0.0f);
+	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
+
+	// プロジェクション行列
+	proj = GetSystemManager()->GetCamera()->GetProjection();
+
+	// モデル描画
+	m_titleLogo->Draw(context, states, world, view, proj);
 }
 
 //--------------------------------------------------------//
@@ -79,6 +118,7 @@ void TitleScene::Draw()
 //--------------------------------------------------------//
 void TitleScene::Finalize()
 {
+	ModelFactory::DeleteModel(m_titleLogo);
 }
 
 //--------------------------------------------------------//
@@ -103,4 +143,6 @@ void TitleScene::CreateWindowDependentResources()
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, 45.0f);
 
+	// モデルの作成
+	m_titleLogo = ModelFactory::GetModel(device, L"Resources/Models/TitleLogo.cmo");
 }

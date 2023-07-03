@@ -17,12 +17,12 @@
 //--------------------------------------------------------//
 EditScene::EditScene() :
 	IScene(),
+	m_timer{0.0f},
 	m_userInterface{},				// UI
 	m_sphere{},						// 球
 	m_cursorPos{0.0f,0.0f,0.0f},
 	m_mapObj{0},					// 格納配列
 	m_nowState{},					// 現在のブロックの種類
-	m_timer{},
 	m_map{},						// マップ
 	is_boxCol{},					// 立方体当たり判定
 	m_grassModel{ nullptr },		// モデル
