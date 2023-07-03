@@ -272,12 +272,10 @@
     <None Include="Resources\Models\ShineSky.cmo" />
     <None Include="Resources\Models\Switch.cmo" />
     <None Include="Resources\Models\TitleLogo.cmo" />
+    <None Include="Resources\Models\TitleStage.cmo" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Resources\Models\Coin.fbx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,7 +18,10 @@ private:
 	float m_timer;
 
 	// タイトルロゴモデル
-	std::unique_ptr<DirectX::Model> m_titleLogo;
+	std::unique_ptr<DirectX::Model> m_titleLogoModel;
+	// タイトルステージモデル
+	std::unique_ptr<DirectX::Model> m_miniatureModel;
+
 public:
 
 	// コンストラクタ

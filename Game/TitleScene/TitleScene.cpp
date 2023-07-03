@@ -14,8 +14,9 @@
  //--------------------------------------------------------//
 TitleScene::TitleScene():
 	IScene(),
-	m_titleLogo{},
-	m_timer{0.0f}
+	m_timer{0.0f},
+	m_titleLogoModel{},
+	m_miniatureModel{}
 {
 }
 
@@ -71,34 +72,34 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 //--------------------------------------------------------//
 void TitleScene::Draw()
 {
-	// デバッグフォント
-	GetSystemManager()->GetString()->ChangeFontColor(Colors::Black);
-	GetSystemManager()->GetString()->DrawFormatString(
-		GetSystemManager()->GetCommonStates().get(), 
-		{ 0,0 }, 
-		L"TitleScene"
-	);
-
 	// 描画関連
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	SimpleMath::Matrix world, view, proj;
+	SimpleMath::Matrix logoMat, stageMat, view, proj;
 
 	// 移動、回転行列
-	SimpleMath::Matrix trans, rotate;
+	SimpleMath::Matrix logoTrans, logoRot;
+	SimpleMath::Matrix stageTrans, stageRotX,stageRotY;
 
 	// ワールド行列
-	world = SimpleMath::Matrix::Identity;
+	logoMat = SimpleMath::Matrix::Identity;
+	stageMat = SimpleMath::Matrix::Identity;
 
 	// 回転行列
-	rotate = SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
+	logoRot = SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
+	stageRotX = SimpleMath::Matrix::CreateRotationX(0.3f);
+	stageRotY = SimpleMath::Matrix::CreateRotationY(m_timer) * 0.5f;
 
 	// 移動行列
-	trans = SimpleMath::Matrix::CreateTranslation(0.0f, 2.0f, cosf(m_timer) * 0.5f);
+	logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, 2.0f, cosf(m_timer) * 0.5f);
+	stageTrans = SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
 
-	world *= rotate * trans;
+	// ロゴ
+	logoMat *= logoRot * logoTrans;
+	// ステージ
+	stageMat *= stageRotY * stageRotX * stageTrans;
 
 	// ビュー行列
 	SimpleMath::Vector3    eye(0.0f, 0.1f, 8.0f);
@@ -110,7 +111,8 @@ void TitleScene::Draw()
 	proj = GetSystemManager()->GetCamera()->GetProjection();
 
 	// モデル描画
-	m_titleLogo->Draw(context, states, world, view, proj);
+	m_miniatureModel->Draw(context, states, stageMat, view, proj);	// ステージ
+	m_titleLogoModel->Draw(context, states, logoMat, view, proj);	// ロゴ
 }
 
 //--------------------------------------------------------//
@@ -118,7 +120,9 @@ void TitleScene::Draw()
 //--------------------------------------------------------//
 void TitleScene::Finalize()
 {
-	ModelFactory::DeleteModel(m_titleLogo);
+	// モデルの解放
+	ModelFactory::DeleteModel(m_titleLogoModel);
+	ModelFactory::DeleteModel(m_miniatureModel);
 }
 
 //--------------------------------------------------------//
@@ -144,5 +148,6 @@ void TitleScene::CreateWindowDependentResources()
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, 45.0f);
 
 	// モデルの作成
-	m_titleLogo = ModelFactory::GetModel(device, L"Resources/Models/TitleLogo.cmo");
+	m_titleLogoModel = ModelFactory::GetModel(device, L"Resources/Models/TitleLogo.cmo");
+	m_miniatureModel = ModelFactory::GetModel(device, L"Resources/Models/TitleStage.cmo");
 }

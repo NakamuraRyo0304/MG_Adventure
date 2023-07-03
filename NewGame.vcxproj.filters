@@ -317,15 +317,13 @@
     <None Include="Resources\Models\TitleLogo.cmo">
       <Filter>Resources\Models</Filter>
     </None>
+    <None Include="Resources\Models\TitleStage.cmo">
+      <Filter>Resources\Models</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
       <Filter>Assets</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Resources\Models\Coin.fbx">
-      <Filter>Resources\Models</Filter>
-    </MeshContentTask>
   </ItemGroup>
 </Project>
