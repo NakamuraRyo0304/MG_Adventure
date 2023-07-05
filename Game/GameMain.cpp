@@ -19,11 +19,12 @@
 #include "Game/PlayScene/PlayScene.h"
 #include "Game/ResultScene/ResultScene.h"
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
 GameMain::GameMain():
-	m_nextScene{ SCENE::TITLE },
+	m_nextScene{ SCENE::SELECT },
 	m_nowScene{ nullptr },
 	m_num{1},
 	m_screenWidth{},
@@ -31,17 +32,19 @@ GameMain::GameMain():
 {
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
 GameMain::~GameMain()
 {
 	Finalize();
 }
 
-//--------------------------------------------------------//
-//初期化                                                  //
-//--------------------------------------------------------//
+/// <summary>
+/// 初期化処理
+/// </summary>
+/// <param name="引数無し"></param>
 void GameMain::Initialize()
 {
 	// シーン作成
@@ -54,9 +57,10 @@ void GameMain::Initialize()
 	m_num = 1;
 }
 
-//--------------------------------------------------------//
-//更新処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 更新処理
+/// </summary>
+/// <param name="timer">時間を更新するタイマー</param>
 void GameMain::Update(const DX::StepTimer& timer)
 {
 	// フェードの更新
@@ -107,9 +111,10 @@ void GameMain::Update(const DX::StepTimer& timer)
 	}
 }
 
-//--------------------------------------------------------//
-//描画処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 描画処理
+/// </summary>
+/// <param name="引数無し"></param>
 void GameMain::Draw()
 {
 	// 実態があれば描画
@@ -122,18 +127,20 @@ void GameMain::Draw()
 	m_fade->Draw();
 }
 
-//--------------------------------------------------------//
-//終了処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 終了処理
+/// </summary>
+/// <param name="引数無し"></param>
 void GameMain::Finalize()
 {
 	// シーン削除
 	DeleteScene();
 }
 
-//--------------------------------------------------------//
-//シーン作成                                              //
-//--------------------------------------------------------//
+/// <summary>
+/// シーンの新規作成
+/// </summary>
+/// <param name="引数無し"></param>
 void GameMain::CreateScene()
 {
 	// シーンが作成されているときは処理しない
@@ -176,16 +183,15 @@ void GameMain::CreateScene()
 	m_nowScene->Initialize();
 
 	// フェードイン
-	m_fade->Reset();
 	m_fade->SetFadeIn();
 
 	// 次へのシーン情報を初期化
 	m_nextScene = SCENE::NONE;
 }
-
-//--------------------------------------------------------//
-//シーン削除                                              //
-//--------------------------------------------------------//
+/// <summary>
+/// シーンの削除
+/// </summary>
+/// <param name="引数無し"></param>
 void GameMain::DeleteScene()
 {
 	// シーンが作成されていなければ処理しない
@@ -205,15 +211,16 @@ void GameMain::DeleteScene()
 		m_nowScene.reset();
 	}
 	else // フェードアウト
-	{		
-		m_fade->Reset();
+	{
 		m_fade->SetFadeOut();
 	}
 }
 
-//--------------------------------------------------------//
-//画面サイズ依存の初期化                                  //
-//--------------------------------------------------------//
+/// <summary>
+/// 画面依存、デバイス依存の初期化
+/// </summary>
+/// <param name="screenWidth">画面横幅</param>
+/// <param name="screenHeight">画面縦幅</param>
 void GameMain::CreateWindowDependentResources(const int& screenWidth, const int& screenHeight)
 {
 	DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();

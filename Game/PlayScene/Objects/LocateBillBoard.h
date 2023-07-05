@@ -14,7 +14,21 @@ class LocateBillBoard
 private:
 
 public:
+	// コンストラクタデストラクタ
+	LocateBillBoard();
+	~LocateBillBoard();
 
+	// 作成関数
+	void Create(ID3D11Device1* device);
+
+	// ビルボード設定
+	void CreateBillboard(DirectX::SimpleMath::Vector3 eye, DirectX::SimpleMath::Vector3 target, DirectX::SimpleMath::Vector3 up);
+
+	// 更新関数
+	void Update(float elapsedTime);
+
+	// 描画関数
+	void Render(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 };
 
 #endif // LOCATEBILLBOARD

@@ -9,9 +9,10 @@
 
 #include "DrawSprite.h"
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
 DrawSprite::DrawSprite():
 	m_textures{},
 	m_SRV{},
@@ -19,27 +20,31 @@ DrawSprite::DrawSprite():
 {
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
 DrawSprite::~DrawSprite()
 {
 	m_textures.clear();
 	m_SRV.clear();
 }
 
-//--------------------------------------------------------//
-//スプライトバッチを作成                                  //
-//--------------------------------------------------------//
+/// <summary>
+/// スプライトバッチを作成
+/// </summary>
+/// <param name="context">ID3D11DeviceContext1ポインタ</param>
 void DrawSprite::MakeSpriteBatch(ID3D11DeviceContext1* context)
 {
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);
 }
 
-//--------------------------------------------------------//
-//画像を登録する関数                                      //
-//--------------------------------------------------------//
-// 第１引数：登録名 第２引数：画像のパス 第３引数：デバイス
+/// <summary>
+/// 画像を登録する関数
+/// </summary>
+/// <param name="key">登録キー(これを指定して呼び出す)</param>
+/// <param name="path">画像のパス(L"Resources/Textures/....dds)拡張子は「.dds」</param>
+/// <param name="device">ID3D11Deviceポインタ</param>
 void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11Device* device)
 {
 	// 画像の追加
@@ -57,10 +62,14 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 	}
 }
 
-//--------------------------------------------------------//
-//画像を描画する                                          //
-//--------------------------------------------------------//
-// 第１引数：キー 第２引数：表示座標 第３引数：色 第４引数：拡大率 第５引数：中心位置
+/// <summary>
+/// 描画処理
+/// </summary>
+/// <param name="key">キー</param>
+/// <param name="pos">表示座標</param>
+/// <param name="color">色</param>
+/// <param name="rate">拡大率</param>
+/// <param name="origin">中心位置</param>
 void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos, 
 	SimpleMath::Vector4 color, float rate, SimpleMath::Vector2 origin)
 {

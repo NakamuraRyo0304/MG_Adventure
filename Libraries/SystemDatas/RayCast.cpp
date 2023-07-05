@@ -9,9 +9,10 @@
 
 #include "RayCast.h"
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
 RayCast::RayCast():
 	m_screenSize{},				// スクリーンのサイズ
 	is_clickFlag{},				// クリック判定
@@ -20,17 +21,19 @@ RayCast::RayCast():
 
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
 RayCast::~RayCast()
 {
 
 }
 
-//--------------------------------------------------------//
-//更新処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 更新処理
+/// </summary>
+/// <param name="mouseState">マウスを渡す</param>
 void RayCast::Update(Mouse::State& mouseState)
 {
 	// クリックしてるときはTrueを返す
@@ -40,9 +43,16 @@ void RayCast::Update(Mouse::State& mouseState)
 	m_conScreenPos = ShotRayToWorld(mouseState.x, mouseState.y);
 }
 
-//--------------------------------------------------------//
-//マウスのスクリーン座標をワールド座標に変換する          //
-//--------------------------------------------------------//
+/// <summary>
+/// スクリーン座標をワールド座標に変換する
+/// </summary>
+/// <param name="mx">マウスX</param>
+/// <param name="my">マウスY</param>
+/// <param name="fz">任意の値</param>
+/// <param name="width">画面横幅</param>
+/// <param name="height">画面縦幅</param>
+/// <param name="view">ビュー行列</param>
+/// <param name="proj">射影行列</param>
 SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 	int width, int height, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
@@ -76,9 +86,11 @@ SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 	return value;
 }
 
-//--------------------------------------------------------//
-//レイを飛ばして面との交点を求める                        //
-//--------------------------------------------------------//
+/// <summary>
+/// レイを飛ばして地面との交点を取る
+/// </summary>
+/// <param name="mx">マウスX</param>
+/// <param name="my">マウスY</param>
 SimpleMath::Vector3 RayCast::ShotRayToWorld(int mx, int my)
 {
 	// 最近、最遠、レイを定義

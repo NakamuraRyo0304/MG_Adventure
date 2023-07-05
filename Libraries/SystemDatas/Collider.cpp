@@ -9,9 +9,10 @@
 
 #include "Collider.h"
 
-//--------------------------------------------------------//
-//コンストラクタボックス                                  //
-//--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
 Collider::BoxCollider::BoxCollider():
 	m_hitFace(),
 	is_hitFlag(),
@@ -22,10 +23,13 @@ Collider::BoxCollider::BoxCollider():
 	is_pushMode = false;
 }
 
-//--------------------------------------------------------//
-//ボックスの当たり判定                                    //
-//--------------------------------------------------------//
-// 第１引数：押し戻したいオブジェ 第２引数：ぶつかる対象オブジェ 第３、４引数：対応したサイズ
+/// <summary>
+/// 押し戻し処理
+/// </summary>
+/// <param name= moveObj">押し戻したいオブジェ</param>
+/// <param name= constObj">ぶつかる対象オブジェ</param>
+/// <param name= sz1">大きさ</param>
+/// <param name= sz2">大きさ</param>
 void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 			                        const SimpleMath::Vector3& constObj,
 			                        const SimpleMath::Vector3& sz1, 
@@ -71,7 +75,7 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 	// 当っている位置を格納する
 	if (maxRatio == leftRatio)	m_hitFace = HIT_FACE::LEFT;		// 当った位置：左
 	if (maxRatio == rightRatio)	m_hitFace = HIT_FACE::RIGHT;	// 当った位置：右
-	if (maxRatio == upRatio)		m_hitFace = HIT_FACE::UP;		// 当った位置：上
+	if (maxRatio == upRatio)	m_hitFace = HIT_FACE::UP;		// 当った位置：上
 	if (maxRatio == downRatio)	m_hitFace = HIT_FACE::DOWN;		// 当った位置：下
 	if (maxRatio == frontRatio)	m_hitFace = HIT_FACE::FRONT;	// 当った位置：前
 	if (maxRatio == backRatio)	m_hitFace = HIT_FACE::BACK;		// 当った位置：後
@@ -106,7 +110,13 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 	}
 }
 
-// 第１引数：オブジェ１ 第２引数：オブジェ２ 第３、４引数：対応したサイズ
+/// <summary>
+/// 当たっているかどうかのみ判定する(面が格納される)
+/// </summary>
+/// <param name= moveObj">押し戻したいオブジェ(動いているもの)</param>
+/// <param name= constObj">ぶつかる対象オブジェ(より強いもの)</param>
+/// <param name= sz1">大きさ</param>
+/// <param name= sz2">大きさ</param>
 void Collider::BoxCollider::PushBox(SimpleMath::Vector3& moveObj,
 	const SimpleMath::Vector3& constObj,
 	const SimpleMath::Vector3& sz1,
@@ -158,11 +168,10 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3& moveObj,
 	if (maxRatio == backRatio)	m_hitFace = HIT_FACE::BACK;		// 当った位置：後
 }
 
-
-
-//--------------------------------------------------------//
-//コンストラクタスフィア                                  //
-//--------------------------------------------------------//
+/// <summary>
+/// コンストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
 Collider::SphereCollider::SphereCollider() :
 	is_hitFlag{},
 	is_pushMode{}
@@ -171,10 +180,13 @@ Collider::SphereCollider::SphereCollider() :
 	is_pushMode = false;
 }
 
-//--------------------------------------------------------//
-//球同士の当たり判定                                      //
-//--------------------------------------------------------//
-// 第１引数：球１の座標 第２引数：球２の座標 第３、４引数：球の半径
+/// <summary>
+/// 球の当たり判定
+/// </summary>
+/// <param name="pos1">座標</param>
+/// <param name="pos2">座標</param>
+/// <param name="radius1">半径</param>
+/// <param name="raidus2">半径</param>
 void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1, 
 	                                      SimpleMath::Vector3& pos2, 
 	                                      float radius1, float radius2)
@@ -213,17 +225,21 @@ void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1,
 }
 
 
-//--------------------------------------------------------//
-//コンストラクタAABB		                              //
-//--------------------------------------------------------//
+/// <summary>
+/// コンストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
 Collider::AABBCollider::AABBCollider()
 {
-
 }
 
-//--------------------------------------------------------//
-//当っているかどうかを返す                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 
+/// </summary>
+/// <param name="pos1">座標</param>
+/// <param name="pos2">座標</param>
+/// <param name="sz1">大きさ</param>
+/// <param name="sz2">大きさ</param>
 // 第１、２引数：座標 第３、４引数：サイズ
 bool Collider::AABBCollider::HitAABB_2D(const SimpleMath::Vector2& pos1, 
 								     const SimpleMath::Vector2& pos2,

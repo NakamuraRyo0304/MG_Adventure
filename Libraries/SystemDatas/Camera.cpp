@@ -20,9 +20,10 @@ const float Camera::DEFAULT_CAMERA_SPEED = 0.05f;
 const int Camera::MAX_SCROLL_VALUE = 1640;
 const int Camera::MIN_SCROLL_VALUE = -1440;
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+/// <summary>
+/// コンストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
 Camera::Camera():
 	m_angle{},					// 回転角
 	m_eye{},					// カメラの座標
@@ -43,16 +44,18 @@ Camera::Camera():
 	Mouse::Get().ResetScrollWheelValue();
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
 Camera::~Camera()
 {
 }
 
-//--------------------------------------------------------//
-//更新処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 更新処理
+/// </summary>
+/// <param name="引数無し"></param>
 void Camera::Update()
 {
 	// マウスのインスタンス取得
@@ -77,9 +80,11 @@ void Camera::Update()
 
 }
 
-//--------------------------------------------------------//
-//マウスの移動距離の計算                                  //
-//--------------------------------------------------------//
+/// <summary>
+/// マウスのドラッグした距離を計算
+/// </summary>
+/// <param name="x">スクリーン座標X</param>
+/// <param name="y">スクリーン座標Y</param>
 void Camera::DraggedDistance(int x, int y)
 {
 	// 視点移動しなければ処理しない
@@ -106,9 +111,10 @@ void Camera::DraggedDistance(int x, int y)
 
 }
 
-//-------------------------------------------------------------------
-// ビュー行列の算出と、カメラ座標・注視点の取得
-//-------------------------------------------------------------------
+/// <summary>
+/// ビュー行列計算
+/// </summary>
+/// <param name="引数無し"></param>
 void Camera::CalculateViewMatrix()
 {
 	// ビュー行列を算出する
@@ -136,10 +142,12 @@ void Camera::CalculateViewMatrix()
 
 }
 
-//--------------------------------------------------------//
-//カメラを揺らす関数                                      //
-//--------------------------------------------------------//
-// 第１引数：持続時間(60FPS = 1sec) / 第２引数：揺れ幅 / 第３引数：対象のポジション
+/// <summary>
+/// カメラの振動処理
+/// </summary>
+/// <param name="duration">揺れ継続時間</param>
+/// <param name="tremor">揺れ幅</param>
+/// <param name="pos">対象オブジェのポジション</param>
 void Camera::ShakeCamera(float duration, float tremor, SimpleMath::Vector3* pos)
 {
 	int counta = 0;
@@ -161,10 +169,12 @@ void Camera::ShakeCamera(float duration, float tremor, SimpleMath::Vector3* pos)
 	}
 }
 
-//--------------------------------------------------------//
-//射影行列の作成と取得                                    //
-//--------------------------------------------------------//
-// 第１引数：画面横幅 / 第２引数：画面縦幅 / 第３引数：カメラ画角(float値を変換なしで渡す)
+/// <summary>
+/// 射影行列を作成
+/// </summary>
+/// <param name="width">画面横幅</param>
+/// <param name="height">画面縦幅</param>
+/// <param name="angle">カメラ画角</param>
 const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,float angle)
 {
 	// 画面サイズとアングルの保存
@@ -201,9 +211,10 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,flo
 	return m_proj;
 }
 
-//--------------------------------------------------------//
-//カメラとオブジェクトの距離を求める                      //
-//--------------------------------------------------------//
+/// <summary>
+/// カメラからの距離を計算
+/// </summary>
+/// <param name="objPos">対象オブジェのポジション</param>
 float Camera::CalculateDistanceToObject(const SimpleMath::Vector3& objPos)
 {
 	SimpleMath::Vector3 distanceVector = objPos - m_eye;
@@ -212,9 +223,10 @@ float Camera::CalculateDistanceToObject(const SimpleMath::Vector3& objPos)
 	return distance;
 }
 
-//--------------------------------------------------------//
-//カメラの拡大率変化                                      //
-//--------------------------------------------------------//
+/// <summary>
+/// カメラの拡大率の変更
+/// </summary>
+/// <param name="state">マウスのステート</param>
 void Camera::RollWheelToRate(Mouse::State state)
 {
 	// マウスホイールのスクロール値の差分を計算

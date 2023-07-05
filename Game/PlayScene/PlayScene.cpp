@@ -13,6 +13,9 @@
 // コライダークラス
 #include "../../Libraries/SystemDatas/Collider.h"
 
+// シェーダー
+#include "Objects/LocateBillBoard.h"
+
 // プレイヤクラス
 #include "Objects/Player.h"
 
@@ -60,10 +63,8 @@ void PlayScene::Initialize()
 	LoadMap(GetStageNum());
 
 	// プレイヤの初期化
-	std::shared_ptr<SystemManager> shareSystem = std::make_shared<SystemManager>();
-
-	m_player->Initialize(shareSystem);
-	m_player->SetPosition(SimpleMath::Vector3{ 0.0f,5.0f,0.0f });
+	m_player->Initialize(std::make_shared<SystemManager>());
+	m_player->SetPosition(SimpleMath::Vector3{ 0.0f,20.0f,0.0f });
 
 	// 判定の初期化
 	m_colObjList.clear();
@@ -87,6 +88,16 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
+	// シェーダーの更新
+	m_locateBillBoard->Update(elapsedTime);
+
+	// コインをすべて獲得でリザルト
+	if (m_coinCount == m_maxCoins)
+	{
+		GoNextScene(SCENE::RESULT);
+		return;
+	}
+
 	// プレイヤの更新
 	m_player->Update(keyState, elapsedTime);
 
@@ -103,12 +114,6 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_player->GetDeathFlag())
 	{
 		GoNextScene(SCENE::PLAY);
-	}
-
-	// コインをすべて獲得でリザルト
-	if (m_coinCount == m_maxCoins)
-	{
-		GoNextScene(SCENE::RESULT);
 	}
 }
 
@@ -136,6 +141,15 @@ void PlayScene::Draw()
 	// プレイヤの描画
 	m_player->Render(context, states, view, proj);
 
+	// シェーダー描画
+	m_locateBillBoard->CreateBillboard(
+		SimpleMath::Vector3(0.0f, COMMON_LOW + 1.0f, 0.0f),
+		SimpleMath::Vector3(0.0f, COMMON_LOW + 1.0f, 0.0f),
+		SimpleMath::Vector3::Up
+	);
+
+	m_locateBillBoard->Render(view, proj);
+
 	// 回転行列
 	SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(m_timer);
 
@@ -150,6 +164,10 @@ void PlayScene::Draw()
 			m_grassModel->Draw(context, states, boxMat, view, proj);
 		}
 		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
+		{
+			m_coinModel->Draw(context, states, rotateY * boxMat, view, proj);
+		}
+		if (m_mapObj[i].id == MapLoad::BoxState::SwitchBox)
 		{
 			m_coinModel->Draw(context, states, rotateY * boxMat, view, proj);
 		}
@@ -217,7 +235,7 @@ void PlayScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Clowd.cmo"
 	);
-	m_skyDomeModel = ModelFactory::GetModel(							// スカイドーム
+	m_skyDomeModel = ModelFactory::GetModel(					// スカイドーム
 		device,
 		L"Resources/Models/ShineSky.cmo"
 	);
@@ -248,6 +266,9 @@ void PlayScene::CreateWindowDependentResources()
 	// モデルデータを渡す(move必要)
 	m_player = std::make_unique<Player>(std::move(playerModel));
 
+	// 位置情報のシェーダーの作成
+	m_locateBillBoard = std::make_unique<LocateBillBoard>();
+	m_locateBillBoard->Create(device);
 }
 
 //--------------------------------------------------------//

@@ -13,19 +13,24 @@
 
 namespace UserUtillity
 {
-	//--------------------------------------------------------//
-	//線形補完                                                //
-	//--------------------------------------------------------//
-    // 第１引数：開始値 第２引数：終了値 第３引数：時間
+	/// <summary>
+	/// 線形補完する関数
+	/// </summary>
+	/// <param name="a">開始値</param>
+	/// <param name="b">終了値</param>
+	/// <param name="t">かかる時間</param>
 	template<typename T>
 	inline T Lerp(T a, T b, T t)
 	{
 		return a + t * (b - a);
 	}
 
-	//--------------------------------------------------------//
-	//クランプ処理                                            //
-	//--------------------------------------------------------//
+	/// <summary>
+	/// クランプ関数
+	/// </summary>
+	/// <param name="v">対象値</param>
+	/// <param name="min">最小値</param>
+	/// <param name="max">最大値</param>
 	// 第１引数：対象値 第２引数：最小値 第３引数：最大値
 	template<typename T>
 	inline T Clamp(T v, T min, T max)
@@ -35,10 +40,12 @@ namespace UserUtillity
 		return v;						// その他
 	}
 
-	//--------------------------------------------------------//
-	//円の中に点があるか判定する                              //
-	//--------------------------------------------------------//
-	// 第１引数：円の中心 第２引数：円の半径 第３引数：判定したい点の位置
+	/// <summary>
+	/// 指定した円の中に点があるかを判定する関数
+	/// </summary>
+	/// <param name="center">円の中心</param>
+	/// <param name="radius">円の半径</param>
+	/// <param name="value">判定したい点の位置</param>
 	template<typename T>
 	inline bool CheckPointInCircle(DirectX::SimpleMath::Vector2 center, T radius, DirectX::SimpleMath::Vector2 value)
 	{
@@ -48,10 +55,12 @@ namespace UserUtillity
 		return distance <= radius;
 	}
 
-	//--------------------------------------------------------//
-	//球の中に点があるか判定する                              //
-	//--------------------------------------------------------//
-	// 第１引数：球の中心 第２引数：球の半径 第３引数：判定したい点の位置
+	/// <summary>
+	/// 指定した球の中に点があるかを判定する関数
+	/// </summary>
+	/// <param name="center">球の中心</param>
+	/// <param name="radius">球の半径</param>
+	/// <param name="value">判定したい点の位置</param>
 	template<typename T>
 	inline bool CheckPointInSphere(DirectX::SimpleMath::Vector3 center, T radius, DirectX::SimpleMath::Vector3 value)
 	{

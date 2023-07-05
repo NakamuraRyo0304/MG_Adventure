@@ -15,9 +15,10 @@
 
 #include "MapLoad.h"
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
 MapLoad::MapLoad() :
 	m_mapData{},
     is_saveFileOpenFlag{false},
@@ -26,18 +27,20 @@ MapLoad::MapLoad() :
 {
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
 MapLoad::~MapLoad()
 {
 	m_mapData.clear();
 }
 
 
- //--------------------------------------------------------//
- //マップの読み込み                                        //
- //--------------------------------------------------------//
+/// <summary>
+/// マップの読み込み
+/// </summary>
+/// <param name="filename">ファイルパスを指定(L"...csv")拡張子は「.csv」</param>
 void MapLoad::LoadMap(std::wstring filename)
 {
 	m_filename = filename;
@@ -93,9 +96,10 @@ void MapLoad::LoadMap(std::wstring filename)
 	ifs.close();
 }
 
-//--------------------------------------------------------//
-//ファイルを書きだす関数                                  //
-//--------------------------------------------------------//
+/// <summary>
+/// ファイルを書きだす関数
+/// </summary>
+/// <param name="obj">書き出すオブジェ配列</param>
 void MapLoad::WriteMap(std::vector<Object> obj)
 {
 	// ファイルパスを指定
@@ -118,17 +122,19 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 	ofs.close();
 }
 
-//--------------------------------------------------------//
-//メモリの解放                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// メモリ解放
+/// </summary>
+/// <param name="引数無し"></param>
 void MapLoad::ReleaseMemory()
 {
 	std::vector<Object>().swap(m_mapData);
 }
 
-//--------------------------------------------------------//
-//ファイルパスをセーブする関数                            //
-//--------------------------------------------------------//
+/// <summary>
+/// パスを取得し、保存する関数
+/// </summary>
+/// <param name="filePath">ファイルパス</param>
 // private
 bool MapLoad::SaveMapPath(std::wstring& filePath)
 {
@@ -220,9 +226,10 @@ bool MapLoad::SaveMapPath(std::wstring& filePath)
 	return false;
 }
 
-//--------------------------------------------------------//
-//ファイルを読み込む                                      //
-//--------------------------------------------------------//
+/// <summary>
+/// ファイルを読み込む
+/// </summary>
+/// <param name="引数無し"></param>
 // private
 bool MapLoad::LoadMapPath()
 {
@@ -316,9 +323,11 @@ bool MapLoad::LoadMapPath()
 	return false;
 }
 
-//--------------------------------------------------------//
-//拡張子がないときのみ処理する                            //
-//--------------------------------------------------------//
+/// <summary>
+/// 拡張子自動付加関数
+/// </summary>
+/// <param name="filePath">ファイルパス</param>
+/// <param name="extension">追加したい文字(拡張子)</param>
 // private
 std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::wstring& extension)
 {
@@ -336,9 +345,10 @@ std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::
 	return result;
 }
 
-//--------------------------------------------------------//
-//新しくマップを作る                                      //
-//--------------------------------------------------------//
+/// <summary>
+/// マップ新規作成(更地)
+/// </summary>
+/// <param name="引数無し"></param>
 void MapLoad::CreateNewMap()
 {
 	std::vector<Object> obj;

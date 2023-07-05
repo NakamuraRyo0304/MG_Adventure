@@ -13,24 +13,28 @@
 
 #include "DrawString.h"
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
 DrawString::DrawString():
 	m_fontColor{Colors::Black}
 {
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
 DrawString::~DrawString()
 {
 }
 
-//--------------------------------------------------------//
-//初期化                                                  //
-//--------------------------------------------------------//
+/// <summary>
+/// 初期設定
+/// </summary>
+/// <param name="device">ID3D11Device1ポインタ</param>
+/// <param name="context">ID3D11DeviceContext1ポインタ</param>
 void DrawString::CreateString(ID3D11Device1* device, ID3D11DeviceContext1* context)
 {
 	// デバッグ表示
@@ -38,9 +42,12 @@ void DrawString::CreateString(ID3D11Device1* device, ID3D11DeviceContext1* conte
 	m_spriteFont = std::make_unique<SpriteFont>(device, L"Resources/Fonts/SegoeUI_18.spritefont");
 }
 
-//--------------------------------------------------------//
-//文字の描画関数                                          //
-//--------------------------------------------------------//
+/// <summary>
+/// 文字の描画
+/// </summary>
+/// <param name="common">コモンステート</param>
+/// <param name="pos">描画したい座標</param>
+/// <param name="str">描画したい文字列</param>
 void DrawString::DrawFormatString(CommonStates* common,
 								  SimpleMath::Vector2 pos, const wchar_t* str)
 	                              noexcept(false)
@@ -52,9 +59,10 @@ void DrawString::DrawFormatString(CommonStates* common,
 	m_spriteBatch->End();
 }
 
-//--------------------------------------------------------//
-//文字の色を変更                                          //
-//--------------------------------------------------------//
+/// <summary>
+/// 文字色変更
+/// </summary>
+/// <param name="font_color">変更したい色</param>
 void DrawString::ChangeFontColor(XMVECTORF32 font_color)
 {
 	m_fontColor = font_color;
