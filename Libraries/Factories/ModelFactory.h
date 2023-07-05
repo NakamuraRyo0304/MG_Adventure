@@ -9,13 +9,12 @@
 #ifndef MODELFACTORY
 #define MODELFACTORY
 
-#include "../../Game/GameMain.h"
+//#include "../../Game/GameMain.h"
 
 class ModelFactory
 {
-private:
-
 public:
+	ModelFactory();
 	~ModelFactory();
 
 	// モデルの作成をするファクトリー

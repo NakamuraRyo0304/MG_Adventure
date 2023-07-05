@@ -82,7 +82,7 @@ void TitleScene::Draw()
 	// 移動、回転行列
 	SimpleMath::Matrix logoTrans, logoRot;
 	SimpleMath::Matrix stageTrans, stageRotX,stageRotY;
-	SimpleMath::Matrix skyRotY;
+	SimpleMath::Matrix skyRotX;
 
 	// ワールド行列
 	logoMat = SimpleMath::Matrix::Identity;
@@ -92,8 +92,8 @@ void TitleScene::Draw()
 	// 回転行列
 	logoRot = SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
 	stageRotX = SimpleMath::Matrix::CreateRotationX(0.3f);
-	stageRotY = SimpleMath::Matrix::CreateRotationY(m_timer) * 0.5f;
-	skyRotY = SimpleMath::Matrix::CreateRotationX(m_timer) * 0.2f;
+	stageRotY = SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f);
+	skyRotX = SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
 
 	// 移動行列
 	logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, 2.0f, cosf(m_timer) * 0.5f);
@@ -104,7 +104,7 @@ void TitleScene::Draw()
 	// ステージ
 	stageMat *= stageRotY * stageRotX * stageTrans;
 	// スカイドーム
-	skyMat *= skyRotY;
+	skyMat *= skyRotX;
 
 	// ビュー行列
 	SimpleMath::Vector3    eye(0.0f, 0.1f, 8.0f);
@@ -118,7 +118,7 @@ void TitleScene::Draw()
 	// モデル描画
 	m_miniatureModel->Draw(context, states, stageMat, view, proj);	// ステージ
 	m_titleLogoModel->Draw(context, states, logoMat, view, proj);	// ロゴ
-	m_skydomeModel->Draw(context, states, skyMat, view, proj);  	// スカイドーム
+	m_skyDomeModel->Draw(context, states, skyMat, view, proj);  	// スカイドーム
 }
 
 //--------------------------------------------------------//
@@ -129,7 +129,7 @@ void TitleScene::Finalize()
 	// モデルの解放
 	ModelFactory::DeleteModel(m_titleLogoModel);
 	ModelFactory::DeleteModel(m_miniatureModel);
-	ModelFactory::DeleteModel(m_skydomeModel);
+	ModelFactory::DeleteModel(m_skyDomeModel);
 }
 
 //--------------------------------------------------------//
@@ -157,5 +157,22 @@ void TitleScene::CreateWindowDependentResources()
 	// モデルの作成
 	m_titleLogoModel = ModelFactory::GetModel(device, L"Resources/Models/TitleLogo.cmo");
 	m_miniatureModel = ModelFactory::GetModel(device, L"Resources/Models/TitleStage.cmo");
-	m_skydomeModel   = ModelFactory::GetModel(device, L"Resources/Models/ShineSky.cmo");
+	m_skyDomeModel   = ModelFactory::GetModel(device, L"Resources/Models/ShineSky.cmo");
+	m_skyDomeModel->UpdateEffects([](IEffect* effect)
+		{
+			auto lights = dynamic_cast<IEffectLights*>(effect);
+			if (lights)
+			{
+				lights->SetLightEnabled(0, false);
+				lights->SetLightEnabled(1, true);
+				lights->SetLightEnabled(2, false);
+			}
+			// 自己発光する
+			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (basicEffect)
+			{
+				basicEffect->SetEmissiveColor(Colors::White);
+			}
+		}
+	);
 }

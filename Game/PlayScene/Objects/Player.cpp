@@ -32,6 +32,7 @@ Player::Player(std::unique_ptr<Model> model):
 Player::~Player()
 {
 	Finalize();
+	m_system.reset();
 }
 
 //--------------------------------------------------------//

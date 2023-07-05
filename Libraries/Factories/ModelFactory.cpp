@@ -10,11 +10,17 @@
 #include "ModelFactory.h"
 
 //--------------------------------------------------------//
+//コンストラクタ                                          //
+//--------------------------------------------------------//
+ModelFactory::ModelFactory()
+{
+}
+
+//--------------------------------------------------------//
 //デストラクタ                                            //
 //--------------------------------------------------------//
 ModelFactory::~ModelFactory()
 {
-	DeleteModel();
 }
 
 //--------------------------------------------------------//
@@ -27,7 +33,7 @@ std::unique_ptr<DX11::Model> ModelFactory::GetModel(ID3D11Device1* device, const
 	std::unique_ptr<EffectFactory> fx =
 		std::make_unique<EffectFactory>(device);
 
-	// ディレクトリの設定
+	// ディレクトリの設定 (ここにモデルがあるパスを設定)
 	fx->SetDirectory(L"Resources/Models");
 
 	// モデルデータの読み込み
@@ -46,7 +52,7 @@ std::unique_ptr<DX11::Model> ModelFactory::GetModel(ID3D11Device1* device, const
 //--------------------------------------------------------//
 void ModelFactory::DeleteModel()
 {
-	// 空の引数を渡す
+	// 空の引数を渡す(例外スロー防止用オーバーロード)
 	std::unique_ptr<Model> nullModel = nullptr;
 	DeleteModel(nullModel);
 }

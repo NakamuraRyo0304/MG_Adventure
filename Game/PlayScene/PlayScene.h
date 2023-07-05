@@ -39,6 +39,7 @@ private:
 
 	// コインカウンタ
 	int m_coinCount;
+	int m_maxCoins;
 
 	// スカイドームの回転速度
 	const float SKY_ROT_SPEED = 0.02f;

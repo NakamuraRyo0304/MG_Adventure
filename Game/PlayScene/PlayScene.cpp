@@ -32,7 +32,8 @@ PlayScene::PlayScene() :
 	m_coinModel{ nullptr },			// コインブロックのモデル
 	m_clowdModel{ nullptr },		// 雲ブロックのモデル
 	m_skyDomeModel{ nullptr },		// スカイドームモデル
-	m_coinCount{}
+	m_coinCount{0},					// 獲得コイン
+	m_maxCoins{}					// 最大コイン
 {
 
 }
@@ -98,13 +99,14 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		ApplyPushBack(obj);
 	}
 	
+	// 落下したらリスタート（仮）
 	if (m_player->GetDeathFlag())
 	{
 		GoNextScene(SCENE::PLAY);
 	}
 
-	// Enterキーでシーン切り替え
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Enter))
+	// コインをすべて獲得でリザルト
+	if (m_coinCount == m_maxCoins)
 	{
 		GoNextScene(SCENE::RESULT);
 	}
@@ -170,13 +172,11 @@ void PlayScene::Finalize()
 
 	// マップの解放
 	m_mapObj.clear();
-	std::vector<Object>(m_mapObj).swap(m_mapObj);
 
 	// 判定用配列を解放
 	m_colObjList.clear();
-	std::vector<Object>(m_colObjList).swap(m_colObjList);
 
-	// モデルのリリース
+	// モデルの解放
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_clowdModel);
@@ -265,8 +265,8 @@ void PlayScene::DoBoxCollision()
 		is_boxCol.PushBox(
 			m_player->GetPosition(),								// プレイヤ座標
 			obj.position,											// ブロック座標
-			SimpleMath::Vector3{ m_player->GetSize() },	// プレイヤサイズ
-			SimpleMath::Vector3{ COMMON_SIZE }				// ブロックサイズ
+			SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
+			SimpleMath::Vector3{ COMMON_SIZE }						// ブロックサイズ
 		);
 
 		// 当たっていたら処理する
@@ -442,5 +442,11 @@ void PlayScene::LoadMap(int num)
 		m_mapObj[i].position.x -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
 		m_mapObj[i].position.y += static_cast<float>(COMMON_LOW);
 		m_mapObj[i].position.z -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+
+		// コインの枚数のカウント
+		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
+		{
+			m_maxCoins++;
+		}
 	}
 }

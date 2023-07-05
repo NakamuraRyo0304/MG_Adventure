@@ -22,7 +22,7 @@ private:
 	// タイトルステージモデル
 	std::unique_ptr<DirectX::Model> m_miniatureModel;
 	// スカイドーム
-	std::unique_ptr<DirectX::Model> m_skydomeModel;
+	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
 public:
 
