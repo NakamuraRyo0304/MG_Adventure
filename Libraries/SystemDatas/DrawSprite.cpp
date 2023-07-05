@@ -13,6 +13,7 @@
  /// コンストラクタ
  /// </summary>
  /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 DrawSprite::DrawSprite():
 	m_textures{},
 	m_SRV{},
@@ -24,6 +25,7 @@ DrawSprite::DrawSprite():
 /// デストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 DrawSprite::~DrawSprite()
 {
 	m_textures.clear();
@@ -34,6 +36,7 @@ DrawSprite::~DrawSprite()
 /// スプライトバッチを作成
 /// </summary>
 /// <param name="context">ID3D11DeviceContext1ポインタ</param>
+/// <returns>なし</returns>
 void DrawSprite::MakeSpriteBatch(ID3D11DeviceContext1* context)
 {
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);
@@ -45,6 +48,7 @@ void DrawSprite::MakeSpriteBatch(ID3D11DeviceContext1* context)
 /// <param name="key">登録キー(これを指定して呼び出す)</param>
 /// <param name="path">画像のパス(L"Resources/Textures/....dds)拡張子は「.dds」</param>
 /// <param name="device">ID3D11Deviceポインタ</param>
+/// <returns>なし</returns>
 void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11Device* device)
 {
 	// 画像の追加
@@ -70,6 +74,7 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 /// <param name="color">色</param>
 /// <param name="rate">拡大率</param>
 /// <param name="origin">中心位置</param>
+/// <returns>なし</returns>
 void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos, 
 	SimpleMath::Vector4 color, float rate, SimpleMath::Vector2 origin)
 {

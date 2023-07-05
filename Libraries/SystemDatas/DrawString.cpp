@@ -17,6 +17,7 @@
  /// コンストラクタ
  /// </summary>
  /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 DrawString::DrawString():
 	m_fontColor{Colors::Black}
 {
@@ -26,6 +27,7 @@ DrawString::DrawString():
 /// デストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 DrawString::~DrawString()
 {
 }
@@ -35,6 +37,7 @@ DrawString::~DrawString()
 /// </summary>
 /// <param name="device">ID3D11Device1ポインタ</param>
 /// <param name="context">ID3D11DeviceContext1ポインタ</param>
+/// <returns>なし</returns>
 void DrawString::CreateString(ID3D11Device1* device, ID3D11DeviceContext1* context)
 {
 	// デバッグ表示
@@ -48,6 +51,7 @@ void DrawString::CreateString(ID3D11Device1* device, ID3D11DeviceContext1* conte
 /// <param name="common">コモンステート</param>
 /// <param name="pos">描画したい座標</param>
 /// <param name="str">描画したい文字列</param>
+/// <returns>なし</returns>
 void DrawString::DrawFormatString(CommonStates* common,
 								  SimpleMath::Vector2 pos, const wchar_t* str)
 	                              noexcept(false)
@@ -63,6 +67,7 @@ void DrawString::DrawFormatString(CommonStates* common,
 /// 文字色変更
 /// </summary>
 /// <param name="font_color">変更したい色</param>
+/// <returns>なし</returns>
 void DrawString::ChangeFontColor(XMVECTORF32 font_color)
 {
 	m_fontColor = font_color;

@@ -13,6 +13,7 @@
  /// コンストラクタ
  /// </summary>
  /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 Fade::Fade():
 	m_fadeNum{},			// フェードカウンタ
 	is_fadeInFlag{},		// フェードインフラグ
@@ -26,6 +27,7 @@ Fade::Fade():
 /// デストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 Fade::~Fade()
 {
 }
@@ -35,6 +37,7 @@ Fade::~Fade()
 /// </summary>
 /// <param name="context">ID3D11DeviceContext1ポインタ</param>
 /// <param name="device">ID3D11Device1ポインタ</param>
+/// <returns>なし</returns>
 void Fade::Initialize(ID3D11DeviceContext1* context, ID3D11Device1* device)
 {
 	// スプライトバッチの初期化
@@ -56,6 +59,7 @@ void Fade::Initialize(ID3D11DeviceContext1* context, ID3D11Device1* device)
 /// 更新処理
 /// </summary>
 /// <param name="speed">フェードする速度</param>
+/// <returns>なし</returns>
 void Fade::Update(float speed)
 {
 	// フェードが終わっていたら処理しない
@@ -91,6 +95,7 @@ void Fade::Update(float speed)
 /// 描画処理
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void Fade::Draw()
 {
 	m_spriteBatch->Begin();
@@ -113,6 +118,7 @@ void Fade::Draw()
 /// フェードインを開始する関数
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void Fade::SetFadeIn()
 {
 	Reset();
@@ -125,6 +131,7 @@ void Fade::SetFadeIn()
 /// フェードアウトを開始する関数
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void Fade::SetFadeOut()
 {
 	Reset();
@@ -137,6 +144,7 @@ void Fade::SetFadeOut()
 /// フェード処理を行う前に呼び出す関数
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void Fade::Reset()
 {
 	m_fadeNum = 0.0f;

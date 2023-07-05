@@ -19,6 +19,7 @@
  /// コンストラクタ
  /// </summary>
  /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 MapLoad::MapLoad() :
 	m_mapData{},
     is_saveFileOpenFlag{false},
@@ -31,6 +32,7 @@ MapLoad::MapLoad() :
 /// デストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 MapLoad::~MapLoad()
 {
 	m_mapData.clear();
@@ -41,6 +43,7 @@ MapLoad::~MapLoad()
 /// マップの読み込み
 /// </summary>
 /// <param name="filename">ファイルパスを指定(L"...csv")拡張子は「.csv」</param>
+/// <returns>なし</returns>
 void MapLoad::LoadMap(std::wstring filename)
 {
 	m_filename = filename;
@@ -100,6 +103,7 @@ void MapLoad::LoadMap(std::wstring filename)
 /// ファイルを書きだす関数
 /// </summary>
 /// <param name="obj">書き出すオブジェ配列</param>
+/// <returns>なし</returns>
 void MapLoad::WriteMap(std::vector<Object> obj)
 {
 	// ファイルパスを指定
@@ -126,6 +130,7 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 /// メモリ解放
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void MapLoad::ReleaseMemory()
 {
 	std::vector<Object>().swap(m_mapData);
@@ -135,7 +140,7 @@ void MapLoad::ReleaseMemory()
 /// パスを取得し、保存する関数
 /// </summary>
 /// <param name="filePath">ファイルパス</param>
-// private
+/// <returns>正常終了でTrue</returns>
 bool MapLoad::SaveMapPath(std::wstring& filePath)
 {
 	// 例外エラー用変数
@@ -230,7 +235,7 @@ bool MapLoad::SaveMapPath(std::wstring& filePath)
 /// ファイルを読み込む
 /// </summary>
 /// <param name="引数無し"></param>
-// private
+/// <returns>正常終了でTrue</returns>
 bool MapLoad::LoadMapPath()
 {
 	// 例外エラー用変数
@@ -328,7 +333,7 @@ bool MapLoad::LoadMapPath()
 /// </summary>
 /// <param name="filePath">ファイルパス</param>
 /// <param name="extension">追加したい文字(拡張子)</param>
-// private
+/// <returns>拡張子を付与した文字列</returns>
 std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::wstring& extension)
 {
 	// 元ファイル名を格納する
@@ -349,6 +354,7 @@ std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::
 /// マップ新規作成(更地)
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void MapLoad::CreateNewMap()
 {
 	std::vector<Object> obj;

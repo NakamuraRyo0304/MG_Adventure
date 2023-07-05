@@ -23,6 +23,7 @@
  /// コンストラクタ
  /// </summary>
  /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 GameMain::GameMain():
 	m_nextScene{ SCENE::SELECT },
 	m_nowScene{ nullptr },
@@ -36,6 +37,7 @@ GameMain::GameMain():
 /// デストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 GameMain::~GameMain()
 {
 	Finalize();
@@ -45,6 +47,7 @@ GameMain::~GameMain()
 /// 初期化処理
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void GameMain::Initialize()
 {
 	// シーン作成
@@ -61,6 +64,7 @@ void GameMain::Initialize()
 /// 更新処理
 /// </summary>
 /// <param name="timer">時間を更新するタイマー</param>
+/// <returns>なし</returns>
 void GameMain::Update(const DX::StepTimer& timer)
 {
 	// フェードの更新
@@ -115,6 +119,7 @@ void GameMain::Update(const DX::StepTimer& timer)
 /// 描画処理
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void GameMain::Draw()
 {
 	// 実態があれば描画
@@ -131,6 +136,7 @@ void GameMain::Draw()
 /// 終了処理
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void GameMain::Finalize()
 {
 	// シーン削除
@@ -141,6 +147,7 @@ void GameMain::Finalize()
 /// シーンの新規作成
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void GameMain::CreateScene()
 {
 	// シーンが作成されているときは処理しない
@@ -192,6 +199,7 @@ void GameMain::CreateScene()
 /// シーンの削除
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void GameMain::DeleteScene()
 {
 	// シーンが作成されていなければ処理しない
@@ -221,6 +229,7 @@ void GameMain::DeleteScene()
 /// </summary>
 /// <param name="screenWidth">画面横幅</param>
 /// <param name="screenHeight">画面縦幅</param>
+/// <returns>なし</returns>
 void GameMain::CreateWindowDependentResources(const int& screenWidth, const int& screenHeight)
 {
 	DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();

@@ -14,11 +14,12 @@
 namespace UserUtillity
 {
 	/// <summary>
-	/// 線形補完する関数
+	/// 線形補間する関数
 	/// </summary>
 	/// <param name="a">開始値</param>
 	/// <param name="b">終了値</param>
 	/// <param name="t">かかる時間</param>
+	/// <returns>補間中の値</returns>
 	template<typename T>
 	inline T Lerp(T a, T b, T t)
 	{
@@ -31,7 +32,7 @@ namespace UserUtillity
 	/// <param name="v">対象値</param>
 	/// <param name="min">最小値</param>
 	/// <param name="max">最大値</param>
-	// 第１引数：対象値 第２引数：最小値 第３引数：最大値
+	/// <returns>範囲内：対象値、下限突破：最小値、上限突破：最大値</returns>
 	template<typename T>
 	inline T Clamp(T v, T min, T max)
 	{
@@ -46,6 +47,7 @@ namespace UserUtillity
 	/// <param name="center">円の中心</param>
 	/// <param name="radius">円の半径</param>
 	/// <param name="value">判定したい点の位置</param>
+	/// <returns>範囲内でTrue</returns>
 	template<typename T>
 	inline bool CheckPointInCircle(DirectX::SimpleMath::Vector2 center, T radius, DirectX::SimpleMath::Vector2 value)
 	{
@@ -61,6 +63,7 @@ namespace UserUtillity
 	/// <param name="center">球の中心</param>
 	/// <param name="radius">球の半径</param>
 	/// <param name="value">判定したい点の位置</param>
+	/// <returns>範囲内でTrue</returns>
 	template<typename T>
 	inline bool CheckPointInSphere(DirectX::SimpleMath::Vector3 center, T radius, DirectX::SimpleMath::Vector3 value)
 	{

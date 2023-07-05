@@ -13,6 +13,7 @@
  /// コンストラクタ
  /// </summary>
  /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 Collider::BoxCollider::BoxCollider():
 	m_hitFace(),
 	is_hitFlag(),
@@ -30,6 +31,7 @@ Collider::BoxCollider::BoxCollider():
 /// <param name= constObj">ぶつかる対象オブジェ</param>
 /// <param name= sz1">大きさ</param>
 /// <param name= sz2">大きさ</param>
+/// <returns>なし</returns>
 void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 			                        const SimpleMath::Vector3& constObj,
 			                        const SimpleMath::Vector3& sz1, 
@@ -117,6 +119,7 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 /// <param name= constObj">ぶつかる対象オブジェ(より強いもの)</param>
 /// <param name= sz1">大きさ</param>
 /// <param name= sz2">大きさ</param>
+/// <returns>なし</returns>
 void Collider::BoxCollider::PushBox(SimpleMath::Vector3& moveObj,
 	const SimpleMath::Vector3& constObj,
 	const SimpleMath::Vector3& sz1,
@@ -172,6 +175,7 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3& moveObj,
 /// コンストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 Collider::SphereCollider::SphereCollider() :
 	is_hitFlag{},
 	is_pushMode{}
@@ -187,6 +191,7 @@ Collider::SphereCollider::SphereCollider() :
 /// <param name="pos2">座標</param>
 /// <param name="radius1">半径</param>
 /// <param name="raidus2">半径</param>
+/// <returns>なし</returns>
 void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1, 
 	                                      SimpleMath::Vector3& pos2, 
 	                                      float radius1, float radius2)
@@ -229,6 +234,7 @@ void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1,
 /// コンストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 Collider::AABBCollider::AABBCollider()
 {
 }
@@ -240,6 +246,7 @@ Collider::AABBCollider::AABBCollider()
 /// <param name="pos2">座標</param>
 /// <param name="sz1">大きさ</param>
 /// <param name="sz2">大きさ</param>
+/// <returns>当たっていたらTrue</returns>
 // 第１、２引数：座標 第３、４引数：サイズ
 bool Collider::AABBCollider::HitAABB_2D(const SimpleMath::Vector2& pos1, 
 								     const SimpleMath::Vector2& pos2,

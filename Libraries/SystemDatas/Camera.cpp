@@ -24,6 +24,7 @@ const int Camera::MIN_SCROLL_VALUE = -1440;
 /// コンストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 Camera::Camera():
 	m_angle{},					// 回転角
 	m_eye{},					// カメラの座標
@@ -48,6 +49,7 @@ Camera::Camera():
 /// デストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 Camera::~Camera()
 {
 }
@@ -56,6 +58,7 @@ Camera::~Camera()
 /// 更新処理
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void Camera::Update()
 {
 	// マウスのインスタンス取得
@@ -85,6 +88,7 @@ void Camera::Update()
 /// </summary>
 /// <param name="x">スクリーン座標X</param>
 /// <param name="y">スクリーン座標Y</param>
+/// <returns>なし</returns>
 void Camera::DraggedDistance(int x, int y)
 {
 	// 視点移動しなければ処理しない
@@ -115,6 +119,7 @@ void Camera::DraggedDistance(int x, int y)
 /// ビュー行列計算
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void Camera::CalculateViewMatrix()
 {
 	// ビュー行列を算出する
@@ -148,6 +153,7 @@ void Camera::CalculateViewMatrix()
 /// <param name="duration">揺れ継続時間</param>
 /// <param name="tremor">揺れ幅</param>
 /// <param name="pos">対象オブジェのポジション</param>
+/// <returns>なし</returns>
 void Camera::ShakeCamera(float duration, float tremor, SimpleMath::Vector3* pos)
 {
 	int counta = 0;
@@ -175,6 +181,7 @@ void Camera::ShakeCamera(float duration, float tremor, SimpleMath::Vector3* pos)
 /// <param name="width">画面横幅</param>
 /// <param name="height">画面縦幅</param>
 /// <param name="angle">カメラ画角</param>
+/// <returns>射影行列</returns>
 const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,float angle)
 {
 	// 画面サイズとアングルの保存
@@ -215,6 +222,7 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,flo
 /// カメラからの距離を計算
 /// </summary>
 /// <param name="objPos">対象オブジェのポジション</param>
+/// <returns>カメラから対象物までの距離</returns>
 float Camera::CalculateDistanceToObject(const SimpleMath::Vector3& objPos)
 {
 	SimpleMath::Vector3 distanceVector = objPos - m_eye;
@@ -227,6 +235,7 @@ float Camera::CalculateDistanceToObject(const SimpleMath::Vector3& objPos)
 /// カメラの拡大率の変更
 /// </summary>
 /// <param name="state">マウスのステート</param>
+/// <returns>なし</returns>
 void Camera::RollWheelToRate(Mouse::State state)
 {
 	// マウスホイールのスクロール値の差分を計算

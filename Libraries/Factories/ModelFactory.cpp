@@ -13,6 +13,7 @@
  /// コンストラクタ
  /// </summary>
  /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 ModelFactory::ModelFactory()
 {
 }
@@ -21,6 +22,7 @@ ModelFactory::ModelFactory()
 /// デストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 ModelFactory::~ModelFactory()
 {
 }
@@ -30,7 +32,7 @@ ModelFactory::~ModelFactory()
 /// </summary>
 /// <param name="device">ID3D11Device1ポインタ</param>
 /// <param name="filename">ファイルパス　拡張子は「.cmo」</param>
-// 第１引数：デバイス 第２引数：ファイルの名前
+/// <returns>作成したモデルデータ</returns>
 std::unique_ptr<DX11::Model> ModelFactory::GetModel(ID3D11Device1* device, const wchar_t* filename)
 {
 	// モデルの作成(作成時のみの使い捨て)
@@ -55,6 +57,7 @@ std::unique_ptr<DX11::Model> ModelFactory::GetModel(ID3D11Device1* device, const
 /// モデルの解放
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void ModelFactory::DeleteModel()
 {
 	// 空の引数を渡す(例外スロー防止用オーバーロード)
@@ -66,6 +69,7 @@ void ModelFactory::DeleteModel()
 /// モデルの解放
 /// </summary>
 /// <param name="model">解放したいモデルデータ</param>
+/// <returns>なし</returns>
 void ModelFactory::DeleteModel(std::unique_ptr<Model>& model)
 {
 	model.reset();

@@ -13,6 +13,7 @@
  /// コンストラクタ
  /// </summary>
  /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 RayCast::RayCast():
 	m_screenSize{},				// スクリーンのサイズ
 	is_clickFlag{},				// クリック判定
@@ -25,6 +26,7 @@ RayCast::RayCast():
 /// デストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 RayCast::~RayCast()
 {
 
@@ -34,6 +36,7 @@ RayCast::~RayCast()
 /// 更新処理
 /// </summary>
 /// <param name="mouseState">マウスを渡す</param>
+/// <returns>なし</returns>
 void RayCast::Update(Mouse::State& mouseState)
 {
 	// クリックしてるときはTrueを返す
@@ -53,6 +56,7 @@ void RayCast::Update(Mouse::State& mouseState)
 /// <param name="height">画面縦幅</param>
 /// <param name="view">ビュー行列</param>
 /// <param name="proj">射影行列</param>
+/// <returns>変換後の座標</returns>
 SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 	int width, int height, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
@@ -91,6 +95,7 @@ SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 /// </summary>
 /// <param name="mx">マウスX</param>
 /// <param name="my">マウスY</param>
+/// <returns>当たった地面との交点</returns>
 SimpleMath::Vector3 RayCast::ShotRayToWorld(int mx, int my)
 {
 	// 最近、最遠、レイを定義
