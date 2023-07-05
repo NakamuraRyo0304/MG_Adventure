@@ -12,9 +12,11 @@
 // 角度
 const float SelectScene::CAMERA_ANGLE = 45.0f;
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+/// <summary>
+/// コンストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 SelectScene::SelectScene():
 	IScene(),
 	m_tea{},
@@ -22,16 +24,20 @@ SelectScene::SelectScene():
 {
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 SelectScene::~SelectScene()
 {
 }
 
-//--------------------------------------------------------//
-//初期化処理                                              //
-//--------------------------------------------------------//
+/// <summary>
+/// 初期化処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void SelectScene::Initialize()
 {
 	// 画面依存の初期化
@@ -41,10 +47,13 @@ void SelectScene::Initialize()
 
 }
 
-//--------------------------------------------------------//
-//更新処理                                                //
-//--------------------------------------------------------//
-// 第１引数：時間(60FPS = 1sec) / 第２引数：キーボードのポインタ / 第３引数：マウスのポインタ
+/// <summary>
+/// 更新処理
+/// </summary>
+/// <param name="elapsedTime">時間/fps</param>
+/// <param name="keyState">キーボードポインタ</param>
+/// <param name="mouseState">マウスポインタ</param>
+/// <returns>なし</returns>
 void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	Mouse::State& mouseState)
 {
@@ -89,9 +98,11 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 }
 
-//--------------------------------------------------------//
-//描画処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 描画処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void SelectScene::Draw()
 {
 	// デバッグフォント
@@ -148,16 +159,20 @@ void SelectScene::Draw()
 	
 }
 
-//--------------------------------------------------------//
-//終了処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 終了処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void SelectScene::Finalize()
 {
 }
 
-//--------------------------------------------------------//
-//画面依存の初期化                                        //
-//--------------------------------------------------------//
+/// <summary>
+/// 画面依存、デバイス依存の初期化
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void SelectScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得

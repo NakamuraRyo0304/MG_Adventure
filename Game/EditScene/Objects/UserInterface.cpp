@@ -9,9 +9,11 @@
 
 #include "UserInterface.h"
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 UserInterface::UserInterface():
 	m_systemManager{},				// システムマネージャ
 	m_aabbCol{},					// 当たり判定
@@ -27,17 +29,25 @@ UserInterface::UserInterface():
 {
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 UserInterface::~UserInterface()
 {
+	Finalize();
 }
 
-//--------------------------------------------------------//
-//初期化処理                                              //
-//--------------------------------------------------------//
-void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,ID3D11DeviceContext1* context, ID3D11Device1* device)
+/// <summary>
+/// 初期化処理
+/// </summary>
+/// <param name="shareSystem">システムデータ</param>
+/// <param name="context">ID3D11DeviceContext1ポインタ</param>
+/// <param name="device">ID3D11Device1ポインタ</param>
+/// <returns>なし</returns>
+void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
+	ID3D11DeviceContext1* context, ID3D11Device1* device)
 {
 	// ポインタの共有
 	m_systemManager = shareSystem;
@@ -53,15 +63,17 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,ID3D11
 	m_systemManager->GetDrawSprite()->AddTextureData(L"Open", L"Resources/Textures/OpenFile.dds", device);
 
 	// 座標情報
-	m_openTexPos = { 80 , 80 };
-	m_saveTexPos = { 208  , 80 };
-	m_cameraTexPos = { 336 , 80 };
-	m_penTexPos = { 464, 80 };
+	m_openTexPos    = { 80  , 80 };
+	m_saveTexPos    = { 208 , 80 };
+	m_cameraTexPos  = { 336 , 80 };
+	m_penTexPos     = { 464 , 80 };
 }
 
-//--------------------------------------------------------//
-//更新処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 更新処理
+/// </summary>
+/// <param name="mouseState">マウス</param>
+/// <returns>なし</returns>
 void UserInterface::Update(Mouse::State& mouseState)
 {
 	// ファイルを開くアイコン
@@ -122,9 +134,11 @@ void UserInterface::Update(Mouse::State& mouseState)
 	}
 }
 
-//--------------------------------------------------------//
-//描画処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 描画処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void UserInterface::Render()
 {
 	// セーブアイコン
@@ -214,4 +228,14 @@ void UserInterface::Render()
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
+}
+
+/// <summary>
+/// 終了処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void UserInterface::Finalize()
+{
+	m_systemManager->GetDrawSprite().get()->~DrawSprite();
 }

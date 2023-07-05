@@ -13,6 +13,7 @@
 /// コンストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 LocateBillBoard::LocateBillBoard()
 {
 
@@ -22,6 +23,7 @@ LocateBillBoard::LocateBillBoard()
 /// デストラクタ
 /// </summary>
 /// <param name="引数無し"></param>
+/// <returns>なし</returns>
 LocateBillBoard::~LocateBillBoard()
 {
 
@@ -31,6 +33,7 @@ LocateBillBoard::~LocateBillBoard()
 /// ビルボード作成関数
 /// </summary>
 /// <param name="device">デバイスリソースのID3D11Device1ポインタ</param>
+/// <returns>なし</returns>
 void LocateBillBoard::Create(ID3D11Device1* device)
 {
 	device;
@@ -42,6 +45,7 @@ void LocateBillBoard::Create(ID3D11Device1* device)
 /// <param name="eye">カメラの座標</param>
 /// <param name="target">注視点</param>
 /// <param name="up">上方向の軸指定(基本)</param>
+/// <returns>なし</returns>
 void LocateBillBoard::CreateBillboard(SimpleMath::Vector3 eye, SimpleMath::Vector3 target,SimpleMath::Vector3 up)
 {
 	eye, target, up;
@@ -51,6 +55,7 @@ void LocateBillBoard::CreateBillboard(SimpleMath::Vector3 eye, SimpleMath::Vecto
 /// 更新処理
 /// </summary>
 /// <param name="elapsedTime">シーンのelapsedTime</param>
+/// <returns>なし</returns>
 void LocateBillBoard::Update(float elapsedTime)
 {
 	elapsedTime;
@@ -61,6 +66,7 @@ void LocateBillBoard::Update(float elapsedTime)
 /// </summary>
 /// <param name="view">ビュー行列</param>
 /// <param name="proj">射影行列</param>
+/// <returns>なし</returns>
 void LocateBillBoard::Render(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	view, proj;

@@ -16,9 +16,9 @@
 class UserInterface
 {
 private:
+
 	// シェアポインタ
 	std::shared_ptr<SystemManager> m_systemManager;
-
 
 	// 画像の座標
 	DirectX::SimpleMath::Vector2 m_saveTexPos;
@@ -38,14 +38,14 @@ private:
 	Collider::AABBCollider m_aabbCol;
 
 public:
+
 	UserInterface();
 	~UserInterface();
 
 	void Initialize(std::shared_ptr<SystemManager> shareSystem,ID3D11DeviceContext1* context,ID3D11Device1* device);
 	void Update(DirectX::Mouse::State& mouseState);
 	void Render();
-
-
+	void Finalize();
 
 	// アクセサ
 	// カメラフラグ

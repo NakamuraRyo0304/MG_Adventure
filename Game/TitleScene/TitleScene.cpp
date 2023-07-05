@@ -9,9 +9,11 @@
 
 #include "TitleScene.h"
 
- //--------------------------------------------------------//
- //コンストラクタ                                          //
- //--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 TitleScene::TitleScene():
 	IScene(),
 	m_timer{0.0f},
@@ -20,17 +22,21 @@ TitleScene::TitleScene():
 {
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 TitleScene::~TitleScene()
 {
 	Finalize();
 }
 
-//--------------------------------------------------------//
-//初期化処理                                              //
-//--------------------------------------------------------//
+/// <summary>
+/// 初期化処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void TitleScene::Initialize()
 {
 	// 画面依存の初期化
@@ -42,10 +48,13 @@ void TitleScene::Initialize()
 	GetSystemManager()->GetCamera()->SetEyePosition(SimpleMath::Vector3(0.0f, -20.0f, -20.0f));
 }
 
-//--------------------------------------------------------//
-//更新処理                                                //
-//--------------------------------------------------------//
-// 第１引数：時間(60FPS = 1sec) / 第２引数：キーボードのポインタ / 第３引数：マウスのポインタ
+/// <summary>
+/// 更新処理
+/// </summary>
+/// <param name="elapsedTime">時間/fps</param>
+/// <param name="keyState">キーボードポインタ</param>
+/// <param name="mouseState">マウスポインタ</param>
+/// <returns>なし</returns>
 void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	Mouse::State& mouseState)
 {
@@ -67,9 +76,11 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	}
 }
 
-//--------------------------------------------------------//
-//描画処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 描画処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void TitleScene::Draw()
 {
 	// 描画関連
@@ -121,9 +132,11 @@ void TitleScene::Draw()
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);  	// スカイドーム
 }
 
-//--------------------------------------------------------//
-//終了処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 終了処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void TitleScene::Finalize()
 {
 	// モデルの解放
@@ -132,9 +145,11 @@ void TitleScene::Finalize()
 	ModelFactory::DeleteModel(m_skyDomeModel);
 }
 
-//--------------------------------------------------------//
-//画面依存の初期化                                        //
-//--------------------------------------------------------//
+/// <summary>
+/// 画面依存、デバイス依存の初期化
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void TitleScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
@@ -155,9 +170,9 @@ void TitleScene::CreateWindowDependentResources()
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, 45.0f);
 
 	// モデルの作成
-	m_titleLogoModel = ModelFactory::GetModel(device, L"Resources/Models/TitleLogo.cmo");
-	m_miniatureModel = ModelFactory::GetModel(device, L"Resources/Models/TitleStage.cmo");
-	m_skyDomeModel   = ModelFactory::GetModel(device, L"Resources/Models/ShineSky.cmo");
+	m_titleLogoModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleLogo.cmo");
+	m_miniatureModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleStage.cmo");
+	m_skyDomeModel   = ModelFactory::GetCreateModel(device, L"Resources/Models/ShineSky.cmo");
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
 			auto lights = dynamic_cast<IEffectLights*>(effect);

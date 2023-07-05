@@ -107,9 +107,6 @@
     <Filter Include="Scenes\PlayScene\Objects\ParticleUtillity">
       <UniqueIdentifier>{852b1e14-e132-4fdc-aff3-e1503962fa65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scenes\PlayScene\Objects\FogShader">
-      <UniqueIdentifier>{396923a9-8786-4d29-9489-c0e881c48569}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -196,9 +193,6 @@
     <ClInclude Include="Libraries\SystemDatas\BinaryFileLoader.h">
       <Filter>Common\BinalyFileLoader</Filter>
     </ClInclude>
-    <ClInclude Include="Game\PlayScene\Objects\Particle.h">
-      <Filter>Scenes\PlayScene\Objects\FogShader</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -278,9 +272,6 @@
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\BinaryFileLoader.cpp">
       <Filter>Common\BinalyFileLoader</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\PlayScene\Objects\Particle.cpp">
-      <Filter>Scenes\PlayScene\Objects\FogShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -362,9 +353,6 @@
     <None Include="Resources\Shaders\Locate.hlsli">
       <Filter>Resources\Shaders</Filter>
     </None>
-    <None Include="Resources\Shaders\Particle.hlsli">
-      <Filter>Resources\Shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -379,15 +367,6 @@
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\LocateVS.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleGS.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

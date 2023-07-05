@@ -33,7 +33,7 @@ ModelFactory::~ModelFactory()
 /// <param name="device">ID3D11Device1ポインタ</param>
 /// <param name="filename">ファイルパス　拡張子は「.cmo」</param>
 /// <returns>作成したモデルデータ</returns>
-std::unique_ptr<DX11::Model> ModelFactory::GetModel(ID3D11Device1* device, const wchar_t* filename)
+std::unique_ptr<DX11::Model> ModelFactory::GetCreateModel(ID3D11Device1* device, const wchar_t* filename)
 {
 	// モデルの作成(作成時のみの使い捨て)
 	std::unique_ptr<EffectFactory> fx =

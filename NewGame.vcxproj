@@ -194,7 +194,6 @@
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
     <ClInclude Include="Game\PlayScene\Objects\LocateBillBoard.h" />
-    <ClInclude Include="Game\PlayScene\Objects\Particle.h" />
     <ClInclude Include="Game\PlayScene\Objects\ParticleUtility.h" />
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
     <ClInclude Include="Game\PlayScene\PlayScene.h" />
@@ -225,7 +224,6 @@
     <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\LocateBillBoard.cpp" />
-    <ClCompile Include="Game\PlayScene\Objects\Particle.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\ParticleUtility.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />
     <ClCompile Include="Game\PlayScene\PlayScene.cpp" />
@@ -282,7 +280,6 @@
     <None Include="Resources\Models\TitleLogo.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
     <None Include="Resources\Shaders\Locate.hlsli" />
-    <None Include="Resources\Shaders\Particle.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />
@@ -312,19 +309,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleGS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

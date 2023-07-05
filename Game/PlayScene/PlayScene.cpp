@@ -21,9 +21,11 @@
 
 #include "PlayScene.h"
 
- //--------------------------------------------------------//
- //コンストラクタ                                          //
- //--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 PlayScene::PlayScene() :
 	IScene(),
 	m_timer{0.0f},
@@ -41,17 +43,21 @@ PlayScene::PlayScene() :
 
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 PlayScene::~PlayScene()
 {
 	Finalize();
 }
 
-//--------------------------------------------------------//
-//初期化処理                                              //
-//--------------------------------------------------------//
+/// <summary>
+/// 初期化処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void PlayScene::Initialize()
 {
 	// 画面依存の初期化
@@ -70,10 +76,13 @@ void PlayScene::Initialize()
 	m_colObjList.clear();
 }
 
-//--------------------------------------------------------//
-//更新処理                                                //
-//--------------------------------------------------------//
-// 第１引数：時間(60FPS = 1sec) / 第２引数：キーボードのポインタ / 第３引数：マウスのポインタ
+/// <summary>
+/// 更新処理
+/// </summary>
+/// <param name="elapsedTime">時間/fps</param>
+/// <param name="keyState">キーボードポインタ</param>
+/// <param name="mouseState">マウスポインタ</param>
+/// <returns>なし</returns>
 void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	Mouse::State& mouseState)
 {
@@ -117,9 +126,11 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 }
 
-//--------------------------------------------------------//
-//描画処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 描画処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void PlayScene::Draw()
 {
 	// 描画関連
@@ -180,9 +191,11 @@ void PlayScene::Draw()
 	DebugLog(view, proj);
 }
 
-//--------------------------------------------------------//
-//終了処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 終了処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void PlayScene::Finalize()
 {
 	// プレイヤの後処理
@@ -200,9 +213,11 @@ void PlayScene::Finalize()
 	ModelFactory::DeleteModel(m_clowdModel);
 }
 
-//--------------------------------------------------------//
-//画面依存の初期化                                        //
-//--------------------------------------------------------//
+/// <summary>
+/// 画面依存、デバイス依存の初期化
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void PlayScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
@@ -223,19 +238,19 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetString()->CreateString(device, context);
 
 	// モデルを作成する
-	m_grassModel = ModelFactory::GetModel(						// 草ブロック
+	m_grassModel = ModelFactory::GetCreateModel(						// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
 	);
-	m_coinModel = ModelFactory::GetModel(						// コインブロック
+	m_coinModel = ModelFactory::GetCreateModel(							// コインブロック
 		device,
 		L"Resources/Models/Coin.cmo"
 	);
-	m_clowdModel = ModelFactory::GetModel(						// 雲ブロック
+	m_clowdModel = ModelFactory::GetCreateModel(						// 雲ブロック
 		device,
 		L"Resources/Models/Clowd.cmo"
 	);
-	m_skyDomeModel = ModelFactory::GetModel(					// スカイドーム
+	m_skyDomeModel = ModelFactory::GetCreateModel(						// スカイドーム
 		device,
 		L"Resources/Models/ShineSky.cmo"
 	);
@@ -257,23 +272,21 @@ void PlayScene::CreateWindowDependentResources()
 		}
 	);
 
-
-	// プレイヤの作成
-	std::unique_ptr<Model> playerModel = ModelFactory::GetModel(
-		device,
-		L"Resources/Models/CatClean.cmo"
-	);
 	// モデルデータを渡す(move必要)
-	m_player = std::make_unique<Player>(std::move(playerModel));
+	m_player = std::make_unique<Player>(
+		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/CatClean.cmo"))
+	);
 
 	// 位置情報のシェーダーの作成
 	m_locateBillBoard = std::make_unique<LocateBillBoard>();
 	m_locateBillBoard->Create(device);
 }
 
-//--------------------------------------------------------//
-//当っていたらリストに追加する                            //
-//--------------------------------------------------------//
+/// <summary>
+/// 当たっていたらリスト追加
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void PlayScene::DoBoxCollision()
 {
 	// 衝突したオブジェクトリストを初期化
@@ -299,9 +312,11 @@ void PlayScene::DoBoxCollision()
 	}
 }
 
-//--------------------------------------------------------//
-//押し戻しをする                                          //
-//--------------------------------------------------------//
+/// <summary>
+/// 押し戻し処理
+/// </summary>
+/// <param name="obj">当たったオブジェクト</param>
+/// <returns>なし</returns>
 void PlayScene::ApplyPushBack(Object& obj)
 {
 	// 当っているオブジェが空気の場合は処理しない
@@ -370,9 +385,12 @@ void PlayScene::ApplyPushBack(Object& obj)
 	m_colObjList.pop_back();
 }
 
-//--------------------------------------------------------//
-//デバッグ表示                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デバッグログ
+/// </summary>
+/// <param name="view">ビュー行列</param>
+/// <param name="proj">射影行列</param>
+/// <returns>なし</returns>
 void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	auto state = GetSystemManager()->GetCommonStates().get();
@@ -423,9 +441,11 @@ void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	GetSystemManager()->GetGridFloor()->Draw(context, state, view, proj);
 }
 
-//--------------------------------------------------------//
-//マップ読み込み                                          //
-//--------------------------------------------------------//
+/// <summary>
+/// マップ読み込み
+/// </summary>
+/// <param name="num">ステージ番号</param>
+/// <returns>なし</returns>
 void PlayScene::LoadMap(int num)
 {
 	// ファイル名の宣言

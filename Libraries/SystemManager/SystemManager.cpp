@@ -9,7 +9,11 @@
 
 #include "SystemManager.h"
 
-// コンストラクタ
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 SystemManager::SystemManager()
 	:m_commonState{nullptr}
 	,m_drawSprite{nullptr}
@@ -24,14 +28,22 @@ SystemManager::SystemManager()
 {
 }
 
-// デストラクタ
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 SystemManager::~SystemManager()
 {
-
+	
 }
 
 
-// DeviceResources
+/// <summary>
+/// デバイスリソースの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>デバイスリソースの生ポインタ</returns>
 DX::DeviceResources*
 SystemManager::GetDeviceResources()
 {
@@ -42,7 +54,11 @@ SystemManager::GetDeviceResources()
 	return m_pDR;
 }
 
-// CommonStates
+/// <summary>
+/// コモンステートの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>コモンステートのユニークポインタ</returns>
 const std::unique_ptr<CommonStates>&
 SystemManager::GetCommonStates()
 {
@@ -53,7 +69,11 @@ SystemManager::GetCommonStates()
 	return m_commonState;
 }
 
-// KeyboardStateTracker
+/// <summary>
+/// キーボードトラッカーの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>キーボードトラッカーのユニークポインタ</returns>
 const std::unique_ptr<Keyboard::KeyboardStateTracker>&
 SystemManager::GetStateTrack()
 {
@@ -64,7 +84,11 @@ SystemManager::GetStateTrack()
 	return m_keyboardStateTracker;
 }
 
-// DrawString
+/// <summary>
+/// 文字描画クラスの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>文字描画クラスのユニークポインタ</returns>
 const std::unique_ptr<DrawString>&
 SystemManager::GetString()
 {
@@ -75,7 +99,11 @@ SystemManager::GetString()
 	return m_drawString;
 }
 
-// MouseTracker
+/// <summary>
+/// マウストラッカーの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>マウストラッカーのユニークポインタ</returns>
 const std::unique_ptr<Mouse::ButtonStateTracker>&
 SystemManager::GetMouseTrack()
 {
@@ -86,7 +114,11 @@ SystemManager::GetMouseTrack()
 	return m_mouseStateTracker;
 }
 
-// GridFloor
+/// <summary>
+/// ドローフロアの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>ドローフロアのユニークポインタ</returns>
 const std::unique_ptr<GridFloor>&
 SystemManager::GetGridFloor()
 {
@@ -97,7 +129,11 @@ SystemManager::GetGridFloor()
 	return m_gridFloor;
 }
 
-// RayCast
+/// <summary>
+/// レイキャストの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>レイキャストのユニークポインタ</returns>
 const std::unique_ptr<RayCast>&
 SystemManager::GetRayCast()
 {
@@ -108,7 +144,11 @@ SystemManager::GetRayCast()
 	return m_rayCast;
 }
 
-// DrawSprite
+/// <summary>
+/// ドロースプライトの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>ドロースプライトのユニークポインタ</returns>
 const std::unique_ptr<DrawSprite>&
 SystemManager::GetDrawSprite()
 {
@@ -119,7 +159,11 @@ SystemManager::GetDrawSprite()
 	return m_drawSprite;
 }
 
-// Camera
+/// <summary>
+/// カメラの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>カメラのユニークポインタ</returns>
 const std::unique_ptr<Camera>&
 SystemManager::GetCamera()
 {
@@ -130,7 +174,11 @@ SystemManager::GetCamera()
 	return m_camera;
 }
 
-// BasicEffect
+/// <summary>
+/// ベーシックエフェクトの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>ベーシックエフェクトのユニークポインタ</returns>
 const std::unique_ptr<BasicEffect>&
 SystemManager::GetBasicEffect()
 {
@@ -141,9 +189,12 @@ SystemManager::GetBasicEffect()
 	return m_effect;
 }
 
-//--------------------------------------------------------//
-//メイクユニーク                                          //
-//--------------------------------------------------------//
+/// <summary>
+/// 一括でシステムのリソースを作成
+/// </summary>
+/// <param name="device">ID3D11Device1のポインタ</param>
+/// <param name="context">ID3D11DeviceContext1のポインタ</param>
+/// <returns>なし</returns>
 void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* context)
 {
 	// デバイスリソース

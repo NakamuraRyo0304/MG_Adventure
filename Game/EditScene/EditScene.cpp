@@ -12,9 +12,11 @@
 
 #include "EditScene.h"
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 EditScene::EditScene() :
 	IScene(),
 	m_timer{0.0f},
@@ -35,18 +37,22 @@ EditScene::EditScene() :
 {
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 EditScene::~EditScene()
 {
 	m_map.~MapLoad();
 	Finalize();
 }
 
-//--------------------------------------------------------//
-//初期化処理                                              //
-//--------------------------------------------------------//
+/// <summary>
+/// 初期化処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void EditScene::Initialize()
 {
 	// 画面依存の初期化
@@ -68,10 +74,13 @@ void EditScene::Initialize()
 	m_nowState = MapState::GrassBox;
 }
 
-//--------------------------------------------------------//
-//更新処理                                                //
-//--------------------------------------------------------//
-// 第１引数：時間(60FPS = 1sec) / 第２引数：キーボードのポインタ / 第３引数：マウスのポインタ
+/// <summary>
+/// 更新処理
+/// </summary>
+/// <param name="elapsedTime">時間/fps</param>
+/// <param name="keyState">キーボードポインタ</param>
+/// <param name="mouseState">マウスポインタ</param>
+/// <returns>なし</returns>
 void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	Mouse::State& mouseState)
 {
@@ -158,9 +167,11 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 }
 
-//--------------------------------------------------------//
-//描画処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 描画処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void EditScene::Draw()
 {
 	// 描画関連
@@ -238,9 +249,11 @@ void EditScene::Draw()
 	DebugLog(view, projection);
 }
 
-//--------------------------------------------------------//
-//終了処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 終了処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void EditScene::Finalize()
 {
 	// マップの解放
@@ -254,9 +267,11 @@ void EditScene::Finalize()
 	ModelFactory::DeleteModel(m_switchModel);
 }
 
-//--------------------------------------------------------//
-//画面依存の初期化                                        //
-//--------------------------------------------------------//
+/// <summary>
+/// 画面依存、デバイス依存の初期化
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void EditScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
@@ -285,31 +300,34 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 	
 	// モデルを作成する
-	m_noneModel = ModelFactory::GetModel(					// 消しゴムブロック
+	m_noneModel = ModelFactory::GetCreateModel(					// 消しゴムブロック
 		device,
 		L"Resources/Models/Eraser.cmo"
 	);
-	m_grassModel = ModelFactory::GetModel(					// 草ブロック
+	m_grassModel = ModelFactory::GetCreateModel(					// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
 	);
-	m_coinModel = ModelFactory::GetModel(					// コインブロック
+	m_coinModel = ModelFactory::GetCreateModel(					// コインブロック
 		device,
 		L"Resources/Models/Coin.cmo"
 	);
-	m_clowdModel = ModelFactory::GetModel(					// 雲ブロック
+	m_clowdModel = ModelFactory::GetCreateModel(					// 雲ブロック
 		device,
 		L"Resources/Models/Clowd.cmo"
 	);
-	m_switchModel = ModelFactory::GetModel(					// スイッチブロック
+	m_switchModel = ModelFactory::GetCreateModel(					// スイッチブロック
 		device,
 		L"Resources/Models/Switch.cmo"
 	);
 }
 
-//--------------------------------------------------------//
-//デバッグ表示                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デバッグログ
+/// </summary>
+/// <param name="view">ビュー行列</param>
+/// <param name="proj">射影行列</param>
+/// <returns>なし</returns>
 void EditScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	GetSystemManager()->GetString()->ChangeFontColor(Colors::Black);
@@ -384,17 +402,21 @@ void EditScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	GetSystemManager()->GetGridFloor()->Draw(context, GetSystemManager()->GetCommonStates().get(), view, proj);
 }
 
-//--------------------------------------------------------//
-//描画ボックスのステータスを変更する                      //
-//--------------------------------------------------------//
+/// <summary>
+/// ステータス変更
+/// </summary>
+/// <param name="State">変更したいステータス</param>
+/// <returns>なし</returns>
 void EditScene::ChangeState(const int& State)
 {
 	m_nowState = State;
 }
 
-//--------------------------------------------------------//
-//マップを編集する                                        //
-//--------------------------------------------------------//
+/// <summary>
+/// マップの編集
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void EditScene::EditMap()
 {
 	auto mouse = Mouse::Get().GetState();
@@ -438,10 +460,11 @@ void EditScene::EditMap()
 	}
 }
 
-//--------------------------------------------------------//
-//座標の補正                                              //
-//--------------------------------------------------------//
-// 読み込み時
+/// <summary>
+/// 座標補正(読み込み時)
+/// </summary>
+/// <param name="obj">マップデータ</param>
+/// <returns>なし</returns>
 void EditScene::OffsetPosition_Read(std::vector<Object>* obj)
 {
 	for (auto& i : *obj)
@@ -451,7 +474,12 @@ void EditScene::OffsetPosition_Read(std::vector<Object>* obj)
 		i.position.z -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
 	}
 }
-// 書き込み時
+
+/// <summary>
+/// 座標補正(書き込み時)
+/// </summary>
+/// <param name="obj">マップデータ</param>
+/// <returns>なし</returns>
 void EditScene::OffsetPosition_Write(std::vector<Object>* obj)
 {
 	for (auto& i : *obj)
@@ -462,10 +490,11 @@ void EditScene::OffsetPosition_Write(std::vector<Object>* obj)
 	}
 }
 
-//--------------------------------------------------------//
-//マップ読み書き                                          //
-//--------------------------------------------------------//
-// 読み込み時
+/// <summary>
+/// マップ読み込み
+/// </summary>
+/// <param name="filename">ファイルパス</param>
+/// <returns>なし</returns>
 void EditScene::LoadMap(std::wstring filename)
 { 
 	// マップの読み込み
@@ -480,7 +509,12 @@ void EditScene::LoadMap(std::wstring filename)
 	// 座標補正
 	OffsetPosition_Read(&m_mapObj);
 }
-// 書き込み時
+
+/// <summary>
+/// マップ書き出し
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void EditScene::SaveFile()
 {	
 	// ファイル書き出し

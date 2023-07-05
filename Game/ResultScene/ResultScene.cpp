@@ -9,24 +9,30 @@
 
 #include "ResultScene.h"
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="引数無し"></param>
+ /// <returns>なし</returns>
 ResultScene::ResultScene():
 	IScene()
 {
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 ResultScene::~ResultScene()
 {
 }
 
-//--------------------------------------------------------//
-//初期化処理                                              //
-//--------------------------------------------------------//
+/// <summary>
+/// 初期化処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void ResultScene::Initialize()
 {
 	// 画面依存の初期化
@@ -35,10 +41,13 @@ void ResultScene::Initialize()
 	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
 }
 
-//--------------------------------------------------------//
-//更新処理                                                //
-//--------------------------------------------------------//
-// 第１引数：時間(60FPS = 1sec) / 第２引数：キーボードのポインタ / 第３引数：マウスのポインタ
+/// <summary>
+/// 更新処理
+/// </summary>
+/// <param name="elapsedTime">時間/fps</param>
+/// <param name="keyState">キーボードポインタ</param>
+/// <param name="mouseState">マウスポインタ</param>
+/// <returns>なし</returns>
 void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState, 
 	Mouse::State& mouseState)
 {
@@ -60,9 +69,11 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 }
 
-//--------------------------------------------------------//
-//描画処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 描画処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void ResultScene::Draw()
 {
 	// デバッグフォント
@@ -74,16 +85,20 @@ void ResultScene::Draw()
 	);
 }
 
-//--------------------------------------------------------//
-//終了処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 終了処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void ResultScene::Finalize()
 {
 }
 
-//--------------------------------------------------------//
-//画面依存の初期化                                        //
-//--------------------------------------------------------//
+/// <summary>
+/// 画面依存、デバイス依存の初期化
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void ResultScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得

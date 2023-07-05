@@ -15,9 +15,11 @@
 
 #include "Player.h"
 
-//--------------------------------------------------------//
-//コンストラクタ                                          //
-//--------------------------------------------------------//
+ /// <summary>
+ /// コンストラクタ
+ /// </summary>
+ /// <param name="model">プレイシーンで作成したモデルデータ</param>
+ /// <returns>なし</returns>
 Player::Player(std::unique_ptr<Model> model):
 	m_model{std::move(model)},
 	m_parameter{},
@@ -26,18 +28,22 @@ Player::Player(std::unique_ptr<Model> model):
 {
 }
 
-//--------------------------------------------------------//
-//デストラクタ                                            //
-//--------------------------------------------------------//
+/// <summary>
+/// デストラクタ
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 Player::~Player()
 {
 	Finalize();
 	m_system.reset();
 }
 
-//--------------------------------------------------------//
-//初期化処理                                              //
-//--------------------------------------------------------//
+/// <summary>
+/// 初期化処理
+/// </summary>
+/// <param name="system">システムデータ</param>
+/// <returns>なし</returns>
 void Player::Initialize(std::shared_ptr<SystemManager> system)
 {
 	// システムの取得
@@ -53,9 +59,12 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 	is_deathFlag = false;
 }
 
-//--------------------------------------------------------//
-//更新処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 更新処理
+/// </summary>
+/// <param name="keyState">キーボード</param>
+/// <param name="timer">派生シーンのStepTimer(TotalTime)</param>
+/// <returns>なし</returns>
 void Player::Update(Keyboard::State& keyState, float timer)
 {
 	m_timer = timer;
@@ -97,9 +106,14 @@ void Player::Update(Keyboard::State& keyState, float timer)
 	}
 }
 
-//--------------------------------------------------------//
-//描画処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 描画処理
+/// </summary>
+/// <param name="context">ID3D11DeviceContextポインタ</param>
+/// <param name="states">コモンステート</param>
+/// <param name="view">ビュー行列</param>
+/// <param name="proj">射影行列</param>
+/// <returns>なし</returns>
 void Player::Render(ID3D11DeviceContext* context, DX11::CommonStates& states,
 	SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
@@ -124,18 +138,22 @@ void Player::Render(ID3D11DeviceContext* context, DX11::CommonStates& states,
 	m_model->Draw(context, states, world, view, proj, false);
 }
 
-//--------------------------------------------------------//
-//終了処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 終了処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void Player::Finalize()
 {
 	m_model.reset();
 	m_parameter.reset();
 }
 
-//--------------------------------------------------------//
-//重力処理                                                //
-//--------------------------------------------------------//
+/// <summary>
+/// 重力処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
 void Player::UpdateGravity()
 {
 	// 重力の加算
@@ -151,9 +169,11 @@ void Player::UpdateGravity()
 	}
 }
 
-//--------------------------------------------------------//
-//初期位置の設定とリセット                                //
-//--------------------------------------------------------//
+/// <summary>
+/// リスポーンさせる関数
+/// </summary>
+/// <param name="spawnPosition">プレイヤーの座標を指定する</param>
+/// <returns>なし</returns>
 void Player::Spawn(SimpleMath::Vector3 spawnPosition)
 {
 	// パラメータの初期化
