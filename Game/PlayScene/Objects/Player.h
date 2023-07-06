@@ -11,14 +11,12 @@
 
 struct PlayerParameter
 {
-	DirectX::SimpleMath::Vector3 position;		// 座標
 	DirectX::SimpleMath::Vector3 velocity;		// 移動量
 	DirectX::SimpleMath::Quaternion rotate;		// 向いている方向
 	float gravity;								// 重力
 	float accelerate;							// 加速度
 	void reset()								// リセット関数
 	{
-		position = DirectX::SimpleMath::Vector3::Zero;
 		velocity = DirectX::SimpleMath::Vector3::Zero;
 		gravity = 0.0f;
 		accelerate = 0.0f;
@@ -32,6 +30,9 @@ class Player
 private:
 	// 時間
 	float m_timer;
+
+	// 座標
+	DirectX::SimpleMath::Vector3 m_position;
 
 	// プレイヤのパラメータ
 	PlayerParameter m_parameter;
@@ -82,8 +83,8 @@ public:
 	void SetModel(std::unique_ptr<DirectX::Model> model) { m_model = std::move(model); }
 
 	// ポジションアクセサ
-	DirectX::SimpleMath::Vector3& GetPosition() { return m_parameter.position; }
-	void SetPosition(const DirectX::SimpleMath::Vector3& position) { m_parameter.position = position; }
+	DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
+	void SetPosition(const DirectX::SimpleMath::Vector3& position) { m_position = position; }
 
 	// スポーン関数
 	void Spawn(DirectX::SimpleMath::Vector3 spawnPosition);

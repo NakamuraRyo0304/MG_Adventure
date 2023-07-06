@@ -134,7 +134,10 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		case MapState::CoinBox:					// コイン→スイッチ
 			ChangeState(MapState::SwitchBox);
 			break;
-		case MapState::SwitchBox:				// スイッチ→消しゴム
+		case MapState::SwitchBox:				// スイッチ→プレイヤ
+			ChangeState(MapState::PlayerPos);
+			break;
+		case MapState::PlayerPos:				// プレイヤ→消しゴム
 			ChangeState(MapState::None);
 			m_userInterface->SetDrawFlag(false);
 			break;
@@ -216,8 +219,11 @@ void EditScene::Draw()
 		{
 			m_switchModel->Draw(context, states, boxMat, view, projection);
 		}
+		if (m_mapObj[i].id == MapState::PlayerPos)
+		{
+			m_playerModel->Draw(context, states, rotateY * boxMat, view, projection);
+		}
 	}
-
 
 	// サイズ　×　回転　×　移動
 	world *= scale * rotateX * rotateY * rotateZ * trans;
@@ -234,6 +240,10 @@ void EditScene::Draw()
 	if (m_nowState == MapState::SwitchBox)
 	{
 		m_switchModel->Draw(context, states, world, view, projection);
+	}
+	if (m_nowState == MapState::PlayerPos)
+	{
+		m_playerModel->Draw(context, states, world, view, projection);
 	}
 	if (m_nowState == MapState::None)
 	{
@@ -263,6 +273,7 @@ void EditScene::Finalize()
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_clowdModel);
 	ModelFactory::DeleteModel(m_switchModel);
+	ModelFactory::DeleteModel(m_playerModel);
 }
 
 /// <summary>
@@ -317,6 +328,10 @@ void EditScene::CreateWindowDependentResources()
 	m_switchModel = ModelFactory::GetCreateModel(				// スイッチブロック
 		device,
 		L"Resources/Models/Switch.cmo"
+	);
+	m_playerModel = ModelFactory::GetCreateModel(				// プレイヤブロック
+		device,
+		L"Resources/Models/CatClean.cmo"
 	);
 }
 

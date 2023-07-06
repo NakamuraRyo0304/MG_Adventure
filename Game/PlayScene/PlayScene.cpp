@@ -63,14 +63,14 @@ void PlayScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
+	// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetEagleMode(true);	
+	
+	// プレイヤの初期化
+	m_player->Initialize(std::make_shared<SystemManager>());
 
 	// マップ読み込み
 	LoadMap(GetStageNum());
-
-	// プレイヤの初期化
-	m_player->Initialize(std::make_shared<SystemManager>());
-	m_player->SetPosition(SimpleMath::Vector3{ 0.0f,20.0f,0.0f });
 
 	// 判定の初期化
 	m_colObjList.clear();
@@ -295,19 +295,39 @@ void PlayScene::DoBoxCollision()
 	// 当たり判定を取る
 	for (auto& obj : m_mapObj)
 	{
-		// 判定を取る
-		is_boxCol.PushBox(
-			m_player->GetPosition(),								// プレイヤ座標
-			obj.position,											// ブロック座標
-			SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-			SimpleMath::Vector3{ COMMON_SIZE }						// ブロックサイズ
-		);
-
-		// 当たっていたら処理する
-		if (is_boxCol.GetHitBoxFlag())
+		// プレイヤの半径2.0fの範囲になければ処理しない
+		if (UserUtillity::CheckPointInSphere(
+			m_player->GetPosition(),			// 中心点
+			COMMON_SIZE * 2,					// 半径
+			obj.position))						// あるか調べる点
 		{
-			// 衝突したオブジェクトをリストに追加
-			m_colObjList.push_back(obj);
+
+			// 判定を取る コインのみ判定を小さくする
+			if (obj.id == MapLoad::BoxState::CoinBox)
+			{
+				is_boxCol.PushBox(
+					m_player->GetPosition(),								// プレイヤ座標
+					obj.position,											// コイン座標
+					SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
+					SimpleMath::Vector3{ COMMON_SIZE / 3 }					// コインサイズ
+				);
+			}
+			else
+			{
+				is_boxCol.PushBox(
+					m_player->GetPosition(),								// プレイヤ座標
+					obj.position,											// ブロック座標
+					SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
+					SimpleMath::Vector3{ COMMON_SIZE }						// ブロックサイズ
+				);
+			}
+
+			// 当たっていたら処理する
+			if (is_boxCol.GetHitBoxFlag())
+			{
+				// 衝突したオブジェクトをリストに追加
+				m_colObjList.push_back(obj);
+			}
 		}
 	}
 }
@@ -330,20 +350,6 @@ void PlayScene::ApplyPushBack(Object& obj)
 	if (obj.id != MapLoad::BoxState::None)
 	{
 		is_boxCol.SetPushMode(true);
-	}
-
-	// スイッチを押しているとき対象ブロックを移動
-	if (obj.id == MapLoad::BoxState::SwitchBox)
-	{
-		// 該当ブロック検索＆移動処理
-		for (auto& i : m_mapObj)
-		{
-			if (i == obj)
-			{
-				i.position.x += 0.001f;
-			}
-		}
-		return;
 	}
 
 	// コインの処理
@@ -488,6 +494,19 @@ void PlayScene::LoadMap(int num)
 		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
 		{
 			m_maxCoins++;
+		}
+		// プレイヤの座標を代入
+		if (m_mapObj[i].id == MapLoad::BoxState::PlayerPos)
+		{
+			m_player->SetPosition(SimpleMath::Vector3
+				{
+					m_mapObj[i].position.x, 
+					m_mapObj[i].position.y + COMMON_SIZE / 2,
+					m_mapObj[i].position.z 
+				}
+			);
+			// 代入後に該当マスを空気に変える(判定除去)
+			m_mapObj[i].id = MapLoad::BoxState::None;
 		}
 	}
 }
