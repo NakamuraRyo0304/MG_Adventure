@@ -44,8 +44,6 @@ EditScene::EditScene() :
 /// <returns>なし</returns>
 EditScene::~EditScene()
 {
-	m_map.~MapLoad();
-	Finalize();
 }
 
 /// <summary>
@@ -304,7 +302,7 @@ void EditScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Eraser.cmo"
 	);
-	m_grassModel = ModelFactory::GetCreateModel(					// 草ブロック
+	m_grassModel = ModelFactory::GetCreateModel(				// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
 	);
@@ -312,11 +310,11 @@ void EditScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Coin.cmo"
 	);
-	m_clowdModel = ModelFactory::GetCreateModel(					// 雲ブロック
+	m_clowdModel = ModelFactory::GetCreateModel(				// 雲ブロック
 		device,
 		L"Resources/Models/Clowd.cmo"
 	);
-	m_switchModel = ModelFactory::GetCreateModel(					// スイッチブロック
+	m_switchModel = ModelFactory::GetCreateModel(				// スイッチブロック
 		device,
 		L"Resources/Models/Switch.cmo"
 	);

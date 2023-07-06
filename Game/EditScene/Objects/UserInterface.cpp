@@ -237,5 +237,4 @@ void UserInterface::Render()
 /// <returns>‚È‚µ</returns>
 void UserInterface::Finalize()
 {
-	m_systemManager->GetDrawSprite().get()->~DrawSprite();
 }
