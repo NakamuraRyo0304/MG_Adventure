@@ -22,6 +22,7 @@
  /// <returns>‚È‚µ</returns>
 Player::Player(std::unique_ptr<Model> model):
 	m_model{std::move(model)},
+	m_position{},
 	m_parameter{},
 	m_system{},
 	is_deathFlag{}
@@ -97,7 +98,7 @@ void Player::Update(Keyboard::State& keyState, float timer)
 		m_parameter.velocity -= vec;
 	}
 	// ˆÚ“®—Ê‚ÌŒvZ
-	m_parameter.position += m_parameter.velocity;
+	m_position += m_parameter.velocity;
 
 	// Œ¸‘¬ˆ—
 	if (m_parameter.velocity != SimpleMath::Vector3::Zero)
@@ -126,9 +127,9 @@ void Player::Render(ID3D11DeviceContext* context, DX11::CommonStates& states,
 	// ˆÚ“®s—ñ
 	SimpleMath::Matrix trans =
 		SimpleMath::Matrix::CreateTranslation(
-			m_parameter.position.x,
-			m_parameter.position.y + sinf(m_timer) / 10.0f + OFFSET_Y,
-			m_parameter.position.z
+			m_position.x,
+			m_position.y + sinf(m_timer) / 10.0f + OFFSET_Y,
+			m_position.z
 		);
 
 	// s—ñŒvZ
@@ -160,10 +161,10 @@ void Player::UpdateGravity()
 	m_parameter.gravity += 0.015f;
 
 	// d—Í‚Ì”½‰f
-	m_parameter.position.y -= m_parameter.gravity;
+	m_position.y -= m_parameter.gravity;
 
 	// €–S”»’è
-	if (m_parameter.position.y < DEATH_LINE)
+	if (m_position.y < DEATH_LINE)
 	{
 		is_deathFlag = true;
 	}
@@ -180,5 +181,5 @@ void Player::Spawn(SimpleMath::Vector3 spawnPosition)
 	m_parameter.reset();
 
 	// À•W‚Ìİ’è
-	m_parameter.position = spawnPosition;
+	m_position = spawnPosition;
 }
