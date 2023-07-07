@@ -12,7 +12,7 @@
 #include "../IScene.h"
 
 class Player;
-class LocateBillBoard;
+class PlayerBill;
 class PlayScene : public IScene
 {
 private:
@@ -39,7 +39,7 @@ private:
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
 	// プレイヤーの目印（ビルボード）
-	std::unique_ptr<LocateBillBoard> m_locateBillBoard;
+	std::unique_ptr<PlayerBill> m_playerBill;
 
 	// コインカウンタ
 	int m_coinCount;

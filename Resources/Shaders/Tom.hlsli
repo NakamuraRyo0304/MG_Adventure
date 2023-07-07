@@ -1,7 +1,7 @@
 /*
- *	@File	Locate.hlsli
- *	@Brief	プレイヤーの位置情報のビルボード。
- *	@Date	2023-07-04
+ *	@File	Tom.hlsli
+ *	@Brief	トムシェーダー。
+ *	@Date	2023-07-07
  *  @Author NakamuraRyo
  */
 

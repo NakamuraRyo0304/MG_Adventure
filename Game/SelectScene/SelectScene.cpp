@@ -81,7 +81,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		m_stageNum--;
 	}
 	
-	m_stageNum = UserUtillity::Clamp(m_stageNum, 0, 3);
+	m_stageNum = UserUtility::Clamp(m_stageNum, 0, 3);
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))

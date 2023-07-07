@@ -193,22 +193,22 @@
     <ClInclude Include="Game\EditScene\Objects\UserInterface.h" />
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
-    <ClInclude Include="Game\PlayScene\Objects\LocateBillBoard.h" />
-    <ClInclude Include="Game\PlayScene\Objects\ParticleUtility.h" />
+    <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h" />
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
     <ClInclude Include="Game\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\SelectScene\SelectScene.h" />
     <ClInclude Include="Game\TitleScene\TitleScene.h" />
     <ClInclude Include="Libraries\Factories\ModelFactory.h" />
-    <ClInclude Include="Libraries\SystemDatas\BinaryFileLoader.h" />
     <ClInclude Include="Libraries\SystemDatas\Collider.h" />
     <ClInclude Include="Libraries\SystemDatas\Camera.h" />
     <ClInclude Include="Libraries\SystemDatas\DrawSprite.h" />
     <ClInclude Include="Libraries\SystemDatas\DrawString.h" />
     <ClInclude Include="Libraries\SystemDatas\Fade.h" />
     <ClInclude Include="Libraries\SystemDatas\GridFloor.h" />
+    <ClInclude Include="Libraries\SystemDatas\LoadFile.h" />
     <ClInclude Include="Libraries\SystemDatas\MapLoad.h" />
+    <ClInclude Include="Libraries\SystemDatas\ParticleUtility.h" />
     <ClInclude Include="Libraries\SystemDatas\RayCast.h" />
     <ClInclude Include="Libraries\SystemManager\SystemManager.h" />
     <ClInclude Include="Libraries\UserUtility.h" />
@@ -223,22 +223,22 @@
     <ClCompile Include="Game\EditScene\Objects\UserInterface.cpp" />
     <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />
-    <ClCompile Include="Game\PlayScene\Objects\LocateBillBoard.cpp" />
-    <ClCompile Include="Game\PlayScene\Objects\ParticleUtility.cpp" />
+    <ClCompile Include="Game\PlayScene\Objects\PlayerBill.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />
     <ClCompile Include="Game\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Game\SelectScene\SelectScene.cpp" />
     <ClCompile Include="Game\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Libraries\Factories\ModelFactory.cpp" />
-    <ClCompile Include="Libraries\SystemDatas\BinaryFileLoader.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Collider.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Camera.cpp" />
     <ClCompile Include="Libraries\SystemDatas\DrawSprite.cpp" />
     <ClCompile Include="Libraries\SystemDatas\DrawString.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Fade.cpp" />
     <ClCompile Include="Libraries\SystemDatas\GridFloor.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\LoadFile.cpp" />
     <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\ParticleUtility.cpp" />
     <ClCompile Include="Libraries\SystemDatas\RayCast.cpp" />
     <ClCompile Include="Libraries\SystemManager\SystemManager.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -260,7 +260,9 @@
     <Image Include="Resources\Textures\CameraMove.dds" />
     <Image Include="Resources\Textures\EraseBlock.dds" />
     <Image Include="Resources\Textures\FadeBlind.dds" />
+    <Image Include="Resources\Textures\Fog.png" />
     <Image Include="Resources\Textures\OpenFile.dds" />
+    <Image Include="Resources\Textures\PlayerPoint.png" />
     <Image Include="Resources\Textures\SaveFile.dds" />
   </ItemGroup>
   <ItemGroup>
@@ -279,36 +281,27 @@
     <None Include="Resources\Models\Switch.cmo" />
     <None Include="Resources\Models\TitleLogo.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
-    <None Include="Resources\Shaders\Locate.hlsli" />
+    <None Include="Resources\Shaders\Tom.hlsli" />
+    <None Include="Resources\Shaders\TomGS.cso" />
+    <None Include="Resources\Shaders\TomPS.cso" />
+    <None Include="Resources\Shaders\TomVS.cso" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\LocateGS.hlsl">
+    <FxCompile Include="Resources\Shaders\TomGS.hlsl">
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\LocatePS.hlsl">
+    <FxCompile Include="Resources\Shaders\TomPS.hlsl">
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\LocateVS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    <FxCompile Include="Resources\Shaders\TomVS.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

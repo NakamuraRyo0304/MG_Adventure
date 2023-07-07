@@ -111,7 +111,7 @@ void Camera::DraggedDistance(int x, int y)
 	}
 
 	// カメラの角度をクランプ
-	m_angle.x = UserUtillity::Clamp(m_angle.x, ANGLEX_MIN, ANGLEX_MAX);
+	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLEX_MIN, ANGLEX_MAX);
 
 }
 
@@ -143,6 +143,7 @@ void Camera::CalculateViewMatrix()
 
 	// デフォルトの初期位置
 	m_eye = eye;
+	m_target = target;
 	m_view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
 
 }
@@ -248,7 +249,7 @@ void Camera::RollWheelToRate(Mouse::State state)
 		int newScrollValue = m_scrollWheelValue + scrollDelta;
 
 		// スクロール値が上限・下限を超えないように制限
-		newScrollValue = UserUtillity::Clamp(newScrollValue, MIN_SCROLL_VALUE, MAX_SCROLL_VALUE);
+		newScrollValue = UserUtility::Clamp(newScrollValue, MIN_SCROLL_VALUE, MAX_SCROLL_VALUE);
 
 		// スクロール値が上限・下限に達していない場合にのみ反映する
 		if (newScrollValue != MAX_SCROLL_VALUE && newScrollValue != MIN_SCROLL_VALUE)

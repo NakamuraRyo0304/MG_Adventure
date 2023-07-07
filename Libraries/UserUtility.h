@@ -1,17 +1,17 @@
 /*
- *	@File	UserUtillity.h
+ *	@File	UserUtility.h
  *	@Brief	ä÷êîÇ»Ç«ÇÃíËã`ÅB
  *	@Date	2023-06-01
  *  @Author NakamuraRyo
  */
 
 #pragma once
-#ifndef USERUTILLITY
-#define	USERUTILLITY
+#ifndef USERUTILITY
+#define	USERUTILITY
 
 #include <iostream>
 
-namespace UserUtillity
+namespace UserUtility
 {
 	/// <summary>
 	/// ê¸å`ï‚ä‘Ç∑ÇÈä÷êî
@@ -74,4 +74,4 @@ namespace UserUtillity
 	}
 }
 
-#endif // USERUTILLITY
+#endif // USERUTILITY

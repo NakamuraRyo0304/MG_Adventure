@@ -1,13 +1,11 @@
-//--------------------------------------------------------------------------------------
-// File: ParticleUtil.cpp
-//
-// パーティクルユーティリティクラス
-// positionや速度などパーティクル１つに必要な要素を格納
-//
-//-------------------------------------------------------------------------------------
+/*
+ *	@File	ParticleUtility.cpp
+ *	@Brief	パーティクルユーティリティクラス。
+ *	@Date	2023-07-07
+ *  @Author NakamuraRyo
+ */
 
 #include "pch.h"
-#include "Particleutility.h"
 
 #include "StepTimer.h"
 #include <DeviceResources.h>
@@ -19,7 +17,7 @@
 #include <CommonStates.h>
 #include <vector>
 
-using namespace DirectX;
+#include "ParticleUtility.h"
 
 const static float ENDLESS = -100.0f;
 
@@ -35,54 +33,66 @@ const static float ENDLESS = -100.0f;
 /// <param name="endScale">最終サイズ</param>
 /// <param name="startColor">初期色</param>
 /// <param name="endColor">最終色</param>
-tito::ParticleUtility::ParticleUtility(
+/// <returns>なし</returns>
+ParticleUtility::ParticleUtility(
 	float life,
 	DirectX::SimpleMath::Vector3 pos,
 	DirectX::SimpleMath::Vector3 velocity,
-	DirectX::SimpleMath::Vector3 accele,
+	DirectX::SimpleMath::Vector3 accelerate,
 	DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
 	DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor)
 {
+	// エフェクト継続時間
+	m_startLife = life;
+	m_life = life;
 
-	m_startLife =
-		m_life = life;
-
+	// 座標、移動量、加速度
 	m_position = pos;
 	m_velocity = velocity;
-	m_accele = accele;
+	m_accelerate = accelerate;
 
-	m_startScale =
-		m_nowScale = startScale;
+	// サイズ
+	m_startScale = startScale;
+	m_nowScale = startScale;
 	m_endScale = endScale;
-
-
-	m_startColor =
-		m_nowColor = startColor;
+	
+	// 色
+	m_startColor = startColor;
+	m_nowColor = startColor;
 	m_endColor = endColor;
 }
+
 /// <summary>
 /// デストラクタ
 /// </summary>
-tito::ParticleUtility::~ParticleUtility()
+/// <returns>なし</returns>
+ParticleUtility::~ParticleUtility()
 {
 }
+
 /// <summary>
 /// 更新関数
 /// </summary>
-/// <param name="timer">Game等からStepTimerを受け取る</param>
-/// <returns>生存時間(life)がある間はtrue</returns>
-bool tito::ParticleUtility::Update(float elapsedTime)
+/// <param name="timer">時間</param>
+/// <returns>生存時間ありでTrue</returns>
+bool ParticleUtility::Update(float elapsedTime)
 {
 	// スケール
 	m_nowScale = SimpleMath::Vector3::Lerp(m_startScale, m_endScale, 1.0f - m_life / m_startLife);
+
 	// 色
 	m_nowColor = SimpleMath::Color::Lerp(m_startColor, m_endColor, 1.0f - m_life / m_startLife);
+
 	// 速度の計算
-	m_velocity += m_accele * elapsedTime;
+	m_velocity += m_accelerate * elapsedTime;
+
 	// 座標の計算
 	m_position += m_velocity * elapsedTime;
+	
+	// 生存時間を削る
 	m_life -= elapsedTime;
-	// ライフが０で自身を消してもらう
+
+	// ライフが0で自身を削除
 	if (m_life < 0.0f)
 	{
 		return false;

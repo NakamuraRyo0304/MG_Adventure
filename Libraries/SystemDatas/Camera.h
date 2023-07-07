@@ -55,6 +55,8 @@ private:
 	// カメラの座標
 	DirectX::SimpleMath::Vector3 m_eye;	
 	DirectX::SimpleMath::Vector3 m_eyePos;	
+	// 注視点
+	DirectX::SimpleMath::Vector3 m_target;
 
 	// 視点移動モード
 	bool is_eagleMode;
@@ -95,8 +97,11 @@ public:
 	const DirectX::SimpleMath::Vector3& GetEye() { return m_eye; }
 	void SetEye(const DirectX::SimpleMath::Vector3& pos){ m_eye = pos;}
 
-	const DirectX::SimpleMath::Vector3& GetEyePosition() { return m_eyePos; }
+	// カメラの座標移動用セッター(指定座標に移動)
 	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_eyePos = pos;}
+
+	// ターゲットを取得する
+	const DirectX::SimpleMath::Vector3& GetTargetPosition() { return m_target; }
 	
 	// 射影行列の取得
 	const DirectX::SimpleMath::Matrix& CreateProjection(float width, float height,float angle = 45.0f);

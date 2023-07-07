@@ -14,7 +14,7 @@
 #include "../../Libraries/SystemDatas/Collider.h"
 
 // シェーダー
-#include "Objects/LocateBillBoard.h"
+#include "Objects/PlayerBill.h"
 
 // プレイヤクラス
 #include "Objects/Player.h"
@@ -97,8 +97,8 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
-	// シェーダーの更新
-	m_locateBillBoard->Update(elapsedTime);
+	// 相対移動
+	m_playerBill->SetVertexMovePos(SimpleMath::Vector3{m_player->GetPosition().x,m_player->GetPosition().y + 2.0f,m_player->GetPosition().z});
 
 	// コインをすべて獲得でリザルト
 	if (m_coinCount == m_maxCoins)
@@ -152,15 +152,6 @@ void PlayScene::Draw()
 	// プレイヤの描画
 	m_player->Render(context, states, view, proj);
 
-	// シェーダー描画
-	m_locateBillBoard->CreateBillboard(
-		SimpleMath::Vector3(0.0f, COMMON_LOW + 1.0f, 0.0f),
-		SimpleMath::Vector3(0.0f, COMMON_LOW + 1.0f, 0.0f),
-		SimpleMath::Vector3::Up
-	);
-
-	m_locateBillBoard->Render(view, proj);
-
 	// 回転行列
 	SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(m_timer);
 
@@ -187,6 +178,16 @@ void PlayScene::Draw()
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
+
+
+	// ビルボード作成
+	m_playerBill->CreateBillboard(
+		GetSystemManager()->GetCamera()->GetTargetPosition(),	// カメラの注視点
+		GetSystemManager()->GetCamera()->GetEye(),				// カメラの座標
+		SimpleMath::Vector3::Up
+	);
+	// 描画
+	m_playerBill->Render(m_player->GetPosition(), m_timer, view, proj);
 
 	DebugLog(view, proj);
 }
@@ -278,8 +279,8 @@ void PlayScene::CreateWindowDependentResources()
 	);
 
 	// 位置情報のシェーダーの作成
-	m_locateBillBoard = std::make_unique<LocateBillBoard>();
-	m_locateBillBoard->Create(device);
+	m_playerBill = std::make_unique<PlayerBill>();
+	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
 }
 
 /// <summary>
@@ -296,7 +297,7 @@ void PlayScene::DoBoxCollision()
 	for (auto& obj : m_mapObj)
 	{
 		// プレイヤの半径2.0fの範囲になければ処理しない
-		if (UserUtillity::CheckPointInSphere(
+		if (UserUtility::CheckPointInSphere(
 			m_player->GetPosition(),			// 中心点
 			COMMON_SIZE * 2,					// 半径
 			obj.position))						// あるか調べる点

@@ -442,14 +442,14 @@ void EditScene::EditMap()
 	m_cursorPos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
 
 	// マウスカーソルで移動
-	m_cursorPos.y = UserUtillity::Lerp(
+	m_cursorPos.y = UserUtility::Lerp(
 		m_cursorPos.y,															// 開始地点
 		static_cast<float>(mouse.scrollWheelValue / WHEEL_SPAWN) + COMMON_LOW,	// 終了地点
 		0.1f																	// 速度
 	);
 
 	// 制限をつける
-	m_cursorPos.y = UserUtillity::Clamp(m_cursorPos.y, -2.0f, 15.0f);
+	m_cursorPos.y = UserUtility::Clamp(m_cursorPos.y, -2.0f, 15.0f);
 
 	// マップとの当たり判定
 	for (auto& i : m_mapObj)
