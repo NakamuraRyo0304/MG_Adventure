@@ -5,18 +5,14 @@
  *  @Author NakamuraRyo
  */
 
-#include "DeviceResources.h"
-#include "SimpleMath.h"
-#include "Effects.h"
-#include "PrimitiveBatch.h"
-#include "VertexTypes.h"
-#include "WICTextureLoader.h"
-#include "CommonStates.h"
+#pragma once
+#ifndef PLAYERBILL
+#define PLAYERBILL
 
+#include <vector>
 #include <list>
 
-#include "Libraries/SystemDatas/ParticleUtility.h"
-
+class ParticleUtility;
 class PlayerBill
 {
 public:
@@ -32,28 +28,6 @@ private:
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 
-	// テクスチャハンドル
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
-
-	// インプットレイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-
-	// シェーダーの作成
-	// バーテックスシェーダー
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
-	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
-	// ジオメトリシェーダ
-	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
-	// コンスタントバッファ
-	Microsoft::WRL::ComPtr<ID3D11Buffer>m_constBuffer;
-
-	// シェーダーの表示座標
-	DirectX::SimpleMath::Vector3 m_defaultPos;
-
-	// 行列
-	DirectX::SimpleMath::Matrix m_world;
-
 	// プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
 
@@ -62,6 +36,25 @@ private:
 
 	// 頂点
 	std::vector<DirectX::VertexPositionColorTexture> m_vertices;
+
+	// テクスチャハンドル
+	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
+
+	// インプットレイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+
+	// シェーダーの作成------------------------------------------------------
+	// バーテックスシェーダー
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
+	// ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
+	// ジオメトリシェーダ
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
+	// コンスタントバッファ
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constBuffer;
+
+	// シェーダーの表示座標
+	DirectX::SimpleMath::Vector3 m_defaultPos;
 
 	// Utility
 	std::list<ParticleUtility> m_particleUtility;
@@ -74,6 +67,7 @@ private:
 	DirectX::SimpleMath::Vector3 m_cameraTarget;
 
 public:
+	// インプットレイアウトの設定
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
 	PlayerBill();
@@ -91,7 +85,7 @@ public:
 	// ビルボード作成
 	void CreateBillboard(DirectX::SimpleMath::Vector3 target,DirectX::SimpleMath::Vector3 eye,DirectX::SimpleMath::Vector3 up);
 
-	// 表示座標設定　目標点、対応番号
+	// 表示座標設定
 	void SetVertexMovePos(DirectX::SimpleMath::Vector3 movePos) { m_defaultPos = movePos; }
 
 private:
@@ -101,7 +95,6 @@ private:
 
 	// コンスタントバッファの作成
 	void CreateConstBuffer(ID3D11Device1*& device);
-
-	// 座標変換
-	DirectX::SimpleMath::Vector2 ConvertToScreenPos(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 };
+
+#endif // PLAYERBILL

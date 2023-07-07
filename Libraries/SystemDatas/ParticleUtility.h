@@ -6,6 +6,8 @@
  */
 
 #pragma once
+#ifndef PARTICLEUTILITY
+#define PARTICLEUTILITY
 
 class ParticleUtility
 {
@@ -65,7 +67,6 @@ public:
 	const DirectX::SimpleMath::Color GetNowColor() { return m_nowColor; }
 	const DirectX::SimpleMath::Color GetStartColor() { return m_startColor; }
 	const DirectX::SimpleMath::Color GetEndColor() { return m_endColor; }
-
-
-
 };
+
+# endif // PARTICLEUTILITY

@@ -7,10 +7,9 @@
 
 #include "pch.h"
 
-// C++
-#include <vector>
-
+#include "Libraries/SystemDatas/ParticleUtility.h"
 #include "Libraries/SystemDatas/LoadFile.h"
+
 #include "PlayerBill.h"
 
 /// <summary>
@@ -30,7 +29,6 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerBill::INPUT_LAYOUT =
  /// <returns>なし</returns>
 PlayerBill::PlayerBill():
 	m_pDR{nullptr},
-	m_world{SimpleMath::Matrix::Identity},
 	m_defaultPos{SimpleMath::Vector3::Zero}
 {
 }
@@ -116,7 +114,7 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 	);
 	
 	// ビルボード位置を更新
-	vertex.position = DirectX::SimpleMath::Vector3(playerPos.x, playerPos.y + (1.5f + sinf(timer) * 0.2f), playerPos.z);
+	vertex.position = DirectX::SimpleMath::Vector3(playerPos.x, playerPos.y + (2.0f + sinf(timer) * 0.2f), playerPos.z);
 
 	// 頂点情報(板ポリゴンの４頂点の座標情報）
 	DirectX::SimpleMath::Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
@@ -302,23 +300,4 @@ void PlayerBill::CreateBillboard(DirectX::SimpleMath::Vector3 target, DirectX::S
 
 	// ビルボードのテクスチャを回転
 	m_billboard = rot * m_billboard;
-}
-
-/// <summary>
-/// 3D座標から2D座標へ変換する関数
-/// </summary>
-/// <param name="position">変換したい座標</param>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
-/// <returns>なし</returns>
-DirectX::SimpleMath::Vector2 PlayerBill::ConvertToScreenPos(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
-{
-	DirectX::SimpleMath::Vector3 screenPos;
-	DirectX::XMVECTOR worldPos = DirectX::XMVector3TransformCoord(DirectX::XMVectorSet(position.x, position.y, position.z, 1.0f), view * proj);
-	DirectX::XMStoreFloat3(&screenPos, worldPos);
-
-	float screenX = (screenPos.x + 1.0f) * 0.5f * static_cast<float>(m_pDR->GetOutputSize().right);
-	float screenY = (1.0f - screenPos.y) * 0.5f * static_cast<float>(m_pDR->GetOutputSize().bottom);
-
-	return DirectX::SimpleMath::Vector2(screenX, screenY);
 }

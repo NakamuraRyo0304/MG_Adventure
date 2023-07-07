@@ -97,9 +97,6 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
-	// 相対移動
-	m_playerBill->SetVertexMovePos(SimpleMath::Vector3{m_player->GetPosition().x,m_player->GetPosition().y + 2.0f,m_player->GetPosition().z});
-
 	// コインをすべて獲得でリザルト
 	if (m_coinCount == m_maxCoins)
 	{
@@ -109,6 +106,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// プレイヤの更新
 	m_player->Update(keyState, elapsedTime);
+	
+	// 相対移動
+	m_playerBill->SetVertexMovePos(m_player->GetPosition());
 
 	// 当たり判定の更新
 	DoBoxCollision();
