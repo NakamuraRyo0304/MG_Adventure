@@ -13,6 +13,7 @@
 
 class Player;
 class PlayerBill;
+class Blocks;
 class PlayScene : public IScene
 {
 private:
@@ -28,22 +29,18 @@ private:
 	// プレイヤ
 	std::unique_ptr<Player> m_player;
 
+	// ブロック
+	std::unique_ptr<Blocks> m_blocks;
+
 	// 当たり判定
 	Collider::BoxCollider is_boxCol;
 	std::vector<Object> m_colObjList;
 
 	// モデル
-	std::unique_ptr<DirectX::Model> m_grassModel;
-	std::unique_ptr<DirectX::Model> m_coinModel;
-	std::unique_ptr<DirectX::Model> m_clowdModel;
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
 	// プレイヤーの目印（ビルボード）
 	std::unique_ptr<PlayerBill> m_playerBill;
-
-	// コインカウンタ
-	int m_coinCount;
-	int m_maxCoins;
 
 	// スカイドームの回転速度
 	const float SKY_ROT_SPEED = 0.02f;
@@ -54,6 +51,9 @@ private:
 
 	// 最低高度
 	const float	COMMON_LOW = COMMON_SIZE / 2;
+
+	// 当たり判定の半径
+	const float JUDGE_AREA = 1.8f;
 
 	// カメラアングル
 	const float	CAMERA_ANGLE = 44.5f;

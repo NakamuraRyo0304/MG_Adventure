@@ -17,6 +17,7 @@ struct Object
 	int id = 0;									// マップID
 	DirectX::SimpleMath::Vector3 position;		// 座標
 	bool hit = false;							// 当たっていたらTrue
+	int index = 0;								// インデックス番号を格納
 
 	// 演算子のオーバーロード
 	bool operator==(const Object& name) const
