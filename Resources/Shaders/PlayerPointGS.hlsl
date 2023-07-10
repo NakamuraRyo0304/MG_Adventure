@@ -1,11 +1,11 @@
 /*
- *	@File	TomGS.hlsl
- *	@Brief	トムジオメトリシェーダー。
+ *	@File	PlayerPointGS.hlsl
+ *	@Brief	プレイヤーポイントジオメトリシェーダー。
  *	@Date	2023-07-07
  *  @Author NakamuraRyo
  */
 
-#include "Tom.hlsli"
+#include "PlayerPoint.hlsli"
 
 static const int vnum = 4;
 

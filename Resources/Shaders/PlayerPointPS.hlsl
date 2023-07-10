@@ -1,11 +1,11 @@
 /*
- *	@File	TomPS.hlsl
- *	@Brief	トムピクセルシェーダー。
+ *	@File	PlayerPointPS.hlsl
+ *	@Brief	プレイヤーポイントピクセルシェーダー。
  *	@Date	2023-07-07
  *  @Author NakamuraRyo
  */
 
-#include "Tom.hlsli"
+#include "PlayerPoint.hlsli"
 
 Texture2D tex : register(t0);
 Texture2D tex2 : register(t1);

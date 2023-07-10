@@ -281,25 +281,22 @@
     <None Include="Resources\Models\Switch.cmo" />
     <None Include="Resources\Models\TitleLogo.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
-    <None Include="Resources\Shaders\Tom.hlsli" />
-    <None Include="Resources\Shaders\TomGS.cso" />
-    <None Include="Resources\Shaders\TomPS.cso" />
-    <None Include="Resources\Shaders\TomVS.cso" />
+    <None Include="Resources\Shaders\PlayerPoint.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\TomGS.hlsl">
+    <FxCompile Include="Resources\Shaders\PlayerPointGS.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\TomPS.hlsl">
+    <FxCompile Include="Resources\Shaders\PlayerPointPS.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\TomVS.hlsl">
+    <FxCompile Include="Resources\Shaders\PlayerPointVS.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>

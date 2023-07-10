@@ -111,13 +111,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	m_playerBill->SetVertexMovePos(m_player->GetPosition());
 
 	// 当たり判定の更新
-	DoBoxCollision();
-
-	// 衝突したオブジェクトごとに押し戻し処理を行う
-	for (auto& obj : m_colObjList)
-	{
-		ApplyPushBack(obj);
-	}
+	Judgement();
 	
 	// 落下したらリスタート（仮）
 	if (m_player->GetDeathFlag())
@@ -284,14 +278,14 @@ void PlayScene::CreateWindowDependentResources()
 }
 
 /// <summary>
-/// 当たっていたらリスト追加
+/// 当たり判定処理
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void PlayScene::DoBoxCollision()
+void PlayScene::Judgement()
 {
 	// 衝突したオブジェクトリストを初期化
-	m_colObjList.clear(); 
+	m_colObjList.clear();
 
 	// 当たり判定を取る
 	for (auto& obj : m_mapObj)
@@ -330,6 +324,12 @@ void PlayScene::DoBoxCollision()
 				m_colObjList.push_back(obj);
 			}
 		}
+	}
+
+	// 衝突したオブジェクトごとに押し戻し処理を行う
+	for (auto& obj : m_colObjList)
+	{
+		ApplyPushBack(obj);
 	}
 }
 
@@ -407,40 +407,23 @@ void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	// シーン名の表示
 	GetSystemManager()->GetString()->DrawFormatString(state, { 0,0 }, L"PlayScene");
 
-	// 文字数設定
-	wchar_t cam[64];
-
-	// カメラのポジション
-	swprintf_s(cam, 64, L"CameraPos = %d,%d,%d",
-		static_cast<int>(GetSystemManager()->GetCamera()->GetEye().x),
-		static_cast<int>(GetSystemManager()->GetCamera()->GetEye().y),
-		static_cast<int>(GetSystemManager()->GetCamera()->GetEye().z)
-	);
-	GetSystemManager()->GetString()->DrawFormatString(state, { 0,20 }, cam);
-
-	// ステージ番号確認
-	wchar_t num[32];
-	swprintf_s(num, 32, L"StageNum = %d", GetStageNum());
-
-	GetSystemManager()->GetString()->DrawFormatString(state, { 0,40 }, num);
-	
 	// プレイヤの座標
 	wchar_t plr[64];
 	swprintf_s(plr, 64, L"PlayerPosition = %f,%f,%f", m_player->GetPosition().x, m_player->GetPosition().y, m_player->GetPosition().z);
 
-	GetSystemManager()->GetString()->DrawFormatString(state, { 0,60 }, plr);
+	GetSystemManager()->GetString()->DrawFormatString(state, { 0,20 }, plr);
 	
 	// プレイヤの重力
 	wchar_t gra[32];
 	swprintf_s(gra, 32, L"Gravity = %f", m_player->GetGravity());
 
-	GetSystemManager()->GetString()->DrawFormatString(state, { 0,80 }, gra);
+	GetSystemManager()->GetString()->DrawFormatString(state, { 0,40 }, gra);
 		
-	// コインテスト
+	// コインカウンタ
 	wchar_t coi[32];
 	swprintf_s(coi, 32, L"Coin = %d", m_coinCount);
 
-	GetSystemManager()->GetString()->DrawFormatString(state, { 0,100 }, coi);
+	GetSystemManager()->GetString()->DrawFormatString(state, { 0,60 }, coi);
 
 	// デバイスコンテキストの取得：グリッドの描画に使用
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();

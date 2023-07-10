@@ -177,9 +177,9 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 	context->RSSetState(m_common->CullNone());
 
 	//シェーダをセットする
-	context->VSSetShader(m_vertexShader.Get(),   nullptr, 0);
-	context->GSSetShader(m_geometryShader.Get(), nullptr, 0);
-	context->PSSetShader(m_pixelShader.Get(),    nullptr, 0);
+	context->VSSetShader(m_verShader.Get(), nullptr, 0);
+	context->GSSetShader(m_geoShader.Get(), nullptr, 0);
+	context->PSSetShader(m_pixShader.Get(), nullptr, 0);
 
 	//ピクセルシェーダにテクスチャを登録する
 	for (int i = 0; i < m_textures.size(); i++)
@@ -213,11 +213,11 @@ void PlayerBill::CreateShader()
 
 	// シェーダーファイルの読み込み
 	// バーテックスシェーダー
-	LoadFile VSData = LoadFile::LoadBinaryFile(L"Resources/Shaders/TomVS.cso");
+	LoadFile VSData = LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointVS.cso");
 	// ジオメトリシェーダー
-	LoadFile GSData = LoadFile::LoadBinaryFile(L"Resources/Shaders/TomGS.cso");
+	LoadFile GSData = LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointGS.cso");
 	// ピクセルシェーダー
-	LoadFile PSData = LoadFile::LoadBinaryFile(L"Resources/Shaders/TomPS.cso");
+	LoadFile PSData = LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointPS.cso");
 
 	// インプットレイアウトの作成
 	device->CreateInputLayout(
@@ -233,7 +233,7 @@ void PlayerBill::CreateShader()
 		VSData.GetData(),
 		VSData.GetSize(), 
 		nullptr,
-		m_vertexShader.ReleaseAndGetAddressOf()
+		m_verShader.ReleaseAndGetAddressOf()
 	);
 
 	// ジオメトリシェーダーの作成
@@ -241,7 +241,7 @@ void PlayerBill::CreateShader()
 		GSData.GetData(),
 		GSData.GetSize(),
 		nullptr,
-		m_geometryShader.ReleaseAndGetAddressOf()
+		m_geoShader.ReleaseAndGetAddressOf()
 	);
 
 	// ピクセルシェーダーの作成
@@ -249,7 +249,7 @@ void PlayerBill::CreateShader()
 		PSData.GetData(), 
 		PSData.GetSize(), 
 		nullptr,
-		m_pixelShader.ReleaseAndGetAddressOf()
+		m_pixShader.ReleaseAndGetAddressOf()
 	);
 
 	// コンスタントバッファ作成

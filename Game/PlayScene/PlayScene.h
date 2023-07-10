@@ -81,9 +81,9 @@ public:
 	// ‰æ–ÊˆË‘¶‚Ì‰Šú‰»
 	void CreateWindowDependentResources() override;
 
-	// “–‚½‚è”»’è
-	void DoBoxCollision();
-
+	// “–‚½‚è”»’èˆ—
+	void Judgement();
+	
 	// ‰Ÿ‚µ–ß‚µˆ—
 	void ApplyPushBack(Object& obj);
 

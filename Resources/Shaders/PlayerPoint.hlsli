@@ -1,6 +1,6 @@
 /*
- *	@File	Tom.hlsli
- *	@Brief	トムシェーダー。
+ *	@File	PlayerPoint.hlsli
+ *	@Brief	プレイヤー位置情報シェーダー。
  *	@Date	2023-07-07
  *  @Author NakamuraRyo
  */

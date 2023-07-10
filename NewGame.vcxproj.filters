@@ -359,16 +359,7 @@
     <None Include="Resources\Models\TitleStage.cmo">
       <Filter>Resources\Models</Filter>
     </None>
-    <None Include="Resources\Shaders\Tom.hlsli">
-      <Filter>Resources\Shaders</Filter>
-    </None>
-    <None Include="Resources\Shaders\TomGS.cso">
-      <Filter>Resources\Shaders</Filter>
-    </None>
-    <None Include="Resources\Shaders\TomPS.cso">
-      <Filter>Resources\Shaders</Filter>
-    </None>
-    <None Include="Resources\Shaders\TomVS.cso">
+    <None Include="Resources\Shaders\PlayerPoint.hlsli">
       <Filter>Resources\Shaders</Filter>
     </None>
   </ItemGroup>
@@ -378,13 +369,13 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\TomGS.hlsl">
+    <FxCompile Include="Resources\Shaders\PlayerPointGS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\TomPS.hlsl">
+    <FxCompile Include="Resources\Shaders\PlayerPointPS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\TomVS.hlsl">
+    <FxCompile Include="Resources\Shaders\PlayerPointVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

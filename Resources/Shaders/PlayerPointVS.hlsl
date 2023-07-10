@@ -1,11 +1,11 @@
 /*
- *	@File	TomVS.hlsl
- *	@Brief	トムバーテックスシェーダー。
+ *	@File	PlayerPointVS.hlsl
+ *	@Brief	プレイヤーポイントバーテックスシェーダー。
  *	@Date	2023-07-07
  *  @Author NakamuraRyo
  */
 
-#include "Tom.hlsli"
+#include "PlayerPoint.hlsli"
 
 PS_INPUT main(VS_INPUT input)
 {
