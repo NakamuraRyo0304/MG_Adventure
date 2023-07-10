@@ -115,7 +115,7 @@ void Player::Update(Keyboard::State& keyState, float timer)
 /// <param name="view">ビュー行列</param>
 /// <param name="proj">射影行列</param>
 /// <returns>なし</returns>
-void Player::Render(ID3D11DeviceContext* context, DX11::CommonStates& states,
+void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	// ワールド行列

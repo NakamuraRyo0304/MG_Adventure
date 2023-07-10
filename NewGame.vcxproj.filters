@@ -110,6 +110,9 @@
     <Filter Include="Common\ParticleUtility">
       <UniqueIdentifier>{834a3b38-b4e4-4766-bd4c-ab0f49ad1554}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\Blocks">
+      <UniqueIdentifier>{172a3131-3b9a-476c-9c20-86911f3cc348}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -196,6 +199,9 @@
     <ClInclude Include="Libraries\SystemDatas\ParticleUtility.h">
       <Filter>Common\ParticleUtility</Filter>
     </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\Blocks.h">
+      <Filter>Scenes\PlayScene\Objects\Blocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -275,6 +281,9 @@
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\ParticleUtility.cpp">
       <Filter>Common\ParticleUtility</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\Objects\Blocks.cpp">
+      <Filter>Scenes\PlayScene\Objects\Blocks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

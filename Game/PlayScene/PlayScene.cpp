@@ -19,6 +19,9 @@
 // プレイヤクラス
 #include "Objects/Player.h"
 
+// ブロッククラス
+#include "Objects/Blocks.h"
+
 #include "PlayScene.h"
 
  /// <summary>
@@ -33,12 +36,7 @@ PlayScene::PlayScene() :
 	m_map{},						// マップ
 	m_colObjList{},					// 当っているオブジェクトの格納
 	is_boxCol{},					// 立方体当たり判定
-	m_grassModel{ nullptr },		// 草ブロックのモデル
-	m_coinModel{ nullptr },			// コインブロックのモデル
-	m_clowdModel{ nullptr },		// 雲ブロックのモデル
-	m_skyDomeModel{ nullptr },		// スカイドームモデル
-	m_coinCount{0},					// 獲得コイン
-	m_maxCoins{}					// 最大コイン
+	m_skyDomeModel{ nullptr }		// スカイドームモデル
 {
 
 }
@@ -70,7 +68,10 @@ void PlayScene::Initialize()
 	m_player->Initialize(std::make_shared<SystemManager>());
 
 	// マップ読み込み
-	LoadMap(GetStageNum());
+	m_blocks->Initialize(GetStageNum());
+
+	// プレイヤー座標設定
+	m_player->SetPosition(m_blocks->GetPlayerPosition());
 
 	// 判定の初期化
 	m_colObjList.clear();
@@ -98,7 +99,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	GetSystemManager()->GetCamera()->Update();
 
 	// コインをすべて獲得でリザルト
-	if (m_coinCount == m_maxCoins)
+	if (m_blocks->IsCollectedFlag())
 	{
 		GoNextScene(SCENE::RESULT);
 		return;
@@ -109,6 +110,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	
 	// 相対移動
 	m_playerBill->SetVertexMovePos(m_player->GetPosition());
+
+	// ブロックの更新
+	m_blocks->Update(elapsedTime);
 
 	// 当たり判定の更新
 	Judgement();
@@ -146,33 +150,12 @@ void PlayScene::Draw()
 	// プレイヤの描画
 	m_player->Render(context, states, view, proj);
 
-	// 回転行列
-	SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(m_timer);
-
-	// オブジェクトの描画
-	for (int i = 0; i < m_mapObj.size(); i++)
-	{
-		SimpleMath::Matrix boxMat =
-			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
-
-		if (m_mapObj[i].id == MapLoad::BoxState::GrassBox)
-		{
-			m_grassModel->Draw(context, states, boxMat, view, proj);
-		}
-		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
-		{
-			m_coinModel->Draw(context, states, rotateY * boxMat, view, proj);
-		}
-		if (m_mapObj[i].id == MapLoad::BoxState::SwitchBox)
-		{
-			m_coinModel->Draw(context, states, rotateY * boxMat, view, proj);
-		}
-	}
+	// マップの描画
+	m_blocks->Render(context, states, view, proj, m_timer);
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
-
 
 	// ビルボード作成
 	m_playerBill->CreateBillboard(
@@ -196,16 +179,11 @@ void PlayScene::Finalize()
 	// プレイヤの後処理
 	m_player->Finalize();
 
-	// マップの解放
-	m_mapObj.clear();
+	// マップの後処理
+	m_blocks->Finalize();
 
 	// 判定用配列を解放
 	m_colObjList.clear();
-
-	// モデルの解放
-	ModelFactory::DeleteModel(m_grassModel);
-	ModelFactory::DeleteModel(m_coinModel);
-	ModelFactory::DeleteModel(m_clowdModel);
 }
 
 /// <summary>
@@ -232,20 +210,9 @@ void PlayScene::CreateWindowDependentResources()
 	// 文字の設定
 	GetSystemManager()->GetString()->CreateString(device, context);
 
-	// モデルを作成する
-	m_grassModel = ModelFactory::GetCreateModel(						// 草ブロック
-		device,
-		L"Resources/Models/GrassBlock.cmo"
-	);
-	m_coinModel = ModelFactory::GetCreateModel(							// コインブロック
-		device,
-		L"Resources/Models/Coin.cmo"
-	);
-	m_clowdModel = ModelFactory::GetCreateModel(						// 雲ブロック
-		device,
-		L"Resources/Models/Clowd.cmo"
-	);
-	m_skyDomeModel = ModelFactory::GetCreateModel(						// スカイドーム
+	// モデルを作成する	
+	// スカイドーム
+	m_skyDomeModel = ModelFactory::GetCreateModel(	
 		device,
 		L"Resources/Models/ShineSky.cmo"
 	);
@@ -267,9 +234,28 @@ void PlayScene::CreateWindowDependentResources()
 		}
 	);
 
-	// モデルデータを渡す(move必要)
+	// プレイヤーの作成
 	m_player = std::make_unique<Player>(
 		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/CatClean.cmo"))
+	);
+
+	// ブロックの作成
+	m_blocks = std::make_unique<Blocks>();
+
+	// 草ブロックの作成
+	m_blocks->CreateModels(
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo")),
+		m_blocks->GRASS
+	);
+	// コインの作成
+	m_blocks->CreateModels(
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo")),
+		m_blocks->COIN
+	);
+	// 雲ブロックの作成
+	m_blocks->CreateModels(
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Clowd.cmo")),
+		m_blocks->CLOWD
 	);
 
 	// 位置情報のシェーダーの作成
@@ -288,13 +274,13 @@ void PlayScene::Judgement()
 	m_colObjList.clear();
 
 	// 当たり判定を取る
-	for (auto& obj : m_mapObj)
+	for (auto& obj : m_blocks->GetMapData())
 	{
 		// プレイヤの半径2.0fの範囲になければ処理しない
 		if (UserUtility::CheckPointInSphere(
-			m_player->GetPosition(),			// 中心点
-			COMMON_SIZE * 2,					// 半径
-			obj.position))						// あるか調べる点
+			m_player->GetPosition(),// 中心点
+			JUDGE_AREA,				// 半径
+			obj.position))			// あるか調べる点
 		{
 
 			// 判定を取る コインのみ判定を小さくする
@@ -304,7 +290,8 @@ void PlayScene::Judgement()
 					m_player->GetPosition(),								// プレイヤ座標
 					obj.position,											// コイン座標
 					SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-					SimpleMath::Vector3{ COMMON_SIZE / 3 }					// コインサイズ
+					SimpleMath::Vector3{									// コインサイズ
+						m_blocks->GetObjSize(MapLoad::BoxState::CoinBox)}	
 				);
 			}
 			else
@@ -313,7 +300,8 @@ void PlayScene::Judgement()
 					m_player->GetPosition(),								// プレイヤ座標
 					obj.position,											// ブロック座標
 					SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-					SimpleMath::Vector3{ COMMON_SIZE }						// ブロックサイズ
+					SimpleMath::Vector3{									// ブロックサイズ
+						m_blocks->GetObjSize(MapLoad::BoxState::GrassBox)}	
 				);
 			}
 
@@ -346,9 +334,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 		is_boxCol.SetPushMode(false);
 		return;
 	}
-
-	// 空気以外の場合は押し戻しを有効にする
-	if (obj.id != MapLoad::BoxState::None)
+	else
 	{
 		is_boxCol.SetPushMode(true);
 	}
@@ -356,16 +342,11 @@ void PlayScene::ApplyPushBack(Object& obj)
 	// コインの処理
 	if (obj.id == MapLoad::BoxState::CoinBox)
 	{ 
-		// 該当コインの検索＆獲得処理
-		for (auto& i : m_mapObj)
-		{
-			if (i == obj)
-			{
-				m_coinCount += 1;				// 獲得数加算
-				i.id = MapLoad::BoxState::None;	// 獲得したらコインを削除
-			}
-		}
-		return;
+		// 押し戻ししない
+		is_boxCol.SetPushMode(false);
+
+		// コインカウントアップ
+		m_blocks->CountUpCoin(obj.index);
 	}
 
 	// プレイヤのポジションを保存
@@ -421,7 +402,7 @@ void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 		
 	// コインカウンタ
 	wchar_t coi[32];
-	swprintf_s(coi, 32, L"Coin = %d", m_coinCount);
+	swprintf_s(coi, 32, L"Coin = %d", m_blocks->GetCoinCount());
 
 	GetSystemManager()->GetString()->DrawFormatString(state, { 0,60 }, coi);
 
@@ -429,68 +410,4 @@ void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	// デバッググリッドの表示
 	GetSystemManager()->GetGridFloor()->Draw(context, state, view, proj);
-}
-
-/// <summary>
-/// マップ読み込み
-/// </summary>
-/// <param name="num">ステージ番号</param>
-/// <returns>なし</returns>
-void PlayScene::LoadMap(int num)
-{
-	// ファイル名の宣言
-	std::wstring filePath = L"";
-
-	// マップの変更
-	switch (num)
-	{
-	case 1:
-		filePath = L"Resources/Maps/Stage1.csv";
-		break;
-	case 2:
-		filePath = L"Resources/Maps/Stage2.csv";
-		break;
-	case 3:
-		filePath = L"Resources/Maps/Stage3.csv";
-		break;
-	default:
-		filePath = L"NoStage";
-		break;
-	}
-
-	// マップの読み込み
-	m_map.LoadMap(filePath);
-
-	// マップの格納
-	m_mapObj = m_map.GetMapData();
-
-	// メモリの解放
-	m_map.ReleaseMemory();
-	
-	// 座標補正
-	for (int i = 0; i < m_mapObj.size(); i++)
-	{
-		m_mapObj[i].position.x -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
-		m_mapObj[i].position.y += static_cast<float>(COMMON_LOW);
-		m_mapObj[i].position.z -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
-
-		// コインの枚数のカウント
-		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
-		{
-			m_maxCoins++;
-		}
-		// プレイヤの座標を代入
-		if (m_mapObj[i].id == MapLoad::BoxState::PlayerPos)
-		{
-			m_player->SetPosition(SimpleMath::Vector3
-				{
-					m_mapObj[i].position.x, 
-					m_mapObj[i].position.y + COMMON_SIZE / 2,
-					m_mapObj[i].position.z 
-				}
-			);
-			// 代入後に該当マスを空気に変える(判定除去)
-			m_mapObj[i].id = MapLoad::BoxState::None;
-		}
-	}
 }
