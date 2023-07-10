@@ -123,7 +123,7 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 	m_particleUtility.sort(
 		[&](ParticleUtility lhs, ParticleUtility  rhs)
 		{
-			//カメラ正面の距離でソート
+			// カメラ正面の距離でソート
 			return cameraDir.Dot(lhs.GetPosition() - m_cameraPosition) > cameraDir.Dot(rhs.GetPosition() - m_cameraPosition);
 		});
 
@@ -135,10 +135,11 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 		// カメラの後ろにいたら処理しない
 		if (cameraDir.Dot(li.GetPosition() - m_cameraPosition) < 0.0f)continue;
 
-		VertexPositionColorTexture vPCT;
-		vPCT.position = XMFLOAT3(li.GetPosition());
-		vPCT.color = XMFLOAT4(li.GetNowColor());
-		vPCT.textureCoordinate = XMFLOAT2(li.GetNowScale().x, 0.0f);
+		// 頂点情報の初期化
+		VertexPositionColorTexture vPCT;										// 宣言
+		vPCT.position = XMFLOAT3(li.GetPosition());								// 座標
+		vPCT.color = XMFLOAT4(li.GetNowColor());								// 色
+		vPCT.textureCoordinate = XMFLOAT2(li.GetNowScale().x, 0.0f);			// 画像
 
 		m_vertices.push_back(vPCT);
 	}
