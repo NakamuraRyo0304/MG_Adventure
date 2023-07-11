@@ -210,8 +210,7 @@ void PlayScene::CreateWindowDependentResources()
 	// 文字の設定
 	GetSystemManager()->GetString()->CreateString(device, context);
 
-	// モデルを作成する	
-	// スカイドーム
+	// スカイドームモデルを作成する	
 	m_skyDomeModel = ModelFactory::GetCreateModel(	
 		device,
 		L"Resources/Models/ShineSky.cmo"
@@ -278,32 +277,17 @@ void PlayScene::Judgement()
 	{
 		// プレイヤの半径2.0fの範囲になければ処理しない
 		if (UserUtility::CheckPointInSphere(
-			m_player->GetPosition(),// 中心点
-			JUDGE_AREA,				// 半径
-			obj.position))			// あるか調べる点
+			m_player->GetPosition(),									// 中心点
+			JUDGE_AREA,													// 半径
+			obj.position))												// あるか調べる点
 		{
-
-			// 判定を取る コインのみ判定を小さくする
-			if (obj.id == MapLoad::BoxState::CoinBox)
-			{
-				is_boxCol.PushBox(
-					m_player->GetPosition(),								// プレイヤ座標
-					obj.position,											// コイン座標
-					SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-					SimpleMath::Vector3{									// コインサイズ
-						m_blocks->GetObjSize(MapLoad::BoxState::CoinBox)}	
-				);
-			}
-			else
-			{
-				is_boxCol.PushBox(
-					m_player->GetPosition(),								// プレイヤ座標
-					obj.position,											// ブロック座標
-					SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-					SimpleMath::Vector3{									// ブロックサイズ
-						m_blocks->GetObjSize(MapLoad::BoxState::GrassBox)}	
-				);
-			}
+			// 判定を取る
+			is_boxCol.PushBox(
+				m_player->GetPosition(),								// プレイヤ座標
+				obj.position,											// コイン座標
+				SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
+				SimpleMath::Vector3{ m_blocks->GetObjSize(obj.id) }		// ブロックサイズ
+			);			
 
 			// 当たっていたら処理する
 			if (is_boxCol.GetHitBoxFlag())
@@ -357,7 +341,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 		&playerPos,												// プレイヤ座標
 		obj.position,											// ブロック座標
 		SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-		SimpleMath::Vector3{ COMMON_SIZE }						// ブロックサイズ
+		SimpleMath::Vector3{ m_blocks->GetObjSize(obj.id)}		// ブロックサイズ
 	);
 
 	// 変更後のプレイヤのポジションを反映

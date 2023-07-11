@@ -7,6 +7,9 @@
 
 #include "pch.h"
 
+// ユーザーユーティリティ
+#include "Libraries/UserUtility.h"
+
 #include "ResultScene.h"
 
  /// <summary>
@@ -15,7 +18,8 @@
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
 ResultScene::ResultScene():
-	IScene()
+	IScene(),
+	m_selectNum{RETRY}
 {
 }
 
@@ -38,7 +42,8 @@ void ResultScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetEagleMode(true);		// カメラ視点移動
+	// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetEagleMode(false);
 }
 
 /// <summary>
@@ -62,10 +67,36 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
+	// メニューセレクト
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
+	{
+		m_selectNum++;
+	}
+	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left))
+	{
+		m_selectNum--;
+	}
+
+	// クランプ
+	m_selectNum = UserUtility::Clamp(m_selectNum, static_cast<int>(RETRY), static_cast<int>(TITLE));
+
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
-		GoNextScene(SCENE::TITLE);
+		switch (m_selectNum)
+		{
+		case RETRY:
+			GoNextScene(SCENE::PLAY);
+			break;
+		case SELECT:
+			GoNextScene(SCENE::SELECT);
+			break;
+		case TITLE:
+			GoNextScene(SCENE::TITLE);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -82,6 +113,27 @@ void ResultScene::Draw()
 		GetSystemManager()->GetCommonStates().get(), 
 		{ 0,0 }, 
 		L"ResultScene"
+	);
+
+	wchar_t sel[10];
+
+	if (m_selectNum == RETRY)
+	{
+		swprintf_s(sel, 10, L"Retry");
+	}
+	else if (m_selectNum == SELECT)
+	{
+		swprintf_s(sel, 10, L"Select");
+	}
+	else if (m_selectNum == TITLE)
+	{
+		swprintf_s(sel, 10, L"Title");
+	}
+
+	GetSystemManager()->GetString()->DrawFormatString(
+		GetSystemManager()->GetCommonStates().get(), 
+		{ 0,20 }, 
+		sel
 	);
 }
 
