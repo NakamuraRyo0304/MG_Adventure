@@ -210,8 +210,7 @@ void PlayScene::CreateWindowDependentResources()
 	// 文字の設定
 	GetSystemManager()->GetString()->CreateString(device, context);
 
-	// モデルを作成する	
-	// スカイドーム
+	// スカイドームモデルを作成する	
 	m_skyDomeModel = ModelFactory::GetCreateModel(	
 		device,
 		L"Resources/Models/ShineSky.cmo"
