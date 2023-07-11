@@ -14,7 +14,11 @@
 class ResultScene : public IScene
 {
 private:
+	// モード
+	enum { RETRY, SELECT, TITLE };
 
+	// セレクト
+	int m_selectNum;
 
 public:
 
