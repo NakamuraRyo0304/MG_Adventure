@@ -5,6 +5,9 @@
  *  @Author NakamuraRyo
  */
 
+// マップの使用
+#include <map>
+
 class Blocks
 {
 private:
@@ -14,6 +17,16 @@ private:
 
 	// ブロック
 	std::vector<Object> m_mapObj;
+
+	// 雲ステータス
+	struct Clowd 
+	{
+		bool moveFlag = false;
+		DirectX::SimpleMath::Vector3 endPosition = DirectX::SimpleMath::Vector3::Zero;
+	};
+
+	// フラグ管理
+	std::map<int, Clowd> m_clowdState;
 
 	// プレイヤー座標
 	DirectX::SimpleMath::Vector3 m_playerPos;
@@ -105,6 +118,9 @@ public:
 			return COMMON_SIZE;
 		}
 	}
+
+	// マップの判定セッター
+	void SetClowdHitFlag(int index,bool flag){ m_clowdState[index].moveFlag = flag;	}
 
 private:
 

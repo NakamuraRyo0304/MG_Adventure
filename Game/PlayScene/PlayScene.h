@@ -90,9 +90,6 @@ public:
 	// デバッグ表示
 	void DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 
-	// マップ読み込み
-	void LoadMap(int num);
-
 };
 
 #endif // PLAYSCENE

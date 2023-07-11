@@ -13,6 +13,9 @@
 // モデルファクトリ
 #include "../../../Libraries/Factories/ModelFactory.h"
 
+// ユーザーユーティリティ
+#include "../../../Libraries/UserUtility.h"
+
 #include "Blocks.h"
 
  /// <summary>
@@ -81,6 +84,18 @@ void Blocks::Initialize(int stageNum)
 		{
 			m_maxCoins++;
 		}
+		// 雲フラグ登録
+		if (m_mapObj[i].id == MapLoad::BoxState::ClowdBox)
+		{
+			// ステータス登録
+			m_clowdState[i].moveFlag = false;
+			m_clowdState[i].endPosition = SimpleMath::Vector3
+			{
+				m_mapObj[i].position.x, 
+				m_mapObj[i].position.y + COMMON_SIZE + CLOWD_SIZE,
+				m_mapObj[i].position.z 
+			};
+		}
 		// プレイヤの座標を代入
 		if (m_mapObj[i].id == MapLoad::BoxState::PlayerPos)
 		{
@@ -114,9 +129,15 @@ void Blocks::Update(float elapsedTime)
 	// 雲は上下移動する
 	for(int i = 0; i < m_mapObj.size();++i)
 	{
-		if (m_mapObj[i].id == MapLoad::BoxState::ClowdBox)
+		if (m_mapObj[i].id == MapLoad::BoxState::ClowdBox && m_clowdState[i].moveFlag)
 		{
-			m_mapObj[i].position.y -= sinf(elapsedTime) * 0.02f;
+			// Y座標を終点まで動かす
+			m_mapObj[i].position.y = UserUtility::Lerp
+			(
+				m_mapObj[i].position.y,
+				m_clowdState[i].endPosition.y,
+				0.1f
+			);
 		}
 	}
 

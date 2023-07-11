@@ -339,7 +339,15 @@ void PlayScene::ApplyPushBack(Object& obj)
 		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(obj.id))
 		{
 			is_boxCol.SetPushMode(false);
+			return;
 		}
+
+		// 当たっている判定を出す
+		m_blocks->SetClowdHitFlag(obj.index, true);
+	}
+	else
+	{
+		m_blocks->SetClowdHitFlag(obj.index, false);
 	}
 
 	// プレイヤのポジションを保存
