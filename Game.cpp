@@ -9,7 +9,7 @@
 #include "Game.h"
 
 // TODO: ウィンドウタイトルの設定
-const wchar_t* Game::TITLE = L"DirectXTemp";
+const wchar_t* Game::TITLE = L"SkyFall";
 // TODO: スクリーンサイズの設定
 const int Game::SCREEN_W = 1280;
 const int Game::SCREEN_H = 720;
