@@ -251,9 +251,9 @@ void PlayScene::CreateWindowDependentResources()
 		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo")),
 		m_blocks->COIN
 	);
-	// 雲ブロックの作成
+	// 動くブロックの作成
 	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Clowd.cmo")),
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo")),
 		m_blocks->CLOWD
 	);
 
@@ -331,6 +331,15 @@ void PlayScene::ApplyPushBack(Object& obj)
 
 		// コインカウントアップ
 		m_blocks->CountUpCoin(obj.index);
+	}
+	// 雲の処理
+	if (obj.id == MapLoad::BoxState::ClowdBox)
+	{ 
+		// プレイヤーが下にいたら押し戻ししない
+		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(obj.id))
+		{
+			is_boxCol.SetPushMode(false);
+		}
 	}
 
 	// プレイヤのポジションを保存

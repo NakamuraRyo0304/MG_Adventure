@@ -28,7 +28,7 @@ Blocks::Blocks():
 	m_playerPos{SimpleMath::Vector3::Zero},	// プレイヤーポジション
 	m_grassModel{ nullptr },				// 草ブロックのモデル
 	m_coinModel{ nullptr },					// コインブロックのモデル
-	m_clowdModel{ nullptr }					// 雲ブロックのモデル
+	m_moveModel{ nullptr }					// 雲ブロックのモデル
 {
 	m_map = std::make_unique<MapLoad>();
 }
@@ -111,6 +111,15 @@ void Blocks::Update(float elapsedTime)
 {
 	elapsedTime;
 
+	// 雲は上下移動する
+	for(int i = 0; i < m_mapObj.size();++i)
+	{
+		if (m_mapObj[i].id == MapLoad::BoxState::ClowdBox)
+		{
+			m_mapObj[i].position.y -= sinf(elapsedTime) * 0.02f;
+		}
+	}
+
 	// コインを回収したらTrueにする
 	if (m_coinCount == m_maxCoins)
 	{
@@ -147,9 +156,9 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		{
 			m_coinModel->Draw(context, states, rotateY * world, view, proj);
 		}
-		if (m_mapObj[i].id == MapLoad::BoxState::SwitchBox)
+		if (m_mapObj[i].id == MapLoad::BoxState::ClowdBox)
 		{
-			m_coinModel->Draw(context, states, rotateY * world, view, proj);
+			m_moveModel->Draw(context, states, rotateY * world, view, proj);
 		}
 	}
 }
@@ -167,7 +176,7 @@ void Blocks::Finalize()
 	// モデルの解放
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
-	ModelFactory::DeleteModel(m_clowdModel);
+	ModelFactory::DeleteModel(m_moveModel);
 }
 
 /// <summary>
@@ -186,8 +195,8 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 	case COIN:									// コイン
 		m_coinModel = std::move(model);
 		break;
-	case CLOWD:									// 雲ブロック(使用するか未定)
-		m_clowdModel = std::move(model);
+	case CLOWD:									// 雲ブロック
+		m_moveModel = std::move(model);
 		break;
 	default:
 		break;
@@ -225,7 +234,7 @@ std::wstring Blocks::MapSelect(int num)
 	std::wstring filePath;
 
 	// マップの変更
-	switch (num)
+	switch (num) // マップ追加はここから！
 	{
 	case 1:
 		filePath = L"Resources/Maps/Stage1.csv";

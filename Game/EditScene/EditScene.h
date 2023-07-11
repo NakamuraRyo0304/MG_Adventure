@@ -26,8 +26,10 @@ private:
 	// タイマー
 	float m_timer;
 
-	// ボックスとスフィア
-	std::unique_ptr<DirectX::GeometricPrimitive> m_sphere;
+	// ファイル読み込みモード
+	enum { WRITE, READ };
+
+	// カーソル位置
 	DirectX::SimpleMath::Vector3 m_cursorPos;
 
 	// ブロックの配列
@@ -47,7 +49,7 @@ private:
 	std::unique_ptr<DirectX::Model>m_grassModel;							// 草モデル
 	std::unique_ptr<DirectX::Model>m_noneModel;								// 消しゴムモデル
 	std::unique_ptr<DirectX::Model>m_coinModel;								// コインモデル
-	std::unique_ptr<DirectX::Model>m_clowdModel;							// 雲モデル
+	std::unique_ptr<DirectX::Model>m_moveModel;								// 動くモデル
 	std::unique_ptr<DirectX::Model>m_switchModel;							// スイッチモデル
 	std::unique_ptr<DirectX::Model>m_playerModel;							// プレイヤモデル
 
@@ -102,8 +104,7 @@ public:
 	void EditMap();
 
 	// 座標補正関数
-	void OffsetPosition_Read(std::vector<Object>* obj);
-	void OffsetPosition_Write(std::vector<Object>* obj);
+	void OffsetPosition(std::vector<Object>* obj , int mode);
 	
 	// マップ読み込み
 	void LoadMap(std::wstring filename);

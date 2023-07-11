@@ -275,10 +275,10 @@
     <None Include="Resources\Fonts\myfile.spritefont" />
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />
     <None Include="Resources\Models\CatClean.cmo" />
-    <None Include="Resources\Models\Clowd.cmo" />
     <None Include="Resources\Models\Coin.cmo" />
     <None Include="Resources\Models\Eraser.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
+    <None Include="Resources\Models\MoveBlock.cmo" />
     <None Include="Resources\Models\ShineSky.cmo" />
     <None Include="Resources\Models\Switch.cmo" />
     <None Include="Resources\Models\TitleLogo.cmo" />

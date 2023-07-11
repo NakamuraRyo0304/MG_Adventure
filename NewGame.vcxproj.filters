@@ -347,9 +347,6 @@
     <None Include="Resources\Models\Coin.cmo">
       <Filter>Resources\Models</Filter>
     </None>
-    <None Include="Resources\Models\Clowd.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
     <None Include="Resources\Models\Eraser.cmo">
       <Filter>Resources\Models</Filter>
     </None>
@@ -370,6 +367,9 @@
     </None>
     <None Include="Resources\Shaders\PlayerPoint.hlsli">
       <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="Resources\Models\MoveBlock.cmo">
+      <Filter>Resources\Models</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

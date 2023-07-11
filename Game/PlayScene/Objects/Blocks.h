@@ -35,6 +35,9 @@ private:
 	// コインのサイズ
 	const float COIN_SIZE = COMMON_SIZE / 3;
 
+	// 雲のサイズ
+	const float CLOWD_SIZE = COMMON_SIZE / 2;
+
 	// 最低高度
 	const float	COMMON_LOW = COMMON_SIZE / 2;
 
@@ -43,11 +46,11 @@ private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_grassModel;
 	std::unique_ptr<DirectX::Model> m_coinModel;
-	std::unique_ptr<DirectX::Model> m_clowdModel;
+	std::unique_ptr<DirectX::Model> m_moveModel;
 
 public:
-
-	enum { GRASS, COIN, CLOWD };
+	// ブロックの種類
+	enum { GRASS, COIN, CLOWD , LENGTH };
 public:
 
 	// コンストラクタ
@@ -90,6 +93,11 @@ public:
 		{
 			// コインは小さめサイズ
 			return COIN_SIZE;
+		}
+		else if (objName == MapLoad::BoxState::ClowdBox)
+		{
+			// 雲も小さめサイズ
+			return CLOWD_SIZE;
 		}
 		else
 		{

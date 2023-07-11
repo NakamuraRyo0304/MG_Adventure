@@ -21,7 +21,6 @@ EditScene::EditScene() :
 	IScene(),
 	m_timer{0.0f},
 	m_userInterface{},				// UI
-	m_sphere{},						// 球
 	m_cursorPos{0.0f,0.0f,0.0f},
 	m_mapObj{0},					// 格納配列
 	m_nowState{},					// 現在のブロックの種類
@@ -30,7 +29,7 @@ EditScene::EditScene() :
 	m_grassModel{ nullptr },		// モデル
 	m_noneModel{ nullptr },	
 	m_coinModel{ nullptr },
-	m_clowdModel{ nullptr },
+	m_moveModel{ nullptr },
 	m_switchModel{ nullptr },
 	m_sharedSystem{}
 	
@@ -58,12 +57,6 @@ void EditScene::Initialize()
 
 	// カメラ視点移動を有効にする
 	GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
-
-	// スフィアの初期化(テスト)
-	m_sphere = GeometricPrimitive::CreateSphere(
-		GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext(), 
-		COMMON_SIZE / 2
-	);
 
 	// マップ読み込み//初回読み込み
 	LoadMap(L"Resources/Maps/Stage1.csv");
@@ -110,9 +103,9 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_userInterface->GetOpenFlag() &&
 		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
-		m_map.LoadMap(L"");				// ファイル新規作成
-		m_mapObj = m_map.GetMapData();	// 読み込み
-		OffsetPosition_Read(&m_mapObj);	// 座標補正
+		m_map.LoadMap(L"");						// ファイル新規作成
+		m_mapObj = m_map.GetMapData();			// 読み込み
+		OffsetPosition(&m_mapObj,READ);			// 座標補正
 	}
 
 	// シフトを押している間はカメラモードをTrueにする
@@ -131,7 +124,10 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		case MapState::GrassBox:				// 草→コイン
 			ChangeState(MapState::CoinBox);
 			break;
-		case MapState::CoinBox:					// コイン→スイッチ
+		case MapState::CoinBox:					// コイン→動くブロック
+			ChangeState(MapState::ClowdBox);
+			break;
+		case MapState::ClowdBox:				// 動くブロック→スイッチ
 			ChangeState(MapState::SwitchBox);
 			break;
 		case MapState::SwitchBox:				// スイッチ→プレイヤ
@@ -207,6 +203,7 @@ void EditScene::Draw()
 		SimpleMath::Matrix boxMat = 
 			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
+		// 選択中オブジェ
 		if (m_mapObj[i].id == MapState::GrassBox)
 		{
 			m_grassModel->Draw(context, states, boxMat, view, projection);
@@ -214,6 +211,10 @@ void EditScene::Draw()
 		if (m_mapObj[i].id == MapState::CoinBox)
 		{
 			m_coinModel->Draw(context, states, rotateY * boxMat, view, projection);
+		}
+		if (m_mapObj[i].id == MapState::ClowdBox)
+		{
+			m_moveModel->Draw(context, states, rotateY * boxMat, view, projection);
 		}
 		if (m_mapObj[i].id == MapState::SwitchBox)
 		{
@@ -236,6 +237,10 @@ void EditScene::Draw()
 	if (m_nowState == MapState::CoinBox)
 	{
 		m_coinModel->Draw(context, states, world, view, projection);
+	}
+	if (m_nowState == MapState::ClowdBox)
+	{
+		m_moveModel->Draw(context, states, world, view, projection);
 	}
 	if (m_nowState == MapState::SwitchBox)
 	{
@@ -271,7 +276,7 @@ void EditScene::Finalize()
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_noneModel);
 	ModelFactory::DeleteModel(m_coinModel);
-	ModelFactory::DeleteModel(m_clowdModel);
+	ModelFactory::DeleteModel(m_moveModel);
 	ModelFactory::DeleteModel(m_switchModel);
 	ModelFactory::DeleteModel(m_playerModel);
 }
@@ -321,11 +326,11 @@ void EditScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Coin.cmo"
 	);
-	m_clowdModel = ModelFactory::GetCreateModel(				// 雲ブロック
+	m_moveModel = ModelFactory::GetCreateModel(					// 動く足場
 		device,
-		L"Resources/Models/Clowd.cmo"
+		L"Resources/Models/MoveBlock.cmo"
 	);
-	m_switchModel = ModelFactory::GetCreateModel(				// スイッチブロック
+	m_switchModel = ModelFactory::GetCreateModel(				// 動く判定
 		device,
 		L"Resources/Models/Switch.cmo"
 	);
@@ -452,23 +457,24 @@ void EditScene::EditMap()
 	m_cursorPos.y = UserUtility::Clamp(m_cursorPos.y, -2.0f, 15.0f);
 
 	// マップとの当たり判定
-	for (auto& i : m_mapObj)
+	for (auto& obj : m_mapObj)
 	{
 		// 押し戻し処理を無効化
 		is_boxCol.SetPushMode(false);
 
 		// 当たり判定を取る
-		is_boxCol.PushBox(&m_cursorPos, i.position,
+		is_boxCol.PushBox(&m_cursorPos, obj.position,
 			SimpleMath::Vector3{ COMMON_SIZE / 2 },
-			SimpleMath::Vector3{ COMMON_SIZE });
+			SimpleMath::Vector3{ COMMON_SIZE }
+		);
 
 		// 瞬間の当たり判定を取得
 		bool hit = is_boxCol.GetHitBoxFlag();
-		i.hit = hit;
+		obj.hit = hit;
 
 		if (hit && GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 		{
-			i.id = m_nowState;
+			obj.id = m_nowState;
 		}
 	}
 }
@@ -476,30 +482,30 @@ void EditScene::EditMap()
 /// <summary>
 /// 座標補正(読み込み時)
 /// </summary>
-/// <param name="obj">マップデータ</param>
+/// <param name="object">マップデータ</param>
+/// <param name="mode">読み書きモード</param>
 /// <returns>なし</returns>
-void EditScene::OffsetPosition_Read(std::vector<Object>* obj)
+void EditScene::OffsetPosition(std::vector<Object>* object, int mode)
 {
-	for (auto& i : *obj)
+	// 読み込み
+	if (mode == READ)
 	{
-		i.position.x -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
-		i.position.y += static_cast<float>(COMMON_LOW);
-		i.position.z -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		for (auto& obj : *object)
+		{
+			obj.position.x -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+			obj.position.y += static_cast<float>(COMMON_LOW);
+			obj.position.z -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		}
 	}
-}
-
-/// <summary>
-/// 座標補正(書き込み時)
-/// </summary>
-/// <param name="obj">マップデータ</param>
-/// <returns>なし</returns>
-void EditScene::OffsetPosition_Write(std::vector<Object>* obj)
-{
-	for (auto& i : *obj)
+	// 書き込み
+	if (mode == WRITE)
 	{
-		i.position.x += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
-		i.position.y -= static_cast<float>(COMMON_LOW);
-		i.position.z += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		for (auto& i : *object)
+		{
+			i.position.x += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+			i.position.y -= static_cast<float>(COMMON_LOW);
+			i.position.z += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+		}
 	}
 }
 
@@ -520,7 +526,7 @@ void EditScene::LoadMap(std::wstring filename)
 	m_mapObj = m_map.GetMapData();
 
 	// 座標補正
-	OffsetPosition_Read(&m_mapObj);
+	OffsetPosition(&m_mapObj,READ);
 }
 
 /// <summary>
@@ -531,7 +537,7 @@ void EditScene::LoadMap(std::wstring filename)
 void EditScene::SaveFile()
 {	
 	// ファイル書き出し
-	OffsetPosition_Write(&m_mapObj);		// 書き出し用に座標補正
-	m_map.WriteMap(m_mapObj);				// ファイルの書き出し
-	OffsetPosition_Read(&m_mapObj);			// エディット用に座標補正
+	OffsetPosition(&m_mapObj,WRITE);	// 書き出し用に座標補正
+	m_map.WriteMap(m_mapObj);			// ファイルの書き出し
+	OffsetPosition(&m_mapObj,READ);		// エディット用に座標補正
 }
