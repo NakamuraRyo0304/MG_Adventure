@@ -175,6 +175,7 @@ void GameMain::CreateScene()
 		case SCENE::RESULT:		// リザルトシーン
 		{
 			m_nowScene = std::make_unique<ResultScene>();
+			m_nowScene->SetStageNum(m_num);
 			break;
 		}
 		case SCENE::EDIT:		// ステージエディットシーン
