@@ -451,7 +451,7 @@ void EditScene::EditMap()
 	);
 
 	// 制限をつける
-	m_cursorPos.y = UserUtility::Clamp(m_cursorPos.y, -2.0f, 15.0f);
+	m_cursorPos.y = UserUtility::Clamp(m_cursorPos.y, CURSOR_MIN, CURSOR_MAX);
 
 	// マップとの当たり判定
 	for (auto& obj : m_mapObj)
@@ -466,10 +466,11 @@ void EditScene::EditMap()
 		);
 
 		// 瞬間の当たり判定を取得
-		bool hit = is_boxCol.GetHitBoxFlag();
-		obj.hit = hit;
+		obj.hit = is_boxCol.GetHitBoxFlag();
 
-		if (hit && GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+		// クリックでブロック設置
+		if (obj.hit && GetSystemManager()->GetMouseTrack()->leftButton ==
+			Mouse::ButtonStateTracker::RELEASED)
 		{
 			obj.id = m_nowState;
 		}
@@ -536,5 +537,5 @@ void EditScene::SaveFile()
 	// ファイル書き出し
 	OffsetPosition(&m_mapObj,WRITE);	// 書き出し用に座標補正
 	m_map.WriteMap(m_mapObj);			// ファイルの書き出し
-	OffsetPosition(&m_mapObj,READ);		// エディット用に座標補正
+	OffsetPosition(&m_mapObj,READ);		// 読み込み用に座標補正
 }

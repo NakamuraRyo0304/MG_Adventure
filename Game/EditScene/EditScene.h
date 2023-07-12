@@ -31,6 +31,8 @@ private:
 
 	// カーソル位置
 	DirectX::SimpleMath::Vector3 m_cursorPos;
+	const float CURSOR_MIN = -2.0f;
+	const float CURSOR_MAX = 15.0f;
 
 	// ブロックの配列
 	std::vector<Object> m_mapObj;

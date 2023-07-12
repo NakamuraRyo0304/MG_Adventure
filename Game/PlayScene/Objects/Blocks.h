@@ -25,6 +25,7 @@ private:
 	struct Clowd 
 	{
 		bool moveFlag = false;
+		DirectX::SimpleMath::Vector3 initPosition = DirectX::SimpleMath::Vector3::Zero;
 		DirectX::SimpleMath::Vector3 endPosition = DirectX::SimpleMath::Vector3::Zero;
 	};
 

@@ -89,6 +89,11 @@ void Blocks::Initialize(int stageNum)
 		{
 			// ステータス登録
 			m_clowdState[i].moveFlag = false;
+
+			// 始発点を保存
+			m_clowdState[i].initPosition = m_mapObj[i].position;
+
+			// 終着点を保存
 			m_clowdState[i].endPosition = SimpleMath::Vector3
 			{
 				m_mapObj[i].position.x, 
@@ -136,6 +141,16 @@ void Blocks::Update(float elapsedTime)
 			(
 				m_mapObj[i].position.y,
 				m_clowdState[i].endPosition.y,
+				0.1f
+			);
+		}
+		if(m_mapObj[i].id == MapState::ClowdBox && !m_clowdState[i].moveFlag)
+		{
+			// Y座標を始点まで動かす
+			m_mapObj[i].position.y = UserUtility::Lerp
+			(
+				m_mapObj[i].position.y,
+				m_clowdState[i].initPosition.y,
 				0.1f
 			);
 		}

@@ -159,6 +159,7 @@ void GameMain::CreateScene()
 		case SCENE::TITLE:		// タイトルシーン
 		{
 			m_nowScene = std::make_unique<TitleScene>();
+			m_nowScene->SetStageNum(1); // ステージ1から選択
 			break;
 		}
 		case SCENE::SELECT:		// ステージセレクトシーン
