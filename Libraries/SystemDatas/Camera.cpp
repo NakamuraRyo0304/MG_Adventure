@@ -7,6 +7,7 @@
 
 #include "pch.h"
 
+// ユーザーユーティリティ
 #include "../UserUtility.h"
 
 #include "Camera.h"
@@ -61,26 +62,42 @@ Camera::~Camera()
 /// <returns>なし</returns>
 void Camera::Update()
 {
+	// キーボードのインスタンス取得
+	auto kbState = Keyboard::Get().GetState();
 	// マウスのインスタンス取得
-	auto state = Mouse::Get().GetState();
+	auto msState = Mouse::Get().GetState();
 
 	// マウスの左クリック＆ドラッグでカメラ座標を更新する
-	if (state.leftButton)
+	if (msState.leftButton)
 	{
 		// マウスのドラッグによるカメラ移動
-		DraggedDistance(state.x, state.y);
+		DraggedDistance(msState.x, msState.y);
 	}
 
 	// マウスの座標を前回の値として保存
-	m_prevMouse.x = static_cast<float>(state.x); // X座標を保存
-	m_prevMouse.y = static_cast<float>(state.y); // Y座標を保存
+	m_prevMouse.x = static_cast<float>(msState.x); // X座標を保存
+	m_prevMouse.y = static_cast<float>(msState.y); // Y座標を保存
 
 	// 拡縮処理
-	RollWheelToRate(state);
+	RollWheelToRate(msState);
 
 	// ビュー行列の算出
 	CalculateViewMatrix();
 
+	// 上下回転のみ制限
+	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLEX_MIN, ANGLEX_MAX);
+
+	// 移動量
+	SimpleMath::Vector2 moveVal = SimpleMath::Vector2::Zero;
+
+	// 移動量を設定
+	if (kbState.Right){ moveVal.y =  0.01f; }
+	if (kbState.Left) { moveVal.y = -0.01f; }
+	if (kbState.Up)   { moveVal.x =  0.01f; }
+	if (kbState.Down) { moveVal.x = -0.01f; }
+
+	// 角度変更
+	m_angle += moveVal;
 }
 
 /// <summary>
