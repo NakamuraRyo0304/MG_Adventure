@@ -11,6 +11,9 @@
 
 #include "../IScene.h"
 
+// “–‚½‚è”»’è—p
+#include <deque>
+
 class Player;
 class PlayerBill;
 class Blocks;
@@ -35,6 +38,7 @@ private:
 	// “–‚½‚è”»’è
 	Collider::BoxCollider is_boxCol;
 	std::vector<Object> m_colObjList;
+	std::deque<int> m_prevIndex;
 
 	// ƒ‚ƒfƒ‹
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;

@@ -48,12 +48,12 @@ private:
 	std::shared_ptr<SystemManager> m_sharedSystem;
 
 	// モデル
-	std::unique_ptr<DirectX::Model>m_grassModel;							// 草モデル
-	std::unique_ptr<DirectX::Model>m_noneModel;								// 消しゴムモデル
-	std::unique_ptr<DirectX::Model>m_coinModel;								// コインモデル
-	std::unique_ptr<DirectX::Model>m_moveModel;								// 動くモデル
-	std::unique_ptr<DirectX::Model>m_switchModel;							// スイッチモデル
-	std::unique_ptr<DirectX::Model>m_playerModel;							// プレイヤモデル
+	std::unique_ptr<DirectX::Model>m_grassModel;		// 草モデル
+	std::unique_ptr<DirectX::Model>m_noneModel;			// 消しゴムモデル
+	std::unique_ptr<DirectX::Model>m_coinModel;			// コインモデル
+	std::unique_ptr<DirectX::Model>m_moveModel;			// 動くモデル
+	std::unique_ptr<DirectX::Model>m_switchModel;		// スイッチモデル
+	std::unique_ptr<DirectX::Model>m_playerModel;		// プレイヤモデル
 
 	// 現在のブロックステータス
 	int m_nowState;

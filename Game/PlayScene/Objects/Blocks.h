@@ -22,7 +22,7 @@ private:
 	std::vector<Object> m_mapObj;
 
 	// 雲ステータス
-	struct Clowd 
+	struct Clowd
 	{
 		bool moveFlag = false;
 		DirectX::SimpleMath::Vector3 initPosition = DirectX::SimpleMath::Vector3::Zero;
@@ -67,7 +67,7 @@ private:
 
 public:
 	// ブロックの種類
-	enum { GRASS, COIN, CLOWD , LENGTH };
+	enum { GRASS, COIN, CLOWD, LENGTH };
 public:
 
 	// コンストラクタ
@@ -90,7 +90,7 @@ public:
 	void Finalize();
 
 	// モデル作成
-	void CreateModels(std::unique_ptr<Model> model,int modelName);
+	void CreateModels(std::unique_ptr<Model> model, int modelName);
 
 	// コインのカウントアップ
 	void CountUpCoin(int index);
@@ -123,8 +123,10 @@ public:
 		}
 	}
 
-	// マップの判定セッター
-	void SetClowdHitFlag(int index,bool flag){ m_clowdState[index].moveFlag = flag;	}
+	// 雲の判定アクセサ
+	void SetClowdHitFlag(int index, bool flag) { m_clowdState[index].moveFlag = flag; }
+	// 雲の座標を戻す
+	void ResetClowdPosition();
 
 private:
 

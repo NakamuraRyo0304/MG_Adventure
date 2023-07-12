@@ -34,6 +34,7 @@ PlayScene::PlayScene() :
 	m_timer{0.0f},
 	m_mapObj{},						// マップのブロック
 	m_map{},						// マップ
+	m_prevIndex{},					// 過去に当たったインデックス番号
 	m_colObjList{},					// 当っているオブジェクトの格納
 	is_boxCol{},					// 立方体当たり判定
 	m_skyDomeModel{ nullptr }		// スカイドームモデル
@@ -121,6 +122,12 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_player->GetDeathFlag())
 	{
 		GoNextScene(SCENE::PLAY);
+	}
+
+	// テスト
+	if (keyState.Space)
+	{
+		m_blocks->ResetClowdPosition();
 	}
 }
 
@@ -313,7 +320,7 @@ void PlayScene::Judgement()
 void PlayScene::ApplyPushBack(Object& obj)
 {
 	// 当っているオブジェが空気の場合は処理しない
-	if (obj.id == MapLoad::BoxState::None)
+	if (obj.id == MapState::None)
 	{
 		is_boxCol.SetPushMode(false);
 		return;
@@ -324,7 +331,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	}
 
 	// コインの処理
-	if (obj.id == MapLoad::BoxState::CoinBox)
+	if (obj.id == MapState::CoinBox)
 	{ 
 		// 押し戻ししない
 		is_boxCol.SetPushMode(false);
@@ -332,9 +339,13 @@ void PlayScene::ApplyPushBack(Object& obj)
 		// コインカウントアップ
 		m_blocks->CountUpCoin(obj.index);
 	}
+	
 	// 雲の処理
-	if (obj.id == MapLoad::BoxState::ClowdBox)
+	if (obj.id == MapState::ClowdBox)
 	{ 
+		// インデックス番号を格納
+		m_prevIndex.push_back(obj.index);
+
 		// プレイヤーが下にいたら押し戻ししない
 		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(obj.id))
 		{
@@ -343,11 +354,18 @@ void PlayScene::ApplyPushBack(Object& obj)
 		}
 
 		// 当たっている判定を出す
-		m_blocks->SetClowdHitFlag(obj.index, true);
+		m_blocks->SetClowdHitFlag(m_prevIndex.front(), true);
 	}
 	else
 	{
-		m_blocks->SetClowdHitFlag(obj.index, false);
+		// 配列が空なら処理しない
+		if (m_prevIndex.empty()) return;
+		
+		// 当たっている判定を消す
+		m_blocks->SetClowdHitFlag(m_prevIndex.front(), false);
+
+		// フラグをセットしたら配列から除外
+		m_prevIndex.pop_front();
 	}
 
 	// プレイヤのポジションを保存
