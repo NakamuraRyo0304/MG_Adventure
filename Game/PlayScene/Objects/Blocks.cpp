@@ -80,12 +80,12 @@ void Blocks::Initialize(int stageNum)
 		m_mapObj[i].position.z -= static_cast<float>(m_map->MAP_COLUMN) / 2 * COMMON_SIZE;
 
 		// コインの枚数のカウント
-		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
+		if (m_mapObj[i].id == MapState::CoinBox)
 		{
 			m_maxCoins++;
 		}
 		// 雲フラグ登録
-		if (m_mapObj[i].id == MapLoad::BoxState::ClowdBox)
+		if (m_mapObj[i].id == MapState::ClowdBox)
 		{
 			// ステータス登録
 			m_clowdState[i].moveFlag = false;
@@ -97,7 +97,7 @@ void Blocks::Initialize(int stageNum)
 			};
 		}
 		// プレイヤの座標を代入
-		if (m_mapObj[i].id == MapLoad::BoxState::PlayerPos)
+		if (m_mapObj[i].id == MapState::PlayerPos)
 		{
 			m_playerPos = SimpleMath::Vector3
 			{
@@ -107,7 +107,7 @@ void Blocks::Initialize(int stageNum)
 			};
 			
 			// 代入後に該当マスを空気に変える(判定除去)
-			m_mapObj[i].id = MapLoad::BoxState::None;
+			m_mapObj[i].id = MapState::None;
 		}
 	}
 
@@ -129,7 +129,7 @@ void Blocks::Update(float elapsedTime)
 	// 雲は上下移動する
 	for(int i = 0; i < m_mapObj.size();++i)
 	{
-		if (m_mapObj[i].id == MapLoad::BoxState::ClowdBox && m_clowdState[i].moveFlag)
+		if (m_mapObj[i].id == MapState::ClowdBox && m_clowdState[i].moveFlag)
 		{
 			// Y座標を終点まで動かす
 			m_mapObj[i].position.y = UserUtility::Lerp
@@ -169,15 +169,15 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		// 回転行列
 		SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(timer);
 
-		if (m_mapObj[i].id == MapLoad::BoxState::GrassBox)
+		if (m_mapObj[i].id == MapState::GrassBox)
 		{
 			m_grassModel->Draw(context, states, world, view, proj);
 		}
-		if (m_mapObj[i].id == MapLoad::BoxState::CoinBox)
+		if (m_mapObj[i].id == MapState::CoinBox)
 		{
 			m_coinModel->Draw(context, states, rotateY * world, view, proj);
 		}
-		if (m_mapObj[i].id == MapLoad::BoxState::ClowdBox)
+		if (m_mapObj[i].id == MapState::ClowdBox)
 		{
 			m_moveModel->Draw(context, states, rotateY * world, view, proj);
 		}
@@ -232,7 +232,7 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 void Blocks::CountUpCoin(int index)
 {
 	m_coinCount++;
-	m_mapObj[index].id = MapLoad::BoxState::None;
+	m_mapObj[index].id = MapState::None;
 }
 
 /// <summary>

@@ -8,6 +8,9 @@
 // マップの使用
 #include <map>
 
+// エイリアス
+using MapState = MapLoad::BoxState;
+
 class Blocks
 {
 private:
@@ -102,12 +105,12 @@ public:
 	// ブロックの大きさゲッター
 	const float& GetObjSize(const int& objName)
 	{
-		if (objName == MapLoad::BoxState::CoinBox)
+		if (objName == MapState::CoinBox)
 		{
 			// コインは小さめサイズ
 			return COIN_SIZE;
 		}
-		else if (objName == MapLoad::BoxState::ClowdBox)
+		else if (objName == MapState::ClowdBox)
 		{
 			// 雲も小さめサイズ
 			return CLOWD_SIZE;

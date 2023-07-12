@@ -176,7 +176,7 @@ void EditScene::Draw()
 	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	SimpleMath::Matrix world, view, projection;
+	SimpleMath::Matrix world, view, proj;
 
 	// ワールド行列
 	world = SimpleMath::Matrix::Identity;
@@ -185,16 +185,14 @@ void EditScene::Draw()
 	view = GetSystemManager()->GetCamera()->GetView();
 
 	// プロジェクション行列
-	projection = GetSystemManager()->GetCamera()->GetProjection();
+	proj = GetSystemManager()->GetCamera()->GetProjection();
 
 	// レイの設定
-	GetSystemManager()->GetRayCast()->SetMatrix(view, projection);
+	GetSystemManager()->GetRayCast()->SetMatrix(view, proj);
 
 	// 行列計算
 	SimpleMath::Matrix scale = SimpleMath::Matrix::CreateScale(COMMON_SIZE / 2);
-	SimpleMath::Matrix rotateX = SimpleMath::Matrix::CreateRotationX(m_timer);
-	SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(m_timer);
-	SimpleMath::Matrix rotateZ = SimpleMath::Matrix::CreateRotationZ(m_timer);
+	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_timer);
 	SimpleMath::Matrix trans = SimpleMath::Matrix::CreateTranslation(m_cursorPos);
 
 	// オブジェクトの描画
@@ -206,60 +204,59 @@ void EditScene::Draw()
 		// 選択中オブジェ
 		if (m_mapObj[i].id == MapState::GrassBox)
 		{
-			m_grassModel->Draw(context, states, boxMat, view, projection);
+			m_grassModel->Draw(context, states, boxMat, view, proj);
 		}
 		if (m_mapObj[i].id == MapState::CoinBox)
 		{
-			m_coinModel->Draw(context, states, rotateY * boxMat, view, projection);
+			m_coinModel->Draw(context, states, rotY * boxMat, view, proj);
 		}
 		if (m_mapObj[i].id == MapState::ClowdBox)
 		{
-			m_moveModel->Draw(context, states, rotateY * boxMat, view, projection);
+			m_moveModel->Draw(context, states, rotY * boxMat, view, proj);
 		}
 		if (m_mapObj[i].id == MapState::SwitchBox)
 		{
-			m_switchModel->Draw(context, states, boxMat, view, projection);
+			m_switchModel->Draw(context, states, boxMat, view, proj);
 		}
 		if (m_mapObj[i].id == MapState::PlayerPos)
 		{
-			m_playerModel->Draw(context, states, rotateY * boxMat, view, projection);
+			m_playerModel->Draw(context, states, rotY * boxMat, view, proj);
 		}
 	}
 
 	// サイズ　×　回転　×　移動
-	world *= scale * rotateX * rotateY * rotateZ * trans;
+	world *= scale *  rotY * trans;
 
 	// 選択しているオブジェを描画 
-	if (m_nowState == MapState::GrassBox)
+	switch (m_nowState)
 	{
-		m_grassModel->Draw(context, states, world, view, projection);
+	case MapState::GrassBox:	// 草
+		m_grassModel->Draw(context, states, world, view, proj);
+		break;
+	case MapState::CoinBox:		// コイン
+		m_coinModel->Draw(context, states, world, view, proj);
+		break;
+	case MapState::ClowdBox:	// 雲
+		m_moveModel->Draw(context, states, world, view, proj);
+		break;
+	case MapState::SwitchBox:	// スイッチ
+		m_switchModel->Draw(context, states, world, view, proj);
+		break;
+	case MapState::PlayerPos:	// プレイヤー
+		m_playerModel->Draw(context, states, world, view, proj);
+		break;
+	case MapState::None:		// 消しゴム
+		m_noneModel->Draw(context, states, world, view, proj);
+		break;
+	default:
+		break;
 	}
-	if (m_nowState == MapState::CoinBox)
-	{
-		m_coinModel->Draw(context, states, world, view, projection);
-	}
-	if (m_nowState == MapState::ClowdBox)
-	{
-		m_moveModel->Draw(context, states, world, view, projection);
-	}
-	if (m_nowState == MapState::SwitchBox)
-	{
-		m_switchModel->Draw(context, states, world, view, projection);
-	}
-	if (m_nowState == MapState::PlayerPos)
-	{
-		m_playerModel->Draw(context, states, world, view, projection);
-	}
-	if (m_nowState == MapState::None)
-	{
-		m_noneModel->Draw(context, states, world, view, projection);
-	}
-
+	
 	// 画像の描画
 	m_userInterface->Render();
 
 	// デバッグ表示
-	DebugLog(view, projection);
+	DebugLog(view, proj);
 }
 
 /// <summary>
@@ -274,11 +271,11 @@ void EditScene::Finalize()
 
 	// モデルの破棄
 	ModelFactory::DeleteModel(m_grassModel);
-	ModelFactory::DeleteModel(m_noneModel);
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_moveModel);
 	ModelFactory::DeleteModel(m_switchModel);
 	ModelFactory::DeleteModel(m_playerModel);
+	ModelFactory::DeleteModel(m_noneModel);
 }
 
 /// <summary>
@@ -314,29 +311,29 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
 	
 	// モデルを作成する
-	m_noneModel = ModelFactory::GetCreateModel(					// 消しゴムブロック
-		device,
-		L"Resources/Models/Eraser.cmo"
-	);
-	m_grassModel = ModelFactory::GetCreateModel(				// 草ブロック
+	m_grassModel = ModelFactory::GetCreateModel(		// 草ブロック
 		device,
 		L"Resources/Models/GrassBlock.cmo"
 	);
-	m_coinModel = ModelFactory::GetCreateModel(					// コインブロック
+	m_coinModel = ModelFactory::GetCreateModel(			// コインブロック
 		device,
 		L"Resources/Models/Coin.cmo"
 	);
-	m_moveModel = ModelFactory::GetCreateModel(					// 動く足場
+	m_moveModel = ModelFactory::GetCreateModel(			// 動く足場
 		device,
 		L"Resources/Models/MoveBlock.cmo"
 	);
-	m_switchModel = ModelFactory::GetCreateModel(				// 動く判定
+	m_switchModel = ModelFactory::GetCreateModel(		// 動く判定
 		device,
 		L"Resources/Models/Switch.cmo"
 	);
-	m_playerModel = ModelFactory::GetCreateModel(				// プレイヤブロック
+	m_playerModel = ModelFactory::GetCreateModel(		// プレイヤブロック
 		device,
 		L"Resources/Models/CatClean.cmo"
+	);
+	m_noneModel = ModelFactory::GetCreateModel(			// 消しゴムブロック
+		device,
+		L"Resources/Models/Eraser.cmo"
 	);
 }
 
