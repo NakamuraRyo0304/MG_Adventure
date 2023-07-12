@@ -47,7 +47,7 @@ private:
 	bool is_deathFlag;
 
 	// プレイヤのサイズ
-	const float SIZE = 0.95f;
+	const float SIZE = 0.85f;
 	// 回転速度
 	const float ROT_SPEED = 0.05f;
 	// 摩擦係数

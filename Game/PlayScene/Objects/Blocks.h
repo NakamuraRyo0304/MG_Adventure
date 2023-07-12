@@ -53,7 +53,7 @@ private:
 	const float COIN_SIZE = COMMON_SIZE / 3;
 
 	// 雲のサイズ
-	const float CLOWD_SIZE = COMMON_SIZE / 2;
+	const float CLOWD_SIZE = COMMON_SIZE / 1.7;
 	const float CLOWD_SPEED = 0.1f;
 
 	// 最低高度

@@ -346,20 +346,25 @@ void PlayScene::ApplyPushBack(Object& obj)
 			is_boxCol.SetPushMode(false);
 			return;
 		}
+		else
+		{
+			is_boxCol.SetPushMode(true);
+		}
 
 		// 当たっている判定を出す
-		m_blocks->SetClowdHitFlag(m_prevIndex.front(), true);
+		m_blocks->SetClowdHitFlag(obj.index, true);
 	}
 	else
 	{
 		// 配列が空なら処理しない
-		if (m_prevIndex.empty()) return;
-		
-		// 当たっている判定を消す
-		m_blocks->SetClowdHitFlag(m_prevIndex.front(), false);
+		if (!m_prevIndex.empty())
+		{
+			// 当たっている判定を消す
+			m_blocks->SetClowdHitFlag(m_prevIndex.front(), false);
 
-		// フラグをセットしたら配列から除外
-		m_prevIndex.pop_front();
+			// フラグをセットしたら配列から除外
+			m_prevIndex.pop_front();
+		}
 	}
 
 	// プレイヤのポジションを保存
