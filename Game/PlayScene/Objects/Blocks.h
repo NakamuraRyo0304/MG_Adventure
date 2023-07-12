@@ -54,6 +54,7 @@ private:
 
 	// 雲のサイズ
 	const float CLOWD_SIZE = COMMON_SIZE / 2;
+	const float CLOWD_SPEED = 0.1f;
 
 	// 最低高度
 	const float	COMMON_LOW = COMMON_SIZE / 2;
@@ -125,8 +126,6 @@ public:
 
 	// 雲の判定アクセサ
 	void SetClowdHitFlag(int index, bool flag) { m_clowdState[index].moveFlag = flag; }
-	// 雲の座標を戻す
-	void ResetClowdPosition();
 
 private:
 

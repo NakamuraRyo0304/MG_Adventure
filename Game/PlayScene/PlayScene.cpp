@@ -123,12 +123,6 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	{
 		GoNextScene(SCENE::PLAY);
 	}
-
-	// ƒeƒXƒg
-	if (keyState.Space)
-	{
-		m_blocks->ResetClowdPosition();
-	}
 }
 
 /// <summary>

@@ -144,17 +144,17 @@ void Blocks::Update(float elapsedTime)
 				(
 					m_mapObj[i].position.y,
 					m_clowdState[i].endPosition.y,
-					0.1f
+					CLOWD_SPEED
 				);
 			}
 			else
 			{
-				// Y座標を終点まで動かす
+				// Y座標を始点まで動かす
 				m_mapObj[i].position.y = UserUtility::Lerp
 				(
 					m_mapObj[i].position.y,
 					m_clowdState[i].initPosition.y,
-					0.1f
+					CLOWD_SPEED / 2
 				);
 			}
 		}
@@ -291,34 +291,4 @@ std::wstring Blocks::MapSelect(int num)
 	}
 
 	return filePath;
-}
-
-/// <summary>
-/// 雲の座標を戻す
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void Blocks::ResetClowdPosition()
-{
-	for (int i = 0; i < m_mapObj.size(); ++i)
-	{
-		// 雲だったら初期位置に戻す
-		if (m_mapObj[i].id != MapState::ClowdBox) return;
-
-		// 止まっていたら処理しない
-		if (!m_clowdState[i].moveFlag)return;
-
-		// 座標を戻す
-		m_mapObj[i].position.y = UserUtility::Lerp(
-			m_mapObj[i].position.y,
-			m_clowdState[i].initPosition.y,
-			0.1f
-		);
-
-		// 始点についたら止める
-		if (m_mapObj[i].position.y == m_clowdState[i].initPosition.y)
-		{
-			m_clowdState[i].moveFlag = false;
-		}
-	}
 }
