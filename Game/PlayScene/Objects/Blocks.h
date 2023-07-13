@@ -70,6 +70,15 @@ private:
 public:
 	// ブロックの種類
 	enum { GRASS, COIN, CLOWD, LENGTH };
+
+	// ライティング設定用構造体
+	struct BOOL3
+	{
+		bool _1 = false;
+		bool _2 = false;
+		bool _3 = false;
+	};
+
 public:
 
 	// コンストラクタ
@@ -125,11 +134,22 @@ public:
 		}
 	}
 
+	// 雲を元の場所に戻す処理
+	void RestoreClowdPosition(const int& index);
+
 	// 雲の判定アクセサ
-	void SetClowdHitFlag(int index, bool flag) { m_clowdState[index].moveFlag = flag; }
+	void SetClowdHitFlag(const int& index, bool flag) { m_clowdState[index].moveFlag = flag; }
 
 private:
 
 	// マップセレクト
 	std::wstring MapSelect(int num);
+
+private:
+
+	// モデルの色を変更
+	void ChangeModelColors(std::unique_ptr<Model>& model,DirectX::SimpleMath::Vector4 color);
+
+	// モデルの光を変更
+	void ChangeModelLights(std::unique_ptr<Model>& model, BOOL3 flag);
 };

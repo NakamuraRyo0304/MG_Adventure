@@ -336,35 +336,34 @@ void PlayScene::ApplyPushBack(Object& obj)
 	
 	// 雲の処理
 	if (obj.id == MapState::ClowdBox)
-	{ 
-		// インデックス番号を格納
-		m_prevIndex.push_back(obj.index);
-
+	{
 		// プレイヤーが下にいたら押し戻ししない
 		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(obj.id))
 		{
 			is_boxCol.SetPushMode(false);
 			return;
 		}
-		else
-		{
-			is_boxCol.SetPushMode(true);
-		}
+
+		// 判定を有効化
+		is_boxCol.SetPushMode(true);
+
+		// インデックス番号を格納
+		m_prevIndex.push_back(obj.index);
 
 		// 当たっている判定を出す
-		m_blocks->SetClowdHitFlag(obj.index, true);
-	}
-	else
-	{
-		// 配列が空なら処理しない
-		if (!m_prevIndex.empty())
-		{
-			// 当たっている判定を消す
-			m_blocks->SetClowdHitFlag(m_prevIndex.front(), false);
+		m_blocks->SetClowdHitFlag(m_prevIndex.front(), true);
 
-			// フラグをセットしたら配列から除外
-			m_prevIndex.pop_front();
-		}
+		// 空なら処理しない
+		if (m_prevIndex.empty()) return;
+
+		// 入っていたら先頭を削除
+		m_prevIndex.pop_front();
+	}
+
+	// 先頭と一緒でなければフラグをFalseにする
+	if (!m_prevIndex.empty() && obj.index != m_prevIndex.front())
+	{
+		m_blocks->RestoreClowdPosition(obj.index);
 	}
 
 	// プレイヤのポジションを保存

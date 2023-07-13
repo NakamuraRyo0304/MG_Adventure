@@ -139,29 +139,12 @@ void Blocks::Update(float elapsedTime)
 			// 触れているときは終点まで
 			if (m_clowdState[i].moveFlag)
 			{
-				// 触れていたらタイマーをリセット
-				m_clowdState[i].timer = 0.0f;
-
 				// Y座標を終点まで動かす
 				m_mapObj[i].position.y = UserUtility::Lerp
 				(
 					m_mapObj[i].position.y,
 					m_clowdState[i].endPosition.y,
 					CLOWD_SPEED
-				);
-			}
-			else
-			{
-				m_clowdState[i].timer++;
-			
-				if (m_clowdState[i].timer < 180.0f) return;
-
-				// Y座標を始点まで動かす
-				m_mapObj[i].position.y = UserUtility::Lerp
-				(
-					m_mapObj[i].position.y,
-					m_clowdState[i].initPosition.y,
-					CLOWD_SPEED / 2
 				);
 			}
 		}
@@ -205,6 +188,17 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		}
 		if (m_mapObj[i].id == MapState::ClowdBox)
 		{
+			if (m_clowdState[i].moveFlag)
+			{
+				// 色を暗く変更
+				ChangeModelColors(m_moveModel, static_cast<SimpleMath::Vector4>(Colors::DarkGray));
+			}
+			else
+			{
+				// 色をデフォルトに戻す
+				ChangeModelColors(m_moveModel,static_cast<SimpleMath::Vector4>(Colors::White));
+			}
+		
 			m_moveModel->Draw(context, states, rotateY * world, view, proj);
 		}
 	}
@@ -272,6 +266,28 @@ const bool& Blocks::IsCollectedFlag()
 }
 
 /// <summary>
+/// 雲の位置をもとに戻す処理
+/// </summary>
+/// <param name="index">配列番号</param>
+/// <returns>なし</returns>
+void Blocks::RestoreClowdPosition(const int& index)
+{
+	if (!m_clowdState[index].moveFlag)
+	{
+		// 雲じゃなければ処理しない
+		if (m_mapObj[index].id != MapState::ClowdBox) return;
+
+		// Y座標を始点まで動かす
+		m_mapObj[index].position.y = UserUtility::Lerp
+		(
+			m_mapObj[index].position.y,
+			m_clowdState[index].initPosition.y,
+			CLOWD_SPEED
+		);
+	}
+}
+
+/// <summary>
 /// マップ選択
 /// </summary>
 /// <param name="num">ステージ番号</param>
@@ -298,4 +314,53 @@ std::wstring Blocks::MapSelect(int num)
 	}
 
 	return filePath;
+}
+
+/// <summary>
+/// モデルの色を変更
+/// </summary>
+/// <param name="model">モデルデータ</param>
+/// <param name="color">色情報</param>
+/// <returns>なし</returns>
+void Blocks::ChangeModelColors(std::unique_ptr<Model>& model, SimpleMath::Vector4 color)
+{
+	model->UpdateEffects([&](IEffect* effect)
+		{
+			// ベーシックエフェクトを宣言
+			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
+			
+			if (basicEffect)
+			{
+				// 色を変更する
+				basicEffect->SetDiffuseColor(color);
+			}
+		}
+	);
+}
+
+/// <summary>
+/// ライティング設定
+/// </summary>
+/// <param name="model">モデルデータ</param>
+/// <param name="flag">つけるライト</param>
+/// <returns>なし</returns>
+void Blocks::ChangeModelLights(std::unique_ptr<Model>& model, BOOL3 flag)
+{
+	model->UpdateEffects([&](IEffect* effect)
+		{
+			auto lights = dynamic_cast<IEffectLights*>(effect);
+			if (lights)
+			{
+				lights->SetLightEnabled(0, flag._1);
+				lights->SetLightEnabled(1, flag._2);
+				lights->SetLightEnabled(2, flag._3);
+			}
+			// 自己発光する
+			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (basicEffect)
+			{
+				basicEffect->SetEmissiveColor(Colors::White);
+			}
+		}
+	);
 }
