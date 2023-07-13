@@ -33,7 +33,7 @@ PlayScene::PlayScene() :
 	IScene(),
 	m_timer{0.0f},
 	m_mapObj{},						// マップのブロック
-	m_map{},						// マップ
+	m_mapLoad{},						// マップ
 	m_prevIndex{},					// 過去に当たったインデックス番号
 	m_colObjList{},					// 当っているオブジェクトの格納
 	is_boxCol{},					// 立方体当たり判定

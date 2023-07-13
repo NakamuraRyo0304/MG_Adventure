@@ -27,7 +27,7 @@ private:
 	std::vector<Object> m_mapObj;
 
 	// マップ
-	MapLoad m_map;
+	MapLoad m_mapLoad;
 
 	// プレイヤ
 	std::unique_ptr<Player> m_player;

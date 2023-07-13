@@ -33,7 +33,7 @@ Blocks::Blocks():
 	m_coinModel{ nullptr },					// コインブロックのモデル
 	m_moveModel{ nullptr }					// 雲ブロックのモデル
 {
-	m_map = std::make_unique<MapLoad>();
+	m_mapLoad = std::make_unique<MapLoad>();
 }
 
 /// <summary>
@@ -60,13 +60,13 @@ void Blocks::Initialize(int stageNum)
 	filePath = MapSelect(stageNum);
 
 	// マップの読み込み
-	m_map->LoadMap(filePath);
+	m_mapLoad->LoadMap(filePath);
 
 	// マップの格納
-	m_mapObj = m_map->GetMapData();
+	m_mapObj = m_mapLoad->GetMapData();
 
 	// メモリの解放
-	m_map->ReleaseMemory();
+	m_mapLoad->ReleaseMemory();
 
 	// 座標補正
 	for (int i = 0; i < m_mapObj.size(); i++)
@@ -75,9 +75,9 @@ void Blocks::Initialize(int stageNum)
 		m_mapObj[i].index = i;
 		
 		// マップの座標設定
-		m_mapObj[i].position.x -= static_cast<float>(m_map->MAP_COLUMN) / 2 * COMMON_SIZE;
+		m_mapObj[i].position.x -= static_cast<float>(m_mapLoad->MAP_COLUMN) / 2 * COMMON_SIZE;
 		m_mapObj[i].position.y += static_cast<float>(COMMON_LOW);
-		m_mapObj[i].position.z -= static_cast<float>(m_map->MAP_COLUMN) / 2 * COMMON_SIZE;
+		m_mapObj[i].position.z -= static_cast<float>(m_mapLoad->MAP_COLUMN) / 2 * COMMON_SIZE;
 
 		// コインの枚数のカウント
 		if (m_mapObj[i].id == MapState::CoinBox)
@@ -139,6 +139,9 @@ void Blocks::Update(float elapsedTime)
 			// 触れているときは終点まで
 			if (m_clowdState[i].moveFlag)
 			{
+				// 触れていたらタイマーをリセット
+				m_clowdState[i].timer = 0.0f;
+
 				// Y座標を終点まで動かす
 				m_mapObj[i].position.y = UserUtility::Lerp
 				(
@@ -149,6 +152,10 @@ void Blocks::Update(float elapsedTime)
 			}
 			else
 			{
+				m_clowdState[i].timer++;
+			
+				if (m_clowdState[i].timer < 180.0f) return;
+
 				// Y座標を始点まで動かす
 				m_mapObj[i].position.y = UserUtility::Lerp
 				(

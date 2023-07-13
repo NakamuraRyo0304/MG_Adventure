@@ -19,19 +19,19 @@
  /// <returns>なし</returns>
 EditScene::EditScene() :
 	IScene(),
-	m_timer{0.0f},
+	m_timer{0.0f},					// タイマー
 	m_userInterface{},				// UI
-	m_cursorPos{0.0f,0.0f,0.0f},
+	m_cursorPos{0.0f,0.0f,0.0f},	// カーソルの位置
 	m_mapObj{0},					// 格納配列
 	m_nowState{},					// 現在のブロックの種類
 	m_map{},						// マップ
 	is_boxCol{},					// 立方体当たり判定
 	m_grassModel{ nullptr },		// モデル
-	m_noneModel{ nullptr },	
-	m_coinModel{ nullptr },
-	m_moveModel{ nullptr },
-	m_switchModel{ nullptr },
-	m_sharedSystem{}
+	m_noneModel{ nullptr },			// |
+	m_coinModel{ nullptr },			// |
+	m_moveModel{ nullptr },			// |
+	m_switchModel{ nullptr },		// |
+	m_sharedSystem{}				// システムデータ
 	
 {
 }
@@ -371,7 +371,7 @@ void EditScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,40 }, mos);
 
 	// 保存された座標
-	swprintf_s(mos, 64, L"SpherePosition = %f,%f,%f",
+	swprintf_s(mos, 64, L"MouseWorld = %f,%f,%f",
 		m_cursorPos.x,
 		m_cursorPos.y,
 		m_cursorPos.z);

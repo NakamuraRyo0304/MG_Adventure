@@ -16,7 +16,7 @@ class Blocks
 private:
 
 	// マップローダー
-	std::unique_ptr<MapLoad> m_map;
+	std::unique_ptr<MapLoad> m_mapLoad;
 
 	// ブロック
 	std::vector<Object> m_mapObj;
@@ -25,6 +25,7 @@ private:
 	struct Clowd
 	{
 		bool moveFlag = false;
+		float timer = 0.0f;
 		DirectX::SimpleMath::Vector3 initPosition = DirectX::SimpleMath::Vector3::Zero;
 		DirectX::SimpleMath::Vector3 endPosition = DirectX::SimpleMath::Vector3::Zero;
 	};
@@ -53,7 +54,7 @@ private:
 	const float COIN_SIZE = COMMON_SIZE / 3;
 
 	// 雲のサイズ
-	const float CLOWD_SIZE = COMMON_SIZE / 1.7;
+	const float CLOWD_SIZE = COMMON_SIZE / 1.7f;
 	const float CLOWD_SPEED = 0.1f;
 
 	// 最低高度
