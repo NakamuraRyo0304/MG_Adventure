@@ -166,13 +166,13 @@ void Camera::CalculateViewMatrix()
 }
 
 /// <summary>
-/// カメラの振動処理
+/// オブジェクトの振動処理
 /// </summary>
 /// <param name="duration">揺れ継続時間</param>
 /// <param name="tremor">揺れ幅</param>
 /// <param name="pos">対象オブジェのポジション</param>
 /// <returns>なし</returns>
-void Camera::ShakeCamera(float duration, float tremor, SimpleMath::Vector3* pos)
+void Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
 {
 	int counta = 0;
 	counta++;

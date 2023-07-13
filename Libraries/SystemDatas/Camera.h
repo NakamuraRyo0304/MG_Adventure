@@ -78,8 +78,8 @@ public:
 	// ビュー行列を計算する
 	void CalculateViewMatrix();
 		
-	// カメラを揺らす処理
-	void ShakeCamera(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
+	// オブジェクトを揺らす処理
+	void ShakeObject(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
 
 	// カメラとオブジェクトの距離を求める
 	float CalculateDistanceToObject(const DirectX::SimpleMath::Vector3& objPos);
