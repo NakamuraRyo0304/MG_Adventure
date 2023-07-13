@@ -28,6 +28,9 @@ private:
 	// シーン切り替え判定フラグ
 	bool is_changeFlag;
 
+	// シーン切り替えフェード速度
+	float m_fadeSpeed;
+
 public:
 	IScene();
 
@@ -51,12 +54,15 @@ public:
 public:
 	// ステージ番号
 	int m_stageNum = 1;
-	
-	// 番号ゲッター
+public:
+
+	// 番号アクセサ
 	int GetStageNum() { return m_stageNum; }
-	
-	// 番号セッター
 	void SetStageNum(int stageNum) { m_stageNum = stageNum; }
+
+	// フェード速度アクセサ
+	const float& GetFadeSpeed(){ return m_fadeSpeed; }
+	void SetFadeSpeed(float speed) { m_fadeSpeed = speed; }
 
 public:
 	// 遷移先のシーン設定

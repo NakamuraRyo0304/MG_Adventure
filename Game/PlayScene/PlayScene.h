@@ -23,9 +23,6 @@ private:
 	// タイマー
 	float m_timer;
 
-	// ブロック
-	std::vector<Object> m_mapObj;
-
 	// マップ
 	MapLoad m_mapLoad;
 
@@ -34,6 +31,9 @@ private:
 
 	// ブロック
 	std::unique_ptr<Blocks> m_blocks;
+
+	// 落下演出変数
+	float m_fallValue;
 
 	// 当たり判定
 	Collider::BoxCollider is_boxCol;
@@ -46,10 +46,11 @@ private:
 	// プレイヤーの目印（ビルボード）
 	std::unique_ptr<PlayerBill> m_playerBill;
 
+private:
+
 	// スカイドームの回転速度
 	const float SKY_ROT_SPEED = 0.02f;
 
-private:
 	// マップサイズ(Stage)
 	const float COMMON_SIZE = 0.9f;
 
@@ -61,6 +62,9 @@ private:
 
 	// カメラアングル
 	const float	CAMERA_ANGLE = 44.5f;
+
+	// ブロック崩壊ライン
+	const float DURATION_FLOOR_LINE = -7.5f;
 
 public:
 

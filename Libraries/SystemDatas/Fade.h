@@ -24,6 +24,9 @@ private:
 	// フェードアウトを開始するフラグ
 	bool is_fadeOutFlag;
 
+	// フェード速度
+	float m_fadeSpeed;
+
 	// フェード終了判定フラグ
 	bool is_endFlag;
 
@@ -35,14 +38,14 @@ private:
 	const float MIN_NUM = 0.0f;
 
 public:
-	Fade();
+	Fade(float speed);
 	~Fade();
 
 	// 初期化処理
 	void Initialize(ID3D11DeviceContext1* context,ID3D11Device1* device);
 
 	// 更新処理
-	void Update(float speed);
+	void Update();
 
 	// 描画処理
 	void Draw();
@@ -64,6 +67,9 @@ public:
 
 	// フェードの数値の取得関数
 	const float& GetFadeNum() { return m_fadeNum; }
+
+	// フェード速度セッター
+	void SetFadeSpeed(float speed) { m_fadeSpeed = speed; }
 
 };
 

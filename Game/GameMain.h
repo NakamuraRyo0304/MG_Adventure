@@ -51,11 +51,14 @@ private:
 
     // フェードオブジェクト
     std::unique_ptr<Fade> m_fade;
-    // フェードの速度
-    const float FADE_SPEED = 4.0f;
 
     // ステージ番号を保存する
     int m_num;
+
+    // デフォルトのフェード速度
+    const float DEFAULT_FADE_SPEED = 4.0f;
+    // プレイシーンのフェード速度
+    const float PLAY_FADE_SPEED = 2.5f;
 
 public:
     GameMain();

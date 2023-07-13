@@ -31,9 +31,9 @@
  /// <returns>なし</returns>
 PlayScene::PlayScene() :
 	IScene(),
-	m_timer{0.0f},
-	m_mapObj{},						// マップのブロック
-	m_mapLoad{},						// マップ
+	m_timer{0.0f},					// タイマー
+	m_mapLoad{},					// マップ
+	m_fallValue{0.0f},				// 落下用変数
 	m_prevIndex{},					// 過去に当たったインデックス番号
 	m_colObjList{},					// 当っているオブジェクトの格納
 	is_boxCol{},					// 立方体当たり判定
@@ -118,7 +118,26 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// 当たり判定の更新
 	Judgement();
 	
-	// 落下したらリスタート（仮）
+	// ステージの下に落ちたらステージ崩壊演出
+	if (m_player->GetPosition().y < DURATION_FLOOR_LINE)
+	{
+		// 落下させる
+		m_fallValue -= 0.002f;
+
+		for (auto& obj : m_blocks->GetMapData())
+		{
+			GetSystemManager()->GetCamera()->ShakeObject(4.0f, 1.0f, &m_blocks->GetBlockPosition(obj.index));
+			m_blocks->SetBlockPosition(
+				SimpleMath::Vector3(
+				obj.position.x,					// X軸
+				obj.position.y + m_fallValue,	// Y軸
+				obj.position.z),				// Z軸
+				obj.index						// 配列番号
+			);
+		}
+	}
+	
+	// 落下したらリスタート
 	if (m_player->GetDeathFlag())
 	{
 		GoNextScene(SCENE::PLAY);

@@ -12,12 +12,13 @@
  /// <summary>
  /// コンストラクタ
  /// </summary>
- /// <param name="引数無し"></param>
+ /// <param name="speed">フェードの速度</param>
  /// <returns>なし</returns>
-Fade::Fade():
+Fade::Fade(float speed):
 	m_fadeNum{},			// フェードカウンタ
 	is_fadeInFlag{},		// フェードインフラグ
 	is_fadeOutFlag{},		// フェードアウトフラグ
+	m_fadeSpeed{speed},		// フェード速度
 	is_endFlag{}			// 終了判定フラグ
 {
 	m_fadeNum = MAX_NUM;
@@ -58,9 +59,9 @@ void Fade::Initialize(ID3D11DeviceContext1* context, ID3D11Device1* device)
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="speed">フェードする速度</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void Fade::Update(float speed)
+void Fade::Update()
 {
 	// フェードが終わっていたら処理しない
 	if (is_endFlag) return;
@@ -68,7 +69,7 @@ void Fade::Update(float speed)
 	// フェードイン
 	if (is_fadeInFlag)
 	{
- 		m_fadeNum -= speed;
+ 		m_fadeNum -= m_fadeSpeed;
 		if (m_fadeNum < MIN_NUM)
 		{
 			m_fadeNum = MIN_NUM;
@@ -77,7 +78,7 @@ void Fade::Update(float speed)
 	// フェードアウト
 	if (is_fadeOutFlag)
 	{
-		m_fadeNum += speed;
+		m_fadeNum += m_fadeSpeed;
 		if (m_fadeNum > MAX_NUM)
 		{
 			m_fadeNum = MAX_NUM;

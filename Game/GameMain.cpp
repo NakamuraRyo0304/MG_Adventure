@@ -68,7 +68,7 @@ void GameMain::Initialize()
 void GameMain::Update(const DX::StepTimer& timer)
 {
 	// フェードの更新
-	m_fade->Update(FADE_SPEED);
+	m_fade->Update();
 
 	// 時間を更新する
 	float time = static_cast<float>(timer.GetTotalSeconds());
@@ -160,28 +160,33 @@ void GameMain::CreateScene()
 		{
 			m_nowScene = std::make_unique<TitleScene>();
 			m_nowScene->SetStageNum(1); // ステージ1から選択
+			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
 		case SCENE::SELECT:		// ステージセレクトシーン
 		{
 			m_nowScene = std::make_unique<SelectScene>();
+			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
 		case SCENE::PLAY:		// ゲームシーン
 		{
 			m_nowScene = std::make_unique<PlayScene>();
 			m_nowScene->SetStageNum(m_num);
+			m_fade->SetFadeSpeed(PLAY_FADE_SPEED);
 			break;
 		}
 		case SCENE::RESULT:		// リザルトシーン
 		{
 			m_nowScene = std::make_unique<ResultScene>();
 			m_nowScene->SetStageNum(m_num);
+			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
 		case SCENE::EDIT:		// ステージエディットシーン
 		{
 			m_nowScene = std::make_unique<EditScene>();
+			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
 		default:
@@ -252,6 +257,6 @@ void GameMain::CreateWindowDependentResources(const int& screenWidth, const int&
 	m_mouse->SetWindow(pDR->GetHwnd());
 
 	// フェードオブジェクトの初期化
-	m_fade = std::make_unique<Fade>();
+	m_fade = std::make_unique<Fade>(DEFAULT_FADE_SPEED);
 	m_fade->Initialize(context, device);
 }
