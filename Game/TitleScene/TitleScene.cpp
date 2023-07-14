@@ -188,6 +188,5 @@ void TitleScene::CreateWindowDependentResources()
 			{
 				basicEffect->SetEmissiveColor(Colors::White);
 			}
-		}
-	);
+		});
 }

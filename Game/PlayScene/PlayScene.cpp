@@ -122,17 +122,27 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_player->GetPosition().y < DURATION_FLOOR_LINE)
 	{
 		// 落下させる
-		m_fallValue -= 0.002f;
+		m_fallValue -= FALL_SPEED;
 
 		for (auto& obj : m_blocks->GetMapData())
 		{
-			GetSystemManager()->GetCamera()->ShakeObject(4.0f, 1.0f, &m_blocks->GetBlockPosition(obj.index));
+			// 雲のフラグをリセット
+			m_blocks->RestoreClowdPosition(obj.index);
+
+			// オブジェクトの振動
+			GetSystemManager()->GetCamera()->ShakeObject(
+				SHAKE_DURATION,							// 振動時間
+				SHAKE_TREMOR,							// 振動範囲
+				&m_blocks->GetBlockPosition(obj.index)	// 振動オブジェクト
+			);
+
+			// 座標のセット
 			m_blocks->SetBlockPosition(
 				SimpleMath::Vector3(
-				obj.position.x,					// X軸
-				obj.position.y + m_fallValue,	// Y軸
-				obj.position.z),				// Z軸
-				obj.index						// 配列番号
+				obj.position.x,							// X軸
+				obj.position.y + m_fallValue,			// Y軸
+				obj.position.z),						// Z軸
+				obj.index								// 配列番号
 			);
 		}
 	}
@@ -230,6 +240,8 @@ void PlayScene::CreateWindowDependentResources()
 	// 文字の設定
 	GetSystemManager()->GetString()->CreateString(device, context);
 
+	//-------------------------------------------------------------------------------------// 
+
 	// スカイドームモデルを作成する	
 	m_skyDomeModel = ModelFactory::GetCreateModel(	
 		device,
@@ -253,10 +265,14 @@ void PlayScene::CreateWindowDependentResources()
 		}
 	);
 
+	//-------------------------------------------------------------------------------------// 
+
 	// プレイヤーの作成
 	m_player = std::make_unique<Player>(
 		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/CatClean.cmo"))
 	);
+	
+	//-------------------------------------------------------------------------------------// 
 
 	// ブロックの作成
 	m_blocks = std::make_unique<Blocks>();
@@ -276,6 +292,8 @@ void PlayScene::CreateWindowDependentResources()
 		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo")),
 		m_blocks->CLOWD
 	);
+
+	//-------------------------------------------------------------------------------------// 
 
 	// 位置情報のシェーダーの作成
 	m_playerBill = std::make_unique<PlayerBill>();
