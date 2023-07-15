@@ -51,8 +51,8 @@ private:
 	std::unique_ptr<DirectX::Model>m_grassModel;		// 草モデル
 	std::unique_ptr<DirectX::Model>m_noneModel;			// 消しゴムモデル
 	std::unique_ptr<DirectX::Model>m_coinModel;			// コインモデル
-	std::unique_ptr<DirectX::Model>m_moveModel;			// 動くモデル
-	std::unique_ptr<DirectX::Model>m_switchModel;		// スイッチモデル
+	std::unique_ptr<DirectX::Model>m_clowdModel;		// 雲モデル
+	std::unique_ptr<DirectX::Model>m_reClowdPtModel;	// 雲リセットモデル
 	std::unique_ptr<DirectX::Model>m_playerModel;		// プレイヤモデル
 
 	// 現在のブロックステータス
@@ -106,7 +106,7 @@ public:
 	void EditMap();
 
 	// 座標補正関数
-	void OffsetPosition(std::vector<Object>* obj , int mode);
+	void OffsetPosition(std::vector<Object>* obj , const int& mode);
 	
 	// マップ読み込み
 	void LoadMap(std::wstring filename);

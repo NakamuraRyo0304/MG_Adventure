@@ -81,7 +81,7 @@ void PlayScene::Initialize()
 
 	// 制限時間の初期化
 	// 時間　×　フレームレート
-	m_timeLimit = TIME_LIMIT * 60.0f;
+	m_timeLimit = TIME_LIMIT * FLAME_RATE;
 }
 
 /// <summary>
@@ -108,9 +108,6 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// コインをすべて獲得でリザルト
 	if (m_blocks->IsCollectedFlag())
 	{
-		// クリアタイムを格納
-		m_returnTimeVal = m_timeLimit / 60.0f;
-
 		GoNextScene(SCENE::RESULT);
 		return;
 	}
@@ -118,6 +115,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	{
 		// 制限時間の計算
 		m_timeLimit--;
+
+		// クリアタイムを格納
+		m_returnTimeVal = m_timeLimit / FLAME_RATE;
 	}
 
 	// プレイヤの更新
@@ -140,9 +140,6 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 		for (auto& obj : m_blocks->GetMapData())
 		{
-			// 雲のフラグをリセット
-			m_blocks->RestoreClowdPosition(obj.index);
-
 			// オブジェクトの振動
 			GetSystemManager()->GetCamera()->ShakeObject(
 				SHAKE_DURATION,							// 振動時間
@@ -301,10 +298,15 @@ void PlayScene::CreateWindowDependentResources()
 		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo")),
 		m_blocks->COIN
 	);
-	// 動くブロックの作成
+	// 雲ブロックの作成
 	m_blocks->CreateModels(
 		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo")),
 		m_blocks->CLOWD
+	);
+	// 雲リセットブロックの作成
+	m_blocks->CreateModels(
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo")),
+		m_blocks->RECLOWD
 	);
 
 	//-------------------------------------------------------------------------------------// 
@@ -375,6 +377,8 @@ void PlayScene::ApplyPushBack(Object& obj)
 		is_boxCol.SetPushMode(true);
 	}
 
+	//-------------------------------------------------------------------------------------// 
+
 	// コインの処理
 	if (obj.id == MapState::CoinBox)
 	{ 
@@ -384,6 +388,8 @@ void PlayScene::ApplyPushBack(Object& obj)
 		// コインカウントアップ
 		m_blocks->CountUpCoin(obj.index);
 	}
+
+	//-------------------------------------------------------------------------------------// 
 	
 	// 雲の処理
 	if (obj.id == MapState::ClowdBox)
@@ -410,12 +416,14 @@ void PlayScene::ApplyPushBack(Object& obj)
 		// 入っていたら先頭を削除
 		m_prevIndex.pop_front();
 	}
-
-	// 先頭と一緒でなければフラグをFalseにする
-	if (!m_prevIndex.empty() && obj.index != m_prevIndex.front())
+	// リセット処理
+	if (obj.id == MapState::ResetClowd)
 	{
-		m_blocks->RestoreClowdPosition(obj.index);
+		is_boxCol.SetPushMode(false);
+		m_blocks->RestoreClowdPosition();
 	}
+
+	//-------------------------------------------------------------------------------------// 
 
 	// プレイヤのポジションを保存
 	SimpleMath::Vector3 playerPos = m_player->GetPosition();
@@ -436,6 +444,8 @@ void PlayScene::ApplyPushBack(Object& obj)
 	{
 		m_player->ResetGravity();
 	}
+
+	//-------------------------------------------------------------------------------------// 
 
 	// 処理が終わったら要素を破棄
 	m_colObjList.pop_back();

@@ -29,8 +29,8 @@ EditScene::EditScene() :
 	m_grassModel{ nullptr },		// モデル
 	m_noneModel{ nullptr },			// |
 	m_coinModel{ nullptr },			// |
-	m_moveModel{ nullptr },			// |
-	m_switchModel{ nullptr },		// |
+	m_clowdModel{ nullptr },		// |
+	m_reClowdPtModel{ nullptr },	// |
 	m_sharedSystem{}				// システムデータ
 	
 {
@@ -127,10 +127,10 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		case MapState::CoinBox:					// コイン→動くブロック
 			ChangeState(MapState::ClowdBox);
 			break;
-		case MapState::ClowdBox:				// 動くブロック→スイッチ
-			ChangeState(MapState::SwitchBox);
+		case MapState::ClowdBox:				// 動くブロック→雲リセットエリア
+			ChangeState(MapState::ResetClowd);
 			break;
-		case MapState::SwitchBox:				// スイッチ→プレイヤ
+		case MapState::ResetClowd:				// 雲リセットエリア→プレイヤ
 			ChangeState(MapState::PlayerPos);
 			break;
 		case MapState::PlayerPos:				// プレイヤ→消しゴム
@@ -212,11 +212,11 @@ void EditScene::Draw()
 		}
 		if (m_mapObj[i].id == MapState::ClowdBox)
 		{
-			m_moveModel->Draw(context, states, rotY * boxMat, view, proj);
+			m_clowdModel->Draw(context, states, rotY * boxMat, view, proj);
 		}
-		if (m_mapObj[i].id == MapState::SwitchBox)
+		if (m_mapObj[i].id == MapState::ResetClowd)
 		{
-			m_switchModel->Draw(context, states, boxMat, view, proj);
+			m_reClowdPtModel->Draw(context, states, rotY * boxMat, view, proj);
 		}
 		if (m_mapObj[i].id == MapState::PlayerPos)
 		{
@@ -237,10 +237,10 @@ void EditScene::Draw()
 		m_coinModel->Draw(context, states, world, view, proj);
 		break;
 	case MapState::ClowdBox:	// 雲
-		m_moveModel->Draw(context, states, world, view, proj);
+		m_clowdModel->Draw(context, states, world, view, proj);
 		break;
-	case MapState::SwitchBox:	// スイッチ
-		m_switchModel->Draw(context, states, world, view, proj);
+	case MapState::ResetClowd:	// 雲リセット
+		m_reClowdPtModel->Draw(context, states, world, view, proj);
 		break;
 	case MapState::PlayerPos:	// プレイヤー
 		m_playerModel->Draw(context, states, world, view, proj);
@@ -272,8 +272,8 @@ void EditScene::Finalize()
 	// モデルの破棄
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
-	ModelFactory::DeleteModel(m_moveModel);
-	ModelFactory::DeleteModel(m_switchModel);
+	ModelFactory::DeleteModel(m_clowdModel);
+	ModelFactory::DeleteModel(m_reClowdPtModel);
 	ModelFactory::DeleteModel(m_playerModel);
 	ModelFactory::DeleteModel(m_noneModel);
 }
@@ -319,13 +319,13 @@ void EditScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Coin.cmo"
 	);
-	m_moveModel = ModelFactory::GetCreateModel(			// 動く足場
+	m_clowdModel = ModelFactory::GetCreateModel(		// 雲ブロック
 		device,
 		L"Resources/Models/MoveBlock.cmo"
 	);
-	m_switchModel = ModelFactory::GetCreateModel(		// 動く判定
+	m_reClowdPtModel = ModelFactory::GetCreateModel(	// 雲リセット
 		device,
-		L"Resources/Models/Switch.cmo"
+		L"Resources/Models/ResetPt.cmo"
 	);
 	m_playerModel = ModelFactory::GetCreateModel(		// プレイヤブロック
 		device,
@@ -478,12 +478,12 @@ void EditScene::EditMap()
 }
 
 /// <summary>
-/// 座標補正(読み込み時)
+/// 座標補正
 /// </summary>
 /// <param name="object">マップデータ</param>
 /// <param name="mode">読み書きモード</param>
 /// <returns>なし</returns>
-void EditScene::OffsetPosition(std::vector<Object>* object, int mode)
+void EditScene::OffsetPosition(std::vector<Object>* object, const int& mode)
 {
 	// 読み込み
 	if (mode == READ)

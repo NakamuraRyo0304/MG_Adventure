@@ -42,7 +42,7 @@ public:
 		static const int GrassBox	= 1;		// 草のブロック
 		static const int ClowdBox	= 2;		// 動くブロック
 		static const int CoinBox	= 3;		// コインのブロック
-		static const int SwitchBox	= 4;		// スイッチのブロック
+		static const int ResetClowd	= 4;		// 雲の位置のリセットブロック
 		static const int PlayerPos	= 5;		// プレイヤ
 		static const int None		= 0;		// データなし
 	};

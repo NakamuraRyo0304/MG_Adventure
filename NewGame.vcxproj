@@ -279,8 +279,8 @@
     <None Include="Resources\Models\Eraser.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
     <None Include="Resources\Models\MoveBlock.cmo" />
+    <None Include="Resources\Models\ResetPt.cmo" />
     <None Include="Resources\Models\ShineSky.cmo" />
-    <None Include="Resources\Models\Switch.cmo" />
     <None Include="Resources\Models\TitleLogo.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
     <None Include="Resources\Shaders\PlayerPoint.hlsli" />

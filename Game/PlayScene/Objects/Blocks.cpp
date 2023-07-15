@@ -31,7 +31,7 @@ Blocks::Blocks():
 	m_playerPos{SimpleMath::Vector3::Zero},	// プレイヤーポジション
 	m_grassModel{ nullptr },				// 草ブロックのモデル
 	m_coinModel{ nullptr },					// コインブロックのモデル
-	m_moveModel{ nullptr }					// 雲ブロックのモデル
+	m_clowdModel{ nullptr }					// 雲ブロックのモデル
 {
 	m_mapLoad = std::make_unique<MapLoad>();
 }
@@ -177,29 +177,40 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 
 		// 回転行列
 		SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(timer);
+		
+		// スケール行列
+		SimpleMath::Matrix cl_scale = SimpleMath::Matrix::CreateScale(sinf(timer));
 
+		// 草ブロック
 		if (m_mapObj[i].id == MapState::GrassBox)
 		{
 			m_grassModel->Draw(context, states, world, view, proj);
 		}
+		// コインブロック
 		if (m_mapObj[i].id == MapState::CoinBox)
 		{
 			m_coinModel->Draw(context, states, rotateY * world, view, proj);
 		}
+		// 雲ブロック
 		if (m_mapObj[i].id == MapState::ClowdBox)
 		{
 			if (m_clowdState[i].moveFlag)
 			{
 				// 色を暗く変更
-				ChangeModelColors(m_moveModel, static_cast<SimpleMath::Vector4>(Colors::DarkGray));
+				ChangeModelColors(m_clowdModel, static_cast<SimpleMath::Vector4>(Colors::DarkGray));
 			}
 			else
 			{
 				// 色をデフォルトに戻す
-				ChangeModelColors(m_moveModel,static_cast<SimpleMath::Vector4>(Colors::White));
+				ChangeModelColors(m_clowdModel,static_cast<SimpleMath::Vector4>(Colors::White));
 			}
 		
-			m_moveModel->Draw(context, states, rotateY * world, view, proj);
+			m_clowdModel->Draw(context, states, rotateY * world, view, proj);
+		}
+		// 雲のリセットポイント
+		if (m_mapObj[i].id == MapState::ResetClowd)
+		{
+			m_reClowdPtModel->Draw(context, states, cl_scale * rotateY * world, view, proj);
 		}
 	}
 }
@@ -217,7 +228,8 @@ void Blocks::Finalize()
 	// モデルの解放
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
-	ModelFactory::DeleteModel(m_moveModel);
+	ModelFactory::DeleteModel(m_clowdModel);
+	ModelFactory::DeleteModel(m_reClowdPtModel);
 }
 
 /// <summary>
@@ -237,7 +249,10 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 		m_coinModel = std::move(model);
 		break;
 	case CLOWD:									// 雲ブロック
-		m_moveModel = std::move(model);
+		m_clowdModel = std::move(model);
+		break;
+	case RECLOWD:								// 雲リセット
+		m_reClowdPtModel = std::move(model);
 		break;
 	default:
 		break;
@@ -268,22 +283,24 @@ const bool& Blocks::IsCollectedFlag()
 /// <summary>
 /// 雲の位置をもとに戻す処理
 /// </summary>
-/// <param name="index">配列番号</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void Blocks::RestoreClowdPosition(const int& index)
+void Blocks::RestoreClowdPosition()
 {
-	if (!m_clowdState[index].moveFlag)
+	for (auto& i : m_mapObj)
 	{
-		// 雲じゃなければ処理しない
-		if (m_mapObj[index].id != MapState::ClowdBox) return;
-
-		// Y座標を始点まで動かす
-		m_mapObj[index].position.y = UserUtility::Lerp
-		(
-			m_mapObj[index].position.y,
-			m_clowdState[index].initPosition.y,
-			CLOWD_SPEED
-		);
+		// 雲のみを対象とする
+		if (i.id == MapState::ClowdBox)
+		{
+			// Y座標を始点まで動かす
+			i.position.y = UserUtility::Lerp
+			(
+				i.position.y,
+				m_clowdState[i.index].initPosition.y,
+				CLOWD_SPEED * 0.5f
+			);
+			m_clowdState[i.index].moveFlag = false;
+		}
 	}
 }
 

@@ -65,11 +65,12 @@ private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_grassModel;
 	std::unique_ptr<DirectX::Model> m_coinModel;
-	std::unique_ptr<DirectX::Model> m_moveModel;
+	std::unique_ptr<DirectX::Model> m_clowdModel;
+	std::unique_ptr<DirectX::Model> m_reClowdPtModel;
 
 public:
 	// ブロックの種類
-	enum { GRASS, COIN, CLOWD, LENGTH };
+	enum { GRASS, COIN, CLOWD, RECLOWD, LENGTH };
 
 	// ライティング設定用構造体
 	struct BOOL3
@@ -138,7 +139,7 @@ public:
 	}
 
 	// 雲を元の場所に戻す処理
-	void RestoreClowdPosition(const int& index);
+	void RestoreClowdPosition();
 
 	// 雲の判定アクセサ
 	void SetClowdHitFlag(const int& index, bool flag) { m_clowdState[index].moveFlag = flag; }

@@ -57,6 +57,9 @@ private:
 	// 制限時間(秒数)
 	const int TIME_LIMIT = 60;
 
+	// フレームレート
+	const float FLAME_RATE = 60.0f;
+
 	// スカイドームの回転速度
 	const float SKY_ROT_SPEED = 0.02f;
 
