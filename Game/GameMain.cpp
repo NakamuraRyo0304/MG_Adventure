@@ -220,17 +220,11 @@ void GameMain::DeleteScene()
 	// シーンが作成されていなければ処理しない
 	if (!m_nowScene) return;
 
-	// 現在がタイトルシーンならステージ番号はリセット
-	if (m_nextScene == SCENE::SELECT)
-	{
-		m_num = 1;
-	}
-
 	// 現在がセレクトシーンならステージ番号を保持
 	if (m_nextScene == SCENE::PLAY)
 	{
 		// 再読み込みでなければ処理する
-		if (m_nextScene != m_prevScene && m_nextScene != SCENE::PLAY)
+		if (m_nextScene != m_prevScene && m_prevScene != SCENE::RESULT)
 		{
 			m_num = CastSceneType<SelectScene>(m_nowScene)->GetStageNum();
 		}
@@ -251,6 +245,7 @@ void GameMain::DeleteScene()
 		// 現シーンの完全削除
 		m_nowScene->Finalize();
 		m_nowScene.reset();
+
 		// 前のシーンを保存
 		m_prevScene = m_nextScene;
 	}
