@@ -11,6 +11,18 @@
 
 #include <map>
 
+// デフォルト引数設定用の継承
+struct RECT_U : public RECT
+{
+	RECT_U(LONG left = 0, LONG top = 0, LONG right = 1920, LONG bottom = 1080)
+	{
+		this->left = left;
+		this->top = top;
+		this->right = right;
+		this->bottom = bottom;
+	}
+};
+
 class DrawSprite
 {
 private:
@@ -36,7 +48,7 @@ public:
 	// 画像を描画する
 	void DrawTexture(const wchar_t* key, DirectX::SimpleMath::Vector2 pos,
 						DirectX::SimpleMath::Vector4 color,float rate,
-						DirectX::SimpleMath::Vector2 origin);
+						DirectX::SimpleMath::Vector2 origin, RECT_U rect = RECT_U());
 };
 
 #endif // DRAWSPRITE

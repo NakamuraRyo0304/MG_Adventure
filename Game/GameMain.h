@@ -45,6 +45,8 @@ private:
 
     // 次のシーン番号
     SCENE m_nextScene;
+    // 前のシーン番号
+    SCENE m_prevScene;
 
     // 現在処理するシーン
     std::unique_ptr<IScene> m_nowScene;

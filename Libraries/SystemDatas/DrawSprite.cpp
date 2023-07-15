@@ -74,9 +74,10 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 /// <param name="color">色</param>
 /// <param name="rate">拡大率</param>
 /// <param name="origin">中心位置</param>
+/// <param name="rect">切り取り位置</param>
 /// <returns>なし</returns>
 void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos, 
-	SimpleMath::Vector4 color, float rate, SimpleMath::Vector2 origin)
+	SimpleMath::Vector4 color, float rate, SimpleMath::Vector2 origin, RECT_U rect)
 {
 	m_spriteBatch->Begin();
 
@@ -87,7 +88,7 @@ void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos,
 	m_spriteBatch->Draw(
 		m_SRV[it->first].Get(),					// 対応するイテレータの画像を描画
 		pos,									// 表示する位置
-		nullptr,								// 切り取り位置
+		&rect,								    // 切り取り位置
 		color,									// 描画色
 		0.0f,									// 回転
 		origin,									// 画像の原点

@@ -113,6 +113,9 @@
     <Filter Include="Scenes\PlayScene\Objects\Blocks">
       <UniqueIdentifier>{172a3131-3b9a-476c-9c20-86911f3cc348}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\PlayUI">
+      <UniqueIdentifier>{83720363-c958-4b84-8836-b0096f46d4f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -202,6 +205,9 @@
     <ClInclude Include="Game\PlayScene\Objects\Blocks.h">
       <Filter>Scenes\PlayScene\Objects\Blocks</Filter>
     </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\PlayUI.h">
+      <Filter>Scenes\PlayScene\Objects\PlayUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -285,6 +291,9 @@
     <ClCompile Include="Game\PlayScene\Objects\Blocks.cpp">
       <Filter>Scenes\PlayScene\Objects\Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="Game\PlayScene\Objects\PlayUI.cpp">
+      <Filter>Scenes\PlayScene\Objects\PlayUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Icon\Icon.rc">
@@ -324,6 +333,9 @@
     </Image>
     <Image Include="Resources\Textures\PlayerPoint.png">
       <Filter>Resources\ShaderTextures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Number.dds">
+      <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

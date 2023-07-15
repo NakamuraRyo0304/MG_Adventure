@@ -26,6 +26,7 @@
  /// <returns>なし</returns>
 GameMain::GameMain():
 	m_nextScene{ SCENE::SELECT },
+	m_prevScene{ SCENE::NONE },
 	m_nowScene{ nullptr },
 	m_num{1},
 	m_clearTime{0.0f},
@@ -228,7 +229,8 @@ void GameMain::DeleteScene()
 	// 現在がセレクトシーンならステージ番号を保持
 	if (m_nextScene == SCENE::PLAY)
 	{
-		if (CastSceneType<PlayScene>(m_nowScene) == nullptr)
+		// 再読み込みでなければ処理する
+		if (m_nextScene != m_prevScene && m_nextScene != SCENE::PLAY)
 		{
 			m_num = CastSceneType<SelectScene>(m_nowScene)->GetStageNum();
 		}
@@ -249,6 +251,8 @@ void GameMain::DeleteScene()
 		// 現シーンの完全削除
 		m_nowScene->Finalize();
 		m_nowScene.reset();
+		// 前のシーンを保存
+		m_prevScene = m_nextScene;
 	}
 	else // フェードアウト
 	{

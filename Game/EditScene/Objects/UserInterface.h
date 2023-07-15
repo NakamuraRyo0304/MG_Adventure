@@ -11,8 +11,7 @@
 
 #include "Libraries/SystemDatas/Collider.h"
 
-#include "../../../Libraries/SystemManager/SystemManager.h"
-
+class SystemManager;
 class UserInterface
 {
 private:

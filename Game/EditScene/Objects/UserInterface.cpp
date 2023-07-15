@@ -7,6 +7,8 @@
 
 #include "pch.h"
 
+#include "../../../Libraries/SystemManager/SystemManager.h"
+
 #include "UserInterface.h"
 
  /// <summary>

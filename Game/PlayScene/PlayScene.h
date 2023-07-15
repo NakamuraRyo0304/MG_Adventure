@@ -16,6 +16,7 @@
 
 class Player;
 class PlayerBill;
+class PlayUI;
 class Blocks;
 class PlayScene : public IScene
 {
@@ -51,6 +52,9 @@ private:
 
 	// プレイヤーの目印（ビルボード）
 	std::unique_ptr<PlayerBill> m_playerBill;
+
+	// タイマー表示とコイン表示
+	std::unique_ptr<PlayUI> m_userInterFace;
 
 private:
 

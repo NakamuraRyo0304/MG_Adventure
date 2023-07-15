@@ -22,6 +22,9 @@
 // ブロッククラス
 #include "Objects/Blocks.h"
 
+// インターフェース
+#include "Objects/PlayUI.h"
+
 #include "PlayScene.h"
 
  /// <summary>
@@ -160,6 +163,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		// 当たり判定の更新
 		Judgement();
 	}
+
+	// UIの更新
+	m_userInterFace->Update(m_timeLimit);
 	
 	// 落下したらリスタート
 	if (m_player->GetDeathFlag())
@@ -207,8 +213,11 @@ void PlayScene::Draw()
 		GetSystemManager()->GetCamera()->GetEye(),				// カメラの座標
 		SimpleMath::Vector3::Up
 	);
-	// 描画
+	// ビルボードの描画
 	m_playerBill->Render(m_player->GetPosition(), m_timer, view, proj);
+
+	// UIの描画
+	m_userInterFace->Render();
 
 	DebugLog(view, proj);
 }
@@ -317,6 +326,12 @@ void PlayScene::CreateWindowDependentResources()
 	// 位置情報のシェーダーの作成
 	m_playerBill = std::make_unique<PlayerBill>();
 	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
+
+	//-------------------------------------------------------------------------------------// 
+
+	// UIの作成
+	m_userInterFace = std::make_unique<PlayUI>(SimpleMath::Vector2(width, height));
+	m_userInterFace->Create(GetSystemManager(),context, device);
 }
 
 /// <summary>
