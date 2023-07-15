@@ -33,6 +33,7 @@ PlayScene::PlayScene() :
 	IScene(),
 	m_timer{0.0f},					// タイマー
 	m_timeLimit{0.0f},				// 制限時間
+	m_returnTimeVal{0.0f},			// 制限時間(戻り値)
 	m_mapLoad{},					// マップ
 	m_mapNum{1},					// ステージ番号
 	m_fallValue{0.0f},				// 落下用変数
@@ -107,6 +108,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// コインをすべて獲得でリザルト
 	if (m_blocks->IsCollectedFlag())
 	{
+		// クリアタイムを格納
+		m_returnTimeVal = m_timeLimit / 60.0f;
+
 		GoNextScene(SCENE::RESULT);
 		return;
 	}

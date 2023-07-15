@@ -239,7 +239,7 @@ void GameMain::DeleteScene()
 	{
 		if (CastSceneType<ResultScene>(m_nowScene) == nullptr)
 		{
-			m_num = CastSceneType<PlayScene>(m_nowScene)->GetTimeLimit();
+			m_clearTime = CastSceneType<PlayScene>(m_nowScene)->GetTimeLimit();
 		}
 	}
 

@@ -25,6 +25,7 @@ private:
 
 	// 制限時間
 	float m_timeLimit;
+	float m_returnTimeVal;
 
 	// マップ
 	MapLoad m_mapLoad;
@@ -115,7 +116,7 @@ public:
 	void DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 
 	// タイムリミットのゲッター
-	const float& GetTimeLimit() { return m_timeLimit / 60.0f; }
+	const float& GetTimeLimit() { return m_returnTimeVal; }
 
 	// マップ番号のセッター
 	void SetStageNum(const int& stageNum) { m_mapNum = stageNum; }
