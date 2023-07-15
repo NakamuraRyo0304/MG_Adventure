@@ -16,7 +16,13 @@ class SelectScene : public IScene
 private:
 	static const float CAMERA_ANGLE;
 	std::unique_ptr<DirectX::GeometricPrimitive> m_tea;
+
+	// 回転用変数
 	float m_angle;
+
+	// ステージ番号
+	int m_stageNum;
+
 public:
 
 	// コンストラクタ
@@ -39,6 +45,10 @@ public:
 
 	// 画面依存の初期化
 	void CreateWindowDependentResources() override;
+
+	// ステージ番号のアクセサ
+	const int& GetStageNum() { return m_stageNum; }
+	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
 };
 
 #endif // SELECTSCENE

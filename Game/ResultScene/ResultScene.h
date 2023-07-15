@@ -20,6 +20,9 @@ private:
 	// セレクト
 	int m_selectNum;
 
+	// クリアタイム
+	float m_clearTime;
+
 public:
 
 	// コンストラクタ
@@ -42,6 +45,9 @@ public:
 
 	// 画面依存の初期化
 	void CreateWindowDependentResources() override;
+
+	// クリアタイムセッター
+	void SetClearTime(const float& clearTime) { m_clearTime = clearTime; }
 
 };
 

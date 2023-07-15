@@ -28,6 +28,7 @@ GameMain::GameMain():
 	m_nextScene{ SCENE::SELECT },
 	m_nowScene{ nullptr },
 	m_num{1},
+	m_clearTime{0.0f},
 	m_screenWidth{},
 	m_screenHeight{}
 {
@@ -103,7 +104,7 @@ void GameMain::Update(const DX::StepTimer& timer)
 		// シーンの更新処理
 		m_nowScene->Update(time, kb, ms);
 
-		// フェードが終わっていたらシーンを切り替える
+			// フェードが終わっていたらシーンを切り替える
 		if (m_fade->GetEndFlag())
 		{
 			m_nextScene = m_nowScene->GetNextScene();
@@ -159,33 +160,39 @@ void GameMain::CreateScene()
 		case SCENE::TITLE:		// タイトルシーン
 		{
 			m_nowScene = std::make_unique<TitleScene>();
-			m_nowScene->SetStageNum(1); // ステージ1から選択
+
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
 		case SCENE::SELECT:		// ステージセレクトシーン
 		{
 			m_nowScene = std::make_unique<SelectScene>();
+
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
 		case SCENE::PLAY:		// ゲームシーン
 		{
 			m_nowScene = std::make_unique<PlayScene>();
-			m_nowScene->SetStageNum(m_num);
+
+			// 選択したステージを渡す
+			CastSceneType<PlayScene>(m_nowScene)->SetStageNum(m_num);
 			m_fade->SetFadeSpeed(PLAY_FADE_SPEED);
 			break;
 		}
 		case SCENE::RESULT:		// リザルトシーン
 		{
 			m_nowScene = std::make_unique<ResultScene>();
-			m_nowScene->SetStageNum(m_num);
+
+			// クリアタイムを渡す
+			CastSceneType<ResultScene>(m_nowScene)->SetClearTime(m_clearTime);
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
 		case SCENE::EDIT:		// ステージエディットシーン
 		{
 			m_nowScene = std::make_unique<EditScene>();
+
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
@@ -212,10 +219,28 @@ void GameMain::DeleteScene()
 	// シーンが作成されていなければ処理しない
 	if (!m_nowScene) return;
 
-	// 現在がセレクトシーンなら保持
+	// 現在がタイトルシーンならステージ番号はリセット
+	if (m_nextScene == SCENE::SELECT)
+	{
+		m_num = 1;
+	}
+
+	// 現在がセレクトシーンならステージ番号を保持
 	if (m_nextScene == SCENE::PLAY)
 	{
-		m_num = m_nowScene->GetStageNum();
+		if (CastSceneType<PlayScene>(m_nowScene) == nullptr)
+		{
+			m_num = CastSceneType<SelectScene>(m_nowScene)->GetStageNum();
+		}
+	}
+
+	// 現在がプレイシーンならタイムリミットを保持
+	if (m_nextScene == SCENE::RESULT)
+	{
+		if (CastSceneType<ResultScene>(m_nowScene) == nullptr)
+		{
+			m_num = CastSceneType<PlayScene>(m_nowScene)->GetTimeLimit();
+		}
 	}
 
 	// 現シーンの終了処理

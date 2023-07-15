@@ -19,6 +19,7 @@
  /// <returns>‚È‚µ</returns>
 ResultScene::ResultScene():
 	IScene(),
+	m_clearTime{0.0f},
 	m_selectNum{RETRY}
 {
 }
@@ -134,6 +135,14 @@ void ResultScene::Draw()
 		GetSystemManager()->GetCommonStates().get(), 
 		{ 0,20 }, 
 		sel
+	);
+
+	wchar_t clr[30];
+	swprintf_s(clr, 30, L"%f", m_clearTime);
+	GetSystemManager()->GetString()->DrawFormatString(
+		GetSystemManager()->GetCommonStates().get(),
+		{ 0,40 },
+		clr
 	);
 }
 

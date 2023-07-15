@@ -20,7 +20,8 @@ const float SelectScene::CAMERA_ANGLE = 45.0f;
 SelectScene::SelectScene():
 	IScene(),
 	m_tea{},
-	m_angle{}
+	m_angle{},
+	m_stageNum{1}
 {
 }
 
@@ -115,7 +116,7 @@ void SelectScene::Draw()
 
 	// ステージ番号確認
 	wchar_t num[32];
-	swprintf_s(num, 32, L"StageNum = %d", GetStageNum());
+	swprintf_s(num, 32, L"StageNum = %d", m_stageNum);
 
 	GetSystemManager()->GetString()->DrawFormatString(
 		GetSystemManager()->GetCommonStates().get(),

@@ -23,8 +23,13 @@ private:
 	// タイマー
 	float m_timer;
 
+	// 制限時間
+	float m_timeLimit;
+
 	// マップ
 	MapLoad m_mapLoad;
+	// マップ番号
+	int m_mapNum;
 
 	// プレイヤ
 	std::unique_ptr<Player> m_player;
@@ -47,6 +52,9 @@ private:
 	std::unique_ptr<PlayerBill> m_playerBill;
 
 private:
+
+	// 制限時間(秒数)
+	const int TIME_LIMIT = 60;
 
 	// スカイドームの回転速度
 	const float SKY_ROT_SPEED = 0.02f;
@@ -105,6 +113,12 @@ public:
 
 	// デバッグ表示
 	void DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+
+	// タイムリミットのゲッター
+	const float& GetTimeLimit() { return m_timeLimit / 60.0f; }
+
+	// マップ番号のセッター
+	void SetStageNum(const int& stageNum) { m_mapNum = stageNum; }
 
 };
 
