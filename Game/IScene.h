@@ -52,14 +52,6 @@ public:
 	virtual void CreateWindowDependentResources() = 0;
 
 public:
-	// ステージ番号
-	int m_stageNum = 1;
-public:
-
-	// 番号アクセサ
-	int GetStageNum() { return m_stageNum; }
-	void SetStageNum(int stageNum) { m_stageNum = stageNum; }
-
 	// フェード速度アクセサ
 	const float& GetFadeSpeed(){ return m_fadeSpeed; }
 	void SetFadeSpeed(float speed) { m_fadeSpeed = speed; }

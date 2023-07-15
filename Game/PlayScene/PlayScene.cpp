@@ -32,14 +32,15 @@
 PlayScene::PlayScene() :
 	IScene(),
 	m_timer{0.0f},					// タイマー
+	m_timeLimit{0.0f},				// 制限時間
 	m_mapLoad{},					// マップ
+	m_mapNum{1},					// ステージ番号
 	m_fallValue{0.0f},				// 落下用変数
 	m_prevIndex{},					// 過去に当たったインデックス番号
 	m_colObjList{},					// 当っているオブジェクトの格納
 	is_boxCol{},					// 立方体当たり判定
 	m_skyDomeModel{ nullptr }		// スカイドームモデル
 {
-
 }
 
 /// <summary>
@@ -69,13 +70,17 @@ void PlayScene::Initialize()
 	m_player->Initialize(std::make_shared<SystemManager>());
 
 	// マップ読み込み
-	m_blocks->Initialize(GetStageNum());
+	m_blocks->Initialize(m_mapNum);
 
 	// プレイヤー座標設定
 	m_player->SetPosition(m_blocks->GetPlayerPosition());
 
 	// 判定の初期化
 	m_colObjList.clear();
+
+	// 制限時間の初期化
+	// 時間　×　フレームレート
+	m_timeLimit = TIME_LIMIT * 60.0f;
 }
 
 /// <summary>
@@ -104,6 +109,11 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	{
 		GoNextScene(SCENE::RESULT);
 		return;
+	}
+	else // クリアしていなければデクリメント
+	{
+		// 制限時間の計算
+		m_timeLimit--;
 	}
 
 	// プレイヤの更新

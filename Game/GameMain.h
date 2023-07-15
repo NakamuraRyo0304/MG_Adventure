@@ -36,17 +36,17 @@ private:
 
     // 押された瞬間を検知する
     std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker> m_keyboardStateTracker;
-    
+
     // マウス
     std::unique_ptr<DirectX::Mouse> m_mouse;
 
     // 押された瞬間を検知する
     std::unique_ptr<DirectX::Mouse::ButtonStateTracker> m_mouseStateTracker;
 
-	// 次のシーン番号
+    // 次のシーン番号
     SCENE m_nextScene;
 
-	// 現在処理するシーン
+    // 現在処理するシーン
     std::unique_ptr<IScene> m_nowScene;
 
     // フェードオブジェクト
@@ -54,6 +54,9 @@ private:
 
     // ステージ番号を保存する
     int m_num;
+
+    // クリア時間を保存する
+    float m_clearTime;
 
     // デフォルトのフェード速度
     const float DEFAULT_FADE_SPEED = 4.0f;
@@ -76,15 +79,21 @@ public:
     // 終了
     void Finalize();
 
-	// シーンの作成
-	void CreateScene();
+    // シーンの作成
+    void CreateScene();
 
-	// シーンの削除
-	void DeleteScene();
+    // シーンの削除
+    void DeleteScene();
 
     // ウィンドウサイズ依存の初期化
     void CreateWindowDependentResources(const int& screenWidth, const int& screenHeight);
 
+    // シーンキャスタ    // 引数：T = 変換したい型名 / scene 今のシーン
+    template<typename T>
+    T* CastSceneType(std::unique_ptr<IScene>& scene)
+    {
+        return dynamic_cast<T*>(scene.get());
+    }
 };
 
 #endif // GAMEMAIN
