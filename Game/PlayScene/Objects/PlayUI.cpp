@@ -113,9 +113,16 @@ void PlayUI::RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position
     // スプライトの中心位置
     SimpleMath::Vector2 center = { spritePosX + (digitWidth * scale) / 2.0f, spritePosY + (digitHeight * scale) / 2.0f };
 
+    // 切り取り位置の設定
     RECT_U rect;
+
+    // 切り取り開始位置を設定(横)
     rect.left = digit * digitWidth;
+
+    // 切り取り終了位置を設定(横)
     rect.right = rect.left + digitWidth;
+
+    // 画像縦幅を設定
     rect.bottom = digitHeight;
 
     // 数字表示
