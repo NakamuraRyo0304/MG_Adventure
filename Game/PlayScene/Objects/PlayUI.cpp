@@ -19,7 +19,9 @@
 PlayUI::PlayUI(const DirectX::SimpleMath::Vector2& windowSize):
 	m_system{},
 	m_windowSize{ windowSize },
-	m_timeLimit{0}
+	m_timeLimit{0},
+    m_timerPos{SimpleMath::Vector2::Zero},
+    m_timerTPos{SimpleMath::Vector2::Zero}
 {
 }
 
