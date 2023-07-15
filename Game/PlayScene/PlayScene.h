@@ -44,7 +44,7 @@ private:
 
 	// “–‚½‚è”»’è
 	Collider::BoxCollider is_boxCol;
-	std::vector<Object> m_colObjList;
+	std::vector<Object> m_hitObjects;
 	std::deque<int> m_prevIndex;
 
 	// ƒ‚ƒfƒ‹

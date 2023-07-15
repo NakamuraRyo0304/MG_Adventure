@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <RootNamespace>NewGame</RootNamespace>
+    <RootNamespace>SkyFall</RootNamespace>
     <ProjectGuid>{da003975-ac94-4e4e-9803-afadcc593cca}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>

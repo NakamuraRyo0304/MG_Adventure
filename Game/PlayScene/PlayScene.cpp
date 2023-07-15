@@ -41,7 +41,7 @@ PlayScene::PlayScene() :
 	m_mapNum{1},					// ステージ番号
 	m_fallValue{0.0f},				// 落下用変数
 	m_prevIndex{},					// 過去に当たったインデックス番号
-	m_colObjList{},					// 当っているオブジェクトの格納
+	m_hitObjects{},					// 当っているオブジェクトの格納
 	is_boxCol{},					// 立方体当たり判定
 	m_skyDomeModel{ nullptr }		// スカイドームモデル
 {
@@ -80,7 +80,7 @@ void PlayScene::Initialize()
 	m_player->SetPosition(m_blocks->GetPlayerPosition());
 
 	// 判定の初期化
-	m_colObjList.clear();
+	m_hitObjects.clear();
 
 	// 制限時間の初期化
 	// 時間　×　フレームレート
@@ -236,7 +236,7 @@ void PlayScene::Finalize()
 	m_blocks->Finalize();
 
 	// 判定用配列を解放
-	m_colObjList.clear();
+	m_hitObjects.clear();
 }
 
 /// <summary>
@@ -342,7 +342,7 @@ void PlayScene::CreateWindowDependentResources()
 void PlayScene::Judgement()
 {
 	// 衝突したオブジェクトリストを初期化
-	m_colObjList.clear();
+	m_hitObjects.clear();
 
 	// 当たり判定を取る
 	for (auto& obj : m_blocks->GetMapData())
@@ -365,13 +365,13 @@ void PlayScene::Judgement()
 			if (is_boxCol.GetHitBoxFlag())
 			{
 				// 衝突したオブジェクトをリストに追加
-				m_colObjList.push_back(obj);
+				m_hitObjects.push_back(obj);
 			}
 		}
 	}
 
 	// 衝突したオブジェクトごとに押し戻し処理を行う
-	for (auto& obj : m_colObjList)
+	for (auto& obj : m_hitObjects)
 	{
 		ApplyPushBack(obj);
 	}
@@ -466,7 +466,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	//-------------------------------------------------------------------------------------// 
 
 	// 処理が終わったら要素を破棄
-	m_colObjList.pop_back();
+	m_hitObjects.pop_back();
 }
 
 /// <summary>
