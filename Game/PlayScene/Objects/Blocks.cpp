@@ -186,11 +186,13 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		{
 			m_grassModel->Draw(context, states, world, view, proj);
 		}
+
 		// コインブロック
 		if (m_mapObj[i].id == MapState::CoinBox)
 		{
 			m_coinModel->Draw(context, states, rotateY * world, view, proj);
 		}
+
 		// 雲ブロック
 		if (m_mapObj[i].id == MapState::ClowdBox)
 		{
@@ -207,6 +209,7 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		
 			m_clowdModel->Draw(context, states, rotateY * world, view, proj);
 		}
+
 		// 雲のリセットポイント
 		if (m_mapObj[i].id == MapState::ResetClowd)
 		{
@@ -287,6 +290,7 @@ const bool& Blocks::IsCollectedFlag()
 /// <returns>なし</returns>
 void Blocks::RestoreClowdPosition()
 {
+
 	for (auto& i : m_mapObj)
 	{
 		// 雲のみを対象とする
@@ -313,8 +317,9 @@ std::wstring Blocks::MapSelect(int num)
 {
 	std::wstring filePath;
 
+	// TODO: [ステージ番号]マップ追加はここから！
 	// マップの変更
-	switch (num) // マップ追加はここから！
+	switch (num) 
 	{
 	case 1:
 		filePath = L"Resources/Maps/Stage1.csv";

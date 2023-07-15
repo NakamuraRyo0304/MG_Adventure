@@ -20,6 +20,12 @@ private:
 	// シェアポインタ
 	std::shared_ptr<SystemManager> m_systemManager;
 
+	// ウィンドウサイズ
+	DirectX::SimpleMath::Vector2 m_windowSize;
+
+	// フルスクリーンサイズ
+	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
+
 	// 画像の座標
 	DirectX::SimpleMath::Vector2 m_saveTexPos;
 	DirectX::SimpleMath::Vector2 m_openTexPos;
@@ -33,13 +39,17 @@ private:
 	bool is_drawFlag;
 
 	// 画像の中心位置
-	const float	IMAGE_CENTER = 128;
+	const float	IMAGE_CENTER = 128.0f;
 
+	// 画像サイズ
+	const float IMAGE_RATE = 0.55f;
+
+	// 当たり判定オブジェクト
 	Collider::AABBCollider m_aabbCol;
 
 public:
 
-	UserInterface();
+	UserInterface(const DirectX::SimpleMath::Vector2& windowSize);
 	~UserInterface();
 
 	void Initialize(std::shared_ptr<SystemManager> shareSystem,ID3D11DeviceContext1* context,ID3D11Device1* device);

@@ -106,7 +106,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	GetSystemManager()->GetCamera()->Update();
 
 	// コインをすべて獲得でリザルト
-	if (m_blocks->IsCollectedFlag())
+	if (m_blocks->IsCollectedFlag() || m_timeLimit < 0.0f)
 	{
 		GoNextScene(SCENE::RESULT);
 		return;
@@ -125,12 +125,6 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	
 	// 相対移動
 	m_playerBill->SetVertexMovePos(m_player->GetPosition());
-
-	// ブロックの更新
-	m_blocks->Update(elapsedTime);
-
-	// 当たり判定の更新
-	Judgement();
 	
 	// ステージの下に落ちたらステージ崩壊演出
 	if (m_player->GetPosition().y < DURATION_FLOOR_LINE)
@@ -156,6 +150,15 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 				obj.index								// 配列番号
 			);
 		}
+	}
+	// プレイヤー生存時のみ処理
+	else
+	{
+		// ブロックの更新
+		m_blocks->Update(elapsedTime);
+
+		// 当たり判定の更新
+		Judgement();
 	}
 	
 	// 落下したらリスタート
@@ -483,6 +486,12 @@ void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	swprintf_s(coi, 32, L"Coin = %d", m_blocks->GetCoinCount());
 
 	GetSystemManager()->GetString()->DrawFormatString(state, { 0,60 }, coi);
+		
+	// タイムリミット
+	wchar_t time[32];
+	swprintf_s(time, 32, L"Limit = %d", static_cast<int>(m_timeLimit));
+
+	GetSystemManager()->GetString()->DrawFormatString(state, { 0,80 }, time);
 
 	// デバイスコンテキストの取得：グリッドの描画に使用
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();

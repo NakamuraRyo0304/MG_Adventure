@@ -86,7 +86,7 @@ void Player::Update(Keyboard::State& keyState, float timer)
 	}
 	if (keyState.S)
 	{
-		SimpleMath::Vector3 vec(0.0f, 0.0f, m_parameter.accelerate);
+		SimpleMath::Vector3 vec(0.0f, 0.0f, m_parameter.accelerate / 2);
 		vec = SimpleMath::Vector3::Transform(vec, m_parameter.rotate);
 		m_parameter.velocity += vec;
 	}

@@ -2,7 +2,7 @@
  *	@file	Game.cpp
  *	@brief	ゲームの基盤。
  *	@date	2023-03-31
- *  @human  NakamuraRyo
+ *  @human  ImaseHideyasu
  */
 
 #include "pch.h"
@@ -10,10 +10,8 @@
 
 // TODO: ウィンドウタイトルの設定
 const wchar_t* Game::TITLE = L"SkyFall";
-// TODO: スクリーンサイズの設定
 const int Game::SCREEN_W = 1280;
 const int Game::SCREEN_H = 720;
-// TODO: 色の変更
 const XMVECTORF32 SCREEN_COLOR = Colors::LightSkyBlue;
 
 extern void ExitGame();

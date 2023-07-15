@@ -82,7 +82,9 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		m_stageNum--;
 	}
 	
-	m_stageNum = UserUtility::Clamp(m_stageNum, 0, 3);
+	// TODO: [ステージ番号]マップ数はMAX_STAGE_NUMを変更！
+	// ステージの範囲を決める
+	m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_STAGE_NUM);
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))

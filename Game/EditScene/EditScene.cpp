@@ -292,14 +292,14 @@ void EditScene::CreateWindowDependentResources()
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(device, context);
 
+	// 画面サイズの格納
+	float width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
+	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
+
 	// UIの初期化
-	m_userInterface = std::make_unique<UserInterface>();
+	m_userInterface = std::make_unique<UserInterface>(SimpleMath::Vector2(width, height));
 	m_sharedSystem = GetSystemManager();
 	m_userInterface->Initialize(m_sharedSystem, context, device);
-
-	// 画面サイズの格納
-	float width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 	
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);

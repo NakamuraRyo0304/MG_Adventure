@@ -23,6 +23,9 @@ private:
 	// ステージ番号
 	int m_stageNum;
 
+	// 最大ステージ数
+	const int MAX_STAGE_NUM = 3;
+
 public:
 
 	// コンストラクタ

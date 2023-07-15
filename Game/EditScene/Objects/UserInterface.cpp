@@ -14,13 +14,14 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-UserInterface::UserInterface():
+UserInterface::UserInterface(const DirectX::SimpleMath::Vector2& windowSize):
 	m_systemManager{},				// システムマネージャ
+	m_windowSize{windowSize},		// 画面サイズ
 	m_aabbCol{},					// 当たり判定
 	m_saveTexPos{},					// 画像座標
-	m_cameraTexPos{},
-	m_penTexPos{},
-	m_openTexPos{},
+	m_cameraTexPos{},				// 画像の位置
+	m_penTexPos{},					// |
+	m_openTexPos{},					// |
 	is_saveFlag{},					// 保存フラグ
 	is_openFlag{},					// 開くフラグ
 	is_cameraFlag{ true },			// カメラモードONでスタート
@@ -62,11 +63,14 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_systemManager->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds", device);
 	m_systemManager->GetDrawSprite()->AddTextureData(L"Open", L"Resources/Textures/OpenFile.dds", device);
 
+	// 比率を計算
+	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
+
 	// 座標情報
-	m_openTexPos    = { 80  , 80 };
-	m_saveTexPos    = { 208 , 80 };
-	m_cameraTexPos  = { 336 , 80 };
-	m_penTexPos     = { 464 , 80 };
+	m_openTexPos	= {  80 * span , 80 * span};
+	m_saveTexPos    = { 208 * span , 80 * span};
+	m_cameraTexPos  = { 336 * span , 80 * span};
+	m_penTexPos     = { 464 * span , 80 * span};
 }
 
 /// <summary>
@@ -80,8 +84,8 @@ void UserInterface::Update(Mouse::State& mouseState)
 	bool open = false;
 	open = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_openTexPos.x,m_openTexPos.y },		    // 画像の位置
-		SimpleMath::Vector2{ 5.0f },		    // サイズ
-		SimpleMath::Vector2{ 100.0f });	    // サイズ
+		SimpleMath::Vector2{ 5.0f },			    // サイズ
+		SimpleMath::Vector2{ 100.0f });				// サイズ
 	if (open)
 	{
 		is_openFlag = true;
@@ -95,9 +99,9 @@ void UserInterface::Update(Mouse::State& mouseState)
 	// 保存アイコンをクリック
 	bool save = false;
 	save = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
-		{ m_saveTexPos.x,m_saveTexPos.y },		    // 画像の位置
-		SimpleMath::Vector2{ 5.0f },		    // サイズ
-		SimpleMath::Vector2{ 100.0f });	    // サイズ
+		{ m_saveTexPos.x,m_saveTexPos.y },			// 画像の位置
+		SimpleMath::Vector2{ 5.0f },				// サイズ
+		SimpleMath::Vector2{ 100.0f });				// サイズ
 	// 当っていてクリックした時処理
 	if (save)
 	{
@@ -110,9 +114,9 @@ void UserInterface::Update(Mouse::State& mouseState)
 
 	// カメラアイコンをクリック
 	bool camera = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
-		{ m_cameraTexPos.x,m_cameraTexPos.y },	 									// 画像の位置
-		SimpleMath::Vector2{ 5.0f }, 										// サイズ
-		SimpleMath::Vector2{ 100.0f });									// サイズ
+		{ m_cameraTexPos.x,m_cameraTexPos.y },	 	 // 画像の位置			
+		SimpleMath::Vector2{ 5.0f }, 				 // サイズ			
+		SimpleMath::Vector2{ 100.0f });				 // サイズ			
 
 	// カメラ移動モード切り替え
 	if (camera && m_systemManager->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
@@ -123,9 +127,9 @@ void UserInterface::Update(Mouse::State& mouseState)
 
 	// ペン/消しゴムアイコンをクリック
 	bool tool = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
-		{ m_penTexPos.x,m_penTexPos.y },	        							 // 画像の位置
-		SimpleMath::Vector2{ 5.0f },									 // サイズ
-		SimpleMath::Vector2{ 100.0f });								 // サイズ
+		{ m_penTexPos.x,m_penTexPos.y },	        // 画像の位置
+		SimpleMath::Vector2{ 5.0f },				// サイズ
+		SimpleMath::Vector2{ 100.0f });				// サイズ
 
 	// 描画モード切り替え
 	if (tool && m_systemManager->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
@@ -141,6 +145,9 @@ void UserInterface::Update(Mouse::State& mouseState)
 /// <returns>なし</returns>
 void UserInterface::Render()
 {
+	// 画像の拡大率をウィンドウをもとに計算
+	float imageScale = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
+
 	// セーブアイコン
 	if (is_openFlag)
 	{
@@ -148,7 +155,7 @@ void UserInterface::Render()
 			L"Open",							// 登録キー
 			m_openTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.55f,								// 拡大率
+			IMAGE_RATE * imageScale,			// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -158,7 +165,7 @@ void UserInterface::Render()
 			L"Open",							// 登録キー
 			m_openTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,0.3f },			// 色
-			0.5f,								// 拡大率
+			IMAGE_RATE  * imageScale,			// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -170,7 +177,7 @@ void UserInterface::Render()
 			L"Save",							// 登録キー
 			m_saveTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.55f,								// 拡大率
+			IMAGE_RATE * imageScale,			// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -180,7 +187,7 @@ void UserInterface::Render()
 			L"Save",							// 登録キー
 			m_saveTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,0.3f },			// 色
-			0.5f,								// 拡大率
+			0.5f * imageScale,					// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -192,7 +199,7 @@ void UserInterface::Render()
 			L"CameraMove",						// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.55,								// 拡大率
+			IMAGE_RATE* imageScale,				// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -202,7 +209,7 @@ void UserInterface::Render()
 			L"Camera",							// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,0.3f },			// 色
-			0.5f,								// 拡大率
+			IMAGE_RATE* imageScale,				// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -214,7 +221,7 @@ void UserInterface::Render()
 			L"Pen",								// 登録キー
 			m_penTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.55f,								// 拡大率
+			IMAGE_RATE* imageScale,				// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -224,7 +231,7 @@ void UserInterface::Render()
 			L"Erase",							// 登録キー
 			m_penTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			0.5f,								// 拡大率
+			IMAGE_RATE* imageScale,				// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
