@@ -57,6 +57,9 @@ private:
 	const float CLOWD_SIZE = COMMON_SIZE / 1.7f;
 	const float CLOWD_SPEED = 0.1f;
 
+	// 雲リセットエリアサイズ
+	const float CLOWD_RESET_SIZE = 0.85f;
+
 	// 最低高度
 	const float	COMMON_LOW = COMMON_SIZE / 2;
 
@@ -104,6 +107,8 @@ public:
 	// モデル作成
 	void CreateModels(std::unique_ptr<Model> model, int modelName);
 
+
+public:
 	// コインのカウントアップ
 	void CountUpCoin(int index);
 	const int& GetCoinCount() { return m_coinCount; }
@@ -114,29 +119,13 @@ public:
 
 	// マップ全体のゲッター
 	const std::vector<Object>& GetMapData() { return m_mapObj; }
+
 	// ブロック単体の座標ゲッター
 	DirectX::SimpleMath::Vector3& GetBlockPosition(const int& index) { return m_mapObj[index].position; }
 	void SetBlockPosition(const DirectX::SimpleMath::Vector3& newPos, const int& index) { m_mapObj[index].position = newPos; }
 
 	// ブロックの大きさゲッター
-	const float& GetObjSize(const int& objName)
-	{
-		if (objName == MapState::CoinBox)
-		{
-			// コインは小さめサイズ
-			return COIN_SIZE;
-		}
-		else if (objName == MapState::ClowdBox)
-		{
-			// 雲も小さめサイズ
-			return CLOWD_SIZE;
-		}
-		else
-		{
-			// デフォルトサイズ
-			return COMMON_SIZE;
-		}
-	}
+	const float& GetObjSize(const int& objName);
 
 	// 雲を元の場所に戻す処理
 	void RestoreClowdPosition();

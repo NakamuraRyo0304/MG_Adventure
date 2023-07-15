@@ -15,14 +15,14 @@
  /// <param name="ˆø”–³‚µ"></param>
  /// <returns>‚È‚µ</returns>
 IScene::IScene():
-	m_systemManager{std::make_shared<SystemManager>()},
+	m_system{std::make_shared<SystemManager>()},
 	m_nextScene{SCENE::NONE},
 	is_changeFlag{false},
 	m_fadeSpeed{4.0f}
 {
 	// ì¬‚³‚ê‚Ä‚¢‚È‚¯‚ê‚ÎƒVƒXƒeƒ€‚ğì¬
-	if (!m_systemManager)
+	if (!m_system)
 	{
-		m_systemManager = std::make_shared<SystemManager>();
+		m_system = std::make_shared<SystemManager>();
 	}
 }

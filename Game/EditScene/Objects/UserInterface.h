@@ -17,7 +17,7 @@ class UserInterface
 private:
 
 	// シェアポインタ
-	std::shared_ptr<SystemManager> m_systemManager;
+	std::shared_ptr<SystemManager> m_system;
 
 	// ウィンドウサイズ
 	DirectX::SimpleMath::Vector2 m_windowSize;

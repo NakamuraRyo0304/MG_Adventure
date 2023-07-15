@@ -179,7 +179,8 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(timer);
 		
 		// スケール行列
-		SimpleMath::Matrix cl_scale = SimpleMath::Matrix::CreateScale(sinf(timer));
+		float restrictedTimer = fmodf(timer, 2 * XM_PI);
+		SimpleMath::Matrix cl_scale = SimpleMath::Matrix::CreateScale(sinf(restrictedTimer));
 
 		// 草ブロック
 		if (m_mapObj[i].id == MapState::GrassBox)
@@ -213,6 +214,11 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		// 雲のリセットポイント
 		if (m_mapObj[i].id == MapState::ResetClowd)
 		{
+			// 反転防止
+			if (sinf(restrictedTimer) < 0.0f)
+			{
+				cl_scale *= SimpleMath::Matrix::CreateScale(1.0f, -1.0f,1.0f);
+			}
 			m_reClowdPtModel->Draw(context, states, cl_scale * rotateY * world, view, proj);
 		}
 	}
@@ -281,6 +287,36 @@ void Blocks::CountUpCoin(int index)
 const bool& Blocks::IsCollectedFlag()
 {
 	return is_collectedFlag;
+}
+
+/// <summary>
+/// サイズゲッター
+/// </summary>
+/// <param name="objName">オブジェクトの名前(構造体)</param>
+/// <returns>なし</returns>
+const float& Blocks::GetObjSize(const int& objName)
+
+{
+	if (objName == MapState::CoinBox)
+	{
+		// コインは小さめサイズ
+		return COIN_SIZE;
+	}
+	else if (objName == MapState::ClowdBox)
+	{
+		// 雲も小さめサイズ
+		return CLOWD_SIZE;
+	}
+	else if (objName == MapState::ResetClowd)
+	{
+		// 雲リセットエリアは大きめsサイズ
+		return CLOWD_RESET_SIZE;
+	}
+	else
+	{
+		// デフォルトサイズ
+		return COMMON_SIZE;
+	}
 }
 
 /// <summary>

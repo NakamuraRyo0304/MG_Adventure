@@ -14,7 +14,7 @@ class PlayUI
 {
 private:
 	// シェアポインタ
-	std::shared_ptr<SystemManager> m_systemManager;
+	std::shared_ptr<SystemManager> m_system;
 
 	// ウィンドウサイズ
 	DirectX::SimpleMath::Vector2 m_windowSize;
@@ -22,8 +22,13 @@ private:
 	// フルスクリーンサイズ
 	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
-	// タイマーの座標
+	// タイマーの座標(1の位)
 	DirectX::SimpleMath::Vector2 m_timerPos;
+	// タイマーの座標(10の位)
+	DirectX::SimpleMath::Vector2 m_timerTPos;
+
+	// 制限時間
+	int m_timeLimit;
 
 
 public:
@@ -39,8 +44,14 @@ public:
 	// 描画処理
 	void Render();
 
+	// ディジットの計算
+	void RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position, float scale, int digitWidth, int digitHeight);
+
 	// 終了処理
 	void Finalize();
+
+	// RECT計算
+
 };
 
 #endif //PLAYUI

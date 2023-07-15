@@ -17,7 +17,7 @@
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
 UserInterface::UserInterface(const DirectX::SimpleMath::Vector2& windowSize):
-	m_systemManager{},				// システムマネージャ
+	m_system{},				// システムマネージャ
 	m_windowSize{windowSize},		// 画面サイズ
 	m_aabbCol{},					// 当たり判定
 	m_saveTexPos{},					// 画像座標
@@ -53,17 +53,17 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	ID3D11DeviceContext1* context, ID3D11Device1* device)
 {
 	// ポインタの共有
-	m_systemManager = shareSystem;
+	m_system = shareSystem;
 
 	// 画像の設定
-	m_systemManager->GetDrawSprite()->MakeSpriteBatch(context);
+	m_system->GetDrawSprite()->MakeSpriteBatch(context);
 	// キー名　：　ファイルパス名　：　デバイス
-	m_systemManager->GetDrawSprite()->AddTextureData(L"Save", L"Resources/Textures/SaveFile.dds", device);
-	m_systemManager->GetDrawSprite()->AddTextureData(L"Camera", L"Resources/Textures/Camera.dds", device);
-	m_systemManager->GetDrawSprite()->AddTextureData(L"CameraMove", L"Resources/Textures/CameraMove.dds", device);
-	m_systemManager->GetDrawSprite()->AddTextureData(L"Pen", L"Resources/Textures/AddBlock.dds", device);
-	m_systemManager->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds", device);
-	m_systemManager->GetDrawSprite()->AddTextureData(L"Open", L"Resources/Textures/OpenFile.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Save", L"Resources/Textures/SaveFile.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Camera", L"Resources/Textures/Camera.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"CameraMove", L"Resources/Textures/CameraMove.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Pen", L"Resources/Textures/AddBlock.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Open", L"Resources/Textures/OpenFile.dds", device);
 
 	// 比率を計算
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
@@ -121,10 +121,10 @@ void UserInterface::Update(Mouse::State& mouseState)
 		SimpleMath::Vector2{ 100.0f });				 // サイズ			
 
 	// カメラ移動モード切り替え
-	if (camera && m_systemManager->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+	if (camera && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		is_cameraFlag = !is_cameraFlag;
-		m_systemManager->GetCamera()->SetEagleMode(is_cameraFlag);
+		m_system->GetCamera()->SetEagleMode(is_cameraFlag);
 	}
 
 	// ペン/消しゴムアイコンをクリック
@@ -134,7 +134,7 @@ void UserInterface::Update(Mouse::State& mouseState)
 		SimpleMath::Vector2{ 100.0f });				// サイズ
 
 	// 描画モード切り替え
-	if (tool && m_systemManager->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+	if (tool && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		is_drawFlag = !is_drawFlag;
 	}
@@ -153,7 +153,7 @@ void UserInterface::Render()
 	// セーブアイコン
 	if (is_openFlag)
 	{
-		m_systemManager->GetDrawSprite()->DrawTexture(
+		m_system->GetDrawSprite()->DrawTexture(
 			L"Open",							// 登録キー
 			m_openTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
@@ -163,7 +163,7 @@ void UserInterface::Render()
 	}
 	else
 	{
-		m_systemManager->GetDrawSprite()->DrawTexture(
+		m_system->GetDrawSprite()->DrawTexture(
 			L"Open",							// 登録キー
 			m_openTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,0.3f },			// 色
@@ -175,7 +175,7 @@ void UserInterface::Render()
 	// セーブアイコン
 	if (is_saveFlag)
 	{
-		m_systemManager->GetDrawSprite()->DrawTexture(
+		m_system->GetDrawSprite()->DrawTexture(
 			L"Save",							// 登録キー
 			m_saveTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
@@ -185,7 +185,7 @@ void UserInterface::Render()
 	}
 	else
 	{
-		m_systemManager->GetDrawSprite()->DrawTexture(
+		m_system->GetDrawSprite()->DrawTexture(
 			L"Save",							// 登録キー
 			m_saveTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,0.3f },			// 色
@@ -197,7 +197,7 @@ void UserInterface::Render()
 	// カメラアイコン
 	if (is_cameraFlag)
 	{
-		m_systemManager->GetDrawSprite()->DrawTexture(
+		m_system->GetDrawSprite()->DrawTexture(
 			L"CameraMove",						// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
@@ -207,7 +207,7 @@ void UserInterface::Render()
 	}
 	else
 	{
-		m_systemManager->GetDrawSprite()->DrawTexture(
+		m_system->GetDrawSprite()->DrawTexture(
 			L"Camera",							// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,0.3f },			// 色
@@ -219,7 +219,7 @@ void UserInterface::Render()
 	// ペンアイコン
 	if (is_drawFlag)
 	{
-		m_systemManager->GetDrawSprite()->DrawTexture(
+		m_system->GetDrawSprite()->DrawTexture(
 			L"Pen",								// 登録キー
 			m_penTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
@@ -229,7 +229,7 @@ void UserInterface::Render()
 	}
 	else
 	{
-		m_systemManager->GetDrawSprite()->DrawTexture(
+		m_system->GetDrawSprite()->DrawTexture(
 			L"Erase",							// 登録キー
 			m_penTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色

@@ -17,8 +17,9 @@
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
 PlayUI::PlayUI(const DirectX::SimpleMath::Vector2& windowSize):
-	m_systemManager{},
-	m_windowSize{ windowSize }
+	m_system{},
+	m_windowSize{ windowSize },
+	m_timeLimit{0}
 {
 }
 
@@ -30,7 +31,7 @@ PlayUI::PlayUI(const DirectX::SimpleMath::Vector2& windowSize):
 PlayUI::~PlayUI()
 {
 	Finalize();
-	m_systemManager.reset();
+	m_system.reset();
 }
 
 /// <summary>
@@ -44,19 +45,20 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	ID3D11DeviceContext1* context, ID3D11Device1* device)
 {
 	// システム
-	m_systemManager = system;
+	m_system = system;
 
 	// 画像の設定
-	m_systemManager->GetDrawSprite()->MakeSpriteBatch(context);
+	m_system->GetDrawSprite()->MakeSpriteBatch(context);
 
 	// 画像を登録
-	m_systemManager->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
 
 	// 比率を計算
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
 
 	// 座標情報
-	m_timerPos = { m_windowSize.x / 2 * span , 80 * span };
+	m_timerPos =  { (m_windowSize.x / 2 + 50.0f) * span , 80 * span };
+	m_timerTPos = { (m_windowSize.x / 2 - 50.0f) * span , 80 * span };
 }
 
 /// <summary>
@@ -66,7 +68,7 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 /// <returns>なし</returns>
 void PlayUI::Update(const float& timelimit)
 {
-	timelimit;
+	m_timeLimit = static_cast<int>(timelimit);
 }
 
 /// <summary>
@@ -76,30 +78,55 @@ void PlayUI::Update(const float& timelimit)
 /// <returns>なし</returns>
 void PlayUI::Render()
 {
-	// 比率を計算
-	float scale = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
+    // 比率を計算
+    float scale = static_cast<float>(m_windowSize.x / FULL_SCREEN_SIZE.x);
 
-	RECT_U rect;
+    // 秒数を計算
+    int oneSec = m_timeLimit / 60;
 
-	rect.left = 0;
-	rect.right = rect.left + 1000;
-	rect.bottom = 100;
+    // 数字の幅と高さ
+    const int digitWidth = 100;
+    const int digitHeight = 100;
 
-	int num = (rect.left / 100) ;
+    // 一桁目の数字を表示
+    RenderDigit(oneSec % 10, m_timerPos, scale, digitWidth, digitHeight);
 
-	SimpleMath::Vector2 Center = {
-	static_cast<float>(rect.right / 2),
-	static_cast<float>(rect.bottom / 2)};
+    // 十の桁の数字を表示
+    RenderDigit((oneSec / 10) % 10, m_timerTPos, scale, digitWidth, digitHeight);
+}
 
+/// <summary>
+/// 数字を描画する
+/// </summary>
+/// <param name="digit">描画する数字</param>
+/// <param name="position">座標</param>
+/// <param name="scale">拡大率</param>
+/// <param name="digitWidth">数字の幅</param>
+/// <param name="digitHeight">数字の高さ</param>
+/// <returns>なし</returns>
+void PlayUI::RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position, float scale, int digitWidth, int digitHeight)
+{
+    // 数字のスプライト位置を計算
+    float spritePosX = position.x - digitWidth * scale;
+    float spritePosY = position.y;
 
-	m_systemManager->GetDrawSprite()->DrawTexture(
-		L"Number",							// 登録キー
-		m_timerPos,							// 座標
-		{ 1.0f,1.0f,1.0f,1.0f },			// 色
-		1.0f * scale,						// 拡大率
-		Center,								// 中心位置
-		rect								// 切り取り位置
-	);
+    // スプライトの中心位置
+    SimpleMath::Vector2 center = { spritePosX + (digitWidth * scale) / 2.0f, spritePosY + (digitHeight * scale) / 2.0f };
+
+    RECT_U rect;
+    rect.left = digit * digitWidth;
+    rect.right = rect.left + digitWidth;
+    rect.bottom = digitHeight;
+
+    // 数字表示
+    m_system->GetDrawSprite()->DrawTexture(
+        L"Number",                         // 登録キー
+        position + center,                 // 座標
+        { 1.0f, 1.0f, 1.0f, 1.0f },        // 色
+        scale,                             // 拡大率
+        center,                            // 中心位置
+        rect                               // 切り取り位置
+    );
 }
 
 /// <summary>

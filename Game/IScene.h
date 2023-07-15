@@ -20,7 +20,7 @@ class IScene
 {
 private:
 	// システムマネージャ
-	std::shared_ptr<SystemManager> m_systemManager;
+	std::shared_ptr<SystemManager> m_system;
 
 	// 次のシーンを指定する
 	SCENE m_nextScene;
@@ -78,7 +78,7 @@ public:
 	inline SCENE GetNextScene() { return m_nextScene; }
 
 	// システムマネージャをゲット
-	inline std::shared_ptr<SystemManager>& GetSystemManager() { return m_systemManager; }
+	inline std::shared_ptr<SystemManager>& GetSystemManager() { return m_system; }
 
 	// シーンフラグをゲット
 	inline const bool& GetChangeSceneFlag() { return is_changeFlag; }
