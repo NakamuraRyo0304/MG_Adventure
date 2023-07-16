@@ -32,6 +32,31 @@ private:
 
 	// マップ番号
 	int m_stageNum;
+
+	// 画像座標
+	DirectX::SimpleMath::Vector2 m_retryPos;
+	DirectX::SimpleMath::Vector2 m_selectPos;
+	DirectX::SimpleMath::Vector2 m_titlePos;
+
+	// 透明度
+	float m_retryAlpha;
+	float m_selectAlpha;
+	float m_titleAlpha;
+
+	// 拡大率
+	float m_retryScale;
+	float m_selectScale;
+	float m_titleScale;
+
+	// 画面サイズ
+	DirectX::SimpleMath::Vector2 m_windowSize;
+	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = {1920.0f,1080.0f};
+
+	// 画像拡大率
+	const float IMAGE_RATE = 0.55f;
+	// 画像の中心位置
+	const float	IMAGE_CENTER = 128.0f;
+
 public:
 
 	// コンストラクタ

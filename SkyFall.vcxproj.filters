@@ -116,6 +116,9 @@
     <Filter Include="Scenes\PlayScene\Objects\PlayUI">
       <UniqueIdentifier>{83720363-c958-4b84-8836-b0096f46d4f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Textures\FONT">
+      <UniqueIdentifier>{509dc2a6-c44e-4a81-8770-7f94b47d8711}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -335,6 +338,18 @@
       <Filter>Resources\ShaderTextures</Filter>
     </Image>
     <Image Include="Resources\Textures\Number.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\FONT\SELECT.dds">
+      <Filter>Resources\Textures\FONT</Filter>
+    </Image>
+    <Image Include="Resources\Textures\FONT\TITLE.dds">
+      <Filter>Resources\Textures\FONT</Filter>
+    </Image>
+    <Image Include="Resources\Textures\FONT\RETRY.dds">
+      <Filter>Resources\Textures\FONT</Filter>
+    </Image>
+    <Image Include="Resources\Textures\ResultBack.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>

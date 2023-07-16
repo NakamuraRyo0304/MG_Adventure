@@ -28,7 +28,17 @@ ResultScene::ResultScene():
 	m_timer{0.0f},
 	m_clearTime{0.0f},
 	m_selectNum{RETRY},
-	m_stageNum{1}
+	m_stageNum{1},
+	m_retryPos{},
+	m_retryAlpha{},
+	m_retryScale{},
+	m_selectPos{},
+	m_selectAlpha{},
+	m_selectScale{},
+	m_titlePos{},
+	m_titleAlpha{},
+	m_titleScale{},
+	m_windowSize{}
 {
 }
 
@@ -80,17 +90,53 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	GetSystemManager()->GetCamera()->Update();
 
 	// メニューセレクト
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Down))
 	{
 		m_selectNum++;
+		if (m_selectNum == 3) // ループ処理
+		{
+			m_selectNum = RETRY;
+		}
 	}
-	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left))
+	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Up))
 	{
 		m_selectNum--;
+		if (m_selectNum < 0) // ループ処理
+		{
+			m_selectNum = TITLE;
+		}
 	}
 
-	// クランプ
-	m_selectNum = UserUtility::Clamp(m_selectNum, static_cast<int>(RETRY), static_cast<int>(TITLE));
+	// アルファ値の変更
+	switch (m_selectNum)
+	{
+	case RETRY:
+		m_retryAlpha = 1.0f;
+		m_selectAlpha = 0.5f;
+		m_titleAlpha = 0.5f;
+		m_retryScale = 1.1f;
+		m_selectScale = 1.0f;
+		m_titleScale = 1.0f;
+		break;
+	case SELECT:
+		m_retryAlpha = 0.5f;
+		m_selectAlpha = 1.0f;
+		m_titleAlpha = 0.5f;
+		m_retryScale = 1.0f;
+		m_selectScale = 1.1f;
+		m_titleScale = 1.0f;
+		break;
+	case TITLE:
+		m_retryAlpha = 0.5f;
+		m_selectAlpha = 0.5f;
+		m_titleAlpha = 1.0f;
+		m_retryScale = 1.0f;
+		m_selectScale = 1.0f;
+		m_titleScale = 1.1f;
+		break;
+	default:
+		break;
+	}
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
@@ -142,31 +188,18 @@ void ResultScene::Draw()
 		swprintf_s(sel, 10, L"Title");
 	}
 
-	GetSystemManager()->GetString()->DrawFormatString(
-		GetSystemManager()->GetCommonStates().get(), 
-		{ 0,20 }, 
-		sel
-	);
-
-	wchar_t clr[30];
-	swprintf_s(clr, 30, L"%f", m_clearTime);
-	GetSystemManager()->GetString()->DrawFormatString(
-		GetSystemManager()->GetCommonStates().get(),
-		{ 0,40 },
-		clr
-	);
-
 	// 描画関連
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	SimpleMath::Matrix world, view, proj;
+	SimpleMath::Matrix  view, proj;
 
 	// ビュー行列
-	SimpleMath::Vector3    eye(0.0f, 5.0f, 18.0f);
+	SimpleMath::Vector3    eye(cosf(m_timer), 20.0f + sinf(m_timer) * 2.0f, 10.0f);
 	SimpleMath::Vector3     up(0.0f, 5.0f, 0.0f);
-	SimpleMath::Vector3 target(0.0f, 0.0f, 0.0f);
+	SimpleMath::Vector3 target(0.0f, -10.0f, -5.0f);
+		
 	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
 
 	// プロジェクション行列
@@ -174,7 +207,49 @@ void ResultScene::Draw()
 
 	// マップの描画
 	m_blocks->Render(context, states, view, proj, m_timer);
+
+	//-------------------------------------------------------------------------------------// 
+
+	// 画像の拡大率をウィンドウをもとに計算
+	float imageScale = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
+
+	// 画面を薄暗くする
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+		L"BLIND",											// 登録キー
+		SimpleMath::Vector2::Zero,							// 座標
+		{ 1.0f,1.0f,1.0f,0.5f },							// 色
+		1.0f,												// 拡大率
+		SimpleMath::Vector2::Zero							// 中心位置
+	);
+
+	// リトライ文字
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"RETRY",										// 登録キー
+			m_retryPos,										// 座標
+			{ 1.0f,1.0f,1.0f,m_retryAlpha },				// 色
+			IMAGE_RATE * imageScale * m_retryScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
+		);
+
+	// セレクト文字
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"SELECT",										// 登録キー
+			m_selectPos,									// 座標
+			{ 1.0f,1.0f,1.0f,m_selectAlpha },				// 色
+			IMAGE_RATE * imageScale * m_selectScale,		// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
+		);
+
+	// タイトル文字
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"TITLE",										// 登録キー
+			m_titlePos,										// 座標
+			{ 1.0f,1.0f,1.0f,m_titleAlpha },				// 色
+			IMAGE_RATE * imageScale * m_titleScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
+		);
 }
+
 
 /// <summary>
 /// 終了処理
@@ -208,6 +283,9 @@ void ResultScene::CreateWindowDependentResources()
 	float height = 
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
+	// ウィンドウサイズを取得
+	m_windowSize = SimpleMath::Vector2{ width,height };
+
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, 45.0f);
 
@@ -235,5 +313,19 @@ void ResultScene::CreateWindowDependentResources()
 		m_blocks->RECLOWD
 	);
 
+	// 画像の設定
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(context);
+	// 画像を登録
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY", L"Resources/Textures/FONT/RETRY.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE", L"Resources/Textures/FONT/TITLE.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND", L"Resources/Textures/ResultBack.dds", device);
 
+	// 比率を計算
+	float span = static_cast<float>(width) / FULL_SCREEN_SIZE.x;
+
+	// 座標情報
+	m_retryPos  = { 960.0f * span, 500.0f * span };
+	m_selectPos = { 960.0f * span, 600.0f * span };
+	m_titlePos  = { 960.0f * span, 700.0f * span };
 }

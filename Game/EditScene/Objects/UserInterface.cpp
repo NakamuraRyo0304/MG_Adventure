@@ -17,7 +17,7 @@
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
 UserInterface::UserInterface(const DirectX::SimpleMath::Vector2& windowSize):
-	m_system{},				// システムマネージャ
+	m_system{},						// システムマネージャ
 	m_windowSize{windowSize},		// 画面サイズ
 	m_aabbCol{},					// 当たり判定
 	m_saveTexPos{},					// 画像座標
