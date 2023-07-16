@@ -289,6 +289,9 @@
     <None Include="Resources\Models\MoveBlock.cmo" />
     <None Include="Resources\Models\ResetPt.cmo" />
     <None Include="Resources\Models\ShineSky.cmo" />
+    <None Include="Resources\Models\Stage1.cmo" />
+    <None Include="Resources\Models\Stage2.cmo" />
+    <None Include="Resources\Models\Stage3.cmo" />
     <None Include="Resources\Models\TitleLogo.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
     <None Include="Resources\Shaders\PlayerPoint.hlsli" />

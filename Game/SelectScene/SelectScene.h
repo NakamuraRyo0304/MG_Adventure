@@ -11,20 +11,42 @@
 
 #include "../IScene.h"
 
+class Blocks;
 class SelectScene : public IScene
 {
 private:
-	static const float CAMERA_ANGLE;
-	std::unique_ptr<DirectX::GeometricPrimitive> m_tea;
 
-	// 回転用変数
-	float m_angle;
+	// タイマー
+	float m_timer;
+
+	// カメラアングル
+	const float CAMERA_ANGLE = 45.0f;
+
+	// ステージ
+	std::unique_ptr<Blocks> m_blocks;
+	// スカイドーム
+	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
 	// ステージ番号
 	int m_stageNum;
 
 	// 最大ステージ数
 	const int MAX_STAGE_NUM = 3;
+	std::unique_ptr<DirectX::Model>m_stage1Model;
+	std::unique_ptr<DirectX::Model>m_stage2Model;
+	std::unique_ptr<DirectX::Model>m_stage3Model;
+
+	// カメラの回転半径
+	const float CAMERA_RADIUS = 4.0f;
+
+	// スカイドームの回転速度
+	const float SKY_ROT_SPEED = 2.0f;
+
+	// 見上げ値
+	const float UP_VALUE = 50.0f;
+
+	// 切り替え時読み込み演出
+	float m_changeMapMove;
 
 public:
 

@@ -119,6 +119,9 @@
     <Filter Include="Resources\Textures\FONT">
       <UniqueIdentifier>{509dc2a6-c44e-4a81-8770-7f94b47d8711}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Models\Stage">
+      <UniqueIdentifier>{6f458962-5566-44f3-8d4b-67fc1e47e5f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -400,6 +403,15 @@
     </None>
     <None Include="Resources\Models\ResetPt.cmo">
       <Filter>Resources\Models</Filter>
+    </None>
+    <None Include="Resources\Models\Stage1.cmo">
+      <Filter>Resources\Models\Stage</Filter>
+    </None>
+    <None Include="Resources\Models\Stage2.cmo">
+      <Filter>Resources\Models\Stage</Filter>
+    </None>
+    <None Include="Resources\Models\Stage3.cmo">
+      <Filter>Resources\Models\Stage</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
