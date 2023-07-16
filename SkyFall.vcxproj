@@ -265,6 +265,7 @@
     <Image Include="Resources\Textures\EraseBlock.dds" />
     <Image Include="Resources\Textures\FadeBlind.dds" />
     <Image Include="Resources\Textures\Fog.png" />
+    <Image Include="Resources\Textures\FONT\COINS.dds" />
     <Image Include="Resources\Textures\FONT\RETRY.dds" />
     <Image Include="Resources\Textures\FONT\SELECT.dds" />
     <Image Include="Resources\Textures\FONT\TITLE.dds" />

@@ -45,6 +45,9 @@ ResultScene::ResultScene():
 	m_titlePos{},				// タイトルテキストの位置
 	m_titleAlpha{},				// タイトルテキストの透明度
 	m_titleScale{},				// タイトルテキストの大きさ
+	m_coinsPos{},				// コインテキストの位置
+	m_oneCoiPos{},				// コインの1の位の座標
+	m_tenCoiPos{},				// コインの10の位の座標
 	m_windowSize{}				// ウィンドウサイズ
 {
 	// ランダムの生成
@@ -118,7 +121,7 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
-
+	
 	// メニューセレクト
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Down))
 	{
@@ -141,28 +144,28 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	switch (m_selectNum)
 	{
 	case RETRY:
-		m_retryAlpha = 1.0f;
+		m_retryAlpha  = 1.0f;
 		m_selectAlpha = 0.5f;
-		m_titleAlpha = 0.5f;
-		m_retryScale = 1.1f;
+		m_titleAlpha  = 0.5f;
+		m_retryScale  = 1.1f;
 		m_selectScale = 1.0f;
-		m_titleScale = 1.0f;
+		m_titleScale  = 1.0f;
 		break;
 	case SELECT:
-		m_retryAlpha = 0.5f;
+		m_retryAlpha  = 0.5f;
 		m_selectAlpha = 1.0f;
-		m_titleAlpha = 0.5f;
-		m_retryScale = 1.0f;
+		m_titleAlpha  = 0.5f;
+		m_retryScale  = 1.0f;
 		m_selectScale = 1.1f;
-		m_titleScale = 1.0f;
+		m_titleScale  = 1.0f;
 		break;
 	case TITLE:
-		m_retryAlpha = 0.5f;
+		m_retryAlpha  = 0.5f;
 		m_selectAlpha = 0.5f;
-		m_titleAlpha = 1.0f;
-		m_retryScale = 1.0f;
+		m_titleAlpha  = 1.0f;
+		m_retryScale  = 1.0f;
 		m_selectScale = 1.0f;
-		m_titleScale = 1.1f;
+		m_titleScale  = 1.1f;
 		break;
 	default:
 		break;
@@ -229,8 +232,14 @@ void ResultScene::Draw()
 		SimpleMath::Vector2::Zero							// 中心位置
 	);
 
-	// コインの獲得枚数を表示
-	RenderDigit(m_coinNum, SimpleMath::Vector2{0.0f,0.0f}, imageScale, 100, 100);
+	// コイン文字
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"COINS",										// 登録キー
+			m_coinsPos,										// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },						// 色
+			IMAGE_RATE * imageScale * 1.0f,					// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
+		);
 
 	// リトライ文字
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
@@ -260,18 +269,23 @@ void ResultScene::Draw()
 		);
 
 
+	//-------------------------------------------------------------------------------------// 
 	// 秒数を計算
-	int oneSec = static_cast<int>(m_clearTime);
-
-	// 数字の幅と高さ
-	const int digitWidth = 100;
-	const int digitHeight = 100;
+	int sec = static_cast<int>(m_clearTime);
 
 	// 一桁目の数字を表示
-	RenderDigit(oneSec % 10, m_oneSecPos, imageScale, digitWidth, digitHeight);
+	RenderDigit(sec % 10, m_oneSecPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
 
 	// 十の桁の数字を表示
-	RenderDigit((oneSec / 10) % 10, m_tenSecPos, imageScale, digitWidth, digitHeight);
+	RenderDigit((sec / 10) % 10, m_tenSecPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
+
+	//-------------------------------------------------------------------------------------// 
+
+	// 一桁目の数字を表示
+	RenderDigit(m_coinNum % 10, m_oneCoiPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
+
+	// 十の桁の数字を表示
+	RenderDigit((m_coinNum / 10) % 10, m_tenCoiPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
 }
 
 
@@ -343,26 +357,32 @@ void ResultScene::CreateWindowDependentResources()
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY", L"Resources/Textures/FONT/RETRY.dds", device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds", device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE", L"Resources/Textures/FONT/TITLE.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"COINS", L"Resources/Textures/FONT/COINS.dds", device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND", L"Resources/Textures/ResultBack.dds", device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
 
 	// 比率を計算
-	float span = static_cast<float>(width) / FULL_SCREEN_SIZE.x;
-
-	// 座標情報
-	m_retryPos  = { 960.0f * span, 500.0f * span };
-	m_selectPos = { 960.0f * span, 600.0f * span };
-	m_titlePos  = { 960.0f * span, 700.0f * span };
+	float span = width / FULL_SCREEN_SIZE.x;
 
 	// スプライトの位置を計算
-	m_oneSecPos = { 1010.0f * span, 80.0f * span };
-	m_tenSecPos = {  910.0f * span, 80.0f * span };
+	m_oneSecPos = { (NUM_OFFSET + static_cast<float>(SPRITE_SIZE / 2)) * span, 80.0f * span };
+	m_tenSecPos = { (NUM_OFFSET - static_cast<float>(SPRITE_SIZE / 2)) * span, 80.0f * span };
+	m_oneCoiPos = { (NUM_OFFSET + static_cast<float>(SPRITE_SIZE / 2)) * span, 440.0f * span };
+	m_tenCoiPos = { (NUM_OFFSET - static_cast<float>(SPRITE_SIZE / 2)) * span, 440.0f * span };
+	m_coinsPos  = { TEXT_OFFSET * span, 400.0f * span };
+
+	// 座標情報
+	m_retryPos  = { TEXT_OFFSET * span, 700.0f * span };
+	m_selectPos = { TEXT_OFFSET * span, 800.0f * span };
+	m_titlePos  = { TEXT_OFFSET * span, 900.0f * span };
 
 	// 座標補正 FIXED
 	if (static_cast<int>(width) == 1280)
 	{
-		m_oneSecPos.x -= 50.0f * span;
-		m_tenSecPos.x -= 50.0f * span;
+		m_oneSecPos.x -= static_cast<float>(SPRITE_SIZE / 2.0f * span);
+		m_tenSecPos.x -= static_cast<float>(SPRITE_SIZE / 2.0f * span);
+		m_oneCoiPos.x -= static_cast<float>(SPRITE_SIZE / 2.0f * span);
+		m_tenCoiPos.x -= static_cast<float>(SPRITE_SIZE / 2.0f * span);
 	}
 }
 

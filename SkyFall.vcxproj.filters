@@ -352,6 +352,9 @@
     <Image Include="Resources\Textures\ResultBack.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
+    <Image Include="Resources\Textures\FONT\COINS.dds">
+      <Filter>Resources\Textures\FONT</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">

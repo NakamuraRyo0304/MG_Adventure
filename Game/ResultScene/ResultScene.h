@@ -46,11 +46,16 @@ private:
 	DirectX::SimpleMath::Vector2 m_retryPos;
 	DirectX::SimpleMath::Vector2 m_selectPos;
 	DirectX::SimpleMath::Vector2 m_titlePos;
+	DirectX::SimpleMath::Vector2 m_coinsPos;
 
 	// タイマーの座標(1の位)
 	DirectX::SimpleMath::Vector2 m_oneSecPos;
 	// タイマーの座標(10の位)
 	DirectX::SimpleMath::Vector2 m_tenSecPos;
+	// コインの座標(1の位)
+	DirectX::SimpleMath::Vector2 m_oneCoiPos;
+	// コインの座標(10の位)
+	DirectX::SimpleMath::Vector2 m_tenCoiPos;
 
 	// 透明度
 	float m_retryAlpha;
@@ -64,12 +69,22 @@ private:
 
 	// 画面サイズ
 	DirectX::SimpleMath::Vector2 m_windowSize;
+
+private:
+	// フルスクリーンサイズ
 	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = {1920.0f,1080.0f};
 
 	// 画像拡大率
 	const float IMAGE_RATE = 0.55f;
 	// 画像の中心位置
 	const float	IMAGE_CENTER = 128.0f;
+
+	// テキストのオフセット
+	const float NUM_OFFSET = 960.0f;
+	const float TEXT_OFFSET = 940.0f;
+
+	// 画像の１スプライトサイズ
+	const int SPRITE_SIZE = 100;
 
 public:
 
