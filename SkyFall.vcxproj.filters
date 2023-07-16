@@ -413,6 +413,9 @@
     <None Include="Resources\Models\Stage3.cmo">
       <Filter>Resources\Models\Stage</Filter>
     </None>
+    <None Include="Resources\Models\StageEdit.cmo">
+      <Filter>Resources\Models\Stage</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">

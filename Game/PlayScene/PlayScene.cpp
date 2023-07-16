@@ -219,7 +219,7 @@ void PlayScene::Draw()
 	// UI‚Ì•`‰æ
 	m_userInterFace->Render();
 
-	DebugLog(view, proj);
+	//DebugLog(view, proj);
 }
 
 /// <summary>

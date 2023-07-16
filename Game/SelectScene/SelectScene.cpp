@@ -161,7 +161,8 @@ void SelectScene::Draw()
 
 
 	//-------------------------------------------------------------------------------------// 
-	
+
+	// テキストの移動アニメーション
 	SimpleMath::Matrix stageMat = SimpleMath::Matrix::Identity;
 	stageMat *= SimpleMath::Matrix::CreateRotationY(m_timer);
 	stageMat *= SimpleMath::Matrix::CreateScale(10.0f);
@@ -170,6 +171,9 @@ void SelectScene::Draw()
 	// ステージ番号表示
 	switch (m_stageNum)
 	{
+	case 0:
+		m_editModel->Draw(context, states, stageMat, view, proj);
+		return;
 	case 1:
 		m_stage1Model->Draw(context, states, stageMat, view, proj);
 		return;
@@ -194,6 +198,12 @@ void SelectScene::Finalize()
 {
 	// マップの後処理
 	m_blocks->Finalize();
+
+	// モデル削除
+	ModelFactory::DeleteModel(m_stage1Model);
+	ModelFactory::DeleteModel(m_stage2Model);
+	ModelFactory::DeleteModel(m_stage3Model);
+	ModelFactory::DeleteModel(m_editModel);
 }
 
 /// <summary>
@@ -274,6 +284,7 @@ void SelectScene::CreateWindowDependentResources()
 	//-------------------------------------------------------------------------------------// 
 
 	// ステージ番号のモデル
+	m_editModel   = ModelFactory::GetCreateModel(device, L"Resources/Models/StageEdit.cmo");
 	m_stage1Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage1.cmo");
 	m_stage2Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage2.cmo");
 	m_stage3Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage3.cmo");

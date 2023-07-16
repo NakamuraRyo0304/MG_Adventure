@@ -292,6 +292,7 @@
     <None Include="Resources\Models\Stage1.cmo" />
     <None Include="Resources\Models\Stage2.cmo" />
     <None Include="Resources\Models\Stage3.cmo" />
+    <None Include="Resources\Models\StageEdit.cmo" />
     <None Include="Resources\Models\TitleLogo.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
     <None Include="Resources\Shaders\PlayerPoint.hlsli" />

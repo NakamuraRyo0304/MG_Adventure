@@ -32,6 +32,7 @@ private:
 
 	// 最大ステージ数
 	const int MAX_STAGE_NUM = 3;
+	std::unique_ptr<DirectX::Model>m_editModel;
 	std::unique_ptr<DirectX::Model>m_stage1Model;
 	std::unique_ptr<DirectX::Model>m_stage2Model;
 	std::unique_ptr<DirectX::Model>m_stage3Model;

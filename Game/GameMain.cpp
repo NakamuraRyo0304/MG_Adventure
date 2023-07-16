@@ -25,7 +25,7 @@
  /// <param name="ˆø”–³‚µ"></param>
  /// <returns>‚È‚µ</returns>
 GameMain::GameMain():
-	m_nextScene{ SCENE::SELECT },
+	m_nextScene{ SCENE::TITLE },
 	m_prevScene{ SCENE::NONE },
 	m_nowScene{ nullptr },
 	m_num{1},
