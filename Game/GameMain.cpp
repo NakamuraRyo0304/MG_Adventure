@@ -30,6 +30,7 @@ GameMain::GameMain():
 	m_nowScene{ nullptr },
 	m_num{1},
 	m_clearTime{0.0f},
+	m_coinNum{0},
 	m_screenWidth{},
 	m_screenHeight{}
 {
@@ -188,6 +189,7 @@ void GameMain::CreateScene()
 			// クリアタイムを渡す
 			CastSceneType<ResultScene>(m_nowScene)->SetStageNum(m_num);
 			CastSceneType<ResultScene>(m_nowScene)->SetClearTime(m_clearTime);
+			CastSceneType<ResultScene>(m_nowScene)->SetCoinNum(m_coinNum);
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
@@ -237,6 +239,7 @@ void GameMain::DeleteScene()
 		if (CastSceneType<ResultScene>(m_nowScene) == nullptr)
 		{
 			m_clearTime = CastSceneType<PlayScene>(m_nowScene)->GetTimeLimit();
+			m_coinNum = CastSceneType<PlayScene>(m_nowScene)->GetCoinNum();
 		}
 	}
 

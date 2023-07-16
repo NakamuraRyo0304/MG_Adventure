@@ -16,6 +16,10 @@
 // ブロック
 #include "../PlayScene/Objects/Blocks.h"
 
+// ランダム(演出用なのでランダムデバイスは使わない)
+#include <random>
+#include <time.h>
+
 #include "ResultScene.h"
 
  /// <summary>
@@ -25,21 +29,26 @@
  /// <returns>なし</returns>
 ResultScene::ResultScene():
 	IScene(),
-	m_timer{0.0f},
-	m_clearTime{0.0f},
-	m_selectNum{RETRY},
-	m_stageNum{1},
-	m_retryPos{},
-	m_retryAlpha{},
-	m_retryScale{},
-	m_selectPos{},
-	m_selectAlpha{},
-	m_selectScale{},
-	m_titlePos{},
-	m_titleAlpha{},
-	m_titleScale{},
-	m_windowSize{}
+	m_timer{0.0f},				// 時計
+	m_clearTime{0.0f},			// クリアタイムを格納
+	m_saveTime{0.0f},			// クリアタイムを保存する変数
+	m_directionTime{0.0f},		// 演出する時間
+	m_selectNum{RETRY},			// 次のシーン選択
+	m_coinNum{0},				// コインの枚数
+	m_stageNum{1},				// 背景のステージ番号(初期化で1)
+	m_retryPos{},				// リトライテキストの位置
+	m_retryAlpha{},				// リトライテキストの透明度
+	m_retryScale{},				// リトライテキストの大きさ
+	m_selectPos{},				// セレクトテキストの位置
+	m_selectAlpha{},			// セレクトテキストの透明度
+	m_selectScale{},			// セレクトテキストの大きさ
+	m_titlePos{},				// タイトルテキストの位置
+	m_titleAlpha{},				// タイトルテキストの透明度
+	m_titleScale{},				// タイトルテキストの大きさ
+	m_windowSize{}				// ウィンドウサイズ
 {
+	// ランダムの生成
+	srand(unsigned int(time(0)));
 }
 
 /// <summary>
@@ -66,6 +75,12 @@ void ResultScene::Initialize()
 
 	// マップ読み込み
 	m_blocks->Initialize(m_stageNum);
+
+	// タイマーの保存
+	m_saveTime = m_clearTime;
+
+	// 演出時間 最初のフェードも考慮して多めに取る
+	m_directionTime = 120.0f;
 }
 
 /// <summary>
@@ -79,6 +94,21 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	Mouse::State& mouseState)
 {
 	m_timer = elapsedTime;
+
+	// 演出時間をカウント
+	m_directionTime--;
+
+	// 演出をする
+	if (m_directionTime < 0.0f)
+	{
+		m_directionTime = 0.0f;
+		m_clearTime = 3600.0f - m_saveTime;
+	}
+	else
+	{
+		// ランダムな値を入れる
+		m_clearTime = static_cast<float>(rand() % 60 + 1);
+	}
 
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
@@ -107,7 +137,7 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		}
 	}
 
-	// アルファ値の変更
+	// アルファ値とスケールの変更
 	switch (m_selectNum)
 	{
 	case RETRY:
@@ -165,29 +195,6 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 /// <returns>なし</returns>
 void ResultScene::Draw()
 {
-	// デバッグフォント
-	GetSystemManager()->GetString()->ChangeFontColor(Colors::Black);
-	GetSystemManager()->GetString()->DrawFormatString(
-		GetSystemManager()->GetCommonStates().get(), 
-		{ 0,0 }, 
-		L"ResultScene"
-	);
-
-	wchar_t sel[10];
-
-	if (m_selectNum == RETRY)
-	{
-		swprintf_s(sel, 10, L"Retry");
-	}
-	else if (m_selectNum == SELECT)
-	{
-		swprintf_s(sel, 10, L"Select");
-	}
-	else if (m_selectNum == TITLE)
-	{
-		swprintf_s(sel, 10, L"Title");
-	}
-
 	// 描画関連
 	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& states = *GetSystemManager()->GetCommonStates();
@@ -222,6 +229,9 @@ void ResultScene::Draw()
 		SimpleMath::Vector2::Zero							// 中心位置
 	);
 
+	// コインの獲得枚数を表示
+	RenderDigit(m_coinNum, SimpleMath::Vector2{0.0f,0.0f}, imageScale, 100, 100);
+
 	// リトライ文字
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
 			L"RETRY",										// 登録キー
@@ -248,6 +258,20 @@ void ResultScene::Draw()
 			IMAGE_RATE * imageScale * m_titleScale,			// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
 		);
+
+
+	// 秒数を計算
+	int oneSec = static_cast<int>(m_clearTime);
+
+	// 数字の幅と高さ
+	const int digitWidth = 100;
+	const int digitHeight = 100;
+
+	// 一桁目の数字を表示
+	RenderDigit(oneSec % 10, m_oneSecPos, imageScale, digitWidth, digitHeight);
+
+	// 十の桁の数字を表示
+	RenderDigit((oneSec / 10) % 10, m_tenSecPos, imageScale, digitWidth, digitHeight);
 }
 
 
@@ -320,6 +344,7 @@ void ResultScene::CreateWindowDependentResources()
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds", device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE", L"Resources/Textures/FONT/TITLE.dds", device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND", L"Resources/Textures/ResultBack.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
 
 	// 比率を計算
 	float span = static_cast<float>(width) / FULL_SCREEN_SIZE.x;
@@ -328,4 +353,56 @@ void ResultScene::CreateWindowDependentResources()
 	m_retryPos  = { 960.0f * span, 500.0f * span };
 	m_selectPos = { 960.0f * span, 600.0f * span };
 	m_titlePos  = { 960.0f * span, 700.0f * span };
+
+	// スプライトの位置を計算
+	m_oneSecPos = { 1010.0f * span, 80.0f * span };
+	m_tenSecPos = {  910.0f * span, 80.0f * span };
+
+	// 座標補正 FIXED
+	if (static_cast<int>(width) == 1280)
+	{
+		m_oneSecPos.x -= 50.0f * span;
+		m_tenSecPos.x -= 50.0f * span;
+	}
+}
+
+/// <summary>
+/// 数字を描画する
+/// </summary>
+/// <param name="digit">描画する数字</param>
+/// <param name="position">座標</param>
+/// <param name="scale">拡大率</param>
+/// <param name="digitWidth">数字の幅</param>
+/// <param name="digitHeight">数字の高さ</param>
+/// <returns>なし</returns>
+void ResultScene::RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position, float scale, int digitWidth, int digitHeight)
+{
+	// スプライトの位置を計算
+	float spritePosX = position.x * scale;
+	float spritePosY = position.y * scale;
+
+	// スプライトの中心位置を計算
+	SimpleMath::Vector2 center = { spritePosX  * scale / 2.0f, spritePosY  * scale / 2.0f };
+
+	// 切り取り位置の設定
+	RECT_U rect;
+
+	// 切り取り開始位置を設定(横)
+	rect.left = digit * digitWidth;
+
+	// 切り取り終了位置を設定(横)
+	rect.right = rect.left + digitWidth;
+
+	// 画像縦幅を設定
+	rect.bottom = digitHeight;
+
+	// 数字表示
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+		L"Number",                         // 登録キー
+		position + center,                 // 座標
+		{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
+		scale,                             // 拡大率
+		center,                            // 中心位置
+		rect                               // 切り取り位置
+	);
 }

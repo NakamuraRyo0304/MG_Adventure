@@ -125,6 +125,9 @@ public:
 	// タイムリミットのゲッター
 	const float& GetTimeLimit() { return m_returnTimeVal; }
 
+	// コインの枚数ゲッター
+	const int& GetCoinNum();
+
 	// マップ番号のセッター
 	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
 

@@ -513,3 +513,13 @@ void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	// デバッググリッドの表示
 	GetSystemManager()->GetGridFloor()->Draw(context, state, view, proj);
 }
+
+/// <summary>
+/// コインゲッター
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>獲得したコインの枚数</returns>
+const int& PlayScene::GetCoinNum()
+{
+	return m_blocks->GetCoinCount();
+}

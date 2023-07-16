@@ -60,6 +60,9 @@ private:
     // クリア時間を保存する
     float m_clearTime;
 
+    // コインの枚数を保存する
+    int m_coinNum;
+
     // デフォルトのフェード速度
     const float DEFAULT_FADE_SPEED = 4.0f;
     // プレイシーンのフェード速度

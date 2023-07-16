@@ -49,9 +49,6 @@ public:
 
 	// I—¹ˆ—
 	void Finalize();
-
-	// RECTŒvZ
-
 };
 
 #endif //PLAYUI

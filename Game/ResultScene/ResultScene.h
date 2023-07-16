@@ -27,16 +27,30 @@ private:
 	// クリアタイム
 	float m_clearTime;
 
+	// クリアタイムを保存する変数
+	float m_saveTime;
+
+	// 演出時間
+	float m_directionTime;
+
 	// ブロック
 	std::unique_ptr<Blocks> m_blocks;
 
 	// マップ番号
 	int m_stageNum;
 
+	// コインの枚数
+	int m_coinNum;
+
 	// 画像座標
 	DirectX::SimpleMath::Vector2 m_retryPos;
 	DirectX::SimpleMath::Vector2 m_selectPos;
 	DirectX::SimpleMath::Vector2 m_titlePos;
+
+	// タイマーの座標(1の位)
+	DirectX::SimpleMath::Vector2 m_oneSecPos;
+	// タイマーの座標(10の位)
+	DirectX::SimpleMath::Vector2 m_tenSecPos;
 
 	// 透明度
 	float m_retryAlpha;
@@ -85,6 +99,12 @@ public:
 
 	// マップ番号セッター
 	void SetStageNum(const int& num) { m_stageNum = num; }
+
+	// ディジットの計算
+	void RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position, float scale, int digitWidth, int digitHeight);
+
+	// コインセッター
+	void SetCoinNum(const int& coinNum) { m_coinNum = coinNum; }
 
 };
 

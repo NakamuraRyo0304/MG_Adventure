@@ -56,12 +56,23 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	// 画像を登録
 	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
 
-	// 比率を計算
-	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
+	// 画面サイズの格納
+	float width =
+		static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right);
 
-	// 座標情報
-	m_oneSecPos =  { (m_windowSize.x / 2 + 50.0f) * span , 80 * span };
-	m_tenSecPos =  { (m_windowSize.x / 2 - 50.0f) * span , 80 * span };
+	// 比率を計算
+	float span = static_cast<float>(width) / FULL_SCREEN_SIZE.x;
+
+	// スプライトの位置を計算
+	m_oneSecPos = { 1010.0f * span, 80.0f * span };
+	m_tenSecPos = {  910.0f * span, 80.0f * span };
+
+    // 座標補正 FIXED
+    if (static_cast<int>(m_windowSize.x) == 1280)
+    {
+        m_oneSecPos.x -= 50.0f * span;
+        m_tenSecPos.x -= 50.0f * span;
+    }
 }
 
 /// <summary>
@@ -91,6 +102,9 @@ void PlayUI::Render()
     const int digitWidth = 100;
     const int digitHeight = 100;
 
+    // 残り10秒で時間表示
+   // if (static_cast<int>(m_timeLimit) > 600) return;
+
     // 一桁目の数字を表示
     RenderDigit(oneSec % 10, m_oneSecPos, scale, digitWidth, digitHeight);
 
@@ -109,34 +123,34 @@ void PlayUI::Render()
 /// <returns>なし</returns>
 void PlayUI::RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position, float scale, int digitWidth, int digitHeight)
 {
-    // 数字のスプライト位置を計算
-    float spritePosX = position.x - digitWidth * scale;
-    float spritePosY = position.y;
+	// スプライトの位置を計算
+	float spritePosX = position.x * scale;
+	float spritePosY = position.y * scale;
 
-    // スプライトの中心位置
-    SimpleMath::Vector2 center = { spritePosX + (digitWidth * scale) / 2.0f, spritePosY + (digitHeight * scale) / 2.0f };
+	// スプライトの中心位置を計算
+	SimpleMath::Vector2 center = { spritePosX * scale / 2.0f, spritePosY * scale / 2.0f };
 
-    // 切り取り位置の設定
-    RECT_U rect;
+	// 切り取り位置の設定
+	RECT_U rect;
 
-    // 切り取り開始位置を設定(横)
-    rect.left = digit * digitWidth;
+	// 切り取り開始位置を設定(横)
+	rect.left = digit * digitWidth;
 
-    // 切り取り終了位置を設定(横)
-    rect.right = rect.left + digitWidth;
+	// 切り取り終了位置を設定(横)
+	rect.right = rect.left + digitWidth;
 
-    // 画像縦幅を設定
-    rect.bottom = digitHeight;
+	// 画像縦幅を設定
+	rect.bottom = digitHeight;
 
-    // 数字表示
-    m_system->GetDrawSprite()->DrawTexture(
-        L"Number",                         // 登録キー
-        position + center,                 // 座標
-        { 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-        scale,                             // 拡大率
-        center,                            // 中心位置
-        rect                               // 切り取り位置
-    );
+	// 数字表示
+	m_system->GetDrawSprite()->DrawTexture(
+		L"Number",                         // 登録キー
+		position + center,                 // 座標
+		{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
+		scale,                             // 拡大率
+		center,                            // 中心位置
+		rect                               // 切り取り位置
+	);
 }
 
 /// <summary>
