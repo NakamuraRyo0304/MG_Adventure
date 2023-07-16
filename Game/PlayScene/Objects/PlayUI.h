@@ -23,9 +23,9 @@ private:
 	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
 	// タイマーの座標(1の位)
-	DirectX::SimpleMath::Vector2 m_timerPos;
+	DirectX::SimpleMath::Vector2 m_oneSecPos;
 	// タイマーの座標(10の位)
-	DirectX::SimpleMath::Vector2 m_timerTPos;
+	DirectX::SimpleMath::Vector2 m_tenSecPos;
 
 	// 制限時間
 	int m_timeLimit;

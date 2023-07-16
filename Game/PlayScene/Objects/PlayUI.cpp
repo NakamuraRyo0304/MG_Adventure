@@ -21,8 +21,8 @@ PlayUI::PlayUI(const DirectX::SimpleMath::Vector2& windowSize):
 	m_system{},
 	m_windowSize{ windowSize },
 	m_timeLimit{0},
-    m_timerPos{SimpleMath::Vector2::Zero},
-    m_timerTPos{SimpleMath::Vector2::Zero}
+    m_oneSecPos{SimpleMath::Vector2::Zero},
+    m_tenSecPos{SimpleMath::Vector2::Zero}
 {
 }
 
@@ -60,8 +60,8 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
 
 	// 座標情報
-	m_timerPos =  { (m_windowSize.x / 2 + 50.0f) * span , 80 * span };
-	m_timerTPos = { (m_windowSize.x / 2 - 50.0f) * span , 80 * span };
+	m_oneSecPos =  { (m_windowSize.x / 2 + 50.0f) * span , 80 * span };
+	m_tenSecPos =  { (m_windowSize.x / 2 - 50.0f) * span , 80 * span };
 }
 
 /// <summary>
@@ -92,10 +92,10 @@ void PlayUI::Render()
     const int digitHeight = 100;
 
     // 一桁目の数字を表示
-    RenderDigit(oneSec % 10, m_timerPos, scale, digitWidth, digitHeight);
+    RenderDigit(oneSec % 10, m_oneSecPos, scale, digitWidth, digitHeight);
 
     // 十の桁の数字を表示
-    RenderDigit((oneSec / 10) % 10, m_timerTPos, scale, digitWidth, digitHeight);
+    RenderDigit((oneSec / 10) % 10, m_tenSecPos, scale, digitWidth, digitHeight);
 }
 
 /// <summary>
