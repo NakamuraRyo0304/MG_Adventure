@@ -11,11 +11,15 @@
 
 #include "../IScene.h"
 
+class Blocks;
 class ResultScene : public IScene
 {
 private:
 	// モード
 	enum { RETRY, SELECT, TITLE };
+
+	// タイマー
+	float m_timer;
 
 	// セレクト
 	int m_selectNum;
@@ -23,6 +27,11 @@ private:
 	// クリアタイム
 	float m_clearTime;
 
+	// ブロック
+	std::unique_ptr<Blocks> m_blocks;
+
+	// マップ番号
+	int m_stageNum;
 public:
 
 	// コンストラクタ
@@ -48,6 +57,9 @@ public:
 
 	// クリアタイムセッター
 	void SetClearTime(const float& clearTime) { m_clearTime = clearTime; }
+
+	// マップ番号セッター
+	void SetStageNum(const int& num) { m_stageNum = num; }
 
 };
 

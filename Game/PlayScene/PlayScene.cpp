@@ -38,7 +38,7 @@ PlayScene::PlayScene() :
 	m_timeLimit{0.0f},				// 制限時間
 	m_returnTimeVal{0.0f},			// 制限時間(戻り値)
 	m_mapLoad{},					// マップ
-	m_mapNum{1},					// ステージ番号
+	m_stageNum{1},					// ステージ番号
 	m_fallValue{0.0f},				// 落下用変数
 	m_prevIndex{},					// 過去に当たったインデックス番号
 	m_hitObjects{},					// 当っているオブジェクトの格納
@@ -74,7 +74,7 @@ void PlayScene::Initialize()
 	m_player->Initialize(std::make_shared<SystemManager>());
 
 	// マップ読み込み
-	m_blocks->Initialize(m_mapNum);
+	m_blocks->Initialize(m_stageNum);
 
 	// プレイヤー座標設定
 	m_player->SetPosition(m_blocks->GetPlayerPosition());

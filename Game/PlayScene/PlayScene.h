@@ -31,7 +31,7 @@ private:
 	// マップ
 	MapLoad m_mapLoad;
 	// マップ番号
-	int m_mapNum;
+	int m_stageNum;
 
 	// プレイヤ
 	std::unique_ptr<Player> m_player;
@@ -126,7 +126,7 @@ public:
 	const float& GetTimeLimit() { return m_returnTimeVal; }
 
 	// マップ番号のセッター
-	void SetStageNum(const int& stageNum) { m_mapNum = stageNum; }
+	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
 
 };
 

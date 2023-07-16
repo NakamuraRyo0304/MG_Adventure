@@ -10,6 +10,12 @@
 // ユーザーユーティリティ
 #include "Libraries/UserUtility.h"
 
+ // CSV読み込み
+#include "../../Libraries/SystemDatas/MapLoad.h"
+
+// ブロック
+#include "../PlayScene/Objects/Blocks.h"
+
 #include "ResultScene.h"
 
  /// <summary>
@@ -19,8 +25,10 @@
  /// <returns>なし</returns>
 ResultScene::ResultScene():
 	IScene(),
+	m_timer{0.0f},
 	m_clearTime{0.0f},
-	m_selectNum{RETRY}
+	m_selectNum{RETRY},
+	m_stageNum{1}
 {
 }
 
@@ -45,6 +53,9 @@ void ResultScene::Initialize()
 
 	// カメラ視点移動
 	GetSystemManager()->GetCamera()->SetEagleMode(false);
+
+	// マップ読み込み
+	m_blocks->Initialize(m_stageNum);
 }
 
 /// <summary>
@@ -57,7 +68,7 @@ void ResultScene::Initialize()
 void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState, 
 	Mouse::State& mouseState)
 {
-	elapsedTime;
+	m_timer = elapsedTime;
 
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
@@ -144,6 +155,25 @@ void ResultScene::Draw()
 		{ 0,40 },
 		clr
 	);
+
+	// 描画関連
+	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto& states = *GetSystemManager()->GetCommonStates();
+
+	// カメラ用行列
+	SimpleMath::Matrix world, view, proj;
+
+	// ビュー行列
+	SimpleMath::Vector3    eye(0.0f, 5.0f, 18.0f);
+	SimpleMath::Vector3     up(0.0f, 5.0f, 0.0f);
+	SimpleMath::Vector3 target(0.0f, 0.0f, 0.0f);
+	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
+
+	// プロジェクション行列
+	proj = GetSystemManager()->GetCamera()->GetProjection();
+
+	// マップの描画
+	m_blocks->Render(context, states, view, proj, m_timer);
 }
 
 /// <summary>
@@ -153,6 +183,8 @@ void ResultScene::Draw()
 /// <returns>なし</returns>
 void ResultScene::Finalize()
 {
+	// マップの後処理
+	m_blocks->Finalize();
 }
 
 /// <summary>
@@ -178,5 +210,30 @@ void ResultScene::CreateWindowDependentResources()
 
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, 45.0f);
+
+	// ブロックの作成
+	m_blocks = std::make_unique<Blocks>();
+
+	// 草ブロックの作成
+	m_blocks->CreateModels(
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo")),
+		m_blocks->GRASS
+	);
+	// コインの作成
+	m_blocks->CreateModels(
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo")),
+		m_blocks->COIN
+	);
+	// 雲ブロックの作成
+	m_blocks->CreateModels(
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo")),
+		m_blocks->CLOWD
+	);
+	// 雲リセットブロックの作成
+	m_blocks->CreateModels(
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo")),
+		m_blocks->RECLOWD
+	);
+
 
 }

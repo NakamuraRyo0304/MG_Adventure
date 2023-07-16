@@ -186,6 +186,7 @@ void GameMain::CreateScene()
 			m_nowScene = std::make_unique<ResultScene>();
 
 			// クリアタイムを渡す
+			CastSceneType<ResultScene>(m_nowScene)->SetStageNum(m_num);
 			CastSceneType<ResultScene>(m_nowScene)->SetClearTime(m_clearTime);
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
