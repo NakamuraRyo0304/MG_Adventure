@@ -140,6 +140,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 		for (auto& obj : m_blocks->GetMapData())
 		{
+			// エフェクトをオフ
+			m_userInterFace->SetEffectFlag(false);
+
 			// オブジェクトの振動
 			GetSystemManager()->GetCamera()->ShakeObject(
 				SHAKE_DURATION,							// 振動時間
@@ -157,15 +160,21 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 			);
 		}
 	}
-	// 落下したらカメラを揺らす
-	else if (m_player->GetPosition().y < DURATION_FLOOR_LINE / 2)
+	// 落下したら死亡エフェクトを出す
+	else if (m_player->GetPosition().y < DURATION_FLOOR_LINE / 1.5f)
 	{
 		// オブジェクトの振動
 		for (auto& obj : m_blocks->GetMapData())
 		{
 			// エフェクトをオン
-			m_userInterFace->SetEffectFlag(true);
-
+			if (static_cast<int>(m_player->GetPosition().y) % 2 == 0)
+			{
+				m_userInterFace->SetEffectFlag(true);
+			}
+			else
+			{
+				m_userInterFace->SetEffectFlag(false);
+			}
 			GetSystemManager()->GetCamera()->ShakeObject(
 				1.0f,									// 振動時間
 				SHAKE_TREMOR,							// 振動範囲
