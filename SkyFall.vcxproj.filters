@@ -358,6 +358,9 @@
     <Image Include="Resources\Textures\FONT\COINS.dds">
       <Filter>Resources\Textures\FONT</Filter>
     </Image>
+    <Image Include="Resources\Textures\DeathEffect.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -432,5 +435,10 @@
     <FxCompile Include="Resources\Shaders\PlayerPointVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Resources\Textures\DeathEffect.png">
+      <Filter>Resources\Textures</Filter>
+    </ImageContentTask>
   </ItemGroup>
 </Project>

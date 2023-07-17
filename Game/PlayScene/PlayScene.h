@@ -80,10 +80,10 @@ private:
 	const float	CAMERA_ANGLE = 44.5f;
 
 	// ブロック崩壊ライン
-	const float DURATION_FLOOR_LINE = -7.5f;
+	const float DURATION_FLOOR_LINE = -15.0f;
 
 	// 死亡後落下速度
-	const float FALL_SPEED = 0.002f;
+	const float FALL_SPEED = 0.005f;
 
 	// 振動設定
 	const float SHAKE_DURATION = 4.0f;		// 持続時間

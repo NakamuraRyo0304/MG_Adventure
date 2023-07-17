@@ -22,7 +22,8 @@ PlayUI::PlayUI(const DirectX::SimpleMath::Vector2& windowSize):
 	m_windowSize{ windowSize },
 	m_timeLimit{0},
     m_oneSecPos{SimpleMath::Vector2::Zero},
-    m_tenSecPos{SimpleMath::Vector2::Zero}
+    m_tenSecPos{SimpleMath::Vector2::Zero},
+	is_effectFlag{false}
 {
 }
 
@@ -55,6 +56,7 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 
 	// 画像を登録
 	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Death", L"Resources/Textures/DeathEffect.dds", device);
 
 	// 画面サイズの格納
 	float width =
@@ -73,6 +75,9 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
         m_oneSecPos.x -= 50.0f * span;
         m_tenSecPos.x -= 50.0f * span;
     }
+
+	// 落下フラグを切る
+	is_effectFlag = false;
 }
 
 /// <summary>
@@ -110,6 +115,18 @@ void PlayUI::Render()
 
     // 十の桁の数字を表示
     RenderDigit((oneSec / 10) % 10, m_tenSecPos, scale, digitWidth, digitHeight);
+
+	// 落下エフェクト
+	if (is_effectFlag)
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Death",                          // 登録キー
+			SimpleMath::Vector2::Zero,         // 座標
+			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
+			scale,                             // 拡大率
+			SimpleMath::Vector2::Zero          // 中心位置
+		);
+	}
 }
 
 /// <summary>

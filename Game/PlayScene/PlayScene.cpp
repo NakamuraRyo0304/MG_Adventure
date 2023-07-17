@@ -85,6 +85,9 @@ void PlayScene::Initialize()
 	// 制限時間の初期化
 	// 時間　×　フレームレート
 	m_timeLimit = TIME_LIMIT * FLAME_RATE;
+
+	// 死亡エフェクトを切る
+	m_userInterFace->SetEffectFlag(false);
 }
 
 /// <summary>
@@ -140,7 +143,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 			// オブジェクトの振動
 			GetSystemManager()->GetCamera()->ShakeObject(
 				SHAKE_DURATION,							// 振動時間
-				SHAKE_TREMOR,							// 振動範囲
+				SHAKE_TREMOR * 2.5f,					// 振動範囲
 				&m_blocks->GetBlockPosition(obj.index)	// 振動オブジェクト
 			);
 
@@ -151,6 +154,22 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 				obj.position.y + m_fallValue,			// Y軸
 				obj.position.z),						// Z軸
 				obj.index								// 配列番号
+			);
+		}
+	}
+	// 落下したらカメラを揺らす
+	else if (m_player->GetPosition().y < DURATION_FLOOR_LINE / 2)
+	{
+		// オブジェクトの振動
+		for (auto& obj : m_blocks->GetMapData())
+		{
+			// エフェクトをオン
+			m_userInterFace->SetEffectFlag(true);
+
+			GetSystemManager()->GetCamera()->ShakeObject(
+				1.0f,									// 振動時間
+				SHAKE_TREMOR,							// 振動範囲
+				&m_blocks->GetBlockPosition(obj.index)	// 振動オブジェクト
 			);
 		}
 	}

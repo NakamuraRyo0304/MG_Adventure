@@ -262,6 +262,8 @@
     <Image Include="Resources\Textures\AddBlock.dds" />
     <Image Include="Resources\Textures\Camera.dds" />
     <Image Include="Resources\Textures\CameraMove.dds" />
+    <Image Include="Resources\Textures\DeathEffect.dds" />
+    <ImageContentTask Include="Resources\Textures\DeathEffect.png" />
     <Image Include="Resources\Textures\EraseBlock.dds" />
     <Image Include="Resources\Textures\FadeBlind.dds" />
     <Image Include="Resources\Textures\Fog.png" />

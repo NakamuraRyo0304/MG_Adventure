@@ -256,7 +256,7 @@ void EditScene::Draw()
 	m_userInterface->Render();
 
 	// デバッグ表示
-	DebugLog(view, proj);
+	//DebugLog(view, proj);
 }
 
 /// <summary>

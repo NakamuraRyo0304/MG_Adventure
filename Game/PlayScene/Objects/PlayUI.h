@@ -30,6 +30,9 @@ private:
 	// 制限時間
 	int m_timeLimit;
 
+	// 落下エフェクトフラグ
+	bool is_effectFlag;
+
 
 public:
 	PlayUI(const DirectX::SimpleMath::Vector2& windowSize);
@@ -49,6 +52,11 @@ public:
 
 	// 終了処理
 	void Finalize();
+
+public:
+
+	// エフェクトフラグのセット
+	void SetEffectFlag(const bool& flag) { is_effectFlag = flag; }
 };
 
 #endif //PLAYUI
