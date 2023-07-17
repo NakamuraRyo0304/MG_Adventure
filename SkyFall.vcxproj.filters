@@ -425,6 +425,12 @@
     <None Include="Resources\Models\Spacedome.cmo">
       <Filter>Resources\Models</Filter>
     </None>
+    <None Include="Resources\Models\Stage4.cmo">
+      <Filter>Resources\Models\Stage</Filter>
+    </None>
+    <None Include="Resources\Models\Stage5.cmo">
+      <Filter>Resources\Models\Stage</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -441,10 +447,5 @@
     <FxCompile Include="Resources\Shaders\PlayerPointVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ImageContentTask Include="Resources\Textures\EditToolBar.png">
-      <Filter>Resources\Textures</Filter>
-    </ImageContentTask>
   </ItemGroup>
 </Project>

@@ -24,6 +24,14 @@ private:
 	// スカイドーム
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
+	// カメラ演出
+	float m_moveY;
+	const float MAX_HEIGHT = 10.0f;
+	float m_logoMoveScale;
+
+	// 決定判定
+	bool is_startFlag;
+
 public:
 
 	// コンストラクタ

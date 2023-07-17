@@ -18,7 +18,10 @@ TitleScene::TitleScene():
 	IScene(),
 	m_timer{0.0f},
 	m_titleLogoModel{},
-	m_miniatureModel{}
+	m_miniatureModel{},
+	m_moveY{0.0f},
+	is_startFlag{false},
+	m_logoMoveScale{}
 {
 }
 
@@ -46,6 +49,9 @@ void TitleScene::Initialize()
 	GetSystemManager()->GetCamera()->SetEagleMode(false);
 	// カメラ座標設定
 	GetSystemManager()->GetCamera()->SetEyePosition(SimpleMath::Vector3(0.0f, -20.0f, -20.0f));
+
+	// ロゴの大きさ
+	m_logoMoveScale = 1.0f;
 }
 
 /// <summary>
@@ -69,10 +75,18 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
-	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
-		GoNextScene(SCENE::SELECT);
+		is_startFlag = true;
+	}
+	if (is_startFlag)
+	{
+		m_moveY++;
+
+		if (m_moveY > MAX_HEIGHT)
+		{
+			GoNextScene(SCENE::SELECT);
+		}
 	}
 }
 
@@ -93,7 +107,7 @@ void TitleScene::Draw()
 	// 移動、回転行列
 	SimpleMath::Matrix logoTrans, logoRot;
 	SimpleMath::Matrix stageTrans, stageRotX,stageRotY;
-	SimpleMath::Matrix skyRotX;
+	SimpleMath::Matrix skyTrans,skyRotX;
 
 	// ワールド行列
 	logoMat = SimpleMath::Matrix::Identity;
@@ -109,6 +123,7 @@ void TitleScene::Draw()
 	// 移動行列
 	logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, 2.0f, cosf(m_timer) * 0.5f);
 	stageTrans = SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
+	skyTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_moveY, 0.0f);
 
 	// ロゴ
 	logoMat *= logoRot * logoTrans;
@@ -117,8 +132,20 @@ void TitleScene::Draw()
 	// スカイドーム
 	skyMat *= skyRotX;
 
+	// スタート演出の処理はこの中
+	if (is_startFlag)
+	{
+		// スカイドームの回転と移動
+		skyMat *= skyRotX; 
+		skyMat *= skyTrans;
+
+		// ロゴも一緒に動く
+		m_logoMoveScale *= 1.05f;
+		logoMat *= SimpleMath::Matrix::CreateScale(m_logoMoveScale);
+	}
+
 	// ビュー行列
-	SimpleMath::Vector3    eye(0.0f, 0.1f, 8.0f);
+	SimpleMath::Vector3    eye(0.0f, 0.1f + m_moveY, 8.0f);
 	SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
 	SimpleMath::Vector3 target(0.0f, 0.0f, 0.0f);
 	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);

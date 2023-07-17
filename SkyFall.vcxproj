@@ -264,7 +264,6 @@
     <Image Include="Resources\Textures\CameraMove.dds" />
     <Image Include="Resources\Textures\DeathEffect.dds" />
     <Image Include="Resources\Textures\EditToolBar.dds" />
-    <ImageContentTask Include="Resources\Textures\EditToolBar.png" />
     <Image Include="Resources\Textures\EraseBlock.dds" />
     <Image Include="Resources\Textures\FadeBlind.dds" />
     <Image Include="Resources\Textures\Fog.png" />
@@ -296,6 +295,8 @@
     <None Include="Resources\Models\Stage1.cmo" />
     <None Include="Resources\Models\Stage2.cmo" />
     <None Include="Resources\Models\Stage3.cmo" />
+    <None Include="Resources\Models\Stage4.cmo" />
+    <None Include="Resources\Models\Stage5.cmo" />
     <None Include="Resources\Models\StageEdit.cmo" />
     <None Include="Resources\Models\TitleLogo.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />

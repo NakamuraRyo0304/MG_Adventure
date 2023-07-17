@@ -183,6 +183,12 @@ void SelectScene::Draw()
 	case 3:
 		m_stage3Model->Draw(context, states, stageMat, view, proj);
 		return;
+	case 4:
+		m_stage4Model->Draw(context, states, stageMat, view, proj);
+		return;
+	case 5:
+		m_stage5Model->Draw(context, states, stageMat, view, proj);
+		return;
 	default:
 		break;
 	}
@@ -203,6 +209,8 @@ void SelectScene::Finalize()
 	ModelFactory::DeleteModel(m_stage1Model);
 	ModelFactory::DeleteModel(m_stage2Model);
 	ModelFactory::DeleteModel(m_stage3Model);
+	ModelFactory::DeleteModel(m_stage4Model);
+	ModelFactory::DeleteModel(m_stage5Model);
 	ModelFactory::DeleteModel(m_editModel);
 }
 
@@ -288,4 +296,6 @@ void SelectScene::CreateWindowDependentResources()
 	m_stage1Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage1.cmo");
 	m_stage2Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage2.cmo");
 	m_stage3Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage3.cmo");
+	m_stage4Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage4.cmo");
+	m_stage5Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage5.cmo");
 }
