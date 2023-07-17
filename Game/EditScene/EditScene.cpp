@@ -31,6 +31,7 @@ EditScene::EditScene() :
 	m_coinModel{ nullptr },			// |
 	m_clowdModel{ nullptr },		// |
 	m_reClowdPtModel{ nullptr },	// |
+	m_skyDomeModel{ nullptr },		// |
 	m_sharedSystem{}				// システムデータ
 	
 {
@@ -43,6 +44,7 @@ EditScene::EditScene() :
 /// <returns>なし</returns>
 EditScene::~EditScene()
 {
+	Finalize();
 }
 
 /// <summary>
@@ -252,6 +254,10 @@ void EditScene::Draw()
 		break;
 	}
 	
+	// スカイドームの描画
+	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer / 10);
+	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
+
 	// 画像の描画
 	m_userInterface->Render();
 
@@ -275,6 +281,7 @@ void EditScene::Finalize()
 	ModelFactory::DeleteModel(m_clowdModel);
 	ModelFactory::DeleteModel(m_reClowdPtModel);
 	ModelFactory::DeleteModel(m_playerModel);
+	ModelFactory::DeleteModel(m_skyDomeModel);
 	ModelFactory::DeleteModel(m_noneModel);
 }
 
@@ -334,6 +341,28 @@ void EditScene::CreateWindowDependentResources()
 	m_noneModel = ModelFactory::GetCreateModel(			// 消しゴムブロック
 		device,
 		L"Resources/Models/Eraser.cmo"
+	);
+		// スカイドームモデルを作成する	
+	m_skyDomeModel = ModelFactory::GetCreateModel(	
+		device,
+		L"Resources/Models/Spacedome.cmo"
+	);
+	m_skyDomeModel->UpdateEffects([](IEffect* effect)
+		{
+			auto lights = dynamic_cast<IEffectLights*>(effect);
+			if (lights)
+			{
+				lights->SetLightEnabled(0, false);
+				lights->SetLightEnabled(1, false);
+				lights->SetLightEnabled(2, false);
+			}
+			// 自己発光する
+			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (basicEffect)
+			{
+				basicEffect->SetEmissiveColor(Colors::White);
+			}
+		}
 	);
 }
 

@@ -53,6 +53,7 @@ private:
 	std::unique_ptr<DirectX::Model>m_coinModel;			// コインモデル
 	std::unique_ptr<DirectX::Model>m_clowdModel;		// 雲モデル
 	std::unique_ptr<DirectX::Model>m_reClowdPtModel;	// 雲リセットモデル
+	std::unique_ptr<DirectX::Model>m_skyDomeModel;		// スカイドームモデル
 	std::unique_ptr<DirectX::Model>m_playerModel;		// プレイヤモデル
 
 	// 現在のブロックステータス

@@ -263,7 +263,8 @@
     <Image Include="Resources\Textures\Camera.dds" />
     <Image Include="Resources\Textures\CameraMove.dds" />
     <Image Include="Resources\Textures\DeathEffect.dds" />
-    <ImageContentTask Include="Resources\Textures\DeathEffect.png" />
+    <Image Include="Resources\Textures\EditToolBar.dds" />
+    <ImageContentTask Include="Resources\Textures\EditToolBar.png" />
     <Image Include="Resources\Textures\EraseBlock.dds" />
     <Image Include="Resources\Textures\FadeBlind.dds" />
     <Image Include="Resources\Textures\Fog.png" />
@@ -291,6 +292,7 @@
     <None Include="Resources\Models\MoveBlock.cmo" />
     <None Include="Resources\Models\ResetPt.cmo" />
     <None Include="Resources\Models\ShineSky.cmo" />
+    <None Include="Resources\Models\Spacedome.cmo" />
     <None Include="Resources\Models\Stage1.cmo" />
     <None Include="Resources\Models\Stage2.cmo" />
     <None Include="Resources\Models\Stage3.cmo" />

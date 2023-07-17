@@ -357,6 +357,9 @@ std::wstring Blocks::MapSelect(int num)
 	// マップの変更
 	switch (num) 
 	{
+	case 0:
+		filePath = L"Resources/Maps/StageEdit.csv";
+		break;
 	case 1:
 		filePath = L"Resources/Maps/Stage1.csv";
 		break;
@@ -365,6 +368,12 @@ std::wstring Blocks::MapSelect(int num)
 		break;
 	case 3:
 		filePath = L"Resources/Maps/Stage3.csv";
+		break;
+	case 4:
+		filePath = L"Resources/Maps/Stage4.csv";
+		break;
+	case 5:
+		filePath = L"Resources/Maps/Stage5.csv";
 		break;
 	default:
 		filePath = L"NoStage";

@@ -361,6 +361,9 @@
     <Image Include="Resources\Textures\DeathEffect.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
+    <Image Include="Resources\Textures\EditToolBar.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -419,6 +422,9 @@
     <None Include="Resources\Models\StageEdit.cmo">
       <Filter>Resources\Models\Stage</Filter>
     </None>
+    <None Include="Resources\Models\Spacedome.cmo">
+      <Filter>Resources\Models</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -437,7 +443,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="Resources\Textures\DeathEffect.png">
+    <ImageContentTask Include="Resources\Textures\EditToolBar.png">
       <Filter>Resources\Textures</Filter>
     </ImageContentTask>
   </ItemGroup>

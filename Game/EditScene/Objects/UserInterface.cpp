@@ -65,6 +65,8 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_system->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"Open", L"Resources/Textures/OpenFile.dds", device);
 
+	m_system->GetDrawSprite()->AddTextureData(L"ToolBar", L"Resources/Textures/EditToolBar.dds", device);
+
 	// 比率を計算
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
 
@@ -150,13 +152,22 @@ void UserInterface::Render()
 	// 画像の拡大率をウィンドウをもとに計算
 	float imageScale = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
 
-	// セーブアイコン
+	// ツールバー
+	m_system->GetDrawSprite()->DrawTexture(
+		L"ToolBar",
+		SimpleMath::Vector2::Zero,			// 座標
+		{ 1.0f,1.0f,1.0f,0.5f },			// 色
+		imageScale,							// 拡大率
+		SimpleMath::Vector2::Zero
+	);
+
+	// ファイルアイコン
 	if (is_openFlag)
 	{
 		m_system->GetDrawSprite()->DrawTexture(
 			L"Open",							// 登録キー
 			m_openTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			{ 1.0f,1.0f,1.0f,1.0f},				// 色
 			IMAGE_RATE * imageScale,			// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
@@ -166,8 +177,8 @@ void UserInterface::Render()
 		m_system->GetDrawSprite()->DrawTexture(
 			L"Open",							// 登録キー
 			m_openTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,0.3f },			// 色
-			IMAGE_RATE  * imageScale,			// 拡大率
+			{ 1.0f,1.0f,1.0f,0.2f },			// 色
+			0.5f * imageScale,					// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -188,7 +199,7 @@ void UserInterface::Render()
 		m_system->GetDrawSprite()->DrawTexture(
 			L"Save",							// 登録キー
 			m_saveTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,0.3f },			// 色
+			{ 1.0f,1.0f,1.0f,0.2f },			// 色
 			0.5f * imageScale,					// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
