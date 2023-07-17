@@ -365,13 +365,13 @@ void ResultScene::CreateWindowDependentResources()
 	float span = width / FULL_SCREEN_SIZE.x;
 
 	// スプライトの位置を計算
-	m_oneSecPos = { (NUM_OFFSET + static_cast<float>(SPRITE_SIZE / 2)) * span, 80.0f * span };
-	m_tenSecPos = { (NUM_OFFSET - static_cast<float>(SPRITE_SIZE / 2)) * span, 80.0f * span };
+	m_oneSecPos = { (NUM_OFFSET + static_cast<float>(SPRITE_SIZE / 2)) * span, 100.0f * span };
+	m_tenSecPos = { (NUM_OFFSET - static_cast<float>(SPRITE_SIZE / 2)) * span, 100.0f * span };
 	m_oneCoiPos = { (NUM_OFFSET + static_cast<float>(SPRITE_SIZE / 2)) * span, 440.0f * span };
 	m_tenCoiPos = { (NUM_OFFSET - static_cast<float>(SPRITE_SIZE / 2)) * span, 440.0f * span };
-	m_coinsPos  = { TEXT_OFFSET * span, 400.0f * span };
 
 	// 座標情報
+	m_coinsPos  = { TEXT_OFFSET * span, 400.0f * span };
 	m_retryPos  = { TEXT_OFFSET * span, 700.0f * span };
 	m_selectPos = { TEXT_OFFSET * span, 800.0f * span };
 	m_titlePos  = { TEXT_OFFSET * span, 900.0f * span };
@@ -379,10 +379,10 @@ void ResultScene::CreateWindowDependentResources()
 	// 座標補正 FIXED
 	if (static_cast<int>(width) == 1280)
 	{
-		m_oneSecPos.x -= static_cast<float>(SPRITE_SIZE / 2.0f * span);
-		m_tenSecPos.x -= static_cast<float>(SPRITE_SIZE / 2.0f * span);
-		m_oneCoiPos.x -= static_cast<float>(SPRITE_SIZE / 2.0f * span);
-		m_tenCoiPos.x -= static_cast<float>(SPRITE_SIZE / 2.0f * span);
+		m_oneSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
+		m_tenSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
+		m_oneCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
+		m_tenCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
 	}
 }
 
