@@ -262,6 +262,7 @@
     <Image Include="Resources\Textures\AddBlock.dds" />
     <Image Include="Resources\Textures\Camera.dds" />
     <Image Include="Resources\Textures\CameraMove.dds" />
+    <Image Include="Resources\Textures\Clock.dds" />
     <Image Include="Resources\Textures\DeathEffect.dds" />
     <Image Include="Resources\Textures\EditToolBar.dds" />
     <Image Include="Resources\Textures\EraseBlock.dds" />

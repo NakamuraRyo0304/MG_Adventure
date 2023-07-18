@@ -47,6 +47,7 @@ private:
 	DirectX::SimpleMath::Vector2 m_selectPos;
 	DirectX::SimpleMath::Vector2 m_titlePos;
 	DirectX::SimpleMath::Vector2 m_coinsPos;
+	DirectX::SimpleMath::Vector2 m_clockPos;
 
 	// タイマーの座標(1の位)
 	DirectX::SimpleMath::Vector2 m_oneSecPos;
@@ -76,6 +77,7 @@ private:
 
 	// 画像拡大率
 	const float IMAGE_RATE = 0.55f;
+	const float DEFAULT_RATE = 1.0f;
 	// 画像の中心位置
 	const float	IMAGE_CENTER = 128.0f;
 
@@ -120,6 +122,9 @@ public:
 
 	// コインセッター
 	void SetCoinNum(const int& coinNum) { m_coinNum = coinNum; }
+
+	// オフセット補正
+	void CorrectionOffset(float width, float span);
 
 };
 

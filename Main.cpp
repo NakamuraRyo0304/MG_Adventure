@@ -303,20 +303,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
     case WM_SYSKEYDOWN:
-        if (s_fullscreen)
-        {
-            SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-            SetWindowLongPtr(hWnd, GWL_EXSTYLE, 0);
-
-            int width = 1280;
-            int height = 720;
-            if (game)
-                game->GetDefaultSize(width, height);
-
-            ShowWindow(hWnd, SW_SHOWNORMAL);
-
-            SetWindowPos(hWnd, HWND_TOP, 0, 0, width, height, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
-        }
         break;
 
     case WM_MENUCHAR:

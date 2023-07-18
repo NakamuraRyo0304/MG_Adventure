@@ -48,7 +48,8 @@ ResultScene::ResultScene():
 	m_coinsPos{},				// コインテキストの位置
 	m_oneCoiPos{},				// コインの1の位の座標
 	m_tenCoiPos{},				// コインの10の位の座標
-	m_windowSize{}				// ウィンドウサイズ
+	m_windowSize{},				// ウィンドウサイズ
+	m_clockPos{}				// タイマーの座標
 {
 	// ランダムの生成
 	srand(unsigned int(time(0)));
@@ -105,7 +106,7 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_directionTime < 0.0f)
 	{
 		m_directionTime = 0.0f;
-		m_clearTime = m_saveTime;
+		m_clearTime = 60 - m_saveTime;
 	}
 	else
 	{
@@ -225,12 +226,12 @@ void ResultScene::Draw()
 
 	// 画面を薄暗くする
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
-		L"BLIND",											// 登録キー
-		SimpleMath::Vector2::Zero,							// 座標
-		{ 1.0f,1.0f,1.0f,0.5f },							// 色
-		1.0f,												// 拡大率
-		SimpleMath::Vector2::Zero							// 中心位置
-	);
+			L"BLIND",										// 登録キー
+			SimpleMath::Vector2::Zero,						// 座標
+			{ 1.0f,1.0f,1.0f,0.5f },						// 色
+			1.0f,											// 拡大率
+			SimpleMath::Vector2::Zero						// 中心位置
+		);
 
 	// コイン文字
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
@@ -265,6 +266,16 @@ void ResultScene::Draw()
 			m_titlePos,										// 座標
 			{ 1.0f,1.0f,1.0f,m_titleAlpha },				// 色
 			IMAGE_RATE * imageScale * m_titleScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
+		);
+
+
+	// 時計画像
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+			L"Clock",										// 登録キー
+			m_clockPos,										// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },						// 色
+			DEFAULT_RATE * imageScale,						// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
 		);
 
@@ -360,6 +371,7 @@ void ResultScene::CreateWindowDependentResources()
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"COINS", L"Resources/Textures/FONT/COINS.dds", device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND", L"Resources/Textures/ResultBack.dds", device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Clock", L"Resources/Textures/Clock.dds", device);
 
 	// 比率を計算
 	float span = width / FULL_SCREEN_SIZE.x;
@@ -375,15 +387,10 @@ void ResultScene::CreateWindowDependentResources()
 	m_retryPos  = { TEXT_OFFSET * span, 700.0f * span };
 	m_selectPos = { TEXT_OFFSET * span, 800.0f * span };
 	m_titlePos  = { TEXT_OFFSET * span, 900.0f * span };
+	m_clockPos  = { (SPRITE_SIZE + width * span) / 2,150.0f * span };
 
-	// 座標補正 FIXED
-	if (static_cast<int>(width) == 1280)
-	{
-		m_oneSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
-		m_tenSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
-		m_oneCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
-		m_tenCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
-	}
+	// 座標補正
+	CorrectionOffset(width, span);
 }
 
 /// <summary>
@@ -425,4 +432,22 @@ void ResultScene::RenderDigit(int digit, const DirectX::SimpleMath::Vector2& pos
 		center,                            // 中心位置
 		rect                               // 切り取り位置
 	);
+}
+
+/// <summary>
+/// オフセット値を変更する関数
+/// </summary>
+/// <param name="width">画面横幅</param>
+/// <param name="span">最大サイズとの比率</param>
+/// <returns>なし</returns>
+void ResultScene::CorrectionOffset(float width ,float span)
+{
+	// 座標補正
+	if (static_cast<int>(width) != 1280) return;
+
+	m_oneSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
+	m_tenSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
+	m_oneCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
+	m_tenCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
+	m_clockPos.x  += static_cast<float>(SPRITE_SIZE * 2.95f * span);
 }
