@@ -258,7 +258,6 @@
     <ResourceCompile Include="Resources\Icon\Icon.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="directx.ico" />
     <Image Include="Resources\Textures\AddBlock.dds" />
     <Image Include="Resources\Textures\Camera.dds" />
     <Image Include="Resources\Textures\CameraMove.dds" />
