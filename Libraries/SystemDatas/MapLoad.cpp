@@ -7,11 +7,19 @@
 
 #include "pch.h"
 
-#include<iostream>    // string,cout,cinに使用
+#include<iostream>    // 標準機能に使用
 #include<regex>       // 文字列の置換に使用
 #include<sstream>     // ファイルの保存に使用
-#include<fstream>     // ファイルの保存に使用
-#include<shobjidl.h>  // IFileSaveDialogに使用
+#include<fstream>     // |
+#include<shobjidl.h>  // ダイアログ操作に使用
+
+// <shobjidl.h>の参考文献
+//-------------------------------------------------------------------------------------// 
+//   Microsoftアプリ開発
+//
+//   https://learn.microsoft.com/ja-jp/windows/win32/api/shobjidl/
+// 　※ページ内リンク省略
+//-------------------------------------------------------------------------------------// 
 
 #include "MapLoad.h"
 
@@ -22,8 +30,8 @@
  /// <returns>なし</returns>
 MapLoad::MapLoad() :
 	m_mapData{},
-    is_saveFileOpenFlag{false},
     m_hWnd{nullptr},
+    is_saveFileOpenFlag{false},
 	is_editMode{false}
 {
 }
@@ -163,13 +171,13 @@ bool MapLoad::SaveMapPath(std::wstring& filePath)
 		{ L"テキスト ファイル"	, L"*.txt" }			// テキストファイル
 	};
 
-	// 引数：フィルタの数、フィルタの配列
+	// フィルタの数、フィルタの配列を設定する
 	hr = pFileDialog->SetFileTypes(2, fileTypes);
 
 	// ウィンドウハンドルを指定してダイアログを表示
-	hr = pFileDialog->Show(m_hWnd); // m_hWndはウィンドウハンドル
+	hr = pFileDialog->Show(m_hWnd);
 
-	// ウィンドウダイアログが開けた場合はパスの取得処理へ
+	// ウィンドウダイアログが開けた場合はパスの取得
 	if (SUCCEEDED(hr))
 	{
 		// 選択されたファイルパスを取得
