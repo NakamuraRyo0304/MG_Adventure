@@ -30,7 +30,7 @@ public:
 	LoadFile(LoadFile&& in)  noexcept(false);
 	LoadFile();
 	~LoadFile();
-	
+
 
 	// アクセサ
 	char* GetData() { return m_data.get(); }
