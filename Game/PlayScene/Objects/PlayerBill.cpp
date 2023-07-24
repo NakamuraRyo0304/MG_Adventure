@@ -58,7 +58,7 @@ void PlayerBill::LoadTexture(const wchar_t* path)
 	DirectX::CreateWICTextureFromFile(
 		device,
 		path,
-		nullptr, 
+		nullptr,
 		tex.ReleaseAndGetAddressOf()
 	);
 
@@ -112,7 +112,7 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 		SimpleMath::Vector4::One,		// 色情報
 		SimpleMath::Vector2::Zero		// テクスチャ座標
 	);
-	
+
 	// ビルボード位置を更新
 	vertex.position = DirectX::SimpleMath::Vector3(playerPos.x, playerPos.y + (2.0f + sinf(timer) * 0.2f), playerPos.z);
 
@@ -213,11 +213,11 @@ void PlayerBill::CreateShader()
 
 	// シェーダーファイルの読み込み
 	// バーテックスシェーダー
-	LoadFile VSData = LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointVS.cso");
+	LoadFile VSData = std::move(LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointVS.cso"));
 	// ジオメトリシェーダー
-	LoadFile GSData = LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointGS.cso");
+	LoadFile GSData = std::move(LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointGS.cso"));
 	// ピクセルシェーダー
-	LoadFile PSData = LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointPS.cso");
+	LoadFile PSData = std::move(LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointPS.cso"));
 
 	// インプットレイアウトの作成
 	device->CreateInputLayout(
@@ -231,7 +231,7 @@ void PlayerBill::CreateShader()
 	// バーテックスシェーダーの作成
 	device->CreateVertexShader(
 		VSData.GetData(),
-		VSData.GetSize(), 
+		VSData.GetSize(),
 		nullptr,
 		m_verShader.ReleaseAndGetAddressOf()
 	);
@@ -246,8 +246,8 @@ void PlayerBill::CreateShader()
 
 	// ピクセルシェーダーの作成
 	device->CreatePixelShader(
-		PSData.GetData(), 
-		PSData.GetSize(), 
+		PSData.GetData(),
+		PSData.GetSize(),
 		nullptr,
 		m_pixShader.ReleaseAndGetAddressOf()
 	);

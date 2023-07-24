@@ -68,8 +68,8 @@ void PlayScene::Initialize()
 	CreateWindowDependentResources();
 
 	// カメラ視点移動
-	GetSystemManager()->GetCamera()->SetEagleMode(true);	
-	
+	GetSystemManager()->GetCamera()->SetEagleMode(true);
+
 	// プレイヤの初期化
 	m_player->Initialize(std::make_shared<SystemManager>());
 
@@ -128,10 +128,10 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// プレイヤの更新
 	m_player->Update(keyState, elapsedTime);
-	
+
 	// 相対移動
 	m_playerBill->SetVertexMovePos(m_player->GetPosition());
-	
+
 	// ステージの下に落ちたらステージ崩壊演出
 	if (m_player->GetPosition().y < DURATION_FLOOR_LINE)
 	{
@@ -194,7 +194,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// UIの更新
 	m_userInterFace->Update(m_timeLimit);
-	
+
 	// 落下したらリスタート
 	if (m_player->GetDeathFlag())
 	{
@@ -291,10 +291,10 @@ void PlayScene::CreateWindowDependentResources()
 	// 文字の設定
 	GetSystemManager()->GetString()->CreateString(device, context);
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
-	// スカイドームモデルを作成する	
-	m_skyDomeModel = ModelFactory::GetCreateModel(	
+	// スカイドームモデルを作成する
+	m_skyDomeModel = ModelFactory::GetCreateModel(
 		device,
 		L"Resources/Models/ShineSky.cmo"
 	);
@@ -316,14 +316,14 @@ void PlayScene::CreateWindowDependentResources()
 		}
 	);
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
 	// プレイヤーの作成
 	m_player = std::make_unique<Player>(
 		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/CatClean.cmo"))
 	);
-	
-	//-------------------------------------------------------------------------------------// 
+
+	//-------------------------------------------------------------------------------------//
 
 	// ブロックの作成
 	m_blocks = std::make_unique<Blocks>();
@@ -349,13 +349,13 @@ void PlayScene::CreateWindowDependentResources()
 		m_blocks->RECLOWD
 	);
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
 	// 位置情報のシェーダーの作成
 	m_playerBill = std::make_unique<PlayerBill>();
 	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
 	// UIの作成
 	m_userInterFace = std::make_unique<PlayUI>(SimpleMath::Vector2(width, height));
@@ -387,7 +387,7 @@ void PlayScene::Judgement()
 				obj.position,											// コイン座標
 				SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
 				SimpleMath::Vector3{ m_blocks->GetObjSize(obj.id) }		// ブロックサイズ
-			);			
+			);
 
 			// 当たっていたら処理する
 			if (is_boxCol.GetHitBoxFlag())
@@ -423,11 +423,11 @@ void PlayScene::ApplyPushBack(Object& obj)
 		is_boxCol.SetPushMode(true);
 	}
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
 	// コインの処理
 	if (obj.id == MapState::CoinBox)
-	{ 
+	{
 		// 押し戻ししない
 		is_boxCol.SetPushMode(false);
 
@@ -435,8 +435,8 @@ void PlayScene::ApplyPushBack(Object& obj)
 		m_blocks->CountUpCoin(obj.index);
 	}
 
-	//-------------------------------------------------------------------------------------// 
-	
+	//-------------------------------------------------------------------------------------//
+
 	// 雲の処理
 	if (obj.id == MapState::ClowdBox)
 	{
@@ -469,7 +469,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 		m_blocks->RestoreClowdPosition();
 	}
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
 	// プレイヤのポジションを保存
 	SimpleMath::Vector3 playerPos = m_player->GetPosition();
@@ -491,7 +491,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 		m_player->ResetGravity();
 	}
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
 	// 処理が終わったら要素を破棄
 	m_hitObjects.pop_back();
@@ -517,19 +517,19 @@ void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
 	swprintf_s(plr, 64, L"PlayerPosition = %f,%f,%f", m_player->GetPosition().x, m_player->GetPosition().y, m_player->GetPosition().z);
 
 	GetSystemManager()->GetString()->DrawFormatString(state, { 0,20 }, plr);
-	
+
 	// プレイヤの重力
 	wchar_t gra[32];
 	swprintf_s(gra, 32, L"Gravity = %f", m_player->GetGravity());
 
 	GetSystemManager()->GetString()->DrawFormatString(state, { 0,40 }, gra);
-		
+
 	// コインカウンタ
 	wchar_t coi[32];
 	swprintf_s(coi, 32, L"Coin = %d", m_blocks->GetCoinCount());
 
 	GetSystemManager()->GetString()->DrawFormatString(state, { 0,60 }, coi);
-		
+
 	// タイムリミット
 	wchar_t time[32];
 	swprintf_s(time, 32, L"Limit = %d", static_cast<int>(m_timeLimit));

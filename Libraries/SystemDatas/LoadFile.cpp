@@ -42,13 +42,13 @@ LoadFile LoadFile::LoadBinaryFile(const wchar_t* fileName)
 	// 読み込むためのメモリを確保
 	bin.m_data.reset(new char[bin.m_size]);
 
-	// ファイル先頭からバッファへコピー 
+	// ファイル先頭からバッファへコピー
 	ifs.read(bin.m_data.get(), bin.m_size);
 
 	// ファイルクローズ
 	ifs.close();
 
-	return std::move(bin);
+	return bin;
 }
 
 /// <summary>
@@ -59,7 +59,7 @@ LoadFile LoadFile::LoadBinaryFile(const wchar_t* fileName)
 LoadFile::LoadFile(LoadFile&& in) noexcept(false) :
 	m_size{0}
 {
-	// データとサイズを受け取る	
+	// データとサイズを受け取る
 	m_size = in.m_size;
 	m_data = std::move(in.m_data);
 }
