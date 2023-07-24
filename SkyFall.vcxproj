@@ -266,7 +266,6 @@
     <Image Include="Resources\Textures\EditToolBar.dds" />
     <Image Include="Resources\Textures\EraseBlock.dds" />
     <Image Include="Resources\Textures\FadeBlind.dds" />
-    <Image Include="Resources\Textures\Fog.png" />
     <Image Include="Resources\Textures\FONT\COINS.dds" />
     <Image Include="Resources\Textures\FONT\RETRY.dds" />
     <Image Include="Resources\Textures\FONT\SELECT.dds" />
@@ -274,6 +273,7 @@
     <Image Include="Resources\Textures\Number.dds" />
     <Image Include="Resources\Textures\OpenFile.dds" />
     <Image Include="Resources\Textures\PlayerPoint.png" />
+    <Image Include="Resources\Textures\PlayerShadow.png" />
     <Image Include="Resources\Textures\ResultBack.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
   </ItemGroup>

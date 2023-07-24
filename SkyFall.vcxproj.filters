@@ -122,6 +122,9 @@
     <Filter Include="Resources\Models\Stage">
       <UniqueIdentifier>{6f458962-5566-44f3-8d4b-67fc1e47e5f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\PlayerShadow">
+      <UniqueIdentifier>{e4f75a71-4601-46d0-9dea-a89921cb85f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -331,9 +334,6 @@
     <Image Include="Resources\Textures\FadeBlind.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="Resources\Textures\Fog.png">
-      <Filter>Resources\ShaderTextures</Filter>
-    </Image>
     <Image Include="Resources\Textures\PlayerPoint.png">
       <Filter>Resources\ShaderTextures</Filter>
     </Image>
@@ -363,6 +363,9 @@
     </Image>
     <Image Include="Resources\Textures\Clock.dds">
       <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PlayerShadow.png">
+      <Filter>Resources\ShaderTextures</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
