@@ -217,6 +217,9 @@
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h">
       <Filter>Scenes\PlayScene\Objects\PlayUI</Filter>
     </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\PlayerShadow.h">
+      <Filter>Scenes\PlayScene\Objects\PlayerShadow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -302,6 +305,9 @@
     </ClCompile>
     <ClCompile Include="Game\PlayScene\Objects\PlayUI.cpp">
       <Filter>Scenes\PlayScene\Objects\PlayUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\Objects\PlayerShadow.cpp">
+      <Filter>Scenes\PlayScene\Objects\PlayerShadow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -434,6 +440,9 @@
     <None Include="Resources\Models\Stage5.cmo">
       <Filter>Resources\Models\Stage</Filter>
     </None>
+    <None Include="Resources\Shaders\PlayerShadow.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -448,6 +457,15 @@
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\PlayerPointVS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PlayerShadowGS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PlayerShadowPS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PlayerShadowVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
