@@ -7,7 +7,6 @@
 
 #include "pch.h"
 
-#include "DeviceResources.h"
 #include "Libraries/SystemDatas/LoadFile.h"
 #include <vector>
 
