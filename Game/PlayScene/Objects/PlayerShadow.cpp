@@ -144,11 +144,12 @@ void PlayerShadow::CreateShader()
 /// <returns>なし</returns>
 void PlayerShadow::Render(ID3D11DeviceContext* context, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	// 頂点情報
-	VertexPositionColorTexture vertex[1] =
-	{
-		VertexPositionColorTexture(m_position,SimpleMath::Vector4::One,SimpleMath::Vector2(0.0f, 0.0f))
-	};
+	// 頂点情報(板ポリゴンの１頂点の座標情報）
+	VertexPositionColorTexture vertex = VertexPositionColorTexture(
+		m_position,					// 座標
+		SimpleMath::Vector4::One,		// 色情報
+		SimpleMath::Vector2::Zero		// テクスチャ座標
+	);
 
 	// シェーダーに渡す追加のバッファを作成する。
 	ConstBuffer cbuff;
@@ -195,7 +196,7 @@ void PlayerShadow::Render(ID3D11DeviceContext* context, DirectX::SimpleMath::Mat
 
 	// 板ポリゴンを描画
 	m_batch->Begin();
-	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
+	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex, 1);
 	m_batch->End();
 
 	// シェーダの登録を解除する

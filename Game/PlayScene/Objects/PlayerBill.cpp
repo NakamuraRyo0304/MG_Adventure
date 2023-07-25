@@ -176,7 +176,7 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 	// カリングは左周り
 	context->RSSetState(m_common->CullNone());
 
-	//シェーダをセットする
+	// シェーダをセットする
 	context->VSSetShader(m_verShader.Get(), nullptr, 0);
 	context->GSSetShader(m_geoShader.Get(), nullptr, 0);
 	context->PSSetShader(m_pixShader.Get(), nullptr, 0);
