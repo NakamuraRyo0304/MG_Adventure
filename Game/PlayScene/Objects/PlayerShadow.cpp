@@ -143,7 +143,7 @@ void PlayerShadow::CreateShader()
 /// <returns>なし</returns>
 void PlayerShadow::Render(ID3D11DeviceContext* context, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	// 頂点情報(板ポリゴンの１頂点の座標情報）
+	// 頂点情報
 	VertexPositionColorTexture vertex = VertexPositionColorTexture(
 		m_position,						// 座標
 		SimpleMath::Vector4::One,		// 色情報
