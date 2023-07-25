@@ -29,7 +29,8 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerBill::INPUT_LAYOUT =
  /// <returns>なし</returns>
 PlayerBill::PlayerBill():
 	m_pDR{nullptr},
-	m_defaultPos{SimpleMath::Vector3::Zero}
+	m_defaultPos{SimpleMath::Vector3::Zero},
+	m_vertice{}
 {
 }
 
@@ -55,15 +56,12 @@ void PlayerBill::LoadTexture(const wchar_t* path)
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> tex;
 
 	// ファイル読み込み
-	DirectX::CreateWICTextureFromFile(
+	CreateWICTextureFromFile(
 		device,
 		path,
 		nullptr,
-		tex.ReleaseAndGetAddressOf()
+		m_texture.ReleaseAndGetAddressOf()
 	);
-
-	// 画像を追加
-	m_textures.push_back(tex);
 }
 
 /// <summary>
@@ -106,7 +104,7 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 {
 	auto context = m_pDR->GetD3DDeviceContext();
 
-	// 頂点情報(板ポリゴンの１頂点の座標情報）
+	// 頂点情報
 	VertexPositionColorTexture vertex = VertexPositionColorTexture(
 		m_defaultPos,					// 座標
 		SimpleMath::Vector4::One,		// 色情報
@@ -114,10 +112,10 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 	);
 
 	// ビルボード位置を更新
-	vertex.position = DirectX::SimpleMath::Vector3(playerPos.x, playerPos.y + (2.0f + sinf(timer) * 0.2f), playerPos.z);
+	vertex.position = SimpleMath::Vector3(playerPos.x, playerPos.y + (2.0f + sinf(timer) * 0.2f), playerPos.z);
 
 	// 頂点情報(板ポリゴンの４頂点の座標情報）
-	DirectX::SimpleMath::Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
+	SimpleMath::Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
 	cameraDir.Normalize();
 
 	m_particleUtility.sort(
@@ -127,29 +125,23 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 			return cameraDir.Dot(lhs.GetPosition() - m_cameraPosition) > cameraDir.Dot(rhs.GetPosition() - m_cameraPosition);
 		});
 
-	// 登録されている頂点をリセット
-	m_vertices.clear();
-
 	for (auto& li : m_particleUtility)
 	{
-		// カメラの後ろにいたら処理しない
-		if (cameraDir.Dot(li.GetPosition() - m_cameraPosition) < 0.0f)continue;
-
 		// 頂点情報の初期化
 		VertexPositionColorTexture vPCT;										// 宣言
 		vPCT.position = XMFLOAT3(li.GetPosition());								// 座標
 		vPCT.color = XMFLOAT4(li.GetNowColor());								// 色
 		vPCT.textureCoordinate = XMFLOAT2(li.GetNowScale().x, 0.0f);			// 画像
 
-		m_vertices.push_back(vPCT);
+		m_vertice = vPCT;
 	}
 
 	// シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ConstBuffer cbuff;
 	cbuff.matView = view.Transpose();
 	cbuff.matProj = proj.Transpose();
-	cbuff.matWorld = m_billboard.Transpose();
-	cbuff.Diffuse = SimpleMath::Vector4(1, 1, 1, 1);
+	cbuff.matWorld = m_world.Transpose();
+	cbuff.Diffuse = SimpleMath::Vector4::One;
 
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_constBuffer.Get(), 0, NULL, &cbuff, 0, 0);
@@ -182,10 +174,7 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 	context->PSSetShader(m_pixShader.Get(), nullptr, 0);
 
 	//ピクセルシェーダにテクスチャを登録する
-	for (int i = 0; i < m_textures.size(); i++)
-	{
-		context->PSSetShaderResources(i, 1, m_textures[i].GetAddressOf());
-	}
+	context->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
 
 	//インプットレイアウトの登録
 	context->IASetInputLayout(m_inputLayout.Get());
@@ -288,9 +277,9 @@ void PlayerBill::CreateConstBuffer(ID3D11Device1*& device)
 /// <param name="eye">カメラアイ（カメラ座標）</param>
 /// <param name="up">上向きベクトル（基本はYのみ１のベクトル）</param>
 /// <returns>なし</returns>
-void PlayerBill::CreateBillboard(DirectX::SimpleMath::Vector3 target, DirectX::SimpleMath::Vector3 eye, DirectX::SimpleMath::Vector3 up)
+void PlayerBill::CreateBillboard(SimpleMath::Vector3 target, SimpleMath::Vector3 eye, SimpleMath::Vector3 up)
 {
-	m_billboard = SimpleMath::Matrix::CreateBillboard(SimpleMath::Vector3::Zero, eye - target, up);
+	m_world = SimpleMath::Matrix::CreateBillboard(SimpleMath::Vector3::Zero, eye - target, up);
 
 	SimpleMath::Matrix rot = SimpleMath::Matrix::Identity;
 	rot._11 = -1;
@@ -300,5 +289,5 @@ void PlayerBill::CreateBillboard(DirectX::SimpleMath::Vector3 target, DirectX::S
 	m_cameraTarget = target;
 
 	// ビルボードのテクスチャを回転
-	m_billboard = rot * m_billboard;
+	m_world = rot * m_world;
 }

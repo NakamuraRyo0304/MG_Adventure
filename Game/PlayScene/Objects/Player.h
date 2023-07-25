@@ -68,16 +68,20 @@ public:
 
 	// 更新処理（キーボード）
 	void Update(DirectX::Keyboard::State& keyState,float timer);
-	
+
 	// 描画処理（コンテキスト、ステート、ビュー行列、射影行列）
-	void Render(ID3D11DeviceContext* context, DirectX::DX11::CommonStates& states, 
+	void Render(ID3D11DeviceContext* context, DirectX::DX11::CommonStates& states,
 		        DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-	
+
 	// 終了処理
 	void Finalize();
 
 	// 重力処理
 	void UpdateGravity();
+
+public:
+
+	// アクセサ----------------------------------------------------------------------------//
 
 	// モデルのセット
 	void SetModel(std::unique_ptr<DirectX::Model> model) { m_model = std::move(model); }

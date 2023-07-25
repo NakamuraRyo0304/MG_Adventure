@@ -29,13 +29,14 @@ void main(
 	{
 		PS_INPUT element;
 
-		float4 res = offset_array[i];
-
+		// ワールド座標に変換
 		element.Pos = input[0].Pos + mul(offset_array[i], matWorld);
 
+		// ビュー、射影行列に変換
 		element.Pos = mul(element.Pos, matView);
 		element.Pos = mul(element.Pos, matProj);
 
+		// 取得した色をそのまま使用
 		element.Color = input[0].Color;
 
 		// X軸方面
@@ -43,8 +44,6 @@ void main(
 
 		// Z軸方面
 		element.Tex.y = -offset_array[i].z + 0.5f;
-
-
 
 		output.Append(element);
 	}

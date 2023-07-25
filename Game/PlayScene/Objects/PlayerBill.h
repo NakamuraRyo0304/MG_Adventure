@@ -35,10 +35,10 @@ private:
 	std::unique_ptr<DirectX::CommonStates> m_common;
 
 	// 頂点
-	std::vector<DirectX::VertexPositionColorTexture> m_vertices;
+	DirectX::VertexPositionColorTexture m_vertice;
 
 	// テクスチャハンドル
-	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_textures;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 
 	// インプットレイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
@@ -58,9 +58,9 @@ private:
 
 	// Utility
 	std::list<ParticleUtility> m_particleUtility;
-	
+
 	// ビルボード
-	DirectX::SimpleMath::Matrix m_billboard;
+	DirectX::SimpleMath::Matrix m_world;
 
 	// ビルボード用カメラ
 	DirectX::SimpleMath::Vector3 m_cameraPosition;
