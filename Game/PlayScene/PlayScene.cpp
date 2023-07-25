@@ -15,6 +15,7 @@
 
 // シェーダー
 #include "Objects/PlayerBill.h"
+#include "Objects/PlayerShadow.h"
 
 // プレイヤクラス
 #include "Objects/Player.h"
@@ -42,6 +43,7 @@ PlayScene::PlayScene() :
 	m_fallValue{0.0f},				// 落下用変数
 	m_prevIndex{},					// 過去に当たったインデックス番号
 	m_hitObjects{},					// 当っているオブジェクトの格納
+	m_lastObj{},					// 最後に当たったオブジェクトを保存
 	is_boxCol{},					// 立方体当たり判定
 	m_skyDomeModel{ nullptr }		// スカイドームモデル
 {
@@ -188,6 +190,15 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		// ブロックの更新
 		m_blocks->Update(elapsedTime);
 
+		// プレイヤーの影シェーダーの更新
+		m_playerShadow->Update(
+			SimpleMath::Vector3(
+				m_player->GetPosition().x,
+				m_lastObj.position.y + 0.55f,
+				m_player->GetPosition().z
+			)
+		);
+
 		// 当たり判定の更新
 		Judgement();
 	}
@@ -243,6 +254,10 @@ void PlayScene::Draw()
 	);
 	// ビルボードの描画
 	m_playerBill->Render(m_player->GetPosition(), m_timer, view, proj);
+
+	// プレイヤーの影の描画
+	m_playerShadow->Render(context, view, proj);
+
 
 	// UIの描画
 	m_userInterFace->Render();
@@ -355,6 +370,10 @@ void PlayScene::CreateWindowDependentResources()
 	m_playerBill = std::make_unique<PlayerBill>();
 	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
 
+	// プレイヤーの影シェーダーの作成
+	m_playerShadow = std::make_unique<PlayerShadow>(GetSystemManager()->GetDeviceResources());
+	m_playerShadow->Create();
+
 	//-------------------------------------------------------------------------------------//
 
 	// UIの作成
@@ -462,6 +481,8 @@ void PlayScene::ApplyPushBack(Object& obj)
 		// 入っていたら先頭を削除
 		m_prevIndex.pop_front();
 	}
+
+
 	// リセット処理
 	if (obj.id == MapState::ResetClowd)
 	{

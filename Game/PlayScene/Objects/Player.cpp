@@ -136,7 +136,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	world = rotate * trans;
 
 	// ƒ‚ƒfƒ‹‚Ì•`‰æ
-	m_model->Draw(context, states, world, view, proj, false);
+	m_model->Draw(context, states, world, view, proj);
 }
 
 /// <summary>

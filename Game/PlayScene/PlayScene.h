@@ -16,6 +16,7 @@
 
 class Player;
 class PlayerBill;
+class PlayerShadow;
 class PlayUI;
 class Blocks;
 class PlayScene : public IScene
@@ -45,6 +46,11 @@ private:
 	// 当たり判定
 	Collider::BoxCollider is_boxCol;
 	std::vector<Object> m_hitObjects;
+
+	// 最後に当たったオブジェクト
+	Object m_lastObj;
+
+	// 前回のインデックス
 	std::deque<int> m_prevIndex;
 
 	// モデル
@@ -55,6 +61,9 @@ private:
 
 	// タイマー表示とコイン表示
 	std::unique_ptr<PlayUI> m_userInterFace;
+
+	// プレイヤーの影シェーダー
+	std::unique_ptr<PlayerShadow> m_playerShadow;
 
 private:
 
@@ -115,7 +124,7 @@ public:
 
 	// 当たり判定処理
 	void Judgement();
-	
+
 	// 押し戻し処理
 	void ApplyPushBack(Object& obj);
 
