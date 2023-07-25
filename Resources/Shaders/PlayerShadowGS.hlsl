@@ -37,8 +37,12 @@ void main(
 		element.Pos = mul(element.Pos, matProj);
 
 		element.Color = input[0].Color;
-		element.Tex.x = offset_array[i].x + 0.5f;
-		element.Tex.y = -offset_array[i].y + 0.5f;
+
+		// XŽ²•û–Ê
+		element.Tex.x =  offset_array[i].x + 0.5f;
+
+		// ZŽ²•û–Ê
+		element.Tex.y = -offset_array[i].z + 0.5f;
 
 
 
