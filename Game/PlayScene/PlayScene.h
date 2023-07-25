@@ -46,7 +46,11 @@ private:
 	// 当たり判定
 	Collider::BoxCollider is_boxCol;
 	std::vector<Object> m_hitObjects;
+
+	// 最後に当たったオブジェクト
 	Object m_lastObj;
+
+	// 前回のインデックス
 	std::deque<int> m_prevIndex;
 
 	// モデル
