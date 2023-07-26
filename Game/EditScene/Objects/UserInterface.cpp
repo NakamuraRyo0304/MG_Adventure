@@ -72,7 +72,7 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_system->GetDrawSprite()->AddTextureData(L"Coin", L"Resources/Textures/BLOCK/CoinIcon.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"ReClowd", L"Resources/Textures/BLOCK/ReClowdIcon.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"Player", L"Resources/Textures/BLOCK/PlayerIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/BLOCK/DeleteIcon.dds", device);
 
 	// ID‚ðŠi”[
 	m_texName[MapState::GrassBox]   = L"Grass";
@@ -91,7 +91,7 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_cameraTexPos  = { 336 * span , 80 * span};
 	for (int i = 0; i < MapState::LENGTH; i++)
 	{
-		m_imagePos[i] = { 464 + (192 * span * i) , 80 * span};
+		m_imagePos[i] = { 464 * span + (192 * span * i) , 80 * span};
 		is_boxState[i] = false;
 	}
 

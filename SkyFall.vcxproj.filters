@@ -328,12 +328,6 @@
     <Image Include="Resources\Textures\Camera.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="Resources\Textures\AddBlock.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\EraseBlock.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
     <Image Include="Resources\Textures\CameraMove.dds">
       <Filter>Resources\Textures</Filter>
     </Image>
@@ -389,6 +383,9 @@
       <Filter>Resources\Textures\BLOCK</Filter>
     </Image>
     <Image Include="Resources\Textures\BLOCK\PlayerIcon.dds">
+      <Filter>Resources\Textures\BLOCK</Filter>
+    </Image>
+    <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds">
       <Filter>Resources\Textures\BLOCK</Filter>
     </Image>
   </ItemGroup>

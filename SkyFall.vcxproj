@@ -260,9 +260,9 @@
     <ResourceCompile Include="Resources\Icon\Icon.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Textures\AddBlock.dds" />
     <Image Include="Resources\Textures\BLOCK\ClowdIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\CoinIcon.dds" />
+    <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\GrassIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\PlayerIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\ReClowdIcon.dds" />
@@ -271,7 +271,6 @@
     <Image Include="Resources\Textures\Clock.dds" />
     <Image Include="Resources\Textures\DeathEffect.dds" />
     <Image Include="Resources\Textures\EditToolBar.dds" />
-    <Image Include="Resources\Textures\EraseBlock.dds" />
     <Image Include="Resources\Textures\FadeBlind.dds" />
     <Image Include="Resources\Textures\FONT\COINS.dds" />
     <Image Include="Resources\Textures\FONT\RETRY.dds" />
