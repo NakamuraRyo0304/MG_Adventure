@@ -125,6 +125,9 @@
     <Filter Include="Scenes\PlayScene\Objects\PlayerShadow">
       <UniqueIdentifier>{e4f75a71-4601-46d0-9dea-a89921cb85f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Textures\BLOCK">
+      <UniqueIdentifier>{8efaf320-95be-4e10-a39b-7f7fe4ff6a4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -372,6 +375,18 @@
     </Image>
     <Image Include="Resources\Textures\PlayerShadow.png">
       <Filter>Resources\ShaderTextures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\BLOCK\ClowdIcon.dds">
+      <Filter>Resources\Textures\BLOCK</Filter>
+    </Image>
+    <Image Include="Resources\Textures\BLOCK\CoinIcon.dds">
+      <Filter>Resources\Textures\BLOCK</Filter>
+    </Image>
+    <Image Include="Resources\Textures\BLOCK\GrassIcon.dds">
+      <Filter>Resources\Textures\BLOCK</Filter>
+    </Image>
+    <Image Include="Resources\Textures\BLOCK\ReClowdIcon.dds">
+      <Filter>Resources\Textures\BLOCK</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
