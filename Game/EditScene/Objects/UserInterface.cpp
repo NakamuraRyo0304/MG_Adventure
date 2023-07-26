@@ -19,16 +19,15 @@
 UserInterface::UserInterface(const DirectX::SimpleMath::Vector2& windowSize):
 	m_system{},						// システムマネージャ
 	m_windowSize{windowSize},		// 画面サイズ
-	m_aabbCol{},					// 当たり判定
+	m_imageHitter{},				// 当たり判定
 	m_saveTexPos{},					// 画像座標
-	m_cameraTexPos{},				// 画像の位置
-	m_penTexPos{},					// |
+	m_cameraTexPos{},				// |
 	m_openTexPos{},					// |
 	is_saveFlag{},					// 保存フラグ
 	is_openFlag{},					// 開くフラグ
 	is_cameraFlag{ true },			// カメラモードONでスタート
-	is_drawFlag{ true }				// ペンモードでスタート		
-
+	is_boxState{ false },			// 画像フラグ
+	m_nowState{}					// 最新のステート
 {
 }
 
@@ -57,24 +56,49 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 
 	// 画像の設定
 	m_system->GetDrawSprite()->MakeSpriteBatch(context);
+
 	// キー名　：　ファイルパス名　：　デバイス
+	// 操作アイコン
 	m_system->GetDrawSprite()->AddTextureData(L"Save", L"Resources/Textures/SaveFile.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Open", L"Resources/Textures/OpenFile.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"Camera", L"Resources/Textures/Camera.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"CameraMove", L"Resources/Textures/CameraMove.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Pen", L"Resources/Textures/AddBlock.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Open", L"Resources/Textures/OpenFile.dds", device);
 
+	// 背景の帯
 	m_system->GetDrawSprite()->AddTextureData(L"ToolBar", L"Resources/Textures/EditToolBar.dds", device);
+
+	// ブロックアイコン
+	m_system->GetDrawSprite()->AddTextureData(L"Grass", L"Resources/Textures/BLOCK/GrassIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Clowd", L"Resources/Textures/BLOCK/ClowdIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Coin", L"Resources/Textures/BLOCK/CoinIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"ReClowd", L"Resources/Textures/BLOCK/ReClowdIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Player", L"Resources/Textures/BLOCK/PlayerIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/BLOCK/DeleteIcon.dds", device);
+
+	// IDを格納
+	m_texName[MapState::GrassBox]   = L"Grass";
+	m_texName[MapState::ClowdBox]   = L"Clowd";
+	m_texName[MapState::CoinBox]    = L"Coin";
+	m_texName[MapState::ResetClowd] = L"ReClowd";
+	m_texName[MapState::PlayerPos]  = L"Player";
+	m_texName[MapState::None]       = L"Erase";
 
 	// 比率を計算
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
 
 	// 座標情報
 	m_openTexPos	= {  80 * span , 80 * span};
-	m_saveTexPos    = { 208 * span , 80 * span};
-	m_cameraTexPos  = { 336 * span , 80 * span};
-	m_penTexPos     = { 464 * span , 80 * span};
+	m_saveTexPos    = { 218 * span , 80 * span};
+	m_cameraTexPos  = { 356 * span , 80 * span};
+	for (int i = 0; i < MapState::LENGTH; i++)
+	{
+		m_imagePos[i] = { 528 * span + (192 * span * i) , 80 * span};
+		is_boxState[i] = false;
+	}
+
+	// ステータスの初期値は草ブロック
+	m_nowState = MapState::GrassBox;
+	is_boxState[MapState::GrassBox] = true;
 }
 
 /// <summary>
@@ -84,9 +108,13 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 /// <returns>なし</returns>
 void UserInterface::Update(Mouse::State& mouseState)
 {
+	// ボックスのアイコン
+	ChangeState(mouseState);
+
 	// ファイルを開くアイコン
 	bool open = false;
-	open = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
+	open = m_imageHitter.HitAABB_2D(
+		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_openTexPos.x,m_openTexPos.y },		    // 画像の位置
 		SimpleMath::Vector2{ 5.0f },			    // サイズ
 		SimpleMath::Vector2{ 100.0f });				// サイズ
@@ -100,9 +128,10 @@ void UserInterface::Update(Mouse::State& mouseState)
 	}
 
 
-	// 保存アイコンをクリック
+	// ファイルを保存するアイコン
 	bool save = false;
-	save = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
+	save = m_imageHitter.HitAABB_2D(
+		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_saveTexPos.x,m_saveTexPos.y },			// 画像の位置
 		SimpleMath::Vector2{ 5.0f },				// サイズ
 		SimpleMath::Vector2{ 100.0f });				// サイズ
@@ -117,28 +146,17 @@ void UserInterface::Update(Mouse::State& mouseState)
 	}
 
 	// カメラアイコンをクリック
-	bool camera = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
-		{ m_cameraTexPos.x,m_cameraTexPos.y },	 	 // 画像の位置			
-		SimpleMath::Vector2{ 5.0f }, 				 // サイズ			
-		SimpleMath::Vector2{ 100.0f });				 // サイズ			
+	bool camera = m_imageHitter.HitAABB_2D(
+		{ (float)mouseState.x,(float)mouseState.y }, // マウスの位置
+		{ m_cameraTexPos.x,m_cameraTexPos.y },	 	 // 画像の位置
+		SimpleMath::Vector2{ 5.0f }, 				 // サイズ
+		SimpleMath::Vector2{ 100.0f });				 // サイズ
 
 	// カメラ移動モード切り替え
 	if (camera && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		is_cameraFlag = !is_cameraFlag;
 		m_system->GetCamera()->SetEagleMode(is_cameraFlag);
-	}
-
-	// ペン/消しゴムアイコンをクリック
-	bool tool = m_aabbCol.HitAABB_2D({ (float)mouseState.x,(float)mouseState.y },// マウスの位置
-		{ m_penTexPos.x,m_penTexPos.y },	        // 画像の位置
-		SimpleMath::Vector2{ 5.0f },				// サイズ
-		SimpleMath::Vector2{ 100.0f });				// サイズ
-
-	// 描画モード切り替え
-	if (tool && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
-	{
-		is_drawFlag = !is_drawFlag;
 	}
 }
 
@@ -156,7 +174,7 @@ void UserInterface::Render()
 	m_system->GetDrawSprite()->DrawTexture(
 		L"ToolBar",
 		SimpleMath::Vector2::Zero,			// 座標
-		{ 1.0f,1.0f,1.0f,0.5f },			// 色
+		{ 1.0f,1.0f,1.0f,0.7f },			// 色
 		imageScale,							// 拡大率
 		SimpleMath::Vector2::Zero
 	);
@@ -212,7 +230,7 @@ void UserInterface::Render()
 			L"CameraMove",						// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE* imageScale,				// 拡大率
+			IMAGE_RATE * imageScale,			// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -222,32 +240,13 @@ void UserInterface::Render()
 			L"Camera",							// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,0.3f },			// 色
-			IMAGE_RATE* imageScale,				// 拡大率
+			IMAGE_RATE * imageScale,			// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
 
-	// ペンアイコン
-	if (is_drawFlag)
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Pen",								// 登録キー
-			m_penTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE* imageScale,				// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Erase",							// 登録キー
-			m_penTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE* imageScale,				// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
+	// ブロックのアイコン
+	DrawIcon(imageScale);
 }
 
 /// <summary>
@@ -257,4 +256,201 @@ void UserInterface::Render()
 /// <returns>なし</returns>
 void UserInterface::Finalize()
 {
+}
+
+/// <summary>
+/// アイコンの描画
+/// </summary>
+/// <param name="imageScale">拡大率</param>
+/// <returns>なし</returns>
+void UserInterface::DrawIcon(const float& imageScale)
+{
+	// 草ブロック
+	if (is_boxState[MapState::GrassBox])
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Grass",							// 登録キー
+			m_imagePos[MapState::GrassBox],		// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+	else
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Grass",							// 登録キー
+			m_imagePos[MapState::GrassBox],		// 座標
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+
+	// 雲ブロック
+	if (is_boxState[MapState::ClowdBox])
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Clowd",							// 登録キー
+			m_imagePos[MapState::ClowdBox],		// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+	else
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Clowd",							// 登録キー
+			m_imagePos[MapState::ClowdBox],		// 座標
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+
+	// コインブロック
+	if (is_boxState[MapState::CoinBox])
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Coin",							// 登録キー
+			m_imagePos[MapState::CoinBox],		// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+	else
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Coin",							// 登録キー
+			m_imagePos[MapState::CoinBox],		// 座標
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+
+	// 雲リセットブロック
+	if (is_boxState[MapState::ResetClowd])
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"ReClowd",							// 登録キー
+			m_imagePos[MapState::ResetClowd],	// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+	else
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"ReClowd",							// 登録キー
+			m_imagePos[MapState::ResetClowd],	// 座標
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+
+	// プレイヤーブロック
+	if (is_boxState[MapState::PlayerPos])
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Player",							// 登録キー
+			m_imagePos[MapState::PlayerPos],	// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+	else
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Player",							// 登録キー
+			m_imagePos[MapState::PlayerPos],	// 座標
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+
+	// 消しゴム
+	if (is_boxState[MapState::None])
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Erase",							// 登録キー
+			m_imagePos[MapState::None],			// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+	else
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Erase",							// 登録キー
+			m_imagePos[MapState::None],			// 座標
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+}
+
+/// <summary>
+/// ステータスの変更
+/// </summary>
+/// <param name="mouseState">マウス</param>
+/// <returns>なし</returns>
+void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
+{
+	// アイコンごとの初期値
+	bool iconFlags[MapState::LENGTH] = { false };
+
+	// 各アイコンをクリックしたかどうかを判定し、フラグを立てる
+	for (int i = 0; i < MapState::LENGTH; ++i)
+	{
+		iconFlags[i] = m_imageHitter.HitAABB_2D(
+			{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
+			m_imagePos[i],                              // 画像の位置
+			SimpleMath::Vector2{ 5.0f },                // サイズ
+			SimpleMath::Vector2{ 100.0f });             // サイズ
+	}
+
+
+	// マウスがクリックされた場合に、現在のステータスを更新する
+	if (mouseState.leftButton)
+	{
+		for (int i = 0; i < MapState::LENGTH; ++i)
+		{
+			is_boxState[i] = iconFlags[i];
+			if (iconFlags[i])
+			{
+				switch (i)
+				{
+				case MapState::GrassBox:
+					m_nowState = MapState::GrassBox;
+					break;
+				case MapState::CoinBox:
+					m_nowState = MapState::CoinBox;
+					break;
+				case MapState::ClowdBox:
+					m_nowState = MapState::ClowdBox;
+					break;
+				case MapState::ResetClowd:
+					m_nowState = MapState::ResetClowd;
+					break;
+				case MapState::PlayerPos:
+					m_nowState = MapState::PlayerPos;
+					break;
+				case MapState::None:
+					m_nowState = MapState::None;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
 }

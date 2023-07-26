@@ -9,7 +9,11 @@
 #ifndef USERINTERFACE
 #define USERINTERFACE
 
+#include "Libraries/SystemDatas/MapLoad.h"
 #include "Libraries/SystemDatas/Collider.h"
+
+// エイリアスを宣言
+using MapState = MapLoad::BoxState;
 
 class SystemManager;
 class UserInterface
@@ -29,22 +33,30 @@ private:
 	DirectX::SimpleMath::Vector2 m_saveTexPos;
 	DirectX::SimpleMath::Vector2 m_openTexPos;
 	DirectX::SimpleMath::Vector2 m_cameraTexPos;
-	DirectX::SimpleMath::Vector2 m_penTexPos;
+
+	// 現在のステータス
+	int m_nowState;
 
 	// フラグ
 	bool is_saveFlag;
 	bool is_openFlag;
 	bool is_cameraFlag;
-	bool is_drawFlag;
+
+private:
+	// ボックスステータスの配列
+	const wchar_t* m_texName[MapState::LENGTH];
+	bool is_boxState[MapState::LENGTH];
+	DirectX::SimpleMath::Vector2 m_imagePos[MapState::LENGTH];
 
 	// 画像の中心位置
 	const float	IMAGE_CENTER = 128.0f;
 
 	// 画像サイズ
 	const float IMAGE_RATE = 0.55f;
+	const float HALF = 0.5f;
 
 	// 当たり判定オブジェクト
-	Collider::AABBCollider m_aabbCol;
+	Collider::AABBCollider m_imageHitter;
 
 public:
 
@@ -55,6 +67,11 @@ public:
 	void Update(DirectX::Mouse::State& mouseState);
 	void Render();
 	void Finalize();
+
+	void DrawIcon(const float& imageScale);
+
+	// ステータスの変更
+	void ChangeState(DirectX::Mouse::State& mouseState);
 
 	// アクセサ
 	// カメラフラグ
@@ -69,9 +86,8 @@ public:
 	const bool& GetSaveFlag() { return is_saveFlag; }
 	void SetSaveFlag(const bool flag) { is_saveFlag = flag; }
 
-	// 描画フラグ
-	const bool& GetDrawFlag() { return is_drawFlag; }
-	void SetDrawFlag(const bool flag) { is_drawFlag = flag; }
+	// 今のステータスを取得
+	const int& GetNowState() { return m_nowState; }
 };
 
 #endif // USERINTERFACE

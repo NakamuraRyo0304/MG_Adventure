@@ -33,7 +33,6 @@ EditScene::EditScene() :
 	m_reClowdPtModel{ nullptr },	// |
 	m_skyDomeModel{ nullptr },		// |
 	m_sharedSystem{}				// システムデータ
-	
 {
 }
 
@@ -87,15 +86,17 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
-	
+
 	// レイの更新
 	GetSystemManager()->GetRayCast()->Update(mouseState);
 
 	// UIの処理
 	m_userInterface->Update(mouseState);
 
+	m_nowState = m_userInterface->GetNowState();
+
 	// セーブフラグがたったらファイルを保存
-	if (m_userInterface->GetSaveFlag() && 
+	if (m_userInterface->GetSaveFlag() &&
 		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		SaveFile();
@@ -118,43 +119,9 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
 	}
 
-	// ステータス変更
-	if (GetSystemManager()->GetMouseTrack()->rightButton == Mouse::ButtonStateTracker::RELEASED)
-	{
-		switch (m_nowState)
-		{
-		case MapState::GrassBox:				// 草→コイン
-			ChangeState(MapState::CoinBox);
-			break;
-		case MapState::CoinBox:					// コイン→動くブロック
-			ChangeState(MapState::ClowdBox);
-			break;
-		case MapState::ClowdBox:				// 動くブロック→雲リセットエリア
-			ChangeState(MapState::ResetClowd);
-			break;
-		case MapState::ResetClowd:				// 雲リセットエリア→プレイヤ
-			ChangeState(MapState::PlayerPos);
-			break;
-		case MapState::PlayerPos:				// プレイヤ→消しゴム
-			ChangeState(MapState::None);
-			m_userInterface->SetDrawFlag(false);
-			break;
-		case MapState::None:					// 消しゴム→草
-			ChangeState(MapState::GrassBox);
-			m_userInterface->SetDrawFlag(true);
-			break;
-		default:
-			break;
-		}
-	}
-	// 消しゴムモードなら、選択ブロックを消しゴムにする
-	if (!m_userInterface->GetDrawFlag())
-	{
-		ChangeState(MapState::None);
-	}
 
 	// カメラモードじゃなければ編集できる
-	if (!m_userInterface->GetCameraFlag())
+	if (m_userInterface->GetCameraFlag() == false)
 	{
 		EditMap();
 	}
@@ -200,7 +167,7 @@ void EditScene::Draw()
 	// オブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		SimpleMath::Matrix boxMat = 
+		SimpleMath::Matrix boxMat =
 			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
 		// 選択中オブジェ
@@ -229,7 +196,7 @@ void EditScene::Draw()
 	// サイズ　×　回転　×　移動
 	world *= scale *  rotY * trans;
 
-	// 選択しているオブジェを描画 
+	// 選択しているオブジェを描画
 	switch (m_nowState)
 	{
 	case MapState::GrassBox:	// 草
@@ -253,16 +220,13 @@ void EditScene::Draw()
 	default:
 		break;
 	}
-	
+
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer / 10);
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
 
 	// 画像の描画
 	m_userInterface->Render();
-
-	// デバッグ表示
-	//DebugLog(view, proj);
 }
 
 /// <summary>
@@ -307,7 +271,7 @@ void EditScene::CreateWindowDependentResources()
 	m_userInterface = std::make_unique<UserInterface>(SimpleMath::Vector2(width, height));
 	m_sharedSystem = GetSystemManager();
 	m_userInterface->Initialize(m_sharedSystem, context, device);
-	
+
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
@@ -316,7 +280,7 @@ void EditScene::CreateWindowDependentResources()
 
 	// レイが及ぶ範囲を設定
 	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
-	
+
 	// モデルを作成する
 	m_grassModel = ModelFactory::GetCreateModel(		// 草ブロック
 		device,
@@ -342,8 +306,8 @@ void EditScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Eraser.cmo"
 	);
-		// スカイドームモデルを作成する	
-	m_skyDomeModel = ModelFactory::GetCreateModel(	
+		// スカイドームモデルを作成する
+	m_skyDomeModel = ModelFactory::GetCreateModel(
 		device,
 		L"Resources/Models/Spacedome.cmo"
 	);
@@ -360,100 +324,10 @@ void EditScene::CreateWindowDependentResources()
 			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
 			if (basicEffect)
 			{
-				basicEffect->SetEmissiveColor(Colors::White);
+				basicEffect->SetEmissiveColor(Colors::Blue);
 			}
 		}
 	);
-}
-
-/// <summary>
-/// デバッグログ
-/// </summary>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
-/// <returns>なし</returns>
-void EditScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
-{
-	GetSystemManager()->GetString()->ChangeFontColor(Colors::Black);
-
-	// シーン名の表示
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,0 }, L"EditScene");
-
-	// 文字数設定
-	wchar_t cam[64];
-
-	// カメラのポジション
-	swprintf_s(cam, 64, L"CameraPos = %d,%d,%d",
-		static_cast<int>(GetSystemManager()->GetCamera()->GetEye().x),
-		static_cast<int>(GetSystemManager()->GetCamera()->GetEye().y),
-		static_cast<int>(GetSystemManager()->GetCamera()->GetEye().z)
-	);
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,20 }, cam);
-
-	// マウスのワールド座標
-	wchar_t mos[64];
-	swprintf_s(mos, 64, L"WorldMousePos = %f,%f,%f",
-		GetSystemManager()->GetRayCast()->GetWorldMousePosition().x,
-		GetSystemManager()->GetRayCast()->GetWorldMousePosition().y,
-		GetSystemManager()->GetRayCast()->GetWorldMousePosition().z);
-
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,40 }, mos);
-
-	// 保存された座標
-	swprintf_s(mos, 64, L"MouseWorld = %f,%f,%f",
-		m_cursorPos.x,
-		m_cursorPos.y,
-		m_cursorPos.z);
-
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,60 }, mos);
-
-	auto mouse = Mouse::Get().GetState();
-	// マウス位置確認
-	wchar_t num[32];
-	swprintf_s(num, 32, L"Mouse = %d:%d", mouse.x, mouse.y);
-
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,80 }, num);
-	
-	// マウス位置確認
-	wchar_t mw[32];
-	swprintf_s(mw, 32, L"MouseWheel = %d", mouse.scrollWheelValue);
-
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,100 }, mw);
-
-	// 位置確認
-	wchar_t bs[32];
-	swprintf_s(bs, 32, L"BlockState = %d", m_nowState);
-
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,120 }, bs);
-
-	// 経過時間
-	wchar_t sec[32];
-	swprintf_s(sec, 32, L"Time = %f", m_timer);
-
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,140 }, sec);
-
-	// カメラの角度
-	wchar_t ang[32];
-	swprintf_s(ang, 32, L"CameraAngle = %f", GetSystemManager()->GetCamera()->GetCameraAngle().x);
-
-	GetSystemManager()->GetString()->DrawFormatString(GetSystemManager()->GetCommonStates().get(), { 0,160 }, ang);
-
-
-
-	// デバイスコンテキストの取得：グリッドの描画に使用
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
-	// デバッググリッドの表示
-	GetSystemManager()->GetGridFloor()->Draw(context, GetSystemManager()->GetCommonStates().get(), view, proj);
-}
-
-/// <summary>
-/// ステータス変更
-/// </summary>
-/// <param name="State">変更したいステータス</param>
-/// <returns>なし</returns>
-void EditScene::ChangeState(const int& State)
-{
-	m_nowState = State;
 }
 
 /// <summary>
@@ -542,7 +416,7 @@ void EditScene::OffsetPosition(std::vector<Object>* object, const int& mode)
 /// <param name="filename">ファイルパス</param>
 /// <returns>なし</returns>
 void EditScene::LoadMap(std::wstring filename)
-{ 
+{
 	// マップの読み込み
 	m_map.LoadMap(filename);
 
@@ -562,7 +436,7 @@ void EditScene::LoadMap(std::wstring filename)
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
 void EditScene::SaveFile()
-{	
+{
 	// ファイル書き出し
 	OffsetPosition(&m_mapObj,WRITE);	// 書き出し用に座標補正
 	m_map.WriteMap(m_mapObj);			// ファイルの書き出し
