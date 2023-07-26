@@ -53,9 +53,10 @@ private:
 
 	// 画像サイズ
 	const float IMAGE_RATE = 0.55f;
+	const float HALF = 0.5f;
 
 	// 当たり判定オブジェクト
-	Collider::AABBCollider m_aabbCol;
+	Collider::AABBCollider m_imageHitter;
 
 public:
 

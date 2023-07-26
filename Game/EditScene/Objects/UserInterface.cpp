@@ -19,14 +19,15 @@
 UserInterface::UserInterface(const DirectX::SimpleMath::Vector2& windowSize):
 	m_system{},						// システムマネージャ
 	m_windowSize{windowSize},		// 画面サイズ
-	m_aabbCol{},					// 当たり判定
+	m_imageHitter{},				// 当たり判定
 	m_saveTexPos{},					// 画像座標
-	m_cameraTexPos{},				// 画像の位置
+	m_cameraTexPos{},				// |
 	m_openTexPos{},					// |
 	is_saveFlag{},					// 保存フラグ
 	is_openFlag{},					// 開くフラグ
 	is_cameraFlag{ true },			// カメラモードONでスタート
-	is_boxState{ false }			// 画像フラグ
+	is_boxState{ false },			// 画像フラグ
+	m_nowState{}					// 最新のステート
 {
 }
 
@@ -87,11 +88,11 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 
 	// 座標情報
 	m_openTexPos	= {  80 * span , 80 * span};
-	m_saveTexPos    = { 208 * span , 80 * span};
-	m_cameraTexPos  = { 336 * span , 80 * span};
+	m_saveTexPos    = { 218 * span , 80 * span};
+	m_cameraTexPos  = { 356 * span , 80 * span};
 	for (int i = 0; i < MapState::LENGTH; i++)
 	{
-		m_imagePos[i] = { 464 * span + (192 * span * i) , 80 * span};
+		m_imagePos[i] = { 528 * span + (192 * span * i) , 80 * span};
 		is_boxState[i] = false;
 	}
 
@@ -112,7 +113,7 @@ void UserInterface::Update(Mouse::State& mouseState)
 
 	// ファイルを開くアイコン
 	bool open = false;
-	open = m_aabbCol.HitAABB_2D(
+	open = m_imageHitter.HitAABB_2D(
 		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_openTexPos.x,m_openTexPos.y },		    // 画像の位置
 		SimpleMath::Vector2{ 5.0f },			    // サイズ
@@ -129,7 +130,7 @@ void UserInterface::Update(Mouse::State& mouseState)
 
 	// ファイルを保存するアイコン
 	bool save = false;
-	save = m_aabbCol.HitAABB_2D(
+	save = m_imageHitter.HitAABB_2D(
 		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_saveTexPos.x,m_saveTexPos.y },			// 画像の位置
 		SimpleMath::Vector2{ 5.0f },				// サイズ
@@ -145,7 +146,7 @@ void UserInterface::Update(Mouse::State& mouseState)
 	}
 
 	// カメラアイコンをクリック
-	bool camera = m_aabbCol.HitAABB_2D(
+	bool camera = m_imageHitter.HitAABB_2D(
 		{ (float)mouseState.x,(float)mouseState.y }, // マウスの位置
 		{ m_cameraTexPos.x,m_cameraTexPos.y },	 	 // 画像の位置
 		SimpleMath::Vector2{ 5.0f }, 				 // サイズ
@@ -229,7 +230,7 @@ void UserInterface::Render()
 			L"CameraMove",						// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE* imageScale,				// 拡大率
+			IMAGE_RATE * imageScale,			// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -239,7 +240,7 @@ void UserInterface::Render()
 			L"Camera",							// 登録キー
 			m_cameraTexPos,						// 座標
 			{ 1.0f,1.0f,1.0f,0.3f },			// 色
-			IMAGE_RATE* imageScale,				// 拡大率
+			IMAGE_RATE * imageScale,			// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -280,8 +281,8 @@ void UserInterface::DrawIcon(const float& imageScale)
 		m_system->GetDrawSprite()->DrawTexture(
 			L"Grass",							// 登録キー
 			m_imagePos[MapState::GrassBox],		// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -302,8 +303,8 @@ void UserInterface::DrawIcon(const float& imageScale)
 		m_system->GetDrawSprite()->DrawTexture(
 			L"Clowd",							// 登録キー
 			m_imagePos[MapState::ClowdBox],		// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -324,8 +325,8 @@ void UserInterface::DrawIcon(const float& imageScale)
 		m_system->GetDrawSprite()->DrawTexture(
 			L"Coin",							// 登録キー
 			m_imagePos[MapState::CoinBox],		// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -346,8 +347,8 @@ void UserInterface::DrawIcon(const float& imageScale)
 		m_system->GetDrawSprite()->DrawTexture(
 			L"ReClowd",							// 登録キー
 			m_imagePos[MapState::ResetClowd],	// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -368,8 +369,8 @@ void UserInterface::DrawIcon(const float& imageScale)
 		m_system->GetDrawSprite()->DrawTexture(
 			L"Player",							// 登録キー
 			m_imagePos[MapState::PlayerPos],	// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -390,8 +391,8 @@ void UserInterface::DrawIcon(const float& imageScale)
 		m_system->GetDrawSprite()->DrawTexture(
 			L"Erase",							// 登録キー
 			m_imagePos[MapState::None],			// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
+			{ 1.0f,1.0f,1.0f,HALF },			// 色
+			HALF * imageScale,					// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
@@ -410,12 +411,13 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 	// 各アイコンをクリックしたかどうかを判定し、フラグを立てる
 	for (int i = 0; i < MapState::LENGTH; ++i)
 	{
-		iconFlags[i] = m_aabbCol.HitAABB_2D(
+		iconFlags[i] = m_imageHitter.HitAABB_2D(
 			{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 			m_imagePos[i],                              // 画像の位置
 			SimpleMath::Vector2{ 5.0f },                // サイズ
 			SimpleMath::Vector2{ 100.0f });             // サイズ
 	}
+
 
 	// マウスがクリックされた場合に、現在のステータスを更新する
 	if (mouseState.leftButton)
