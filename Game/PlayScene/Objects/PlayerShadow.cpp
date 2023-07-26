@@ -105,20 +105,20 @@ void PlayerShadow::CreateShader()
 		m_inputLayout.GetAddressOf());
 
 	// 頂点シェーダ作成
-	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
+	if (FAILED(device->CreateVertexShader(VSData.GetData(), VSData.GetSize(), NULL, m_verShader.ReleaseAndGetAddressOf())))
 	{// エラー
 		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
 		return;
 	}
 
 	// ジオメトリシェーダ作成
-	if (FAILED(device->CreateGeometryShader(GSData.GetData(), GSData.GetSize(), NULL, m_geometryShader.ReleaseAndGetAddressOf())))
+	if (FAILED(device->CreateGeometryShader(GSData.GetData(), GSData.GetSize(), NULL, m_geoShader.ReleaseAndGetAddressOf())))
 	{// エラー
 		MessageBox(0, L"CreateGeometryShader Failed.", NULL, MB_OK);
 		return;
 	}
 	// ピクセルシェーダ作成
-	if (FAILED(device->CreatePixelShader(PSData.GetData(), PSData.GetSize(), NULL, m_pixelShader.ReleaseAndGetAddressOf())))
+	if (FAILED(device->CreatePixelShader(PSData.GetData(), PSData.GetSize(), NULL, m_pixShader.ReleaseAndGetAddressOf())))
 	{// エラー
 		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
 		return;
@@ -186,9 +186,9 @@ void PlayerShadow::Render(ID3D11DeviceContext* context, DirectX::SimpleMath::Mat
 	context->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
 
 	// シェーダをセットする
-	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
-	context->GSSetShader(m_geometryShader.Get(), nullptr, 0);
-	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
+	context->VSSetShader(m_verShader.Get(), nullptr, 0);
+	context->GSSetShader(m_geoShader.Get(), nullptr, 0);
+	context->PSSetShader(m_pixShader.Get(), nullptr, 0);
 
 	// インプットレイアウトの登録
 	context->IASetInputLayout(m_inputLayout.Get());

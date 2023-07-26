@@ -11,7 +11,7 @@ Texture2D tex : register(t0);
 SamplerState samLinear : register(s0);
 
 // オフセット値
-const float shadowOffsetY = -1.0f;
+float shadowOffsetY = -1.0f;
 
 float4 main(PS_INPUT input) : SV_TARGET
 {

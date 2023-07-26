@@ -73,7 +73,7 @@ void Blocks::Initialize(int stageNum)
 	{
 		// インデックス番号の格納
 		m_mapObj[i].index = i;
-		
+
 		// マップの座標設定
 		m_mapObj[i].position.x -= static_cast<float>(m_mapLoad->MAP_COLUMN) / 2 * COMMON_SIZE;
 		m_mapObj[i].position.y += static_cast<float>(COMMON_LOW);
@@ -96,9 +96,9 @@ void Blocks::Initialize(int stageNum)
 			// 終着点を保存
 			m_clowdState[i].endPosition = SimpleMath::Vector3
 			{
-				m_mapObj[i].position.x, 
+				m_mapObj[i].position.x,
 				m_mapObj[i].position.y + COMMON_SIZE + CLOWD_SIZE,
-				m_mapObj[i].position.z 
+				m_mapObj[i].position.z
 			};
 		}
 		// プレイヤの座標を代入
@@ -110,7 +110,7 @@ void Blocks::Initialize(int stageNum)
 				m_mapObj[i].position.y + COMMON_SIZE / 2,
 				m_mapObj[i].position.z
 			};
-			
+
 			// 代入後に該当マスを空気に変える(判定除去)
 			m_mapObj[i].id = MapState::None;
 		}
@@ -177,7 +177,7 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 
 		// 回転行列
 		SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(timer);
-		
+
 		// スケール行列
 		float restrictedTimer = fmodf(timer, 2 * XM_PI);
 		SimpleMath::Matrix cl_scale = SimpleMath::Matrix::CreateScale(sinf(restrictedTimer));
@@ -207,7 +207,7 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 				// 色をデフォルトに戻す
 				ChangeModelColors(m_clowdModel,static_cast<SimpleMath::Vector4>(Colors::White));
 			}
-		
+
 			m_clowdModel->Draw(context, states, rotateY * world, view, proj);
 		}
 
@@ -355,7 +355,7 @@ std::wstring Blocks::MapSelect(int num)
 
 	// TODO: [ステージ番号]マップ追加はここから！
 	// マップの変更
-	switch (num) 
+	switch (num)
 	{
 	case 0:
 		filePath = L"Resources/Maps/StageEdit.csv";
@@ -395,7 +395,7 @@ void Blocks::ChangeModelColors(std::unique_ptr<Model>& model, SimpleMath::Vector
 		{
 			// ベーシックエフェクトを宣言
 			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-			
+
 			if (basicEffect)
 			{
 				// 色を変更する

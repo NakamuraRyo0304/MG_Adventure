@@ -261,6 +261,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\AddBlock.dds" />
+    <Image Include="Resources\Textures\BLOCK\ClowdIcon.dds" />
+    <Image Include="Resources\Textures\BLOCK\CoinIcon.dds" />
+    <Image Include="Resources\Textures\BLOCK\GrassIcon.dds" />
+    <Image Include="Resources\Textures\BLOCK\ReClowdIcon.dds" />
     <Image Include="Resources\Textures\Camera.dds" />
     <Image Include="Resources\Textures\CameraMove.dds" />
     <Image Include="Resources\Textures\Clock.dds" />
