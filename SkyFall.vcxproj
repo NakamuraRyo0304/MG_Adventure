@@ -311,6 +311,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />
+    <Text Include="説明書.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\PlayerPointGS.hlsl">

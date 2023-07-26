@@ -67,7 +67,7 @@ private:
 	const float	COMMON_SIZE = 1.0f;
 
 	// 最低高度
-	const float COMMON_LOW = COMMON_SIZE / 2; 
+	const float COMMON_LOW = COMMON_SIZE / 2;
 
 	// カメラアングル
 	const float	CAMERA_ANGLE = 44.5f;
@@ -97,18 +97,12 @@ public:
 	// 画面依存の初期化
 	void CreateWindowDependentResources() override;
 
-	// デバッグ表示
-	void DebugLog(DirectX::SimpleMath::Matrix view,DirectX::SimpleMath::Matrix proj);
-
-	// ステータスを変更する
-	void ChangeState(const int& State);
-
 	// マップを編集
 	void EditMap();
 
 	// 座標補正関数
 	void OffsetPosition(std::vector<Object>* obj , const int& mode);
-	
+
 	// マップ読み込み
 	void LoadMap(std::wstring filename);
 

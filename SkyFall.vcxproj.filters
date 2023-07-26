@@ -463,6 +463,9 @@
     <Text Include="DevelopMemo.txt">
       <Filter>Assets</Filter>
     </Text>
+    <Text Include="説明書.txt">
+      <Filter>Assets</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\PlayerPointGS.hlsl">
