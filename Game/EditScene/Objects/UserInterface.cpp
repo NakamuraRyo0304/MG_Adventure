@@ -71,12 +71,16 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_system->GetDrawSprite()->AddTextureData(L"Clowd", L"Resources/Textures/BLOCK/ClowdIcon.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"Coin", L"Resources/Textures/BLOCK/CoinIcon.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"ReClowd", L"Resources/Textures/BLOCK/ReClowdIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Player", L"Resources/Textures/BLOCK/PlayerIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/EraseBlock.dds", device);
 
 	// IDを格納
 	m_texName[MapState::GrassBox]   = L"Grass";
 	m_texName[MapState::ClowdBox]   = L"Clowd";
 	m_texName[MapState::CoinBox]    = L"Coin";
 	m_texName[MapState::ResetClowd] = L"ReClowd";
+	m_texName[MapState::PlayerPos]  = L"Player";
+	m_texName[MapState::None]       = L"Erase";
 
 	// 比率を計算
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
@@ -87,7 +91,7 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_cameraTexPos  = { 336 * span , 80 * span};
 	for (int i = 0; i < MapState::LENGTH; i++)
 	{
-		m_imagePos[i] = { m_cameraTexPos.x + (192 * span * i) , 80 * span};
+		m_imagePos[i] = { 464 + (192 * span * i) , 80 * span};
 		is_boxState[i] = false;
 	}
 
@@ -123,7 +127,7 @@ void UserInterface::Update(Mouse::State& mouseState)
 	}
 
 
-	// 保存アイコンをクリック
+	// ファイルを保存するアイコン
 	bool save = false;
 	save = m_aabbCol.HitAABB_2D(
 		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
@@ -169,7 +173,7 @@ void UserInterface::Render()
 	m_system->GetDrawSprite()->DrawTexture(
 		L"ToolBar",
 		SimpleMath::Vector2::Zero,			// 座標
-		{ 1.0f,1.0f,1.0f,0.5f },			// 色
+		{ 1.0f,1.0f,1.0f,0.7f },			// 色
 		imageScale,							// 拡大率
 		SimpleMath::Vector2::Zero
 	);
@@ -242,7 +246,6 @@ void UserInterface::Render()
 
 	// ブロックのアイコン
 	DrawIcon(imageScale);
-
 }
 
 /// <summary>
@@ -348,6 +351,50 @@ void UserInterface::DrawIcon(const float& imageScale)
 			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 		);
 	}
+
+	// プレイヤーブロック
+	if (is_boxState[MapState::PlayerPos])
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Player",							// 登録キー
+			m_imagePos[MapState::PlayerPos],	// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+	else
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Player",							// 登録キー
+			m_imagePos[MapState::PlayerPos],	// 座標
+			{ 1.0f,1.0f,1.0f,0.5f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+
+	// 消しゴム
+	if (is_boxState[MapState::None])
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Erase",							// 登録キー
+			m_imagePos[MapState::None],			// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+	else
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"Erase",							// 登録キー
+			m_imagePos[MapState::None],			// 座標
+			{ 1.0f,1.0f,1.0f,0.5f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
 }
 
 /// <summary>
@@ -382,16 +429,22 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 				{
 				case MapState::GrassBox:
 					m_nowState = MapState::GrassBox;
-					return;
+					break;
 				case MapState::CoinBox:
 					m_nowState = MapState::CoinBox;
-					return;
+					break;
 				case MapState::ClowdBox:
 					m_nowState = MapState::ClowdBox;
-					return;
+					break;
 				case MapState::ResetClowd:
 					m_nowState = MapState::ResetClowd;
-					return;
+					break;
+				case MapState::PlayerPos:
+					m_nowState = MapState::PlayerPos;
+					break;
+				case MapState::None:
+					m_nowState = MapState::None;
+					break;
 				default:
 					break;
 				}

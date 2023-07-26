@@ -388,6 +388,9 @@
     <Image Include="Resources\Textures\BLOCK\ReClowdIcon.dds">
       <Filter>Resources\Textures\BLOCK</Filter>
     </Image>
+    <Image Include="Resources\Textures\BLOCK\PlayerIcon.dds">
+      <Filter>Resources\Textures\BLOCK</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">

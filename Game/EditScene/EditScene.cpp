@@ -324,7 +324,7 @@ void EditScene::CreateWindowDependentResources()
 			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
 			if (basicEffect)
 			{
-				basicEffect->SetEmissiveColor(Colors::White);
+				basicEffect->SetEmissiveColor(Colors::Blue);
 			}
 		}
 	);
