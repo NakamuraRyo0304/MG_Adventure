@@ -458,6 +458,18 @@
     <None Include="Resources\Shaders\PlayerShadow.hlsli">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="Resources\Models\Stage6.cmo">
+      <Filter>Resources\Models\Stage</Filter>
+    </None>
+    <None Include="Resources\Models\Stage7.cmo">
+      <Filter>Resources\Models\Stage</Filter>
+    </None>
+    <None Include="Resources\Models\Stage8.cmo">
+      <Filter>Resources\Models\Stage</Filter>
+    </None>
+    <None Include="Resources\Models\Stage9.cmo">
+      <Filter>Resources\Models\Stage</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">

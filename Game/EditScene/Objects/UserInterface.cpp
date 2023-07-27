@@ -405,6 +405,9 @@ void UserInterface::DrawIcon(const float& imageScale)
 /// <returns>なし</returns>
 void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 {
+	// マウスがUIエリア以外なら処理しない
+	if (mouseState.y > 170.0f * (m_windowSize.y / FULL_SCREEN_SIZE.y)) return;
+
 	// アイコンごとの初期値
 	bool iconFlags[MapState::LENGTH] = { false };
 

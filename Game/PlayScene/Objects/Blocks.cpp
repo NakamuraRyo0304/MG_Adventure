@@ -375,6 +375,18 @@ std::wstring Blocks::MapSelect(int num)
 	case 5:
 		filePath = L"Resources/Maps/Stage5.csv";
 		break;
+	case 6:
+		filePath = L"Resources/Maps/Stage6.csv";
+		break;
+	case 7:
+		filePath = L"Resources/Maps/Stage7.csv";
+		break;
+	case 8:
+		filePath = L"Resources/Maps/Stage8.csv";
+		break;
+	case 9:
+		filePath = L"Resources/Maps/Stage9.csv";
+		break;
 	default:
 		filePath = L"NoStage";
 		break;

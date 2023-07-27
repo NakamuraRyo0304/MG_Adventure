@@ -51,7 +51,7 @@ void SelectScene::Initialize()
 
 	// マップ読み込み
 	m_blocks->Initialize(m_stageNum);
-	
+
 	// 見上げ距離
 	m_changeMapMove = UP_VALUE;
 }
@@ -95,7 +95,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		m_stageNum++;
 
 		// TODO: [ステージ番号]マップ数はMAX_STAGE_NUMを変更！
-		m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_STAGE_NUM);
+		m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_MODEL_NUM - 1);
 
 		m_blocks->Initialize(m_stageNum);
 	}
@@ -105,11 +105,10 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		m_stageNum--;
 
 		// TODO: [ステージ番号]マップ数はMAX_STAGE_NUMを変更！
-		m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_STAGE_NUM);
+		m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_MODEL_NUM - 1);
 
 		m_blocks->Initialize(m_stageNum);
 	}
-	
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
@@ -160,7 +159,7 @@ void SelectScene::Draw()
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
 
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
 	// テキストの移動アニメーション
 	SimpleMath::Matrix stageMat = SimpleMath::Matrix::Identity;
@@ -169,30 +168,7 @@ void SelectScene::Draw()
 	stageMat *= SimpleMath::Matrix::CreateTranslation(0.0f, 10.0f, cosf(m_timer) * 2.0f);
 
 	// ステージ番号表示
-	switch (m_stageNum)
-	{
-	case 0:
-		m_editModel->Draw(context, states, stageMat, view, proj);
-		return;
-	case 1:
-		m_stage1Model->Draw(context, states, stageMat, view, proj);
-		return;
-	case 2:
-		m_stage2Model->Draw(context, states, stageMat, view, proj);
-		return;
-	case 3:
-		m_stage3Model->Draw(context, states, stageMat, view, proj);
-		return;
-	case 4:
-		m_stage4Model->Draw(context, states, stageMat, view, proj);
-		return;
-	case 5:
-		m_stage5Model->Draw(context, states, stageMat, view, proj);
-		return;
-	default:
-		break;
-	}
-
+	m_stageModels[m_stageNum]->Draw(context, states, stageMat, view, proj);
 }
 
 /// <summary>
@@ -206,12 +182,10 @@ void SelectScene::Finalize()
 	m_blocks->Finalize();
 
 	// モデル削除
-	ModelFactory::DeleteModel(m_stage1Model);
-	ModelFactory::DeleteModel(m_stage2Model);
-	ModelFactory::DeleteModel(m_stage3Model);
-	ModelFactory::DeleteModel(m_stage4Model);
-	ModelFactory::DeleteModel(m_stage5Model);
-	ModelFactory::DeleteModel(m_editModel);
+	for (int i = 0; i < MAX_MODEL_NUM; ++i)
+	{
+		ModelFactory::DeleteModel(m_stageModels[i]);
+	}
 }
 
 /// <summary>
@@ -238,8 +212,8 @@ void SelectScene::CreateWindowDependentResources()
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
-	//-------------------------------------------------------------------------------------// 
-	
+	//-------------------------------------------------------------------------------------//
+
 	// ブロックの作成
 	m_blocks = std::make_unique<Blocks>();
 
@@ -264,9 +238,9 @@ void SelectScene::CreateWindowDependentResources()
 		m_blocks->RECLOWD
 	);
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
-	// スカイドームモデルを作成する	
+	// スカイドームモデルを作成する
 	m_skyDomeModel = ModelFactory::GetCreateModel(
 		device,
 		L"Resources/Models/ShineSky.cmo"
@@ -289,13 +263,21 @@ void SelectScene::CreateWindowDependentResources()
 		}
 	);
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
 	// ステージ番号のモデル
-	m_editModel   = ModelFactory::GetCreateModel(device, L"Resources/Models/StageEdit.cmo");
-	m_stage1Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage1.cmo");
-	m_stage2Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage2.cmo");
-	m_stage3Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage3.cmo");
-	m_stage4Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage4.cmo");
-	m_stage5Model = ModelFactory::GetCreateModel(device, L"Resources/Models/Stage5.cmo");
+	for (int i = 0; i < MAX_MODEL_NUM; i++)
+	{
+		// 0番目はエディタの文字
+		if (i == 0)
+		{
+			m_stageModels[0] = ModelFactory::GetCreateModel(device, L"Resources/Models/StageEdit.cmo");
+		}
+		else
+		{
+			std::wstring stageNumber = std::to_wstring(i);
+			std::wstring path = L"Resources/Models/Stage" + stageNumber + L".cmo";
+			m_stageModels[i] = ModelFactory::GetCreateModel(device, path.c_str());
+		}
+	}
 }
