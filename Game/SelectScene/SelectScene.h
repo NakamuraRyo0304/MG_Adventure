@@ -31,13 +31,8 @@ private:
 	int m_stageNum;
 
 	// 最大ステージ数
-	const int MAX_STAGE_NUM = 5;
-	std::unique_ptr<DirectX::Model>m_editModel;
-	std::unique_ptr<DirectX::Model>m_stage1Model;
-	std::unique_ptr<DirectX::Model>m_stage2Model;
-	std::unique_ptr<DirectX::Model>m_stage3Model;
-	std::unique_ptr<DirectX::Model>m_stage4Model;
-	std::unique_ptr<DirectX::Model>m_stage5Model;
+	const int MAX_MODEL_NUM = 10;
+	std::unique_ptr<DirectX::Model> m_stageModels[10];
 
 	// カメラの回転半径
 	const float CAMERA_RADIUS = 4.0f;

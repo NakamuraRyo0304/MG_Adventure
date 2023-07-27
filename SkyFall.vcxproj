@@ -303,6 +303,10 @@
     <None Include="Resources\Models\Stage3.cmo" />
     <None Include="Resources\Models\Stage4.cmo" />
     <None Include="Resources\Models\Stage5.cmo" />
+    <None Include="Resources\Models\Stage6.cmo" />
+    <None Include="Resources\Models\Stage7.cmo" />
+    <None Include="Resources\Models\Stage8.cmo" />
+    <None Include="Resources\Models\Stage9.cmo" />
     <None Include="Resources\Models\StageEdit.cmo" />
     <None Include="Resources\Models\TitleLogo.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
