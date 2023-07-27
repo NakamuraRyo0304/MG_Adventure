@@ -68,6 +68,7 @@ public:
 	void Render();
 	void Finalize();
 
+	// アイコンの描画
 	void DrawIcon(const float& imageScale);
 
 	// ステータスの変更
