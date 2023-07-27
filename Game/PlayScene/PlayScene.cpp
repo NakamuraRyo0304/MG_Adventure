@@ -245,6 +245,19 @@ void PlayScene::Draw()
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
+	m_skyDomeModel->UpdateEffects([&](IEffect* effect)
+		{
+			// 色を徐々に暗くする
+			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (basicEffect)
+			{
+				// 徐々に暗くなっていく
+				basicEffect->SetEmissiveColor(
+					SimpleMath::Vector4{ m_timeLimit / (TIME_LIMIT * FLAME_RATE)}
+				);
+			}
+		}
+	);
 
 	// ビルボード作成
 	m_playerBill->CreateBillboard(
@@ -257,7 +270,6 @@ void PlayScene::Draw()
 
 	// プレイヤーの影の描画
 	m_playerShadow->Render(context, view, proj);
-
 
 	// UIの描画
 	m_userInterFace->Render();
