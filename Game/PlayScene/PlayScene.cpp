@@ -45,7 +45,8 @@ PlayScene::PlayScene() :
 	m_hitObjects{},					// 当っているオブジェクトの格納
 	m_lastObj{},					// 最後に当たったオブジェクトを保存
 	is_boxCol{},					// 立方体当たり判定
-	m_skyDomeModel{ nullptr }		// スカイドームモデル
+	m_skyDomeModel{ nullptr },		// スカイドームモデル
+	m_skyColor{}					// 空の変化
 {
 }
 
@@ -90,6 +91,9 @@ void PlayScene::Initialize()
 
 	// 死亡エフェクトを切る
 	m_userInterFace->SetEffectFlag(false);
+
+	// 空の色の初期化
+	m_skyColor = { 1.0f,1.0f,1.0f };
 }
 
 /// <summary>
@@ -126,6 +130,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 		// クリアタイムを格納
 		m_returnTimeVal = m_timeLimit / FLAME_RATE;
+
+		// 空の処理
+		UpdateSky();
 	}
 
 	// プレイヤの更新
@@ -253,7 +260,12 @@ void PlayScene::Draw()
 			{
 				// 徐々に暗くなっていく
 				basicEffect->SetEmissiveColor(
-					SimpleMath::Vector4{ m_timeLimit / (TIME_LIMIT * FLAME_RATE)}
+					SimpleMath::Vector4{
+						m_skyColor.red,		 // 赤
+						m_skyColor.green,	 // 緑
+						m_skyColor.blue,	 // 青
+						1.0f				 // 透明度
+					}
 				);
 			}
 		}
@@ -528,6 +540,21 @@ void PlayScene::ApplyPushBack(Object& obj)
 
 	// 処理が終わったら要素を破棄
 	m_hitObjects.pop_back();
+}
+
+/// <summary>
+/// 空の更新
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void PlayScene::UpdateSky()
+{
+	m_skyColor =
+	{
+		m_timeLimit / (TIME_LIMIT * FLAME_RATE), // 赤
+		m_timeLimit / (TIME_LIMIT * FLAME_RATE), // 緑
+		m_timeLimit / (TIME_LIMIT * FLAME_RATE)  // 青
+	};
 }
 
 /// <summary>

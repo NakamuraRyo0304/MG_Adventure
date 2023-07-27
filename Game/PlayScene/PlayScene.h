@@ -29,6 +29,15 @@ private:
 	float m_timeLimit;
 	float m_returnTimeVal;
 
+	// 空の色遷移
+	struct Color
+	{
+		float red = 0.0f;
+		float green = 0.0f;
+		float blue = 0.0f;
+	};
+	Color m_skyColor;
+
 	// マップ
 	MapLoad m_mapLoad;
 	// マップ番号
@@ -127,6 +136,9 @@ public:
 
 	// 押し戻し処理
 	void ApplyPushBack(Object& obj);
+
+	// 空の更新
+	void UpdateSky();
 
 	// デバッグ表示
 	void DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
