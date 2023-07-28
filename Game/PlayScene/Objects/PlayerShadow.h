@@ -64,12 +64,12 @@ public:
 	// インプットレイアウトの設定
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
-	PlayerShadow(DX::DeviceResources* pDR);
+	PlayerShadow();
 	~PlayerShadow();
 
 
 	// 作成処理
-	void Create();
+	void Create(DX::DeviceResources* pDR);
 
 	// 更新処理
 	void Update(const DirectX::SimpleMath::Vector3& position);

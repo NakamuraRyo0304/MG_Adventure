@@ -27,8 +27,8 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerShadow::INPUT_LAYOUT =
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-PlayerShadow::PlayerShadow(DX::DeviceResources* pDR) :
-	m_deviceResources{ pDR },
+PlayerShadow::PlayerShadow() :
+	m_deviceResources{},
 	m_position{}
 {
 }
@@ -47,12 +47,15 @@ PlayerShadow::~PlayerShadow()
 /// </summary>
 /// <param name="">なし</param>
 /// <returns>なし</returns>
-void PlayerShadow::Create()
+void PlayerShadow::Create(DX::DeviceResources* pDR)
 {
+	// デバイスリソースを格納
+	m_deviceResources = pDR;
+
 	// デバイスの作成
 	auto device = m_deviceResources->GetD3DDevice();
 
-	//シェーダーの作成
+	// シェーダーの作成
 	CreateShader();
 
 	// プリミティブバッチの作成

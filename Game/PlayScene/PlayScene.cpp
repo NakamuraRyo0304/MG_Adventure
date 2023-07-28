@@ -402,8 +402,8 @@ void PlayScene::CreateWindowDependentResources()
 	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
 
 	// プレイヤーの影シェーダーの作成
-	m_playerShadow = std::make_unique<PlayerShadow>(GetSystemManager()->GetDeviceResources());
-	m_playerShadow->Create();
+	m_playerShadow = std::make_unique<PlayerShadow>();
+	m_playerShadow->Create(GetSystemManager()->GetDeviceResources());
 
 	//-------------------------------------------------------------------------------------//
 

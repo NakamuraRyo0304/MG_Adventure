@@ -136,7 +136,7 @@ void TitleScene::Draw()
 	if (is_startFlag)
 	{
 		// スカイドームの回転と移動
-		skyMat *= skyRotX; 
+		skyMat *= skyRotX;
 		skyMat *= skyTrans;
 
 		// ロゴも一緒に動く
@@ -188,9 +188,9 @@ void TitleScene::CreateWindowDependentResources()
 	GetSystemManager()->GetString()->CreateString(device, context);
 
 	// 画面サイズの格納
-	float width  = 
+	float width  =
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height = 
+	float height =
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// カメラの設定
