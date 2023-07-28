@@ -36,6 +36,7 @@
 PlayScene::PlayScene() :
 	IScene(),
 	m_timer{0.0f},					// タイマー
+	m_startTimer{0.0f},				// 開始時間
 	m_timeLimit{0.0f},				// 制限時間
 	m_returnTimeVal{0.0f},			// 制限時間(戻り値)
 	m_mapLoad{},					// マップ
@@ -89,6 +90,9 @@ void PlayScene::Initialize()
 	// 時間　×　フレームレート
 	m_timeLimit = TIME_LIMIT * FLAME_RATE;
 
+	// 開始カウントダウン(3秒)
+	m_startTimer = 3 * FLAME_RATE;
+
 	// 死亡エフェクトを切る
 	m_userInterFace->SetEffectFlag(false);
 
@@ -116,6 +120,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
+
+	// カウントダウンが終わったらスタート
+	if (StartTimer() == false) return;
 
 	// コインをすべて獲得でリザルト
 	if (m_blocks->IsCollectedFlag() || m_timeLimit < 0.0f)
@@ -555,6 +562,24 @@ void PlayScene::UpdateSky()
 		m_timeLimit / (TIME_LIMIT * FLAME_RATE), // 緑
 		m_timeLimit / (TIME_LIMIT * FLAME_RATE)  // 青
 	};
+}
+
+/// <summary>
+/// スタートのカウントダウン
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+bool PlayScene::StartTimer()
+{
+	m_startTimer--;
+
+	if (m_startTimer <= 0.0f)
+	{
+		m_startTimer = 0.0f;
+		return true;
+	}
+
+	return false;
 }
 
 /// <summary>

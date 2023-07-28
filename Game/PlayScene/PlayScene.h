@@ -25,6 +25,9 @@ private:
 	// タイマー
 	float m_timer;
 
+	// スタートタイマー
+	float m_startTimer;
+
 	// 制限時間
 	float m_timeLimit;
 	float m_returnTimeVal;
@@ -139,6 +142,9 @@ public:
 
 	// 空の更新
 	void UpdateSky();
+
+	// スタートのカウントダウン
+	bool StartTimer();
 
 	// デバッグ表示
 	void DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
