@@ -44,9 +44,10 @@ private:
 
 private:
 	// ボックスステータスの配列
-	const wchar_t* m_texName[MapState::LENGTH];
-	bool is_boxState[MapState::LENGTH];
-	DirectX::SimpleMath::Vector2 m_imagePos[MapState::LENGTH];
+	const wchar_t* m_texName[MapState::LENGTH];					// テクスチャ名
+	bool is_boxState[MapState::LENGTH];							// 現在のステート
+	float m_boxHover[MapState::LENGTH];							// ホバーチェック
+	DirectX::SimpleMath::Vector2 m_imagePos[MapState::LENGTH];	// テクスチャの座標
 
 	// 画像の中心位置
 	const float	IMAGE_CENTER = 128.0f;

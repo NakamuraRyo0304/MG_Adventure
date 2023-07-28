@@ -27,7 +27,8 @@ UserInterface::UserInterface(const DirectX::SimpleMath::Vector2& windowSize):
 	is_openFlag{},					// 開くフラグ
 	is_cameraFlag{ true },			// カメラモードONでスタート
 	is_boxState{ false },			// 画像フラグ
-	m_nowState{}					// 最新のステート
+	m_nowState{},					// 最新のステート
+	m_boxHover{}					// ホバー時のサイズ
 {
 }
 
@@ -94,6 +95,7 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	{
 		m_imagePos[i] = { 528 * span + (192 * span * i) , 80 * span};
 		is_boxState[i] = false;
+		m_boxHover[i] = 0.0f;
 	}
 
 	// ステータスの初期値は草ブロック
@@ -265,136 +267,28 @@ void UserInterface::Finalize()
 /// <returns>なし</returns>
 void UserInterface::DrawIcon(const float& imageScale)
 {
-	// 草ブロック
-	if (is_boxState[MapState::GrassBox])
+	for (int idx = 0; idx < MapState::LENGTH; ++idx)
 	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Grass",							// 登録キー
-			m_imagePos[MapState::GrassBox],		// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Grass",							// 登録キー
-			m_imagePos[MapState::GrassBox],		// 座標
-			{ 1.0f,1.0f,1.0f,HALF },			// 色
-			HALF * imageScale,					// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-
-	// 雲ブロック
-	if (is_boxState[MapState::ClowdBox])
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Clowd",							// 登録キー
-			m_imagePos[MapState::ClowdBox],		// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Clowd",							// 登録キー
-			m_imagePos[MapState::ClowdBox],		// 座標
-			{ 1.0f,1.0f,1.0f,HALF },			// 色
-			HALF * imageScale,					// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-
-	// コインブロック
-	if (is_boxState[MapState::CoinBox])
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Coin",							// 登録キー
-			m_imagePos[MapState::CoinBox],		// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Coin",							// 登録キー
-			m_imagePos[MapState::CoinBox],		// 座標
-			{ 1.0f,1.0f,1.0f,HALF },			// 色
-			HALF * imageScale,					// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-
-	// 雲リセットブロック
-	if (is_boxState[MapState::ResetClowd])
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"ReClowd",							// 登録キー
-			m_imagePos[MapState::ResetClowd],	// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"ReClowd",							// 登録キー
-			m_imagePos[MapState::ResetClowd],	// 座標
-			{ 1.0f,1.0f,1.0f,HALF },			// 色
-			HALF * imageScale,					// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-
-	// プレイヤーブロック
-	if (is_boxState[MapState::PlayerPos])
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Player",							// 登録キー
-			m_imagePos[MapState::PlayerPos],	// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Player",							// 登録キー
-			m_imagePos[MapState::PlayerPos],	// 座標
-			{ 1.0f,1.0f,1.0f,HALF },			// 色
-			HALF * imageScale,					// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-
-	// 消しゴム
-	if (is_boxState[MapState::None])
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Erase",							// 登録キー
-			m_imagePos[MapState::None],			// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Erase",							// 登録キー
-			m_imagePos[MapState::None],			// 座標
-			{ 1.0f,1.0f,1.0f,HALF },			// 色
-			HALF * imageScale,					// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
+		if (is_boxState[idx])
+		{
+			m_system->GetDrawSprite()->DrawTexture(
+				m_texName[idx],							// 登録キー
+				m_imagePos[idx],						// 座標
+				SimpleMath::Vector4::One,				// 色
+				IMAGE_RATE * imageScale,				// 拡大率
+				SimpleMath::Vector2{ IMAGE_CENTER }		// 中心位置
+			);
+		}
+		else
+		{
+			m_system->GetDrawSprite()->DrawTexture(
+				m_texName[idx],							// 登録キー
+				m_imagePos[idx],						// 座標
+				{ 1.0f,1.0f,1.0f,HALF },				// 色
+				(HALF + m_boxHover[idx]) * imageScale,	// 拡大率
+				SimpleMath::Vector2{ IMAGE_CENTER }		// 中心位置
+			);
+		}
 	}
 }
 
@@ -417,8 +311,11 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 		iconFlags[i] = m_imageHitter.HitAABB_2D(
 			{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 			m_imagePos[i],                              // 画像の位置
-			SimpleMath::Vector2{ 5.0f },                // サイズ
-			SimpleMath::Vector2{ 100.0f });             // サイズ
+			SimpleMath::Vector2{ 5.0f },                // 最小サイズ
+			SimpleMath::Vector2{ 100.0f });             // 最大サイズ
+
+		// 当たっていたらサイズを大きくする(ホバー)
+		m_boxHover[i] = iconFlags[i] == true ? 0.1f : 0.0f;
 	}
 
 
@@ -427,28 +324,30 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 	{
 		for (int i = 0; i < MapState::LENGTH; ++i)
 		{
+			// 有効フラグを格納
 			is_boxState[i] = iconFlags[i];
+
 			if (iconFlags[i])
 			{
 				switch (i)
 				{
 				case MapState::GrassBox:
-					m_nowState = MapState::GrassBox;
+					m_nowState = MapState::GrassBox;		// 草ブロック
 					break;
 				case MapState::CoinBox:
-					m_nowState = MapState::CoinBox;
+					m_nowState = MapState::CoinBox;			// コイン
 					break;
 				case MapState::ClowdBox:
-					m_nowState = MapState::ClowdBox;
+					m_nowState = MapState::ClowdBox;		// 雲
 					break;
 				case MapState::ResetClowd:
-					m_nowState = MapState::ResetClowd;
+					m_nowState = MapState::ResetClowd;		// リセットポイント
 					break;
 				case MapState::PlayerPos:
-					m_nowState = MapState::PlayerPos;
+					m_nowState = MapState::PlayerPos;		// プレイヤー
 					break;
 				case MapState::None:
-					m_nowState = MapState::None;
+					m_nowState = MapState::None;			// 空気
 					break;
 				default:
 					break;
