@@ -106,7 +106,7 @@ void TitleScene::Draw()
 
 	// 移動、回転行列
 	SimpleMath::Matrix logoTrans, logoRot;
-	SimpleMath::Matrix stageTrans, stageRotX,stageRotY;
+	SimpleMath::Matrix stageTrans, stageRotX, stageRotY, stageScale;
 	SimpleMath::Matrix skyTrans,skyRotX;
 
 	// ワールド行列
@@ -125,10 +125,13 @@ void TitleScene::Draw()
 	stageTrans = SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
 	skyTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_moveY, 0.0f);
 
+	// スケール行列
+	stageScale = SimpleMath::Matrix::CreateScale(1.2f);
+
 	// ロゴ
 	logoMat *= logoRot * logoTrans;
 	// ステージ
-	stageMat *= stageRotY * stageRotX * stageTrans;
+	stageMat *= stageScale * stageRotY * stageRotX * stageTrans;
 	// スカイドーム
 	skyMat *= skyRotX;
 
@@ -153,7 +156,32 @@ void TitleScene::Draw()
 	// プロジェクション行列
 	proj = GetSystemManager()->GetCamera()->GetProjection();
 
-	// モデル描画
+	// ライトの設定
+	SimpleMath::Vector3 lightDirection(-1.0f, 1.0f, 1.0f);
+	SimpleMath::Color lightColor(0.3f, 0.3f, 0.3f, 1.0f);
+
+	// アマチュアモデル設定
+	m_miniatureModel->UpdateEffects([&](IEffect* effect)
+		{
+			auto lights = dynamic_cast<IEffectLights*>(effect);
+			if (lights)
+			{
+				// ライトオン
+				lights->SetLightEnabled(0, true);
+				lights->SetLightEnabled(1, true);
+				lights->SetLightEnabled(2, true);
+
+				// ライトの方向を設定
+				lights->SetLightDirection(0, lightDirection);
+				lights->SetLightDirection(1, lightDirection);
+				lights->SetLightDirection(2, lightDirection);
+
+				// ライトの色を設定
+				lights->SetLightDiffuseColor(0, lightColor);
+				lights->SetLightDiffuseColor(1, lightColor);
+				lights->SetLightDiffuseColor(2, lightColor);
+			}
+		});
 	m_miniatureModel->Draw(context, states, stageMat, view, proj);	// ステージ
 	m_titleLogoModel->Draw(context, states, logoMat, view, proj);	// ロゴ
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);  	// スカイドーム
@@ -197,9 +225,15 @@ void TitleScene::CreateWindowDependentResources()
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, 45.0f);
 
 	// モデルの作成
+
+	// タイトルロゴ
 	m_titleLogoModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleLogo.cmo");
+
+	// ステージモデル
 	m_miniatureModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleStage.cmo");
-	m_skyDomeModel   = ModelFactory::GetCreateModel(device, L"Resources/Models/ShineSky.cmo");
+
+	// スカイドーム
+	m_skyDomeModel = ModelFactory::GetCreateModel(device, L"Resources/Models/ShineSky.cmo");
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
 			auto lights = dynamic_cast<IEffectLights*>(effect);

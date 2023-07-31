@@ -131,6 +131,18 @@
     <Filter Include="Resources\Models\Player">
       <UniqueIdentifier>{09819858-83fe-49c8-8e09-d95745ece799}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Models\MapObject">
+      <UniqueIdentifier>{580a5ff2-b3ac-4e77-b085-7a3d3b261983}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Models\SkyDome">
+      <UniqueIdentifier>{79a8fc36-441d-4c59-bb5e-22307b0541fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Models\TitleScene">
+      <UniqueIdentifier>{aa932485-778b-4cc0-b2e5-dd5d594ec9ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Models\EditScene">
+      <UniqueIdentifier>{039dfd5a-09a2-4979-b4a7-2e359068a3d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -407,32 +419,8 @@
     <None Include="Resources\Fonts\SegoeUI_18.spritefont">
       <Filter>Assets</Filter>
     </None>
-    <None Include="Resources\Models\GrassBlock.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
-    <None Include="Resources\Models\Coin.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
-    <None Include="Resources\Models\Eraser.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
-    <None Include="Resources\Models\ShineSky.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
-    <None Include="Resources\Models\TitleLogo.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
-    <None Include="Resources\Models\TitleStage.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
     <None Include="Resources\Shaders\PlayerPoint.hlsli">
       <Filter>Resources\Shaders</Filter>
-    </None>
-    <None Include="Resources\Models\MoveBlock.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
-    <None Include="Resources\Models\ResetPt.cmo">
-      <Filter>Resources\Models</Filter>
     </None>
     <None Include="Resources\Models\Stage1.cmo">
       <Filter>Resources\Models\Stage</Filter>
@@ -445,9 +433,6 @@
     </None>
     <None Include="Resources\Models\StageEdit.cmo">
       <Filter>Resources\Models\Stage</Filter>
-    </None>
-    <None Include="Resources\Models\Spacedome.cmo">
-      <Filter>Resources\Models</Filter>
     </None>
     <None Include="Resources\Models\Stage4.cmo">
       <Filter>Resources\Models\Stage</Filter>
@@ -479,6 +464,33 @@
     <None Include="Resources\Models\LegR.cmo">
       <Filter>Resources\Models\Player</Filter>
     </None>
+    <None Include="Resources\Models\Coin.cmo">
+      <Filter>Resources\Models\MapObject</Filter>
+    </None>
+    <None Include="Resources\Models\GrassBlock.cmo">
+      <Filter>Resources\Models\MapObject</Filter>
+    </None>
+    <None Include="Resources\Models\MoveBlock.cmo">
+      <Filter>Resources\Models\MapObject</Filter>
+    </None>
+    <None Include="Resources\Models\ResetPt.cmo">
+      <Filter>Resources\Models\MapObject</Filter>
+    </None>
+    <None Include="Resources\Models\ShineSky.cmo">
+      <Filter>Resources\Models\SkyDome</Filter>
+    </None>
+    <None Include="Resources\Models\Spacedome.cmo">
+      <Filter>Resources\Models\SkyDome</Filter>
+    </None>
+    <None Include="Resources\Models\TitleLogo.cmo">
+      <Filter>Resources\Models\TitleScene</Filter>
+    </None>
+    <None Include="Resources\Models\TitleStage.cmo">
+      <Filter>Resources\Models\TitleScene</Filter>
+    </None>
+    <None Include="Resources\Models\Eraser.cmo">
+      <Filter>Resources\Models\EditScene</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -507,5 +519,10 @@
     <FxCompile Include="Resources\Shaders\PlayerShadowVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="Resources\Models\TitleStage.fbx">
+      <Filter>Resources\Models\TitleScene</Filter>
+    </MeshContentTask>
   </ItemGroup>
 </Project>

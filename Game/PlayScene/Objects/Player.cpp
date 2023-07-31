@@ -140,7 +140,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	// 回転行列
 	SimpleMath::Matrix rotate = SimpleMath::Matrix::CreateFromQuaternion(m_parameter.rotate);
 
-	// 移動行列
+	// プレイヤーの移動行列
 	SimpleMath::Matrix trans =
 		SimpleMath::Matrix::CreateTranslation(
 			m_position.x,
@@ -148,7 +148,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 			m_position.z
 		);
 
-	// 脚の動き
+	// 右脚の動き
 	SimpleMath::Matrix rightTrans =
 		SimpleMath::Matrix::CreateTranslation(
 			0.0f,
@@ -156,6 +156,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 			sinf(m_footMove) * 0.1f
 		);
 
+	// 左脚の動き
 	SimpleMath::Matrix leftTrans =
 		SimpleMath::Matrix::CreateTranslation(
 			0.0f,
