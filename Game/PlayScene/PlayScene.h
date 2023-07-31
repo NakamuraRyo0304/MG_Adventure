@@ -95,7 +95,7 @@ private:
 	const float	COMMON_LOW = COMMON_SIZE / 2;
 
 	// “–‚½‚è”»’è‚Ì”¼Œa
-	const float JUDGE_AREA = 1.8f;
+	const float JUDGE_AREA = COMMON_SIZE * 2;
 
 	// ƒJƒƒ‰ƒAƒ“ƒOƒ‹
 	const float	CAMERA_ANGLE = 44.5f;
