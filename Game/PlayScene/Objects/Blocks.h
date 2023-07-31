@@ -142,7 +142,4 @@ private:
 
 	// モデルの色を変更
 	void ChangeModelColors(std::unique_ptr<Model>& model,DirectX::SimpleMath::Vector4 color);
-
-	// モデルの光を変更
-	void ChangeModelLights(std::unique_ptr<Model>& model, BOOL3 flag);
 };

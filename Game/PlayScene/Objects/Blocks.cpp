@@ -182,15 +182,58 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		float restrictedTimer = fmodf(timer, 2 * XM_PI);
 		SimpleMath::Matrix cl_scale = SimpleMath::Matrix::CreateScale(sinf(restrictedTimer));
 
+		// ライトの設定
+		SimpleMath::Vector3 lightDirection(1.0f, -1.0f, -1.0f);
+
+		// ビュー行列からカメラの回転を取得
+		SimpleMath::Matrix cameraRotation;
+
+		// ビュー行列を逆変換
+		cameraRotation = view.Invert();
+
+		// 移動量をなくす
+		cameraRotation._41 = 0.0f;
+		cameraRotation._42 = 0.0f;
+		cameraRotation._43 = 0.0f;
+
+		// ライトの方向をカメラの回転に逆向きにする
+		lightDirection = SimpleMath::Vector3::TransformNormal(lightDirection, cameraRotation);
+		SimpleMath::Color lightColor(0.3f, 0.3f, 0.3f, 1.0f);
+
+		auto setLightForModel = [&](IEffect* effect)
+		{
+			auto lights = dynamic_cast<IEffectLights*>(effect);
+			if (lights)
+			{
+				// ライトオン
+				lights->SetLightEnabled(0, true);
+				lights->SetLightEnabled(1, true);
+				lights->SetLightEnabled(2, true);
+
+				// ライトの方向を設定
+				lights->SetLightDirection(0, lightDirection);
+				lights->SetLightDirection(1, lightDirection);
+				lights->SetLightDirection(2, lightDirection);
+
+				// ライトの色を暗めのグレーに設定
+				lights->SetLightDiffuseColor(0, lightColor);
+				lights->SetLightDiffuseColor(1, lightColor);
+				lights->SetLightDiffuseColor(2, lightColor);
+			}
+		};
+
+
 		// 草ブロック
 		if (m_mapObj[i].id == MapState::GrassBox)
 		{
+			m_grassModel->UpdateEffects(setLightForModel);
 			m_grassModel->Draw(context, states, world, view, proj);
 		}
 
 		// コインブロック
 		if (m_mapObj[i].id == MapState::CoinBox)
 		{
+			m_coinModel->UpdateEffects(setLightForModel);
 			m_coinModel->Draw(context, states, rotateY * world, view, proj);
 		}
 
@@ -208,6 +251,7 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 				ChangeModelColors(m_clowdModel,static_cast<SimpleMath::Vector4>(Colors::White));
 			}
 
+			m_clowdModel->UpdateEffects(setLightForModel);
 			m_clowdModel->Draw(context, states, rotateY * world, view, proj);
 		}
 
@@ -219,6 +263,8 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 			{
 				cl_scale *= SimpleMath::Matrix::CreateScale(1.0f, -1.0f,1.0f);
 			}
+
+			m_reClowdPtModel->UpdateEffects(setLightForModel);
 			m_reClowdPtModel->Draw(context, states, cl_scale * rotateY * world, view, proj);
 		}
 	}
@@ -412,33 +458,6 @@ void Blocks::ChangeModelColors(std::unique_ptr<Model>& model, SimpleMath::Vector
 			{
 				// 色を変更する
 				basicEffect->SetDiffuseColor(color);
-			}
-		}
-	);
-}
-
-/// <summary>
-/// ライティング設定
-/// </summary>
-/// <param name="model">モデルデータ</param>
-/// <param name="flag">つけるライト</param>
-/// <returns>なし</returns>
-void Blocks::ChangeModelLights(std::unique_ptr<Model>& model, BOOL3 flag)
-{
-	model->UpdateEffects([&](IEffect* effect)
-		{
-			auto lights = dynamic_cast<IEffectLights*>(effect);
-			if (lights)
-			{
-				lights->SetLightEnabled(0, flag._1);
-				lights->SetLightEnabled(1, flag._2);
-				lights->SetLightEnabled(2, flag._3);
-			}
-			// 自己発光する
-			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (basicEffect)
-			{
-				basicEffect->SetEmissiveColor(Colors::White);
 			}
 		}
 	);

@@ -520,9 +520,4 @@
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Resources\Models\TitleStage.fbx">
-      <Filter>Resources\Models\TitleScene</Filter>
-    </MeshContentTask>
-  </ItemGroup>
 </Project>
