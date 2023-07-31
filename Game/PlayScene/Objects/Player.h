@@ -31,6 +31,9 @@ private:
 	// 時間
 	float m_timer;
 
+	// 脚の動きに使う変数
+	float m_footMove;
+
 	// 座標
 	DirectX::SimpleMath::Vector3 m_position;
 
@@ -38,7 +41,7 @@ private:
 	PlayerParameter m_parameter;
 
 	// モデルデータ
-	std::unique_ptr<DirectX::Model> m_model;
+	std::unique_ptr<DirectX::Model> m_model,m_leftLeg,m_rightLeg;
 
 	// システム
 	std::weak_ptr<SystemManager> m_system;
@@ -60,7 +63,7 @@ private:
 
 public:
 	// コンストラクタ（モデルデータ）
-	Player(std::unique_ptr<DirectX::Model> model);
+	Player(std::unique_ptr<DirectX::Model> body, std::unique_ptr<DirectX::Model> rightLeg, std::unique_ptr<DirectX::Model> leftLeg);
 	~Player();
 
 	// 初期化処理
@@ -82,9 +85,6 @@ public:
 public:
 
 	// アクセサ----------------------------------------------------------------------------//
-
-	// モデルのセット
-	void SetModel(std::unique_ptr<DirectX::Model> model) { m_model = std::move(model); }
 
 	// ポジションアクセサ
 	DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }

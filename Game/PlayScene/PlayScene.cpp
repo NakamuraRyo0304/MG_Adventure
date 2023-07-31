@@ -366,7 +366,9 @@ void PlayScene::CreateWindowDependentResources()
 
 	// ÉvÉåÉCÉÑÅ[ÇÃçÏê¨
 	m_player = std::make_unique<Player>(
-		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/CatClean.cmo"))
+		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/Bird.cmo")),
+		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/LegR.cmo")),
+		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/LegL.cmo"))
 	);
 
 	//-------------------------------------------------------------------------------------//

@@ -18,14 +18,19 @@
  /// <summary>
  /// コンストラクタ
  /// </summary>
- /// <param name="model">プレイシーンで作成したモデルデータ</param>
+ /// <param name="body">胴体のモデルデータ</param>
+ /// <param name="right">右足モデルデータ</param>
+ /// <param name="left">左足モデルデータ</param>
  /// <returns>なし</returns>
-Player::Player(std::unique_ptr<Model> model):
-	m_model{std::move(model)},
+Player::Player(std::unique_ptr<Model> body, std::unique_ptr<Model> right, std::unique_ptr<Model> left):
+	m_model{std::move(body)},
+	m_rightLeg{std::move(right)},
+	m_leftLeg{std::move(left)},
 	m_position{},
 	m_parameter{},
 	m_system{},
-	is_deathFlag{}
+	is_deathFlag{},
+	m_footMove{0.0f}
 {
 }
 
@@ -73,7 +78,7 @@ void Player::Update(Keyboard::State& keyState, float timer)
 	// 重力処理
 	UpdateGravity();
 
-	// 移動処理
+	// 左右回転
 	if (keyState.A)
 	{
 		m_parameter.rotate *= SimpleMath::Quaternion::CreateFromAxisAngle(
@@ -84,19 +89,30 @@ void Player::Update(Keyboard::State& keyState, float timer)
 		m_parameter.rotate *= SimpleMath::Quaternion::CreateFromAxisAngle(
 			SimpleMath::Vector3::UnitY, -ROT_SPEED);
 	}
-	if (keyState.S)
-	{
-		SimpleMath::Vector3 vec(0.0f, 0.0f, m_parameter.accelerate / 2);
-		vec = SimpleMath::Vector3::Transform(vec, m_parameter.rotate);
-		m_parameter.velocity += vec;
-	}
-
+	// 前後移動
 	if (keyState.W)
 	{
 		SimpleMath::Vector3 vec(0.0f, 0.0f, m_parameter.accelerate);
 		vec = SimpleMath::Vector3::Transform(vec, m_parameter.rotate);
 		m_parameter.velocity -= vec;
 	}
+	else if (keyState.S)
+	{
+		SimpleMath::Vector3 vec(0.0f, 0.0f, m_parameter.accelerate / 2);
+		vec = SimpleMath::Vector3::Transform(vec, m_parameter.rotate);
+		m_parameter.velocity += vec;
+	}
+
+	// 脚の動き
+	if (keyState.W || keyState.A || keyState.S || keyState.D)
+	{
+		m_footMove++;
+	}
+	else
+	{
+		m_footMove = 0.0f;
+	}
+
 	// 移動量の計算
 	m_position += m_parameter.velocity;
 
@@ -119,7 +135,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	// ワールド行列
-	SimpleMath::Matrix world;
+	SimpleMath::Matrix world, legRWorld, legLWorld;
 
 	// 回転行列
 	SimpleMath::Matrix rotate = SimpleMath::Matrix::CreateFromQuaternion(m_parameter.rotate);
@@ -128,14 +144,35 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	SimpleMath::Matrix trans =
 		SimpleMath::Matrix::CreateTranslation(
 			m_position.x,
-			m_position.y + sinf(m_timer) / 10.0f + OFFSET_Y,
+			m_position.y + OFFSET_Y,
 			m_position.z
+		);
+
+	// 脚の動き
+	SimpleMath::Matrix rightTrans =
+		SimpleMath::Matrix::CreateTranslation(
+			0.0f,
+			0.0f,
+			sinf(m_footMove) * 0.1f
+		);
+
+	SimpleMath::Matrix leftTrans =
+		SimpleMath::Matrix::CreateTranslation(
+			0.0f,
+			0.0f,
+			-sinf(m_footMove) * 0.1f
 		);
 
 	// 行列計算
 	world = rotate * trans;
 
+	// 移動してから回転させる
+	legRWorld = rightTrans * rotate * trans;
+	legLWorld = leftTrans  * rotate * trans;
+
 	// モデルの描画
+	m_rightLeg->Draw(context, states, legRWorld, view, proj);
+	m_leftLeg->Draw(context, states, legLWorld, view, proj);
 	m_model->Draw(context, states, world, view, proj);
 }
 
@@ -147,6 +184,8 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 void Player::Finalize()
 {
 	m_model.reset();
+	m_rightLeg.reset();
+	m_leftLeg.reset();
 	m_parameter.reset();
 }
 

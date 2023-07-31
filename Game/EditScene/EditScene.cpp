@@ -300,7 +300,7 @@ void EditScene::CreateWindowDependentResources()
 	);
 	m_playerModel = ModelFactory::GetCreateModel(		// プレイヤブロック
 		device,
-		L"Resources/Models/CatClean.cmo"
+		L"Resources/Models/Bird.cmo"
 	);
 	m_noneModel = ModelFactory::GetCreateModel(			// 消しゴムブロック
 		device,

@@ -128,6 +128,9 @@
     <Filter Include="Resources\Textures\BLOCK">
       <UniqueIdentifier>{8efaf320-95be-4e10-a39b-7f7fe4ff6a4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Models\Player">
+      <UniqueIdentifier>{09819858-83fe-49c8-8e09-d95745ece799}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -413,9 +416,6 @@
     <None Include="Resources\Models\Eraser.cmo">
       <Filter>Resources\Models</Filter>
     </None>
-    <None Include="Resources\Models\CatClean.cmo">
-      <Filter>Resources\Models</Filter>
-    </None>
     <None Include="Resources\Models\ShineSky.cmo">
       <Filter>Resources\Models</Filter>
     </None>
@@ -469,6 +469,15 @@
     </None>
     <None Include="Resources\Models\Stage9.cmo">
       <Filter>Resources\Models\Stage</Filter>
+    </None>
+    <None Include="Resources\Models\Bird.cmo">
+      <Filter>Resources\Models\Player</Filter>
+    </None>
+    <None Include="Resources\Models\LegL.cmo">
+      <Filter>Resources\Models\Player</Filter>
+    </None>
+    <None Include="Resources\Models\LegR.cmo">
+      <Filter>Resources\Models\Player</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
