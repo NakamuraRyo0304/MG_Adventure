@@ -80,7 +80,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// 動きが終わっていなければ見下げる
 	if (m_changeMapMove > 0.0f)
 	{
-		m_changeMapMove--;
+		m_changeMapMove -= DOWN_SPEED;
 	}
 	else
 	{
@@ -89,6 +89,8 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 
 	// ステージ番号変更
+	if (static_cast<int>(m_changeMapMove) != 0) return;
+
 	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Right))
 	{
 		m_changeMapMove = UP_VALUE;

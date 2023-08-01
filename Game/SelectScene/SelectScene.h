@@ -41,7 +41,9 @@ private:
 	const float SKY_ROT_SPEED = 2.0f;
 
 	// Œ©ã‚°’l
-	const float UP_VALUE = 50.0f;
+	const float UP_VALUE = 60.0f;
+	// Œ©‰º‚°‘¬“x
+	const float DOWN_SPEED = 1.5f;
 
 	// Ø‚è‘Ö‚¦“Ç‚İ‚İ‰‰o
 	float m_changeMapMove;
