@@ -89,7 +89,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 
 	// ステージ番号変更
-	if (static_cast<int>(m_changeMapMove) != 0) return;
+	if (static_cast<int>(m_changeMapMove) >= UP_VALUE / 2) return;
 
 	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Right))
 	{
