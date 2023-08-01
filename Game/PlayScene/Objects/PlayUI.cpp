@@ -107,9 +107,6 @@ void PlayUI::Render()
     const int digitWidth = 100;
     const int digitHeight = 100;
 
-    // 残り10秒で時間表示
-   // if (static_cast<int>(m_timeLimit) > 600) return;
-
     // 一桁目の数字を表示
     RenderDigit(oneSec % 10, m_oneSecPos, scale, digitWidth, digitHeight);
 
@@ -130,6 +127,20 @@ void PlayUI::Render()
 }
 
 /// <summary>
+/// 開始のカウントダウン
+/// </summary>
+/// <param name="countDown">カウントダウン</param>
+/// <returns>なし</returns>
+void PlayUI::RenderCountDown(const float& countDown)
+{
+	// 比率を計算
+	float scale = static_cast<float>(m_windowSize.x / FULL_SCREEN_SIZE.x);
+
+
+
+}
+
+/// <summary>
 /// 数字を描画する
 /// </summary>
 /// <param name="digit">描画する数字</param>
@@ -138,7 +149,7 @@ void PlayUI::Render()
 /// <param name="digitWidth">数字の幅</param>
 /// <param name="digitHeight">数字の高さ</param>
 /// <returns>なし</returns>
-void PlayUI::RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position, float scale, int digitWidth, int digitHeight)
+void PlayUI::RenderDigit(int digit, const SimpleMath::Vector2& position, float scale, int digitWidth, int digitHeight)
 {
 	// スプライトの位置を計算
 	float spritePosX = position.x * scale;

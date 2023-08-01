@@ -90,8 +90,8 @@ void PlayScene::Initialize()
 	// 時間　×　フレームレート
 	m_timeLimit = TIME_LIMIT * FLAME_RATE;
 
-	// 開始カウントダウン(3秒)
-	m_startTimer = 3 * FLAME_RATE;
+	// 開始カウントダウン(フェードも考慮)
+	m_startTimer = 4 * FLAME_RATE;
 
 	// 死亡エフェクトを切る
 	m_userInterFace->SetEffectFlag(false);
@@ -291,7 +291,14 @@ void PlayScene::Draw()
 	m_playerShadow->Render(context, view, proj);
 
 	// UIの描画
-	m_userInterFace->Render();
+	if (static_cast<int>(m_startTimer) == 0)
+	{
+		m_userInterFace->Render();
+	}
+	else
+	{
+		m_userInterFace->RenderCountDown(m_startTimer);
+	}
 
 	//DebugLog(view, proj);
 }

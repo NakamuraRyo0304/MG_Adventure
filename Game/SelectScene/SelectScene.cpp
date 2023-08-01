@@ -145,7 +145,7 @@ void SelectScene::Draw()
 	world = SimpleMath::Matrix::Identity;
 
 	// ÉrÉÖÅ[çsóÒ
-	SimpleMath::Vector3    eye(CAMERA_RADIUS * sin(m_timer), 30.0f, CAMERA_RADIUS * cos(m_timer) * 2.0f);
+	SimpleMath::Vector3    eye(CAMERA_RADIUS * sin(m_timer), 30.0f, CAMERA_RADIUS * cos(m_timer));
 	SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
 	SimpleMath::Vector3 target(0.0f, m_changeMapMove, 0.0f);
 	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
