@@ -18,12 +18,14 @@
  /// <summary>
  /// コンストラクタ
  /// </summary>
+ /// <param name="head">頭部のモデルデータ</param>
  /// <param name="body">胴体のモデルデータ</param>
  /// <param name="right">右足モデルデータ</param>
  /// <param name="left">左足モデルデータ</param>
  /// <returns>なし</returns>
-Player::Player(std::unique_ptr<Model> body, std::unique_ptr<Model> right, std::unique_ptr<Model> left):
-	m_model{std::move(body)},
+Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body, std::unique_ptr<Model> right, std::unique_ptr<Model> left):
+	m_head{std::move(head)},
+	m_body{std::move(body)},
 	m_rightLeg{std::move(right)},
 	m_leftLeg{std::move(left)},
 	m_position{},
@@ -135,7 +137,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	// ワールド行列
-	SimpleMath::Matrix world, legRWorld, legLWorld;
+	SimpleMath::Matrix world, headWorld, legRWorld, legLWorld;
 
 	// 回転行列
 	SimpleMath::Matrix rotate = SimpleMath::Matrix::CreateFromQuaternion(m_parameter.rotate);
@@ -164,12 +166,23 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 			-sinf(m_footMove) * 0.1f
 		);
 
+	// 頭部の動き
+	SimpleMath::Matrix headTrans =
+		SimpleMath::Matrix::CreateTranslation(
+			0.0f,
+			0.0f,
+			sinf(m_footMove * 0.25f) * 0.1f
+		);
+
 	// 行列計算
 	world = rotate * trans;
 
 	// 移動してから回転させる
 	legRWorld = rightTrans * rotate * trans;
 	legLWorld = leftTrans  * rotate * trans;
+
+	// 頭は前後に動く
+	headWorld = headTrans * rotate * trans;
 
 	// ライトの設定
 	SimpleMath::Vector3 lightDirection(1.0f, -1.0f, -1.0f);
@@ -220,9 +233,13 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	m_leftLeg->UpdateEffects(setLightForModel);
 	m_leftLeg->Draw(context, states, legLWorld, view, proj);
 
+	// 頭部の描画
+	m_head->UpdateEffects(setLightForModel);
+	m_head->Draw(context, states, headWorld, view, proj);
+
 	// 身体の描画
-	m_model->UpdateEffects(setLightForModel);
-	m_model->Draw(context, states, world, view, proj);
+	m_body->UpdateEffects(setLightForModel);
+	m_body->Draw(context, states, world, view, proj);
 }
 
 /// <summary>
@@ -232,7 +249,8 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 /// <returns>なし</returns>
 void Player::Finalize()
 {
-	m_model.reset();
+	m_head.reset();
+	m_body.reset();
 	m_rightLeg.reset();
 	m_leftLeg.reset();
 	m_parameter.reset();

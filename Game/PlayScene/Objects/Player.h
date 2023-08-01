@@ -41,7 +41,7 @@ private:
 	PlayerParameter m_parameter;
 
 	// モデルデータ
-	std::unique_ptr<DirectX::Model> m_model,m_leftLeg,m_rightLeg;
+	std::unique_ptr<DirectX::Model> m_head, m_body,m_leftLeg,m_rightLeg;
 
 	// システム
 	std::weak_ptr<SystemManager> m_system;
@@ -63,7 +63,7 @@ private:
 
 public:
 	// コンストラクタ（モデルデータ）
-	Player(std::unique_ptr<DirectX::Model> body, std::unique_ptr<DirectX::Model> rightLeg, std::unique_ptr<DirectX::Model> leftLeg);
+	Player(std::unique_ptr<DirectX::Model> head,std::unique_ptr<DirectX::Model> body, std::unique_ptr<DirectX::Model> rightLeg, std::unique_ptr<DirectX::Model> leftLeg);
 	~Player();
 
 	// 初期化処理

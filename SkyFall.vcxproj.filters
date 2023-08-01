@@ -491,6 +491,12 @@
     <None Include="Resources\Models\Eraser.cmo">
       <Filter>Resources\Models\EditScene</Filter>
     </None>
+    <None Include="Resources\Models\Body.cmo">
+      <Filter>Resources\Models\Player</Filter>
+    </None>
+    <None Include="Resources\Models\Head.cmo">
+      <Filter>Resources\Models\Player</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">

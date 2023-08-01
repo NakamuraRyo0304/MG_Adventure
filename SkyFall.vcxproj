@@ -291,9 +291,11 @@
     <None Include="Resources\Fonts\myfile.spritefont" />
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />
     <None Include="Resources\Models\Bird.cmo" />
+    <None Include="Resources\Models\Body.cmo" />
     <None Include="Resources\Models\Coin.cmo" />
     <None Include="Resources\Models\Eraser.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
+    <None Include="Resources\Models\Head.cmo" />
     <None Include="Resources\Models\LegL.cmo" />
     <None Include="Resources\Models\LegR.cmo" />
     <None Include="Resources\Models\MoveBlock.cmo" />

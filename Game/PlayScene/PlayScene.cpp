@@ -373,9 +373,10 @@ void PlayScene::CreateWindowDependentResources()
 
 	// プレイヤーの作成
 	m_player = std::make_unique<Player>(
-		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/Bird.cmo")),
-		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/LegR.cmo")),
-		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/LegL.cmo"))
+		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/Head.cmo")),	// 頭
+		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/Body.cmo")),	// ボディ
+		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/LegR.cmo")),	// 右足
+		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/LegL.cmo"))	// 左足
 	);
 
 	//-------------------------------------------------------------------------------------//
