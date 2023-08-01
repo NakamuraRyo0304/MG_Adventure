@@ -171,9 +171,57 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	legRWorld = rightTrans * rotate * trans;
 	legLWorld = leftTrans  * rotate * trans;
 
+	// ライトの設定
+	SimpleMath::Vector3 lightDirection(1.0f, -1.0f, -1.0f);
+
+	// ビュー行列からカメラの回転を取得
+	SimpleMath::Matrix cameraRotation;
+
+	// ビュー行列を逆変換
+	cameraRotation = view.Invert();
+
+	// 移動量をなくす
+	cameraRotation._41 = 0.0f;
+	cameraRotation._42 = 0.0f;
+	cameraRotation._43 = 0.0f;
+
+	// ライトの方向をカメラの回転に逆向きにする
+	lightDirection = SimpleMath::Vector3::TransformNormal(lightDirection, cameraRotation);
+	SimpleMath::Color lightColor(0.3f, 0.3f, 0.3f, 1.0f);
+
+	auto setLightForModel = [&](IEffect* effect)
+	{
+		auto lights = dynamic_cast<IEffectLights*>(effect);
+		if (lights)
+		{
+			// ライトオン
+			lights->SetLightEnabled(0, true);
+			lights->SetLightEnabled(1, true);
+			lights->SetLightEnabled(2, true);
+
+			// ライトの方向を設定
+			lights->SetLightDirection(0, lightDirection);
+			lights->SetLightDirection(1, lightDirection);
+			lights->SetLightDirection(2, lightDirection);
+
+			// ライトの色を暗めのグレーに設定
+			lights->SetLightDiffuseColor(0, lightColor);
+			lights->SetLightDiffuseColor(1, lightColor);
+			lights->SetLightDiffuseColor(2, lightColor);
+		}
+	};
+
 	// モデルの描画
+	// 右足の描画
+	m_rightLeg->UpdateEffects(setLightForModel);
 	m_rightLeg->Draw(context, states, legRWorld, view, proj);
+
+	// 左足の描画
+	m_leftLeg->UpdateEffects(setLightForModel);
 	m_leftLeg->Draw(context, states, legLWorld, view, proj);
+
+	// 身体の描画
+	m_model->UpdateEffects(setLightForModel);
 	m_model->Draw(context, states, world, view, proj);
 }
 
