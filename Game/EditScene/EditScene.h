@@ -91,6 +91,10 @@ public:
 	// •`‰æ
 	void Draw() override;
 
+	// SwitchŠÈ—ª•¶
+	void SwitchDraw(const int& objNum, ID3D11DeviceContext* context, DirectX::CommonStates* states,
+		DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+
 	// I—¹ˆ—
 	void Finalize() override;
 

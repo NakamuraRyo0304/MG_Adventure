@@ -164,62 +164,38 @@ void EditScene::Draw()
 	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_timer);
 	SimpleMath::Matrix trans = SimpleMath::Matrix::CreateTranslation(m_cursorPos);
 
+	// サイズ　×　回転　×　移動
+	world *= scale *  rotY * trans;
+
 	// オブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
 		SimpleMath::Matrix boxMat =
 			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
-		// 選択中オブジェ
-		if (m_mapObj[i].id == MapState::GrassBox)
+		// 押し戻し処理を無効化
+		is_boxCol.SetPushMode(false);
+
+		// 当たり判定を取る
+		is_boxCol.PushBox(&m_cursorPos, m_mapObj[i].position,
+			SimpleMath::Vector3{ COMMON_SIZE / 2 },
+			SimpleMath::Vector3{ COMMON_SIZE }
+		);
+
+		m_mapObj[i].hit = is_boxCol.GetHitBoxFlag();
+
+		if (m_mapObj[i].hit) // 選択中のマスにオブジェクトを描画
 		{
-			m_grassModel->Draw(context, states, boxMat, view, proj);
+			SwitchDraw(m_nowState, context, &states, boxMat, view, proj);
 		}
-		if (m_mapObj[i].id == MapState::CoinBox)
+		else				 // 該当オブジェクトの描画
 		{
-			m_coinModel->Draw(context, states, rotY * boxMat, view, proj);
-		}
-		if (m_mapObj[i].id == MapState::ClowdBox)
-		{
-			m_clowdModel->Draw(context, states, rotY * boxMat, view, proj);
-		}
-		if (m_mapObj[i].id == MapState::ResetClowd)
-		{
-			m_reClowdPtModel->Draw(context, states, rotY * boxMat, view, proj);
-		}
-		if (m_mapObj[i].id == MapState::PlayerPos)
-		{
-			m_playerModel->Draw(context, states, rotY * boxMat, view, proj);
+			SwitchDraw(m_mapObj[i].id, context, &states, boxMat, view, proj);
 		}
 	}
 
-	// サイズ　×　回転　×　移動
-	world *= scale *  rotY * trans;
-
-	// 選択しているオブジェを描画
-	switch (m_nowState)
-	{
-	case MapState::GrassBox:	// 草
-		m_grassModel->Draw(context, states, world, view, proj);
-		break;
-	case MapState::CoinBox:		// コイン
-		m_coinModel->Draw(context, states, world, view, proj);
-		break;
-	case MapState::ClowdBox:	// 雲
-		m_clowdModel->Draw(context, states, world, view, proj);
-		break;
-	case MapState::ResetClowd:	// 雲リセット
-		m_reClowdPtModel->Draw(context, states, world, view, proj);
-		break;
-	case MapState::PlayerPos:	// プレイヤー
-		m_playerModel->Draw(context, states, world, view, proj);
-		break;
-	case MapState::None:		// 消しゴム
-		m_noneModel->Draw(context, states, world, view, proj);
-		break;
-	default:
-		break;
-	}
+	// マウス位置に描画
+	SwitchDraw(m_nowState, context, &states, world, view, proj);
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer / 10);
@@ -227,6 +203,44 @@ void EditScene::Draw()
 
 	// 画像の描画
 	m_userInterface->Render();
+}
+
+/// <summary>
+/// 描画オブジェクト切り替え
+/// </summary>
+/// <param name="objNum">オブジェクト番号</param>
+/// <param name="context">デバイスコンテキスト</param>
+/// <param name="states">コモンステート</param>
+/// <param name="world">ワールド行列</param>
+/// <param name="view">ビュー行列</param>
+/// <param name="proj">射影行列</param>
+/// <returns>なし</returns>
+void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	CommonStates* states,
+	SimpleMath::Matrix world, SimpleMath::Matrix view, SimpleMath::Matrix proj)
+{
+	// 行列計算
+	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_timer);
+
+	switch (objNum)
+	{
+	case MapState::GrassBox:	// 草
+		m_grassModel->Draw(context, *states, world, view, proj);
+		break;
+	case MapState::CoinBox:		// コイン
+		m_coinModel->Draw(context, *states, rotY * world, view, proj);
+		break;
+	case MapState::ClowdBox:	// 雲
+		m_clowdModel->Draw(context, *states, world, view, proj);
+		break;
+	case MapState::ResetClowd:	// 雲リセット
+		m_reClowdPtModel->Draw(context, *states, world, view, proj);
+		break;
+	case MapState::PlayerPos:	// プレイヤー
+		m_playerModel->Draw(context, *states, rotY * world, view, proj);
+		break;
+	default:
+		break;
+	}
 }
 
 /// <summary>
