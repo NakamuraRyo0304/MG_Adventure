@@ -239,10 +239,7 @@ void PlayScene::Draw()
 	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	SimpleMath::Matrix world, view, proj;
-
-	// ワールド行列
-	world = SimpleMath::Matrix::Identity;
+	SimpleMath::Matrix view, proj;
 
 	// ビュー行列
 	view = GetSystemManager()->GetCamera()->GetView();
@@ -267,7 +264,7 @@ void PlayScene::Draw()
 			{
 				// 徐々に暗くなっていく
 				basicEffect->SetEmissiveColor(
-					SimpleMath::Vector4{
+					SimpleMath::Color{
 						m_skyColor.red,		 // 赤
 						m_skyColor.green,	 // 緑
 						m_skyColor.blue,	 // 青
@@ -299,8 +296,6 @@ void PlayScene::Draw()
 	{
 		m_userInterFace->RenderCountDown(m_startTimer);
 	}
-
-	//DebugLog(view, proj);
 }
 
 /// <summary>

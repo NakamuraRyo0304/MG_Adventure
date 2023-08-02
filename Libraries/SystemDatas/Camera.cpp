@@ -208,22 +208,22 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,flo
 
 	// ‰æŠp
 	float fieldOfView = XMConvertToRadians(angle);
-	
+
 	// ‰æ–Êc‰¡”ä
 	float aspectRatio = width / height;
-	
+
 	// ƒJƒƒ‰‚©‚çˆê”Ô‹ß‚¢“Š‰e–Ê
 	float nearPlane = NEAR_PLANE;
 
 	// ƒJƒƒ‰‚©‚çˆê”Ô‰“‚¢“Š‰e–Ê
 	float farPlane = FAR_PLANE;
-	
+
 	// ƒJƒƒ‰‚ÌƒŒƒ“ƒY‚Ìì¬
-	SimpleMath::Matrix projection = 
+	SimpleMath::Matrix projection =
 	SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-			fieldOfView, 
-			aspectRatio, 
-			nearPlane, 
+			fieldOfView,
+			aspectRatio,
+			nearPlane,
 			farPlane
 	);
 

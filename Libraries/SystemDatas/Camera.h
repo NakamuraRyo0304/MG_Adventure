@@ -35,8 +35,8 @@ private:
 	DirectX::SimpleMath::Vector2 m_angle;
 
 	// 前回のマウス座標(X,Y)
-	DirectX::SimpleMath::Vector2 m_prevMouse;	
-	
+	DirectX::SimpleMath::Vector2 m_prevMouse;
+
 	// マウスホイールのスクロール値
 	int m_scrollWheelValue;
 	// 一時的なスクロール値の蓄積用変数
@@ -53,8 +53,8 @@ private:
 	DirectX::SimpleMath::Matrix m_rot;
 
 	// カメラの座標
-	DirectX::SimpleMath::Vector3 m_eye;	
-	DirectX::SimpleMath::Vector3 m_eyePos;	
+	DirectX::SimpleMath::Vector3 m_eye;
+	DirectX::SimpleMath::Vector3 m_eyePos;
 	// 注視点
 	DirectX::SimpleMath::Vector3 m_target;
 
@@ -77,7 +77,7 @@ public:
 
 	// ビュー行列を計算する
 	void CalculateViewMatrix();
-		
+
 	// オブジェクトを揺らす処理
 	void ShakeObject(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
 
@@ -102,7 +102,7 @@ public:
 
 	// ターゲットを取得する
 	const DirectX::SimpleMath::Vector3& GetTargetPosition() { return m_target; }
-	
+
 	// 射影行列の取得
 	const DirectX::SimpleMath::Matrix& CreateProjection(float width, float height,float angle = 45.0f);
 	const DirectX::SimpleMath::Matrix& GetProjection() { return m_proj; }

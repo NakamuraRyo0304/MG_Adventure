@@ -133,10 +133,7 @@ void PlayUI::Render()
 /// <returns>‚È‚µ</returns>
 void PlayUI::RenderCountDown(const float& countDown)
 {
-	// ”ä—¦‚ðŒvŽZ
-	float scale = static_cast<float>(m_windowSize.x / FULL_SCREEN_SIZE.x);
-
-
+	countDown;
 
 }
 
