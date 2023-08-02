@@ -195,7 +195,14 @@ void EditScene::Draw()
 	}
 
 	// マウス位置に描画
-	SwitchDraw(m_nowState, context, &states, world, view, proj);
+	if (m_nowState == MapState::None) // 削除時以外は通常の描画
+	{
+		m_noneModel->Draw(context, states, world, view, proj);
+	}
+	else
+	{
+		SwitchDraw(m_nowState, context, &states, world, view, proj);
+	}
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer / 10);
