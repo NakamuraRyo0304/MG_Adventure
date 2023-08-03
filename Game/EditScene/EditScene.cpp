@@ -60,7 +60,7 @@ void EditScene::Initialize()
 	GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
 
 	// マップ読み込み//初回読み込み
-	LoadMap(L"Resources/Maps/Stage1.csv");
+	LoadMap(L"Resources/Maps/StageEdit.csv");
 
 	// 初期値は草ブロック
 	m_nowState = MapState::GrassBox;
