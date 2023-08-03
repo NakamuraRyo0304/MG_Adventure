@@ -161,7 +161,7 @@ void EditScene::Draw()
 
 	// 行列計算
 	SimpleMath::Matrix scale = SimpleMath::Matrix::CreateScale(COMMON_SIZE / 2);
-	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_timer);
+	SimpleMath::Matrix rotY  = SimpleMath::Matrix::CreateRotationY(m_timer);
 	SimpleMath::Matrix trans = SimpleMath::Matrix::CreateTranslation(m_cursorPos);
 
 	// サイズ　×　回転　×　移動
@@ -205,7 +205,7 @@ void EditScene::Draw()
 	}
 
 	// スカイドームの描画
-	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer / 10);
+	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * 0.1f);
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
 
 	// 画像の描画
@@ -327,7 +327,8 @@ void EditScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Eraser.cmo"
 	);
-		// スカイドームモデルを作成する
+
+	// スカイドームモデルを作成する
 	m_skyDomeModel = ModelFactory::GetCreateModel(
 		device,
 		L"Resources/Models/Spacedome.cmo"
@@ -345,7 +346,7 @@ void EditScene::CreateWindowDependentResources()
 			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
 			if (basicEffect)
 			{
-				basicEffect->SetEmissiveColor(Colors::Blue);
+				basicEffect->SetEmissiveColor(Colors::White);
 			}
 		}
 	);
