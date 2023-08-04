@@ -532,4 +532,9 @@
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="Resources\Models\StageEdit.fbx">
+      <Filter>Resources\Models\Stage</Filter>
+    </MeshContentTask>
+  </ItemGroup>
 </Project>

@@ -47,7 +47,7 @@ private:
 	// Œ©ã‚°’l
 	const float UP_VALUE = 60.0f;
 	// Œ©‰º‚°‘¬“x
-	const float DOWN_SPEED = 0.8f;
+	const float DOWN_SPEED = 0.7f;
 
 	// Ø‚è‘Ö‚¦“Ç‚İ‚İ‰‰o
 	float m_changeMapMove;

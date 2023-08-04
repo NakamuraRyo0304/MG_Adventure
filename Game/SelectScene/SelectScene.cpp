@@ -149,8 +149,11 @@ void SelectScene::Draw()
 	// カメラ用行列
 	SimpleMath::Matrix view, proj;
 
+	// 回転量を計算
+	float rotValue = m_timer * 0.5f;
+
 	// ビュー行列
-	SimpleMath::Vector3    eye(CAMERA_RADIUS * sin(m_timer), 30.0f, CAMERA_RADIUS * cos(m_timer));
+	SimpleMath::Vector3    eye(CAMERA_RADIUS * sin(rotValue), 30.0f, CAMERA_RADIUS * cos(rotValue));
 	SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
 	SimpleMath::Vector3 target(0.0f, m_changeMapMove, 0.0f);
 	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
@@ -176,9 +179,10 @@ void SelectScene::Draw()
 
 	// テキストの移動アニメーション
 	SimpleMath::Matrix stageMat = SimpleMath::Matrix::Identity;
-	stageMat *= SimpleMath::Matrix::CreateRotationY(m_timer);
+	stageMat *= SimpleMath::Matrix::CreateRotationY(rotValue);
 	stageMat *= SimpleMath::Matrix::CreateScale(10.0f);
-	stageMat *= SimpleMath::Matrix::CreateTranslation(sinf(m_timer) * -2.0f, 10.0f, cosf(m_timer) * -2.0f);
+	stageMat *= SimpleMath::Matrix::CreateTranslation(sinf(rotValue), 10.0f, cosf(rotValue));
+
 
 	// ステージ番号表示
 	m_stageModels[m_stageNum]->Draw(context, states, stageMat, view, proj);
