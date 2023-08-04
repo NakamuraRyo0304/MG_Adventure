@@ -149,9 +149,8 @@ void TitleScene::Draw()
 
 	// ビュー行列
 	SimpleMath::Vector3    eye(0.0f, 0.1f + m_moveY, 8.0f);
-	SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
 	SimpleMath::Vector3 target(0.0f, 0.0f, 0.0f);
-	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
+	view = SimpleMath::Matrix::CreateLookAt(eye, target, SimpleMath::Vector3::Up);
 
 	// プロジェクション行列
 	proj = GetSystemManager()->GetCamera()->GetProjection();

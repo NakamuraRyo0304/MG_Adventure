@@ -22,10 +22,10 @@
 /// <returns>なし</returns>
 SelectScene::SelectScene():
 	IScene(),
-	m_timer{},
-	m_flashCount{},
-	m_stageNum{1},
-	m_changeMapMove{}
+	m_timer{},				// タイマー
+	m_flashCount{},			// 点滅のカウンタ
+	m_stageNum{1},			// ステージ番号
+	m_targetY{}				// カメラのターゲットのY座標
 {
 }
 
@@ -36,6 +36,11 @@ SelectScene::SelectScene():
 /// <returns>なし</returns>
 SelectScene::~SelectScene()
 {
+	Finalize();
+	for (auto& i : m_blocks)
+	{
+		i.reset();
+	}
 }
 
 /// <summary>
@@ -52,7 +57,7 @@ void SelectScene::Initialize()
 	GetSystemManager()->GetCamera()->SetEagleMode(false);
 
 	// 見上げ距離
-	m_changeMapMove = UP_VALUE;
+	m_targetY = UP_VALUE;
 
 	// スタートが0
 	m_flashCount = 0.0f;
@@ -80,58 +85,51 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	GetSystemManager()->GetCamera()->Update();
 
 	// 動きが終わっていなければ見下げる
-	if (m_changeMapMove > 1.0f)
+	if (m_targetY > 1.0f)
 	{
-		m_changeMapMove -= DOWN_SPEED;
+		m_targetY -= DOWN_SPEED;
 	}
-	else if(m_changeMapMove > 0.0f)
+	else if(m_targetY > 0.0f)
 	{
-		m_changeMapMove -= DOWN_SPEED / 2;
+		m_targetY -= DOWN_SPEED * 0.5f;
 	}
 	else
 	{
-		m_changeMapMove = 0.0f;
+		m_targetY = 0.0f;
 	}
 
-
-	// ステージ番号変更
-	if (static_cast<int>(m_changeMapMove) >= UP_VALUE / 2) return;
+	// 切り替え可能なタイミングはここで変更
+	if (m_targetY >= UP_VALUE * 0.25f) return;
 
 	// フラッシュカウンタ
 	m_flashCount++;
-	m_flashCount = m_flashCount > MAX_FLASH * 2 / 3 ? 0.0f : m_flashCount;
+	m_flashCount = m_flashCount > MAX_FLASH * 0.75f ? 0.0f : m_flashCount;
 
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Right))
+	// ステージ番号変更
+	if(keyState.Right)
 	{
-		m_changeMapMove = UP_VALUE;
+		// ステージ番号が最大なら処理しない
+		if (m_stageNum == MAX_STAGE_NUM - 1) return;
+
+		m_targetY = UP_VALUE;
 		m_stageNum++;
 		m_flashCount = 0.0f;
-
-		// TODO: [ステージ番号]マップ数はMAX_STAGE_NUMを変更！
-		m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_STAGE_NUM - 1);
 	}
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Left))
+	if (keyState.Left)
 	{
-		m_changeMapMove = UP_VALUE;
+		// ステージ番号が0なら処理しない
+		if (m_stageNum == 0) return;
+
+		m_targetY = UP_VALUE;
 		m_stageNum--;
 		m_flashCount = 0.0f;
-
-		// TODO: [ステージ番号]マップ数はMAX_STAGE_NUMを変更！
-		m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_STAGE_NUM - 1);
 	}
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
-		if (m_stageNum == 0)
-		{
-			// 0番目を選択したらステージエディタのシーンへ飛ぶ
-			ChangeScene(SCENE::EDIT);
-		}
-		else
-		{
-			ChangeScene(SCENE::PLAY);
-		}
+		// ステージ番号が0ならエディタに、それ以外はプレイへ
+		m_stageNum == 0 ? ChangeScene(SCENE::EDIT) : ChangeScene(SCENE::PLAY);
 	}
 }
 
@@ -152,13 +150,15 @@ void SelectScene::Draw()
 	// 回転量を計算
 	float rotValue = m_timer * 0.5f;
 	// 上下移動量を計算
-	float verticalValue = sinf(m_timer * 2.0f) * 2.0f;
+	float verticalValue = sinf(m_timer * 1.5f) * 1.5f;
 
 	// ビュー行列
-	SimpleMath::Vector3    eye(CAMERA_RADIUS * sin(rotValue), 30.0f + verticalValue, CAMERA_RADIUS * cos(rotValue));
-	SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
-	SimpleMath::Vector3 target(0.0f, m_changeMapMove, 0.0f);
-	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
+	SimpleMath::Vector3    eye(CAMERA_RADIUS * sinf(rotValue),		// X:回転(ステージと逆回転)
+						       CAMERA_POS_Y  + verticalValue,		// Y:移動(上下)
+						       CAMERA_RADIUS * cosf(rotValue));		// Z:回転(ステージと逆回転)
+	SimpleMath::Vector3 target(0.0f, m_targetY, 0.0f);
+
+	view = SimpleMath::Matrix::CreateLookAt(eye, target, SimpleMath::Vector3::Up);
 
 	// プロジェクション行列
 	proj = GetSystemManager()->GetCamera()->GetProjection();
@@ -177,7 +177,7 @@ void SelectScene::Draw()
 	//-------------------------------------------------------------------------------------//
 
 	// 点滅させる
-	if (static_cast<int>(m_flashCount) > static_cast<int>(MAX_FLASH) / 2) return;
+	if (m_flashCount > MAX_FLASH * 0.5f) return;
 
 	// テキストの移動アニメーション
 	SimpleMath::Matrix stageMat = SimpleMath::Matrix::Identity;
@@ -257,7 +257,7 @@ void SelectScene::CreateWindowDependentResources()
 	m_loadTask = std::async(std::launch::async, [&]() { LoadStage(device); });
 
 	// ステージ番号のモデル
-	for (int i = 0; i < MAX_STAGE_NUM; i++)
+	for (int i = 0; i < MAX_STAGE_NUM; ++i)
 	{
 		// 0番目はエディタの文字
 		if (i == 0)

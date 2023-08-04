@@ -26,6 +26,7 @@ private:
 
 	// カメラアングル
 	const float CAMERA_ANGLE = 45.0f;
+	const float CAMERA_POS_Y = 30.0f;
 
 	// スカイドーム
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
@@ -50,7 +51,7 @@ private:
 	const float DOWN_SPEED = 0.7f;
 
 	// 切り替え時読み込み演出
-	float m_changeMapMove;
+	float m_targetY;
 
 	std::future<void> m_loadTask;
 
@@ -77,9 +78,11 @@ public:
 	// 画面依存の初期化
 	void CreateWindowDependentResources() override;
 
+private:
 	// ステージのローディング
 	void LoadStage(ID3D11Device1* device);
 
+public:
 	// ステージ番号のアクセサ
 	const int& GetStageNum() { return m_stageNum; }
 	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
