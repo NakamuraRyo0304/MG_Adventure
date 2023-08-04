@@ -111,7 +111,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		OffsetPosition(&m_mapObj,READ);			// 座標補正
 	}
 
-	// シフトを押している間はカメラモードをTrueにする
+	// シフトを押したら、カメラモードを反転する
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::LeftShift))
 	{
 		// インターフェースでカメラのフラグを取得

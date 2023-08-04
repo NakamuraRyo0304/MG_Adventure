@@ -280,6 +280,8 @@
     <Image Include="Resources\Textures\OpenFile.dds" />
     <Image Include="Resources\Textures\PlayerPoint.png" />
     <Image Include="Resources\Textures\PlayerShadow.png" />
+    <Image Include="Resources\Textures\PullDown.dds" />
+    <ImageContentTask Include="Resources\Textures\PullDown.png" />
     <Image Include="Resources\Textures\ResultBack.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
   </ItemGroup>

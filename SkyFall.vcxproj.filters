@@ -403,6 +403,9 @@
     <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds">
       <Filter>Resources\Textures\BLOCK</Filter>
     </Image>
+    <Image Include="Resources\Textures\PullDown.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -525,5 +528,10 @@
     <FxCompile Include="Resources\Shaders\PlayerShadowVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Resources\Textures\PullDown.png">
+      <Filter>Resources\Textures</Filter>
+    </ImageContentTask>
   </ItemGroup>
 </Project>

@@ -9,6 +9,9 @@
 
 #include "../../../Libraries/SystemManager/SystemManager.h"
 
+// ユーザーユーティリティ
+#include "Libraries/UserUtility.h"
+
 #include "UserInterface.h"
 
  /// <summary>
@@ -28,7 +31,8 @@ UserInterface::UserInterface(const DirectX::SimpleMath::Vector2& windowSize):
 	is_cameraFlag{ true },			// カメラモードONでスタート
 	is_boxState{ false },			// 画像フラグ
 	m_nowState{},					// 最新のステート
-	m_boxHover{}					// ホバー時のサイズ
+	m_boxHover{},					// ホバー時のサイズ
+	is_toolFlag{ true }				// ツールバーを表示するフラグ
 {
 }
 
@@ -64,6 +68,7 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_system->GetDrawSprite()->AddTextureData(L"Open", L"Resources/Textures/OpenFile.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"Camera", L"Resources/Textures/Camera.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"CameraMove", L"Resources/Textures/CameraMove.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"ToolBehind", L"Resources/Textures/PullDown.dds", device);
 
 	// 背景の帯
 	m_system->GetDrawSprite()->AddTextureData(L"ToolBar", L"Resources/Textures/EditToolBar.dds", device);
@@ -88,9 +93,10 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
 
 	// 座標情報
-	m_openTexPos	= {  80 * span , 80 * span};
-	m_saveTexPos    = { 218 * span , 80 * span};
-	m_cameraTexPos  = { 356 * span , 80 * span};
+	m_openTexPos	 = {  80 * span , 80 * span};
+	m_saveTexPos     = { 218 * span , 80 * span};
+	m_cameraTexPos   = { 356 * span , 80 * span};
+	m_toolButtonTexPos = { m_windowSize.x - (128 * span)  ,80 * span};
 	for (int i = 0; i < MapState::LENGTH; i++)
 	{
 		m_imagePos[i] = { 528 * span + (192 * span * i) , 80 * span};
@@ -101,6 +107,9 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	// ステータスの初期値は草ブロック
 	m_nowState = MapState::GrassBox;
 	is_boxState[MapState::GrassBox] = true;
+
+	// ツールバーを表示
+	is_toolFlag = true;
 }
 
 /// <summary>
@@ -110,6 +119,22 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 /// <returns>なし</returns>
 void UserInterface::Update(Mouse::State& mouseState)
 {
+	// ツールバー表示切り替えアイコンをクリック
+	bool tool = m_imageHitter.HitAABB_2D(
+		{ (float)mouseState.x,(float)mouseState.y },		 // マウスの位置
+		{ m_toolButtonTexPos.x,m_toolButtonTexPos.y },	 	 // 画像の位置
+		SimpleMath::Vector2{ 5.0f }, 						 // サイズ
+		SimpleMath::Vector2{ 80.0f });						 // サイズ
+
+	// ツールを表示するフラグを切り替え
+	if (tool && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+	{
+		is_toolFlag = !is_toolFlag;
+	}
+
+	// ツールバーフラグが立っていたら選択可能にする
+	if (!is_toolFlag) return;
+
 	// ボックスのアイコン
 	ChangeState(mouseState);
 
@@ -172,83 +197,96 @@ void UserInterface::Render()
 	// 画像の拡大率をウィンドウをもとに計算
 	float imageScale = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
 
-	// ツールバー
+	// ツールフラグがTrueならツールバーを表示する
+	if (is_toolFlag)
+	{
+		// ツールバー
+		m_system->GetDrawSprite()->DrawTexture(
+			L"ToolBar",
+			SimpleMath::Vector2::Zero,			// 座標
+			{ 1.0f,1.0f,1.0f,0.7f },			// 色
+			imageScale,							// 拡大率
+			SimpleMath::Vector2::Zero
+		);
+
+		// ファイルアイコン
+		if (is_openFlag)
+		{
+			m_system->GetDrawSprite()->DrawTexture(
+				L"Open",							// 登録キー
+				m_openTexPos,						// 座標
+				{ 1.0f,1.0f,1.0f,1.0f },			// 色
+				IMAGE_RATE * imageScale,			// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+			);
+		}
+		else
+		{
+			m_system->GetDrawSprite()->DrawTexture(
+				L"Open",							// 登録キー
+				m_openTexPos,						// 座標
+				{ 1.0f,1.0f,1.0f,0.2f },			// 色
+				0.5f * imageScale,					// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+			);
+		}
+
+		// セーブアイコン
+		if (is_saveFlag)
+		{
+			m_system->GetDrawSprite()->DrawTexture(
+				L"Save",							// 登録キー
+				m_saveTexPos,						// 座標
+				{ 1.0f,1.0f,1.0f,1.0f },			// 色
+				IMAGE_RATE * imageScale,			// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+			);
+		}
+		else
+		{
+			m_system->GetDrawSprite()->DrawTexture(
+				L"Save",							// 登録キー
+				m_saveTexPos,						// 座標
+				{ 1.0f,1.0f,1.0f,0.2f },			// 色
+				0.5f * imageScale,					// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+			);
+		}
+
+		// カメラアイコン
+		if (is_cameraFlag)
+		{
+			m_system->GetDrawSprite()->DrawTexture(
+				L"CameraMove",						// 登録キー
+				m_cameraTexPos,						// 座標
+				{ 1.0f,1.0f,1.0f,1.0f },			// 色
+				IMAGE_RATE * imageScale,			// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+			);
+		}
+		else
+		{
+			m_system->GetDrawSprite()->DrawTexture(
+				L"Camera",							// 登録キー
+				m_cameraTexPos,						// 座標
+				{ 1.0f,1.0f,1.0f,0.3f },			// 色
+				IMAGE_RATE * imageScale * 0.9f,		// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+			);
+		}
+
+		// ブロックのアイコン
+		DrawIcon(imageScale);
+	}
+
+	// ツールバーボタン表示
 	m_system->GetDrawSprite()->DrawTexture(
-		L"ToolBar",
-		SimpleMath::Vector2::Zero,			// 座標
-		{ 1.0f,1.0f,1.0f,0.7f },			// 色
-		imageScale,							// 拡大率
-		SimpleMath::Vector2::Zero
+		L"ToolBehind",						// 登録キー
+		m_toolButtonTexPos,					// 座標
+		{ 1.0f,1.0f,1.0f,1.0f },			// 色
+		IMAGE_RATE * imageScale,			// 拡大率
+		{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 	);
-
-	// ファイルアイコン
-	if (is_openFlag)
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Open",							// 登録キー
-			m_openTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f},				// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Open",							// 登録キー
-			m_openTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,0.2f },			// 色
-			0.5f * imageScale,					// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-
-	// セーブアイコン
-	if (is_saveFlag)
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Save",							// 登録キー
-			m_saveTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Save",							// 登録キー
-			m_saveTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,0.2f },			// 色
-			0.5f * imageScale,					// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-
-	// カメラアイコン
-	if (is_cameraFlag)
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"CameraMove",						// 登録キー
-			m_cameraTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"Camera",							// 登録キー
-			m_cameraTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,0.3f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-		);
-	}
-
-	// ブロックのアイコン
-	DrawIcon(imageScale);
 }
 
 /// <summary>

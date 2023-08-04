@@ -33,6 +33,7 @@ private:
 	DirectX::SimpleMath::Vector2 m_saveTexPos;
 	DirectX::SimpleMath::Vector2 m_openTexPos;
 	DirectX::SimpleMath::Vector2 m_cameraTexPos;
+	DirectX::SimpleMath::Vector2 m_toolButtonTexPos;
 
 	// 現在のステータス
 	int m_nowState;
@@ -41,6 +42,7 @@ private:
 	bool is_saveFlag;
 	bool is_openFlag;
 	bool is_cameraFlag;
+	bool is_toolFlag;
 
 private:
 	// ボックスステータスの配列
