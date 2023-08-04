@@ -9,6 +9,7 @@
 #ifndef SELECTSCENE
 #define	SELECTSCENE
 
+#include <future>
 #include "../IScene.h"
 
 class Blocks;
@@ -19,11 +20,13 @@ private:
 	// タイマー
 	float m_timer;
 
+	// 点滅カウンタ
+	float m_flashCount;
+	const float MAX_FLASH = 180.0f;
+
 	// カメラアングル
 	const float CAMERA_ANGLE = 45.0f;
 
-	// ステージ
-	std::unique_ptr<Blocks> m_blocks;
 	// スカイドーム
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
@@ -31,7 +34,8 @@ private:
 	int m_stageNum;
 
 	// 最大ステージ数
-	const int MAX_MODEL_NUM = 10;
+	const int MAX_STAGE_NUM = 10;
+	std::unique_ptr<Blocks> m_blocks[10];
 	std::unique_ptr<DirectX::Model> m_stageModels[10];
 
 	// カメラの回転半径
@@ -47,6 +51,8 @@ private:
 
 	// 切り替え時読み込み演出
 	float m_changeMapMove;
+
+	std::future<void> m_loadTask;
 
 public:
 
@@ -70,6 +76,9 @@ public:
 
 	// 画面依存の初期化
 	void CreateWindowDependentResources() override;
+
+	// ステージのローディング
+	void LoadStage(ID3D11Device1* device);
 
 	// ステージ番号のアクセサ
 	const int& GetStageNum() { return m_stageNum; }

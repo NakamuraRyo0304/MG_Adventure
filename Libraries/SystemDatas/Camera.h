@@ -24,7 +24,7 @@ public:
 
 	// ƒJƒƒ‰•\¦‹——£
 	const float NEAR_PLANE = 0.1f;
-	const float FAR_PLANE = 250.0f;
+	const float FAR_PLANE = 245.0f;
 
 	// ƒJƒƒ‰‰æŠpã‰ºŒÀ
 	const float ANGLEX_MIN = 44.0f;

@@ -23,6 +23,7 @@
 SelectScene::SelectScene():
 	IScene(),
 	m_timer{},
+	m_flashCount{},
 	m_stageNum{1},
 	m_changeMapMove{}
 {
@@ -47,13 +48,14 @@ void SelectScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	GetSystemManager()->GetCamera()->SetEagleMode(false);	// カメラ視点移動
-
-	// マップ読み込み
-	m_blocks->Initialize(m_stageNum);
+	// カメラ視点移動を切る
+	GetSystemManager()->GetCamera()->SetEagleMode(false);
 
 	// 見上げ距離
 	m_changeMapMove = UP_VALUE;
+
+	// スタートが0
+	m_flashCount = 0.0f;
 }
 
 /// <summary>
@@ -78,9 +80,13 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	GetSystemManager()->GetCamera()->Update();
 
 	// 動きが終わっていなければ見下げる
-	if (m_changeMapMove > 0.0f)
+	if (m_changeMapMove > 1.0f)
 	{
 		m_changeMapMove -= DOWN_SPEED;
+	}
+	else if(m_changeMapMove > 0.0f)
+	{
+		m_changeMapMove -= DOWN_SPEED / 2;
 	}
 	else
 	{
@@ -91,25 +97,27 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// ステージ番号変更
 	if (static_cast<int>(m_changeMapMove) >= UP_VALUE / 2) return;
 
+	// フラッシュカウンタ
+	m_flashCount++;
+	m_flashCount = m_flashCount > MAX_FLASH * 2 / 3 ? 0.0f : m_flashCount;
+
 	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Right))
 	{
 		m_changeMapMove = UP_VALUE;
 		m_stageNum++;
+		m_flashCount = 0.0f;
 
 		// TODO: [ステージ番号]マップ数はMAX_STAGE_NUMを変更！
-		m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_MODEL_NUM - 1);
-
-		m_blocks->Initialize(m_stageNum);
+		m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_STAGE_NUM - 1);
 	}
 	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Left))
 	{
 		m_changeMapMove = UP_VALUE;
 		m_stageNum--;
+		m_flashCount = 0.0f;
 
 		// TODO: [ステージ番号]マップ数はMAX_STAGE_NUMを変更！
-		m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_MODEL_NUM - 1);
-
-		m_blocks->Initialize(m_stageNum);
+		m_stageNum = UserUtility::Clamp(m_stageNum, 0, MAX_STAGE_NUM - 1);
 	}
 
 	// Spaceキーでシーン切り替え
@@ -139,10 +147,7 @@ void SelectScene::Draw()
 	auto& states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	SimpleMath::Matrix world, view, proj;
-
-	// ワールド行列
-	world = SimpleMath::Matrix::Identity;
+	SimpleMath::Matrix view, proj;
 
 	// ビュー行列
 	SimpleMath::Vector3    eye(CAMERA_RADIUS * sin(m_timer), 30.0f, CAMERA_RADIUS * cos(m_timer));
@@ -154,7 +159,10 @@ void SelectScene::Draw()
 	proj = GetSystemManager()->GetCamera()->GetProjection();
 
 	// マップの描画
-	m_blocks->Render(context, states, view, proj, m_timer);
+	if(m_blocks[m_stageNum] != nullptr)
+	{
+		m_blocks[m_stageNum]->Render(context, states, view, proj, m_timer);
+	}
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
@@ -163,11 +171,14 @@ void SelectScene::Draw()
 
 	//-------------------------------------------------------------------------------------//
 
+	// 点滅させる
+	if (static_cast<int>(m_flashCount) > static_cast<int>(MAX_FLASH) / 2) return;
+
 	// テキストの移動アニメーション
 	SimpleMath::Matrix stageMat = SimpleMath::Matrix::Identity;
 	stageMat *= SimpleMath::Matrix::CreateRotationY(m_timer);
 	stageMat *= SimpleMath::Matrix::CreateScale(10.0f);
-	stageMat *= SimpleMath::Matrix::CreateTranslation(0.0f, 10.0f, cosf(m_timer) * 2.0f);
+	stageMat *= SimpleMath::Matrix::CreateTranslation(sinf(m_timer) * -2.0f, 10.0f, cosf(m_timer) * -2.0f);
 
 	// ステージ番号表示
 	m_stageModels[m_stageNum]->Draw(context, states, stageMat, view, proj);
@@ -181,11 +192,10 @@ void SelectScene::Draw()
 void SelectScene::Finalize()
 {
 	// マップの後処理
-	m_blocks->Finalize();
-
 	// モデル削除
-	for (int i = 0; i < MAX_MODEL_NUM; ++i)
+	for (int i = 0; i < MAX_STAGE_NUM; ++i)
 	{
+		m_blocks[i]->Finalize();
 		ModelFactory::DeleteModel(m_stageModels[i]);
 	}
 }
@@ -214,34 +224,6 @@ void SelectScene::CreateWindowDependentResources()
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
-	//-------------------------------------------------------------------------------------//
-
-	// ブロックの作成
-	m_blocks = std::make_unique<Blocks>();
-
-	// 草ブロックの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo")),
-		m_blocks->GRASS
-	);
-	// コインの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo")),
-		m_blocks->COIN
-	);
-	// 雲ブロックの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo")),
-		m_blocks->CLOWD
-	);
-	// 雲リセットブロックの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo")),
-		m_blocks->RECLOWD
-	);
-
-	//-------------------------------------------------------------------------------------//
-
 	// スカイドームモデルを作成する
 	m_skyDomeModel = ModelFactory::GetCreateModel(
 		device,
@@ -265,10 +247,11 @@ void SelectScene::CreateWindowDependentResources()
 		}
 	);
 
-	//-------------------------------------------------------------------------------------//
+	// ブロックの作成を裏で処理
+	m_loadTask = std::async(std::launch::async, [&]() { LoadStage(device); });
 
 	// ステージ番号のモデル
-	for (int i = 0; i < MAX_MODEL_NUM; i++)
+	for (int i = 0; i < MAX_STAGE_NUM; i++)
 	{
 		// 0番目はエディタの文字
 		if (i == 0)
@@ -281,5 +264,42 @@ void SelectScene::CreateWindowDependentResources()
 			std::wstring path = L"Resources/Models/Stage" + stageNumber + L".cmo";
 			m_stageModels[i] = ModelFactory::GetCreateModel(device, path.c_str());
 		}
+	}
+}
+
+/// <summary>
+/// ステージモデルのロード
+/// </summary>
+/// <param name="device">デバイスポインタ</param>
+/// <returns>なし</returns>
+void SelectScene::LoadStage(ID3D11Device1* device)
+{
+	for (int i = 0; i < MAX_STAGE_NUM; ++i)
+	{
+		m_blocks[i] = std::make_unique<Blocks>();
+
+		// 草ブロックの作成
+		m_blocks[i]->CreateModels(
+			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo")),
+			m_blocks[i]->GRASS
+		);
+		// コインの作成
+		m_blocks[i]->CreateModels(
+			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo")),
+			m_blocks[i]->COIN
+		);
+		// 雲ブロックの作成
+		m_blocks[i]->CreateModels(
+			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo")),
+			m_blocks[i]->CLOWD
+		);
+		// 雲リセットブロックの作成
+		m_blocks[i]->CreateModels(
+			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo")),
+			m_blocks[i]->RECLOWD
+		);
+
+		// 初期化処理
+		m_blocks[i]->Initialize(i);
 	}
 }
