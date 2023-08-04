@@ -69,7 +69,7 @@ private:
 	std::unique_ptr<DirectX::Model> m_grassModel;
 	std::unique_ptr<DirectX::Model> m_coinModel;
 	std::unique_ptr<DirectX::Model> m_clowdModel;
-	std::unique_ptr<DirectX::Model> m_reClowdPtModel;
+	std::unique_ptr<DirectX::Model> m_resetPtModel;
 
 public:
 	// ƒuƒƒbƒN‚Ìí—Ş

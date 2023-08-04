@@ -264,8 +264,8 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 				cl_scale *= SimpleMath::Matrix::CreateScale(1.0f, -1.0f,1.0f);
 			}
 
-			m_reClowdPtModel->UpdateEffects(setLightForModel);
-			m_reClowdPtModel->Draw(context, states, cl_scale * rotateY * world, view, proj);
+			m_resetPtModel->UpdateEffects(setLightForModel);
+			m_resetPtModel->Draw(context, states, cl_scale * rotateY * world, view, proj);
 		}
 	}
 }
@@ -284,7 +284,7 @@ void Blocks::Finalize()
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_clowdModel);
-	ModelFactory::DeleteModel(m_reClowdPtModel);
+	ModelFactory::DeleteModel(m_resetPtModel);
 }
 
 /// <summary>
@@ -307,7 +307,7 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 		m_clowdModel = std::move(model);
 		break;
 	case RECLOWD:								// ‰_ƒŠƒZƒbƒg
-		m_reClowdPtModel = std::move(model);
+		m_resetPtModel = std::move(model);
 		break;
 	default:
 		break;

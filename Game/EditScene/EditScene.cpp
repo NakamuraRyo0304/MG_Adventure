@@ -20,18 +20,17 @@
 EditScene::EditScene() :
 	IScene(),
 	m_timer{0.0f},					// タイマー
-	m_userInterface{},				// UI
 	m_cursorPos{0.0f,0.0f,0.0f},	// カーソルの位置
 	m_mapObj{0},					// 格納配列
 	m_nowState{},					// 現在のブロックの種類
 	m_map{},						// マップ
 	is_boxCol{},					// 立方体当たり判定
-	m_grassModel{ nullptr },		// モデル
-	m_noneModel{ nullptr },			// |
-	m_coinModel{ nullptr },			// |
-	m_clowdModel{ nullptr },		// |
-	m_reClowdPtModel{ nullptr },	// |
-	m_skyDomeModel{ nullptr },		// |
+	m_grassModel{ nullptr },		// モデル＿草
+	m_noneModel{ nullptr },			// モデル＿消しゴム
+	m_coinModel{ nullptr },			// モデル＿コイン
+	m_clowdModel{ nullptr },		// モデル＿雲
+	m_resetPtModel{ nullptr },		// モデル＿リセットポイント
+	m_skyDomeModel{ nullptr },		// モデル＿スカイドーム
 	m_sharedSystem{}				// システムデータ
 {
 }
@@ -240,7 +239,7 @@ void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	Comm
 		m_clowdModel->Draw(context, *states, world, view, proj);
 		break;
 	case MapState::ResetClowd:	// 雲リセット
-		m_reClowdPtModel->Draw(context, *states, world, view, proj);
+		m_resetPtModel->Draw(context, *states, world, view, proj);
 		break;
 	case MapState::PlayerPos:	// プレイヤー
 		m_playerModel->Draw(context, *states, rotY * world, view, proj);
@@ -264,7 +263,7 @@ void EditScene::Finalize()
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_clowdModel);
-	ModelFactory::DeleteModel(m_reClowdPtModel);
+	ModelFactory::DeleteModel(m_resetPtModel);
 	ModelFactory::DeleteModel(m_playerModel);
 	ModelFactory::DeleteModel(m_skyDomeModel);
 	ModelFactory::DeleteModel(m_noneModel);
@@ -315,7 +314,7 @@ void EditScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/MoveBlock.cmo"
 	);
-	m_reClowdPtModel = ModelFactory::GetCreateModel(	// 雲リセット
+	m_resetPtModel = ModelFactory::GetCreateModel(		// リセットブロック
 		device,
 		L"Resources/Models/ResetPt.cmo"
 	);
