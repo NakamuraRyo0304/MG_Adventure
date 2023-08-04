@@ -64,22 +64,23 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 
 	// キー名　：　ファイルパス名　：　デバイス
 	// 操作アイコン
-	m_system->GetDrawSprite()->AddTextureData(L"Save", L"Resources/Textures/SaveFile.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Open", L"Resources/Textures/OpenFile.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Camera", L"Resources/Textures/Camera.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"CameraMove", L"Resources/Textures/CameraMove.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"ToolBehind", L"Resources/Textures/PullDown.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Save",      L"Resources/Textures/SaveFile.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Open",      L"Resources/Textures/OpenFile.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Camera",    L"Resources/Textures/Camera.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"CameraMove",L"Resources/Textures/CameraMove.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"ToolOn",	L"Resources/Textures/ToolOn.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"ToolOff",	L"Resources/Textures/ToolOff.dds", device);
 
 	// 背景の帯
-	m_system->GetDrawSprite()->AddTextureData(L"ToolBar", L"Resources/Textures/EditToolBar.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",   L"Resources/Textures/EditToolBar.dds", device);
 
 	// ブロックアイコン
-	m_system->GetDrawSprite()->AddTextureData(L"Grass", L"Resources/Textures/BLOCK/GrassIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Clowd", L"Resources/Textures/BLOCK/ClowdIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Coin", L"Resources/Textures/BLOCK/CoinIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"ReClowd", L"Resources/Textures/BLOCK/ReClowdIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Player", L"Resources/Textures/BLOCK/PlayerIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Erase", L"Resources/Textures/BLOCK/DeleteIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Grass",     L"Resources/Textures/BLOCK/GrassIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Clowd",     L"Resources/Textures/BLOCK/ClowdIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Coin",      L"Resources/Textures/BLOCK/CoinIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"ReClowd",   L"Resources/Textures/BLOCK/ReClowdIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Player",    L"Resources/Textures/BLOCK/PlayerIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Erase",     L"Resources/Textures/BLOCK/DeleteIcon.dds", device);
 
 	// IDを格納
 	m_texName[MapState::GrassBox]   = L"Grass";
@@ -96,7 +97,7 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_openTexPos	 = {  80 * span , 80 * span};
 	m_saveTexPos     = { 218 * span , 80 * span};
 	m_cameraTexPos   = { 356 * span , 80 * span};
-	m_toolButtonTexPos = { m_windowSize.x - (128 * span)  ,80 * span};
+	m_toolButtonTexPos = { m_windowSize.x - (96 * span)  ,80 * span};
 	for (int i = 0; i < MapState::LENGTH; i++)
 	{
 		m_imagePos[i] = { 528 * span + (192 * span * i) , 80 * span};
@@ -139,38 +140,19 @@ void UserInterface::Update(Mouse::State& mouseState)
 	ChangeState(mouseState);
 
 	// ファイルを開くアイコン
-	bool open = false;
-	open = m_imageHitter.HitAABB_2D(
+	is_openFlag = m_imageHitter.HitAABB_2D(
 		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_openTexPos.x,m_openTexPos.y },		    // 画像の位置
 		SimpleMath::Vector2{ 5.0f },			    // サイズ
 		SimpleMath::Vector2{ 100.0f });				// サイズ
-	if (open)
-	{
-		is_openFlag = true;
-	}
-	else
-	{
-		is_openFlag = false;
-	}
 
 
 	// ファイルを保存するアイコン
-	bool save = false;
-	save = m_imageHitter.HitAABB_2D(
+	is_saveFlag = m_imageHitter.HitAABB_2D(
 		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_saveTexPos.x,m_saveTexPos.y },			// 画像の位置
 		SimpleMath::Vector2{ 5.0f },				// サイズ
 		SimpleMath::Vector2{ 100.0f });				// サイズ
-	// 当っていてクリックした時処理
-	if (save)
-	{
-		is_saveFlag = true;
-	}
-	else
-	{
-		is_saveFlag = false;
-	}
 
 	// カメラアイコンをクリック
 	bool camera = m_imageHitter.HitAABB_2D(
@@ -280,13 +262,26 @@ void UserInterface::Render()
 	}
 
 	// ツールバーボタン表示
-	m_system->GetDrawSprite()->DrawTexture(
-		L"ToolBehind",						// 登録キー
-		m_toolButtonTexPos,					// 座標
-		{ 1.0f,1.0f,1.0f,1.0f },			// 色
-		IMAGE_RATE * imageScale,			// 拡大率
-		{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
-	);
+	if (is_toolFlag)
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"ToolOn",							// 登録キー
+			m_toolButtonTexPos,					// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
+	else
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"ToolOff",							// 登録キー
+			m_toolButtonTexPos,					// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },			// 色
+			IMAGE_RATE * imageScale,			// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+		);
+	}
 }
 
 /// <summary>

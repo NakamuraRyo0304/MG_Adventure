@@ -280,10 +280,10 @@
     <Image Include="Resources\Textures\OpenFile.dds" />
     <Image Include="Resources\Textures\PlayerPoint.png" />
     <Image Include="Resources\Textures\PlayerShadow.png" />
-    <Image Include="Resources\Textures\PullDown.dds" />
-    <ImageContentTask Include="Resources\Textures\PullDown.png" />
     <Image Include="Resources\Textures\ResultBack.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
+    <Image Include="Resources\Textures\ToolOff.dds" />
+    <Image Include="Resources\Textures\ToolOn.dds" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest" />
