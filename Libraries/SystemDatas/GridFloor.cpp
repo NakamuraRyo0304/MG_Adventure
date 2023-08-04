@@ -13,17 +13,17 @@
 //-------------------------------------------------------------------
 GridFloor::GridFloor(ID3D11Device1* device, ID3D11DeviceContext1* context, const int divsX, const int divsY)
 	: mDivsX(divsX)
-	, mDivsY(divsY)	
+	, mDivsY(divsY)
 {
 	// エフェクトの生成
 	mBasicEffect = std::make_unique<BasicEffect>(device);
 
 	// 頂点カラーの設定
 	mBasicEffect->SetVertexColorEnabled(true);
-	
+
 	// プリミティブバッチの生成
 	mPrimitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(context);
-	
+
 	// インプットレイアウトの設定
 	void const* shaderByteCode;
 	size_t byteCodeLength;
@@ -31,7 +31,7 @@ GridFloor::GridFloor(ID3D11Device1* device, ID3D11DeviceContext1* context, const
 	device->CreateInputLayout(
 		VertexPositionColor::InputElements,
 		VertexPositionColor::InputElementCount,
-		shaderByteCode, 
+		shaderByteCode,
 		byteCodeLength,
 		mInputLayout.GetAddressOf()
 	);

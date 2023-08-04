@@ -50,7 +50,7 @@ private:
 	// プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
 	// 回転量
-	DirectX::SimpleMath::Matrix m_rot;
+	DirectX::SimpleMath::Matrix m_rotateMatrix;
 
 	// カメラの座標
 	DirectX::SimpleMath::Vector3 m_eye;
@@ -81,9 +81,6 @@ public:
 	// オブジェクトを揺らす処理
 	void ShakeObject(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
 
-	// カメラとオブジェクトの距離を求める
-	float CalculateDistanceToObject(const DirectX::SimpleMath::Vector3& objPos);
-
 	// マウスホイールの拡縮処理
 	void RollWheelToRate(DirectX::Mouse::State state);
 
@@ -95,7 +92,6 @@ public:
 
 	// カメラの座標を取得する
 	const DirectX::SimpleMath::Vector3& GetEye() { return m_eye; }
-	void SetEye(const DirectX::SimpleMath::Vector3& pos){ m_eye = pos;}
 
 	// カメラの座標移動用セッター(指定座標に移動)
 	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_eyePos = pos;}
@@ -110,11 +106,6 @@ public:
 	// カメラ視点移動モード切替
 	void SetEagleMode(bool flag) { is_eagleMode = flag; }
 	const bool GetEagleMode() { return is_eagleMode; }
-
-	// カメラの角度を取得
-	const DirectX::SimpleMath::Vector2& GetCameraAngle() { return m_angle; }
-	// 回転行列を取得
-	const DirectX::SimpleMath::Matrix& GetRotateMatrix() { return m_rot; }
 
 };
 

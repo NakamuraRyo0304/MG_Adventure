@@ -34,7 +34,7 @@ Collider::BoxCollider::BoxCollider():
 /// <returns>なし</returns>
 void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 			                        const SimpleMath::Vector3& constObj,
-			                        const SimpleMath::Vector3& sz1, 
+			                        const SimpleMath::Vector3& sz1,
 	                                const SimpleMath::Vector3& sz2)
 {
 	// 当っていない
@@ -42,7 +42,7 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 
 	// 当たり判定を取る
 	if (!(moveObj->x - sz1.x / 2 < constObj.x + sz2.x / 2 &&
-		  moveObj->x + sz1.x / 2 > constObj.x - sz2.x / 2 && 
+		  moveObj->x + sz1.x / 2 > constObj.x - sz2.x / 2 &&
 		  moveObj->z - sz1.z / 2 < constObj.z + sz2.z / 2 &&
 		  moveObj->z + sz1.z / 2 > constObj.z - sz2.z / 2 &&
 		  moveObj->y - sz1.y / 2 < constObj.y + sz2.y / 2 &&
@@ -192,8 +192,8 @@ Collider::SphereCollider::SphereCollider() :
 /// <param name="radius1">半径</param>
 /// <param name="raidus2">半径</param>
 /// <returns>なし</returns>
-void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1, 
-	                                      SimpleMath::Vector3& pos2, 
+void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1,
+	                                      SimpleMath::Vector3& pos2,
 	                                      float radius1, float radius2)
 {
 	// 二つの球の距離を計算
@@ -203,7 +203,7 @@ void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1,
 	float sumOfRadius = radius1 + radius2;
 
 	// 二つの球の半径の和よりも二点間の距離が短かったら当っている判定にする
-	if (distance <= sumOfRadius) 
+	if (distance <= sumOfRadius)
 	{
 		// 衝突した球の方向ベクトルを計算
 		SimpleMath::Vector3 collisionDirection = pos2 - pos1;
@@ -240,7 +240,7 @@ Collider::AABBCollider::AABBCollider()
 }
 
 /// <summary>
-/// 
+/// 平面のAABB当たり判定
 /// </summary>
 /// <param name="pos1">座標</param>
 /// <param name="pos2">座標</param>
@@ -248,9 +248,9 @@ Collider::AABBCollider::AABBCollider()
 /// <param name="sz2">大きさ</param>
 /// <returns>当たっていたらTrue</returns>
 // 第１、２引数：座標 第３、４引数：サイズ
-bool Collider::AABBCollider::HitAABB_2D(const SimpleMath::Vector2& pos1, 
+bool Collider::AABBCollider::HitAABB_2D(const SimpleMath::Vector2& pos1,
 								     const SimpleMath::Vector2& pos2,
-								     const SimpleMath::Vector2& sz1, 
+								     const SimpleMath::Vector2& sz1,
 								     const SimpleMath::Vector2& sz2)
 {
 	// XZ平面における当たり判定

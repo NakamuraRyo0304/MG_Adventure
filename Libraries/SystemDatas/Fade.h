@@ -58,10 +58,10 @@ public:
 
 	// フェードアウトの値を返す
 	const float& GetMaxValue() { return MAX_NUM; }
-	
+
 	// 値のリセットをかける関数
 	void Reset();
-		
+
 	// フェード終了を判定する関数
 	const bool& GetEndFlag() { return is_endFlag; }
 

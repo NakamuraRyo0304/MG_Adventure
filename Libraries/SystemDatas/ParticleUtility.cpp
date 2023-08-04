@@ -8,18 +8,12 @@
 #include "pch.h"
 
 #include "StepTimer.h"
-#include <DeviceResources.h>
-#include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
-#include <WICTextureLoader.h>
-#include <CommonStates.h>
+#include "DeviceResources.h"
 #include <vector>
 
 #include "ParticleUtility.h"
 
-const static float ENDLESS = -100.0f;
+static const float ENDLESS = -100.0f;
 
 /// <summary>
 /// コンストラクタ
@@ -55,7 +49,7 @@ ParticleUtility::ParticleUtility(
 	m_startScale = startScale;
 	m_nowScale = startScale;
 	m_endScale = endScale;
-	
+
 	// 色
 	m_startColor = startColor;
 	m_nowColor = startColor;
@@ -88,7 +82,7 @@ bool ParticleUtility::Update(float elapsedTime)
 
 	// 座標の計算
 	m_position += m_velocity * elapsedTime;
-	
+
 	// 生存時間を削る
 	m_life -= elapsedTime;
 

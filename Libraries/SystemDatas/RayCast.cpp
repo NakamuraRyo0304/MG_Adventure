@@ -105,14 +105,14 @@ SimpleMath::Vector3 RayCast::ShotRayToWorld(int mx, int my)
 
 	// 最近距離をコンバート
 	nearpos = ConvertScreenToWorld(mx, my, 0.0f,
-		static_cast<int>(m_screenSize.x),  static_cast<int>(m_screenSize.y), 
+		static_cast<int>(m_screenSize.x),  static_cast<int>(m_screenSize.y),
 		m_view, m_proj);
 
 	// 最遠距離をコンバート
 	farpos  = ConvertScreenToWorld(mx, my, 1.0f,
-		static_cast<int>(m_screenSize.x),  static_cast<int>(m_screenSize.y), 
+		static_cast<int>(m_screenSize.x),  static_cast<int>(m_screenSize.y),
 		m_view, m_proj);
-	
+
 	// レイの長さを求めて正規化する
 	ray = farpos - nearpos;
 	ray.Normalize();
@@ -121,7 +121,7 @@ SimpleMath::Vector3 RayCast::ShotRayToWorld(int mx, int my)
 	SimpleMath::Vector3 output = SimpleMath::Vector3::Zero;
 
 	// 床との交差が起きている場合は交点、起きていない場合は遠くの壁との交点を出力
-	if (ray.y <= 0) 
+	if (ray.y <= 0)
 	{
 		// 床交点
 		SimpleMath::Vector3 rDot = XMVector3Dot(     ray, SimpleMath::Vector3(0, 1, 0));
@@ -132,7 +132,7 @@ SimpleMath::Vector3 RayCast::ShotRayToWorld(int mx, int my)
 		// Y軸移動なくすために0代入
 		output.y = 0;
 	}
-	else 
+	else
 	{
 		output = farpos;
 	}

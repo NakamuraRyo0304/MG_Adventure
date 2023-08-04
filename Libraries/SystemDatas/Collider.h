@@ -42,14 +42,14 @@ namespace Collider
 		~BoxCollider() = default;
 
 		// 押し戻し処理 引数：&動かすやつ,動かないやつ,大きさ１,大きさ２
-		void PushBox(DirectX::SimpleMath::Vector3* moveObj, 
-		       const DirectX::SimpleMath::Vector3& constObj, 
-		       const DirectX::SimpleMath::Vector3& sz1, 
+		void PushBox(DirectX::SimpleMath::Vector3* moveObj,
+		       const DirectX::SimpleMath::Vector3& constObj,
+		       const DirectX::SimpleMath::Vector3& sz1,
 		       const DirectX::SimpleMath::Vector3& sz2);
 		// 当たり判定のみ取る
-		void PushBox(DirectX::SimpleMath::Vector3& moveObj, 
-		       const DirectX::SimpleMath::Vector3& constObj, 
-		       const DirectX::SimpleMath::Vector3& sz1, 
+		void PushBox(DirectX::SimpleMath::Vector3& moveObj,
+		       const DirectX::SimpleMath::Vector3& constObj,
+		       const DirectX::SimpleMath::Vector3& sz1,
 		       const DirectX::SimpleMath::Vector3& sz2);
 
 		// 当った位置を返す
@@ -74,19 +74,19 @@ namespace Collider
 	public:
 		SphereCollider();
 		~SphereCollider() = default;
-		
+
 		// 当たり判定と押し戻し
 		void PushSphere(DirectX::SimpleMath::Vector3& pos1,
 			            DirectX::SimpleMath::Vector3& pos2,
 			            float radius1,float radius2);
-		
+
 		// 当っているかどうか判定する
 		const bool& GetHitSphereFlag() { return is_hitFlag; }
-	
+
 		// 押し戻し処理をするか
 		void SetPushMode(const bool& flag) { is_pushMode = flag; }
 
-	};	
+	};
 
 	// AABBコライダー
 	class AABBCollider

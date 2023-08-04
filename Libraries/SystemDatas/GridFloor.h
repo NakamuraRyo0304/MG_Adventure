@@ -7,12 +7,6 @@
 
 #pragma once
 
-#include <CommonStates.h>
-#include <PrimitiveBatch.h>
-#include <Effects.h>
-#include <VertexTypes.h>
-#include <SimpleMath.h>
-
 /// <summary>
 /// デバッグ表示用のグリッド床を表示するクラス
 /// </summary>
@@ -36,8 +30,8 @@ class GridFloor
 public:
 	// コンストラクタ
 	GridFloor(
-		ID3D11Device1* device, 
-		ID3D11DeviceContext1* context, 
+		ID3D11Device1* device,
+		ID3D11DeviceContext1* context,
 		const int divsX,	// 分割数X
 		const int divsY		// 分割数Y
 	);
@@ -47,7 +41,7 @@ public:
 
 	// 描画処理
 	void Draw(
-		ID3D11DeviceContext1* context, 
+		ID3D11DeviceContext1* context,
 		DirectX::CommonStates* states,			// D3Dレンダリング状態オブジェクト
 		const DirectX::SimpleMath::Matrix view,	// ビュー行列
 		const DirectX::SimpleMath::Matrix proj,	// 射影行列

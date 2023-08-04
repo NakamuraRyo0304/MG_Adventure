@@ -41,7 +41,7 @@ private:
 
 	// レイを飛ばして面との交点を求める
 	DirectX::SimpleMath::Vector3 ShotRayToWorld(int mx, int my);
-	
+
 public:
 	// マウスのワールド座標のゲッター
 	const DirectX::SimpleMath::Vector3& GetWorldMousePosition() { return m_conScreenPos; }

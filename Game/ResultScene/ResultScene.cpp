@@ -94,7 +94,7 @@ void ResultScene::Initialize()
 /// <param name="keyState">キーボードポインタ</param>
 /// <param name="mouseState">マウスポインタ</param>
 /// <returns>なし</returns>
-void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState, 
+void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	Mouse::State& mouseState)
 {
 	m_timer = elapsedTime;
@@ -122,7 +122,7 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
-	
+
 	// メニューセレクト
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Down))
 	{
@@ -210,7 +210,7 @@ void ResultScene::Draw()
 	SimpleMath::Vector3    eye(cosf(m_timer), 20.0f + sinf(m_timer) * 2.0f, 10.0f);
 	SimpleMath::Vector3     up(0.0f, 5.0f, 0.0f);
 	SimpleMath::Vector3 target(0.0f, -10.0f, -5.0f);
-		
+
 	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
 
 	// プロジェクション行列
@@ -219,7 +219,7 @@ void ResultScene::Draw()
 	// マップの描画
 	m_blocks->Render(context, states, view, proj, m_timer);
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
 	// 画像の拡大率をウィンドウをもとに計算
 	float imageScale = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
@@ -280,7 +280,7 @@ void ResultScene::Draw()
 		);
 
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 	// 秒数を計算
 	int sec = static_cast<int>(m_clearTime);
 
@@ -290,7 +290,7 @@ void ResultScene::Draw()
 	// 十の桁の数字を表示
 	RenderDigit((sec / 10) % 10, m_tenSecPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
 
-	//-------------------------------------------------------------------------------------// 
+	//-------------------------------------------------------------------------------------//
 
 	// 一桁目の数字を表示
 	RenderDigit(m_coinNum % 10, m_oneCoiPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
@@ -327,9 +327,9 @@ void ResultScene::CreateWindowDependentResources()
 	GetSystemManager()->GetString()->CreateString(device, context);
 
 	// 画面サイズの格納
-	float width  = 
+	float width  =
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height = 
+	float height =
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// ウィンドウサイズを取得
@@ -445,9 +445,9 @@ void ResultScene::CorrectionOffset(float width ,float span)
 	// 座標補正
 	if (static_cast<int>(width) != 1280) return;
 
-	m_oneSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
-	m_tenSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
-	m_oneCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
-	m_tenCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.5f * span);
+	m_oneSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.50f * span);
+	m_tenSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.50f * span);
+	m_oneCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.50f * span);
+	m_tenCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.50f * span);
 	m_clockPos.x  += static_cast<float>(SPRITE_SIZE * 2.95f * span);
 }

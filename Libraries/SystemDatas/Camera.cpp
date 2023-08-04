@@ -40,7 +40,7 @@ Camera::Camera():
 	is_prevEagleMode{false},	// カメラの視点移動フラグマウスホイールを使用する(前回の保存用)
 	m_screenHeight{},			// 画面の高さ
 	m_screenWidth{},			// 画面の幅
-	m_rot{}						// 回転量
+	m_rotateMatrix{}						// 回転量
 {
 	// マウスの回転量をリセット
 	Mouse::Get().ResetScrollWheelValue();
@@ -145,7 +145,7 @@ void Camera::CalculateViewMatrix()
 
 	// 回転量を計算
 	SimpleMath::Matrix rt = rotY * rotX;
-	m_rot = rt;
+	m_rotateMatrix = rt;
 
 	// ポジション
 	SimpleMath::Vector3    eye(0.0f, 0.1f, 1.0f);
@@ -234,19 +234,6 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,flo
 
 	// プロジェクション行列を返却
 	return m_proj;
-}
-
-/// <summary>
-/// カメラからの距離を計算
-/// </summary>
-/// <param name="objPos">対象オブジェのポジション</param>
-/// <returns>カメラから対象物までの距離</returns>
-float Camera::CalculateDistanceToObject(const SimpleMath::Vector3& objPos)
-{
-	SimpleMath::Vector3 distanceVector = objPos - m_eye;
-	float distance = distanceVector.Length();
-
-	return distance;
 }
 
 /// <summary>

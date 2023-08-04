@@ -155,7 +155,7 @@ void GameMain::CreateScene()
 {
 	// シーンが作成されているときは処理しない
 	if (m_nowScene != nullptr) return;
-	
+
 	// TODO: シーン３：シーンはここから追加
 	switch (m_nextScene)
 	{
@@ -201,7 +201,7 @@ void GameMain::CreateScene()
 			break;
 		}
 		default:
-			break;	
+			break;
 	}
 
 	// 作成したシーンを初期化
