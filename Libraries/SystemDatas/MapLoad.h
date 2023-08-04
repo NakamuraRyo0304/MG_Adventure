@@ -34,7 +34,7 @@ public:
 	// 縦の長さ
 	static const int MAP_RAW = 15;
 	// 足場の高さ
-	static const int MAP_HEIGHT = 15;
+	static const int MAP_HEIGHT = 10;
 
 	// エリアボックスのステータス
 	struct BoxState

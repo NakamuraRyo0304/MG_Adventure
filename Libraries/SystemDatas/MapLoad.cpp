@@ -7,19 +7,18 @@
 
 #include "pch.h"
 
-#include<iostream>    // 標準機能に使用
 #include<regex>       // 文字列の置換に使用
 #include<sstream>     // ファイルの保存に使用
 #include<fstream>     // |
 #include<shobjidl.h>  // ダイアログ操作に使用
 
 // <shobjidl.h>の参考文献
-//-------------------------------------------------------------------------------------// 
+//-------------------------------------------------------------------------------------//
 //   Microsoftアプリ開発
 //
 //   https://learn.microsoft.com/ja-jp/windows/win32/api/shobjidl/
 // 　※ページ内リンク省略
-//-------------------------------------------------------------------------------------// 
+//-------------------------------------------------------------------------------------//
 
 #include "MapLoad.h"
 
@@ -60,7 +59,7 @@ void MapLoad::LoadMap(std::wstring filename)
 	if (m_filename == L"")
 	{
 		m_mapData.clear();
-		
+
 		if (LoadMapPath() == false)
 		{
 			CreateNewMap();
@@ -161,11 +160,11 @@ bool MapLoad::SaveMapPath(std::wstring& filePath)
 	// インスタンスの作成に失敗した場合はfalseを返して終了
 	if (FAILED(hr))
 	{
-		return false; 
+		return false;
 	}
 
 	// 拡張子フィルタを設定する
-	COMDLG_FILTERSPEC fileTypes[] = 
+	COMDLG_FILTERSPEC fileTypes[] =
 	{
 		{ L"CSV(カンマ区切り)"	, L"*.csv" },			// カンマ区切りファイル
 		{ L"テキスト ファイル"	, L"*.txt" }			// テキストファイル
@@ -199,10 +198,10 @@ bool MapLoad::SaveMapPath(std::wstring& filePath)
 				CoTaskMemFree(tmpFilePath);
 
 				// pItemの解放
-				pShell->Release(); 
+				pShell->Release();
 
 				// pFileDialogの解放
-				pFileDialog->Release(); 
+				pFileDialog->Release();
 
 				// 選択されたフィルタのインデックスを取得
 				unsigned int filterIndex;
@@ -346,12 +345,12 @@ std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::
 {
 	// 元ファイル名を格納する
 	std::wstring result = filePath;
-	
+
 	// 文字列"."を見つける
 	std::wstring::size_type extPos = filePath.rfind(L".");
-	
+
 	// ドットが見つかった位置が対象文字列の最後尾or何もついていない場合追加する
-	if (extPos == std::wstring::npos || extPos < filePath.rfind(L"\\")) 
+	if (extPos == std::wstring::npos || extPos < filePath.rfind(L"\\"))
 	{
 		result += extension;
 	}
@@ -372,7 +371,7 @@ void MapLoad::CreateNewMap()
 
 	for (int x = 0; x < initialNumber; ++x)
 	{
-		for (int y = 0; y < initialNumber; ++y)
+		for (int y = 0; y < MAP_HEIGHT; ++y)
 		{
 			for (int z = 0; z < initialNumber; ++z)
 			{
@@ -389,7 +388,7 @@ void MapLoad::CreateNewMap()
 				newObj.position.x = static_cast<float>(x);
 				newObj.position.y = static_cast<float>(y);
 				newObj.position.z = static_cast<float>(z);
-				
+
 				obj.push_back(newObj);
 			}
 		}
