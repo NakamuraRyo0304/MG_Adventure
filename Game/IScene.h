@@ -58,8 +58,8 @@ public:
 
 public:
 	// 遷移先のシーン設定
-	inline void GoNextScene(SCENE nextScene)
-	{	
+	inline void ChangeScene(SCENE nextScene)
+	{
 		m_nextScene = nextScene;
 		is_changeFlag = true;
 	}
@@ -70,7 +70,7 @@ public:
 		m_nextScene = SCENE::NONE;
 		is_changeFlag = false;
 	}
-	
+
 	// ソフト終了
 	inline void ExitApp(){	PostQuitMessage(0);	}
 

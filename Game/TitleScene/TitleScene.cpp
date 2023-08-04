@@ -85,7 +85,7 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 
 		if (m_moveY > MAX_HEIGHT)
 		{
-			GoNextScene(SCENE::SELECT);
+			ChangeScene(SCENE::SELECT);
 		}
 	}
 }

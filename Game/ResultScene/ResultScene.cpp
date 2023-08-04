@@ -178,13 +178,13 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		switch (m_selectNum)
 		{
 		case RETRY:
-			GoNextScene(SCENE::PLAY);
+			ChangeScene(SCENE::PLAY);
 			break;
 		case SELECT:
-			GoNextScene(SCENE::SELECT);
+			ChangeScene(SCENE::SELECT);
 			break;
 		case TITLE:
-			GoNextScene(SCENE::TITLE);
+			ChangeScene(SCENE::TITLE);
 			break;
 		default:
 			break;

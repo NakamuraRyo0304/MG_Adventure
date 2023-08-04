@@ -129,7 +129,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
-		GoNextScene(SCENE::SELECT);
+		ChangeScene(SCENE::SELECT);
 	}
 }
 

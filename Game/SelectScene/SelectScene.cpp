@@ -126,11 +126,11 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		if (m_stageNum == 0)
 		{
 			// 0番目を選択したらステージエディタのシーンへ飛ぶ
-			GoNextScene(SCENE::EDIT);
+			ChangeScene(SCENE::EDIT);
 		}
 		else
 		{
-			GoNextScene(SCENE::PLAY);
+			ChangeScene(SCENE::PLAY);
 		}
 	}
 }
@@ -151,9 +151,11 @@ void SelectScene::Draw()
 
 	// 回転量を計算
 	float rotValue = m_timer * 0.5f;
+	// 上下移動量を計算
+	float verticalValue = sinf(m_timer * 2.0f) * 2.0f;
 
 	// ビュー行列
-	SimpleMath::Vector3    eye(CAMERA_RADIUS * sin(rotValue), 30.0f, CAMERA_RADIUS * cos(rotValue));
+	SimpleMath::Vector3    eye(CAMERA_RADIUS * sin(rotValue), 30.0f + verticalValue, CAMERA_RADIUS * cos(rotValue));
 	SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
 	SimpleMath::Vector3 target(0.0f, m_changeMapMove, 0.0f);
 	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);

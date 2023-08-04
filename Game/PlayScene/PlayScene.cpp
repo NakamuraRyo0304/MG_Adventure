@@ -127,7 +127,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// コインをすべて獲得でリザルト
 	if (m_blocks->IsCollectedFlag() || m_timeLimit < 0.0f)
 	{
-		GoNextScene(SCENE::RESULT);
+		ChangeScene(SCENE::RESULT);
 		return;
 	}
 	else // クリアしていなければデクリメント
@@ -223,7 +223,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// 落下したらリスタート
 	if (m_player->GetDeathFlag())
 	{
-		GoNextScene(SCENE::PLAY);
+		ChangeScene(SCENE::PLAY);
 	}
 }
 
