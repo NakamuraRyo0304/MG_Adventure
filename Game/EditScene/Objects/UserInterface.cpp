@@ -128,7 +128,7 @@ void UserInterface::Update(Mouse::State& mouseState)
 		SimpleMath::Vector2{ 80.0f });						 // サイズ
 
 	// ツールを表示するフラグを切り替え
-	if (tool && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+	if (tool && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_toolFlag = !is_toolFlag;
 	}
@@ -146,7 +146,6 @@ void UserInterface::Update(Mouse::State& mouseState)
 		SimpleMath::Vector2{ 5.0f },			    // サイズ
 		SimpleMath::Vector2{ 100.0f });				// サイズ
 
-
 	// ファイルを保存するアイコン
 	is_saveFlag = m_imageHitter.HitAABB_2D(
 		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
@@ -162,7 +161,7 @@ void UserInterface::Update(Mouse::State& mouseState)
 		SimpleMath::Vector2{ 100.0f });				 // サイズ
 
 	// カメラ移動モード切り替え
-	if (camera && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+	if (camera && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_cameraFlag = !is_cameraFlag;
 		m_system->GetCamera()->SetEagleMode(is_cameraFlag);
