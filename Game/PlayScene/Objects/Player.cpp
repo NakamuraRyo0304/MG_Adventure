@@ -35,7 +35,7 @@ Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body, std::un
 	m_footMove{0.0f},
 	m_neckQuaternion{},
 	m_neckRotate{},
-	is_neckFlag{},
+	is_lookFlag{},
 	m_thirdRotate{}
 {
 }
@@ -74,7 +74,7 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 	m_neckRotate = SimpleMath::Vector2::Zero;
 	m_neckQuaternion = SimpleMath::Quaternion::Identity;
 	m_thirdRotate = SimpleMath::Quaternion::Identity;
-	is_neckFlag = false;
+	is_lookFlag = false;
 }
 
 /// <summary>
@@ -82,19 +82,19 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 /// </summary>
 /// <param name="keyState">キーボード</param>
 /// <param name="timer">派生シーンのStepTimer(TotalTime)</param>
-/// <param name="neckFlag">首を回転するか決めるフラグ</param>
+/// <param name="lookFlag">視点フラグ</param>
 /// <returns>なし</returns>
-void Player::Update(Keyboard::State& keyState, float timer, bool neckFlag)
+void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
 {
 	m_timer = timer;
 
-	is_neckFlag = neckFlag;
+	is_lookFlag = lookFlag;
 
 	// 重力処理
 	UpdateGravity();
 
 	// 首を回転する
-	if (neckFlag)
+	if (lookFlag)
 	{
 		// 上下回転
 		if (keyState.Up)
@@ -230,7 +230,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	legLWorld = leftTrans  * rotate * trans;
 
 	// 頭は前後に動く
-	if (!is_neckFlag)
+	if (!is_lookFlag)
 	{
 		headWorld = headTrans * rotate * trans;
 	}

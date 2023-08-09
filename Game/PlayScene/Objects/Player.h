@@ -28,6 +28,7 @@ class SystemManager;
 class Player
 {
 private:
+
 	// 時間
 	float m_timer;
 
@@ -43,7 +44,7 @@ private:
 	// 首の動き
 	DirectX::SimpleMath::Quaternion m_neckQuaternion;
 	DirectX::SimpleMath::Vector2 m_neckRotate;
-	bool is_neckFlag;
+	bool is_lookFlag;
 
 	// 三人称の回転
 	DirectX::SimpleMath::Quaternion m_thirdRotate;
@@ -63,7 +64,7 @@ private:
 	const float SIZE = 0.85f;
 	// 回転速度
 	const float ROT_SPEED = 0.05f;
-	const float NECK_ROT_SPEED = 0.15f;
+	const float NECK_ROT_SPEED = 0.30f;
 	// 摩擦係数
 	const float DECELERATION = 0.842f;
 	// プレイヤの浮遊
@@ -73,18 +74,19 @@ private:
 
 
 public:
-	// コンストラクタ（モデルデータ）
-	Player(std::unique_ptr<DirectX::Model> head,std::unique_ptr<DirectX::Model> body, std::unique_ptr<DirectX::Model> rightLeg, std::unique_ptr<DirectX::Model> leftLeg);
+	// コンストラクタ（頭、身体、右足、左足）
+	Player(std::unique_ptr<DirectX::Model> head,std::unique_ptr<DirectX::Model> body,
+		std::unique_ptr<DirectX::Model> rightLeg, std::unique_ptr<DirectX::Model> leftLeg);
 	~Player();
 
-	// 初期化処理
+	// 初期化処理（システムマネージャポインタ）
 	void Initialize(std::shared_ptr<SystemManager> system);
 
-	// 更新処理（キーボード）
-	void Update(DirectX::Keyboard::State& keyState,float timer, bool neckFlag);
+	// 更新処理（キーボード、タイマー、視点変更フラグ）
+	void Update(DirectX::Keyboard::State& keyState,float timer, bool lookFlag);
 
 	// 描画処理（コンテキスト、ステート、ビュー行列、射影行列）
-	void Render(ID3D11DeviceContext* context, DirectX::DX11::CommonStates& states,
+	void Render(ID3D11DeviceContext* context, DirectX::CommonStates& states,
 		        DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 
 	// 終了処理

@@ -126,8 +126,18 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	GetSystemManager()->GetMouseTrack()->Update(mouseState);
 
 	// カメラの更新
-	GetSystemManager()->GetCamera()->Update();
-	m_thirdCamera->UpdateFollow(m_player->GetPosition(), m_player->GetNeckRotate(), SimpleMath::Vector3(0.0f, 2.0f, 4.0f));
+	if (is_thirdPersonMode)
+	{
+		m_thirdCamera->UpdateFollow(
+			m_player->GetPosition(),				// ターゲット座標
+			m_player->GetNeckRotate(),				// 回転量
+			SimpleMath::Vector3(0.0f, 2.0f, 4.0f)	// ターゲットからの距離
+		);
+	}
+	else
+	{
+		GetSystemManager()->GetCamera()->Update();
+	}
 
 	// カウントダウンが終わったらスタート
 	if (StartTimer() == false) return;
