@@ -281,6 +281,7 @@ void Blocks::Finalize()
 	m_mapObj.clear();
 
 	// ƒ‚ƒfƒ‹‚Ì‰ð•ú
+	if (m_grassModel == nullptr) return;
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_clowdModel);

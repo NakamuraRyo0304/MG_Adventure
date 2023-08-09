@@ -37,10 +37,6 @@ SelectScene::SelectScene():
 SelectScene::~SelectScene()
 {
 	Finalize();
-	for (auto& i : m_blocks)
-	{
-		i.reset();
-	}
 }
 
 /// <summary>
@@ -202,7 +198,6 @@ void SelectScene::Finalize()
 	for (int i = 0; i < MAX_STAGE_NUM; ++i)
 	{
 		m_blocks[i]->Finalize();
-		ModelFactory::DeleteModel(m_stageModels[i]);
 	}
 }
 
