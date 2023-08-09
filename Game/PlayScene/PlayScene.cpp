@@ -26,6 +26,9 @@
 // インターフェース
 #include "Objects/PlayUI.h"
 
+// サードパーソンカメラ
+#include "System/ThirdPersonCamera.h"
+
 #include "PlayScene.h"
 
  /// <summary>
@@ -47,7 +50,8 @@ PlayScene::PlayScene() :
 	m_lastObj{},					// 最後に当たったオブジェクトを保存
 	is_boxCol{},					// 立方体当たり判定
 	m_skyDomeModel{ nullptr },		// スカイドームモデル
-	m_skyColor{}					// 空の変化
+	m_skyColor{},					// 空の変化
+	is_thirdPersonMode{false}		// サードパーソンモード
 {
 }
 
@@ -98,6 +102,9 @@ void PlayScene::Initialize()
 
 	// 空の色の初期化
 	m_skyColor = { 1.0f,1.0f,1.0f };
+
+	// サードパーソンモードを切る
+	is_thirdPersonMode = false;
 }
 
 /// <summary>
@@ -120,9 +127,16 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
+	m_thirdCamera->UpdateFollow(m_player->GetPosition(), m_player->GetNeckRotate(), SimpleMath::Vector3(0.0f, 2.0f, 4.0f));
 
 	// カウントダウンが終わったらスタート
 	if (StartTimer() == false) return;
+
+	// サードパーソンモードの切り替え
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Space))
+	{
+		is_thirdPersonMode = !is_thirdPersonMode;
+	}
 
 	// コインをすべて獲得でリザルト
 	if (m_blocks->IsCollectedFlag() || m_timeLimit < 0.0f)
@@ -143,7 +157,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 
 	// プレイヤの更新
-	m_player->Update(keyState, elapsedTime);
+	m_player->Update(keyState, elapsedTime ,is_thirdPersonMode);
 
 	// 相対移動
 	m_playerBill->SetVertexMovePos(m_player->GetPosition());
@@ -242,7 +256,14 @@ void PlayScene::Draw()
 	SimpleMath::Matrix view, proj;
 
 	// ビュー行列
-	view = GetSystemManager()->GetCamera()->GetView();
+	if (!is_thirdPersonMode)
+	{
+		view = GetSystemManager()->GetCamera()->GetView();
+	}
+	else
+	{
+		view = m_thirdCamera->GetFollowView();
+	}
 
 	// プロジェクション行列
 	proj = GetSystemManager()->GetCamera()->GetProjection();
@@ -275,14 +296,16 @@ void PlayScene::Draw()
 		}
 	);
 
-	// ビルボード作成
-	m_playerBill->CreateBillboard(
-		GetSystemManager()->GetCamera()->GetTargetPosition(),	// カメラの注視点
-		GetSystemManager()->GetCamera()->GetEye(),				// カメラの座標
-		SimpleMath::Vector3::Up
-	);
 	// ビルボードの描画
-	m_playerBill->Render(m_player->GetPosition(), m_timer, view, proj);
+	if (!is_thirdPersonMode)
+	{
+		m_playerBill->CreateBillboard(
+			GetSystemManager()->GetCamera()->GetTargetPosition(),	// カメラの注視点
+			GetSystemManager()->GetCamera()->GetEye(),				// カメラの座標
+			SimpleMath::Vector3::Up
+		);
+		m_playerBill->Render(m_player->GetPosition(), m_timer, view, proj);
+	}
 
 	// プレイヤーの影の描画
 	m_playerShadow->Render(context, view, proj);
@@ -335,6 +358,10 @@ void PlayScene::CreateWindowDependentResources()
 
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
+
+	// サードパーソンカメラの作成
+	m_thirdCamera = std::make_unique<ThirdPersonCamera>();
+	m_thirdCamera->CreateProjection(width, height, CAMERA_ANGLE);
 
 	// 文字の設定
 	GetSystemManager()->GetString()->CreateString(device, context);
@@ -415,6 +442,8 @@ void PlayScene::CreateWindowDependentResources()
 	// UIの作成
 	m_userInterFace = std::make_unique<PlayUI>(SimpleMath::Vector2(width, height));
 	m_userInterFace->Create(GetSystemManager(),context, device);
+
+	//-------------------------------------------------------------------------------------//
 }
 
 /// <summary>
