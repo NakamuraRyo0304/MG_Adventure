@@ -19,6 +19,7 @@ class PlayerBill;
 class PlayerShadow;
 class PlayUI;
 class Blocks;
+class ThirdPersonCamera;
 class PlayScene : public IScene
 {
 private:
@@ -65,6 +66,7 @@ private:
 	// 前回のインデックス
 	std::deque<int> m_prevIndex;
 
+private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
@@ -76,6 +78,9 @@ private:
 
 	// プレイヤーの影シェーダー
 	std::unique_ptr<PlayerShadow> m_playerShadow;
+
+	// サードパーソンカメラ
+	std::unique_ptr<ThirdPersonCamera> m_thirdCamera;
 
 private:
 
@@ -110,6 +115,9 @@ private:
 	const float SHAKE_DURATION = 4.0f;		// 持続時間
 	const float SHAKE_TREMOR = 1.0f;		// 振動範囲
 
+private:
+	// サードパーソンモード
+	bool is_thirdPersonMode;
 
 public:
 

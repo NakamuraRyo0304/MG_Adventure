@@ -9,7 +9,7 @@
 #ifndef PLAYER
 #define PLAYER
 
-struct PlayerParameter
+struct Parameter
 {
 	DirectX::SimpleMath::Vector3 velocity;		// 移動量
 	DirectX::SimpleMath::Quaternion rotate;		// 向いている方向
@@ -20,7 +20,7 @@ struct PlayerParameter
 		velocity = DirectX::SimpleMath::Vector3::Zero;
 		gravity = 0.0f;
 		accelerate = 0.0f;
-		rotate = SimpleMath::Quaternion::Identity;
+		rotate = DirectX::SimpleMath::Quaternion::Identity;
 	}
 };
 
@@ -38,10 +38,18 @@ private:
 	DirectX::SimpleMath::Vector3 m_position;
 
 	// プレイヤのパラメータ
-	PlayerParameter m_parameter;
+	Parameter m_parameter;
+
+	// 首の動き
+	DirectX::SimpleMath::Quaternion m_neckQuaternion;
+	DirectX::SimpleMath::Vector2 m_neckRotate;
+	bool is_neckFlag;
+
+	// 三人称の回転
+	DirectX::SimpleMath::Quaternion m_thirdRotate;
 
 	// モデルデータ
-	std::unique_ptr<DirectX::Model> m_head, m_body,m_leftLeg,m_rightLeg;
+	std::unique_ptr<DirectX::Model> m_head, m_body, m_leftLeg, m_rightLeg;
 
 	// システム
 	std::weak_ptr<SystemManager> m_system;
@@ -49,10 +57,13 @@ private:
 	// 死亡判定
 	bool is_deathFlag;
 
+private:
+
 	// プレイヤのサイズ
 	const float SIZE = 0.85f;
 	// 回転速度
 	const float ROT_SPEED = 0.05f;
+	const float NECK_ROT_SPEED = 0.15f;
 	// 摩擦係数
 	const float DECELERATION = 0.842f;
 	// プレイヤの浮遊
@@ -70,7 +81,7 @@ public:
 	void Initialize(std::shared_ptr<SystemManager> system);
 
 	// 更新処理（キーボード）
-	void Update(DirectX::Keyboard::State& keyState,float timer);
+	void Update(DirectX::Keyboard::State& keyState,float timer, bool neckFlag);
 
 	// 描画処理（コンテキスト、ステート、ビュー行列、射影行列）
 	void Render(ID3D11DeviceContext* context, DirectX::DX11::CommonStates& states,
@@ -78,6 +89,8 @@ public:
 
 	// 終了処理
 	void Finalize();
+
+private:
 
 	// 重力処理
 	void UpdateGravity();
@@ -104,6 +117,12 @@ public:
 
 	// 死亡判定ゲッター
 	const bool& GetDeathFlag() { return is_deathFlag; }
+
+	// 回転量を取得
+	const DirectX::SimpleMath::Quaternion& GetRotate() { return m_parameter.rotate; }
+
+	// 首の回転量を取得
+	const DirectX::SimpleMath::Quaternion& GetNeckRotate() { return m_thirdRotate; }
 };
 
 #endif // PLAYER

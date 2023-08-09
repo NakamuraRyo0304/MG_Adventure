@@ -32,7 +32,11 @@ Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body, std::un
 	m_parameter{},
 	m_system{},
 	is_deathFlag{},
-	m_footMove{0.0f}
+	m_footMove{0.0f},
+	m_neckQuaternion{},
+	m_neckRotate{},
+	is_neckFlag{},
+	m_thirdRotate{}
 {
 }
 
@@ -65,6 +69,12 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 
 	// 死亡判定の初期化
 	is_deathFlag = false;
+
+	// 回転量の初期化
+	m_neckRotate = SimpleMath::Vector2::Zero;
+	m_neckQuaternion = SimpleMath::Quaternion::Identity;
+	m_thirdRotate = SimpleMath::Quaternion::Identity;
+	is_neckFlag = false;
 }
 
 /// <summary>
@@ -72,13 +82,48 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 /// </summary>
 /// <param name="keyState">キーボード</param>
 /// <param name="timer">派生シーンのStepTimer(TotalTime)</param>
+/// <param name="neckFlag">首を回転するか決めるフラグ</param>
 /// <returns>なし</returns>
-void Player::Update(Keyboard::State& keyState, float timer)
+void Player::Update(Keyboard::State& keyState, float timer, bool neckFlag)
 {
 	m_timer = timer;
 
+	is_neckFlag = neckFlag;
+
 	// 重力処理
 	UpdateGravity();
+
+	// 首を回転する
+	if (neckFlag)
+	{
+		// 上下回転
+		if (keyState.Up)
+		{
+			m_neckRotate.x += NECK_ROT_SPEED;
+		}
+		if (keyState.Down)
+		{
+			m_neckRotate.x -= NECK_ROT_SPEED;
+		}
+		// クランプ
+		m_neckRotate.x = UserUtility::Clamp(m_neckRotate.x, -10.0f, 15.0f);
+		m_neckQuaternion.x = XMConvertToRadians(m_neckRotate.x);
+		m_neckRotate.x = UserUtility::Lerp(m_neckRotate.x, 0.0f, NECK_ROT_SPEED * 0.1f);
+
+		// 左右回転
+		if (keyState.Left)
+		{
+			m_neckRotate.y += NECK_ROT_SPEED;
+		}
+		if (keyState.Right)
+		{
+			m_neckRotate.y -= NECK_ROT_SPEED;
+		}
+		// クランプ
+		m_neckRotate.y = UserUtility::Clamp(m_neckRotate.y, -15.0f, 15.0f);
+		m_neckQuaternion.y = XMConvertToRadians(m_neckRotate.y);
+		m_neckRotate.y = UserUtility::Lerp(m_neckRotate.y, 0.0f, NECK_ROT_SPEED * 0.1f);
+	}
 
 	// 左右回転
 	if (keyState.A)
@@ -123,6 +168,9 @@ void Player::Update(Keyboard::State& keyState, float timer)
 	{
 		m_parameter.velocity *= DECELERATION;
 	}
+
+	// 最終的な回転量
+	m_thirdRotate = m_neckQuaternion * m_parameter.rotate;
 }
 
 /// <summary>
@@ -182,7 +230,14 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	legLWorld = leftTrans  * rotate * trans;
 
 	// 頭は前後に動く
-	headWorld = headTrans * rotate * trans;
+	if (!is_neckFlag)
+	{
+		headWorld = headTrans * rotate * trans;
+	}
+	else
+	{
+		headWorld = SimpleMath::Matrix::CreateFromQuaternion(m_neckQuaternion) * headTrans * rotate * trans;
+	}
 
 	// ライトの設定
 	SimpleMath::Vector3 lightDirection(1.0f, -1.0f, -1.0f);
