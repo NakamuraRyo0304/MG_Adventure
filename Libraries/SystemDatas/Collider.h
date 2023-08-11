@@ -46,11 +46,12 @@ namespace Collider
 		       const DirectX::SimpleMath::Vector3& constObj,
 		       const DirectX::SimpleMath::Vector3& sz1,
 		       const DirectX::SimpleMath::Vector3& sz2);
-		// 当たり判定のみ取る
-		void PushBox(DirectX::SimpleMath::Vector3& moveObj,
-		       const DirectX::SimpleMath::Vector3& constObj,
-		       const DirectX::SimpleMath::Vector3& sz1,
-		       const DirectX::SimpleMath::Vector3& sz2);
+
+		// 当たり判定のみ取る 引数：物体A、物体Bの座標、物体A、物体Bのサイズ
+		void PushBox(const DirectX::SimpleMath::Vector3& moveObj,
+					 const DirectX::SimpleMath::Vector3& constObj,
+					 const DirectX::SimpleMath::Vector3& sz1,
+					 const DirectX::SimpleMath::Vector3& sz2);
 
 		// 当った位置を返す
 		unsigned int GetHitFace() { return m_hitFace; }

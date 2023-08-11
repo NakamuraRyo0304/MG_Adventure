@@ -46,7 +46,7 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 		  moveObj->z - sz1.z / 2 < constObj.z + sz2.z / 2 &&
 		  moveObj->z + sz1.z / 2 > constObj.z - sz2.z / 2 &&
 		  moveObj->y - sz1.y / 2 < constObj.y + sz2.y / 2 &&
-		  moveObj->y + sz1.y / 2 > constObj.y - sz2.y / 2))return;
+		  moveObj->y + sz1.y / 2 > constObj.y - sz2.y / 2)) return;
 
 	// 当っている位置を初期化
 	m_hitFace = HIT_FACE::NONE;
@@ -70,46 +70,26 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 	float backRatio  = ((constObj.z + sz2.z / 2) - (moveObj->z - sz1.z / 2)) / lengthZ;
 
 	// 最大値を算出
-	float maxRatio = std::max({leftRatio, rightRatio,
-								upRatio,   downRatio,
-								frontRatio,backRatio });
+	float maxRatio = std::max({ leftRatio ,rightRatio ,upRatio ,downRatio ,frontRatio ,backRatio });
 
 	// 当っている位置を格納する
-	if (maxRatio == leftRatio)	m_hitFace = HIT_FACE::LEFT;		// 当った位置：左
-	if (maxRatio == rightRatio)	m_hitFace = HIT_FACE::RIGHT;	// 当った位置：右
-	if (maxRatio == upRatio)	m_hitFace = HIT_FACE::UP;		// 当った位置：上
-	if (maxRatio == downRatio)	m_hitFace = HIT_FACE::DOWN;		// 当った位置：下
-	if (maxRatio == frontRatio)	m_hitFace = HIT_FACE::FRONT;	// 当った位置：前
-	if (maxRatio == backRatio)	m_hitFace = HIT_FACE::BACK;		// 当った位置：後
+	m_hitFace = maxRatio == leftRatio  ? HIT_FACE::LEFT  : m_hitFace; // 当った位置：左 or 変化なし
+	m_hitFace = maxRatio == rightRatio ? HIT_FACE::RIGHT : m_hitFace; // 当った位置：右 or 変化なし
+	m_hitFace = maxRatio == upRatio    ? HIT_FACE::UP    : m_hitFace; // 当った位置：上 or 変化なし
+	m_hitFace = maxRatio == downRatio  ? HIT_FACE::DOWN  : m_hitFace; // 当った位置：下 or 変化なし
+	m_hitFace = maxRatio == frontRatio ? HIT_FACE::FRONT : m_hitFace; // 当った位置：前 or 変化なし
+	m_hitFace = maxRatio == backRatio  ? HIT_FACE::BACK  : m_hitFace; // 当った位置：後 or 変化なし
 
 	// 押し戻し処理をしない場合リターン
-	if (!is_pushMode)return;
+	if (!is_pushMode) return;
 
 	// 当っている位置を格納し、押し戻し処理を行う
-	if (maxRatio == leftRatio)
-	{
-		(*moveObj).x = constObj.x + (sz1.x + sz2.x) / 2;
-	}
-	if (maxRatio == rightRatio)
-	{
-		(*moveObj).x = constObj.x - (sz1.x + sz2.x) / 2;
-	}
-	if (maxRatio == upRatio)
-	{
-		(*moveObj).y = constObj.y + (sz1.y + sz2.y) / 2;
-	}
-	if (maxRatio == downRatio)
-	{
-		(*moveObj).y = constObj.y - (sz1.y + sz2.y) / 2;
-	}
-	if (maxRatio == frontRatio)
-	{
-		(*moveObj).z = constObj.z + (sz1.z + sz2.z) / 2;
-	}
-	if (maxRatio == backRatio)
-	{
-		(*moveObj).z = constObj.z - (sz1.z + sz2.z) / 2;
-	}
+	(*moveObj).x = maxRatio == leftRatio  ? constObj.x + (sz1.x + sz2.x) / 2 : (*moveObj).x; // 当った位置：左 or 変化なし
+	(*moveObj).x = maxRatio == rightRatio ? constObj.x - (sz1.x + sz2.x) / 2 : (*moveObj).x; // 当った位置：右 or 変化なし
+	(*moveObj).y = maxRatio == upRatio    ? constObj.y + (sz1.y + sz2.y) / 2 : (*moveObj).y; // 当った位置：上 or 変化なし
+	(*moveObj).y = maxRatio == downRatio  ? constObj.y - (sz1.y + sz2.y) / 2 : (*moveObj).y; // 当った位置：下 or 変化なし
+	(*moveObj).z = maxRatio == frontRatio ? constObj.z + (sz1.z + sz2.z) / 2 : (*moveObj).z; // 当った位置：前 or 変化なし
+	(*moveObj).z = maxRatio == backRatio  ? constObj.z - (sz1.z + sz2.z) / 2 : (*moveObj).z; // 当った位置：後 or 変化なし
 }
 
 /// <summary>
@@ -120,55 +100,24 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 /// <param name= sz1">大きさ</param>
 /// <param name= sz2">大きさ</param>
 /// <returns>なし</returns>
-void Collider::BoxCollider::PushBox(SimpleMath::Vector3& moveObj,
-	const SimpleMath::Vector3& constObj,
-	const SimpleMath::Vector3& sz1,
-	const SimpleMath::Vector3& sz2)
+void Collider::BoxCollider::PushBox(const SimpleMath::Vector3& moveObj,
+									const SimpleMath::Vector3& constObj,
+									const SimpleMath::Vector3& sz1,
+									const SimpleMath::Vector3& sz2)
 {
 	// 当っていない
 	is_hitFlag = false;
 
 	// 当たり判定を取る
 	if (!(moveObj.x - sz1.x / 2 < constObj.x + sz2.x / 2 &&
-		moveObj.x + sz1.x / 2 > constObj.x - sz2.x / 2 &&
-		moveObj.z - sz1.z / 2 < constObj.z + sz2.z / 2 &&
-		moveObj.z + sz1.z / 2 > constObj.z - sz2.z / 2 &&
-		moveObj.y - sz1.y / 2 < constObj.y + sz2.y / 2 &&
-		moveObj.y + sz1.y / 2 > constObj.y - sz2.y / 2))return;
-
-	// 当っている位置を初期化
-	m_hitFace = HIT_FACE::NONE;
+		  moveObj.x + sz1.x / 2 > constObj.x - sz2.x / 2 &&
+		  moveObj.z - sz1.z / 2 < constObj.z + sz2.z / 2 &&
+		  moveObj.z + sz1.z / 2 > constObj.z - sz2.z / 2 &&
+		  moveObj.y - sz1.y / 2 < constObj.y + sz2.y / 2 &&
+		  moveObj.y + sz1.y / 2 > constObj.y - sz2.y / 2)) return;
 
 	// 当っている
 	is_hitFlag = true;
-
-	// 自身の幅と高さを計算
-	float lenghtX = (moveObj.x + sz1.x / 2) - (moveObj.x - sz1.x / 2);
-	float lengthY = (moveObj.y + sz1.y / 2) - (moveObj.y - sz1.y / 2);
-	float lengthZ = (moveObj.z + sz1.z / 2) - (moveObj.z - sz1.z / 2);
-
-	// 各方向のめり込み具合
-	float leftRatio = ((moveObj.x + sz1.x / 2) - (constObj.x - sz2.x / 2)) / lenghtX;
-	float rightRatio = ((constObj.x + sz2.x / 2) - (moveObj.x - sz1.x / 2)) / lenghtX;
-
-	float upRatio = ((moveObj.y + sz1.y / 2) - (constObj.y - sz2.y / 2)) / lengthY;
-	float downRatio = ((constObj.y + sz2.y / 2) - (moveObj.y - sz1.y / 2)) / lengthY;
-
-	float frontRatio = ((moveObj.z + sz1.z / 2) - (constObj.z - sz2.z / 2)) / lengthZ;
-	float backRatio = ((constObj.z + sz2.z / 2) - (moveObj.z - sz1.z / 2)) / lengthZ;
-
-	// 最大値を算出
-	float maxRatio = std::max({ leftRatio, rightRatio,
-								upRatio,   downRatio,
-								frontRatio,backRatio });
-
-	// 当っている位置を格納する
-	if (maxRatio == leftRatio)	m_hitFace = HIT_FACE::LEFT;		// 当った位置：左
-	if (maxRatio == rightRatio)	m_hitFace = HIT_FACE::RIGHT;	// 当った位置：右
-	if (maxRatio == upRatio)	m_hitFace = HIT_FACE::UP;		// 当った位置：上
-	if (maxRatio == downRatio)	m_hitFace = HIT_FACE::DOWN;		// 当った位置：下
-	if (maxRatio == frontRatio)	m_hitFace = HIT_FACE::FRONT;	// 当った位置：前
-	if (maxRatio == backRatio)	m_hitFace = HIT_FACE::BACK;		// 当った位置：後
 }
 
 /// <summary>
