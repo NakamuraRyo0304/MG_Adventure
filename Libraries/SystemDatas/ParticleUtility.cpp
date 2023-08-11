@@ -30,11 +30,11 @@ static const float ENDLESS = -100.0f;
 /// <returns>なし</returns>
 ParticleUtility::ParticleUtility(
 	float life,
-	DirectX::SimpleMath::Vector3 pos,
-	DirectX::SimpleMath::Vector3 velocity,
-	DirectX::SimpleMath::Vector3 accelerate,
-	DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
-	DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor)
+	SimpleMath::Vector3 pos,
+	SimpleMath::Vector3 velocity,
+	SimpleMath::Vector3 accelerate,
+	SimpleMath::Vector3 startScale, SimpleMath::Vector3 endScale,
+	SimpleMath::Color startColor, SimpleMath::Color endColor)
 {
 	// エフェクト継続時間
 	m_startLife = life;
