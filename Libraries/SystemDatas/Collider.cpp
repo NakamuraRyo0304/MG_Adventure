@@ -40,34 +40,37 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 	// 当っていない
 	is_hitFlag = false;
 
-	// 当たり判定を取る
-	if (!(moveObj->x - sz1.x / 2 < constObj.x + sz2.x / 2 &&
-		  moveObj->x + sz1.x / 2 > constObj.x - sz2.x / 2 &&
-		  moveObj->z - sz1.z / 2 < constObj.z + sz2.z / 2 &&
-		  moveObj->z + sz1.z / 2 > constObj.z - sz2.z / 2 &&
-		  moveObj->y - sz1.y / 2 < constObj.y + sz2.y / 2 &&
-		  moveObj->y + sz1.y / 2 > constObj.y - sz2.y / 2)) return;
-
 	// 当っている位置を初期化
 	m_hitFace = HIT_FACE::NONE;
+
+	// 中心位置を計算
+	SimpleMath::Vector3 cS1 = sz1 / 2, cS2 = sz2 / 2;
+
+	// 当たり判定を取る
+	if (!(moveObj->x - cS1.x < constObj.x + cS2.x &&
+		  moveObj->x + cS1.x > constObj.x - cS2.x &&
+		  moveObj->z - cS1.z < constObj.z + cS2.z &&
+		  moveObj->z + cS1.z > constObj.z - cS2.z &&
+		  moveObj->y - cS1.y < constObj.y + cS2.y &&
+		  moveObj->y + cS1.y > constObj.y - cS2.y)) return;
 
 	// 当っている
 	is_hitFlag = true;
 
 	// 自身の幅と高さを計算
-	float lenghtX = (moveObj->x + sz1.x / 2) - (moveObj->x - sz1.x / 2);
-	float lengthY = (moveObj->y + sz1.y / 2) - (moveObj->y - sz1.y / 2);
-	float lengthZ = (moveObj->z + sz1.z / 2) - (moveObj->z - sz1.z / 2);
+	float lenghtX = (moveObj->x + cS1.x) - (moveObj->x - cS1.x);
+	float lengthY = (moveObj->y + cS1.y) - (moveObj->y - cS1.y);
+	float lengthZ = (moveObj->z + cS1.z) - (moveObj->z - cS1.z);
 
 	// 各方向のめり込み具合
-	float leftRatio  = ((moveObj->x + sz1.x / 2) - (constObj.x - sz2.x / 2)) / lenghtX;
-	float rightRatio = ((constObj.x + sz2.x / 2) - (moveObj->x - sz1.x / 2)) / lenghtX;
+	float leftRatio  = ((moveObj->x + cS1.x) - (constObj.x - cS2.x)) / lenghtX;
+	float rightRatio = ((constObj.x + cS2.x) - (moveObj->x - cS1.x)) / lenghtX;
 
-	float upRatio    = ((moveObj->y + sz1.y / 2) - (constObj.y - sz2.y / 2)) / lengthY;
-	float downRatio  = ((constObj.y + sz2.y / 2) - (moveObj->y - sz1.y / 2)) / lengthY;
+	float upRatio    = ((moveObj->y + cS1.y) - (constObj.y - cS2.y)) / lengthY;
+	float downRatio  = ((constObj.y + cS2.y) - (moveObj->y - cS1.y)) / lengthY;
 
-	float frontRatio = ((moveObj->z + sz1.z / 2) - (constObj.z - sz2.z / 2)) / lengthZ;
-	float backRatio  = ((constObj.z + sz2.z / 2) - (moveObj->z - sz1.z / 2)) / lengthZ;
+	float frontRatio = ((moveObj->z + cS1.z) - (constObj.z - cS2.z)) / lengthZ;
+	float backRatio  = ((constObj.z + cS2.z) - (moveObj->z - cS1.z)) / lengthZ;
 
 	// 最大値を算出
 	float maxRatio = std::max({ leftRatio ,rightRatio ,upRatio ,downRatio ,frontRatio ,backRatio });
