@@ -100,7 +100,7 @@ private:
 	const float	COMMON_LOW = COMMON_SIZE / 2;
 
 	// 当たり判定の半径
-	const float JUDGE_AREA = COMMON_SIZE * 2;
+	const float JUDGE_AREA = COMMON_SIZE * 1.5f;
 
 	// カメラアングル
 	const float	CAMERA_ANGLE = 44.5f;
@@ -153,9 +153,6 @@ public:
 
 	// スタートのカウントダウン
 	bool StartTimer();
-
-	// デバッグ表示
-	void DebugLog(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 
 	// タイムリミットのゲッター
 	const float& GetTimeLimit() { return m_returnTimeVal; }

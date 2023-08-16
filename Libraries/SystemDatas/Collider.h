@@ -28,13 +28,13 @@ namespace Collider
 		// 当った位置
 		struct HIT_FACE
 		{
-			static const unsigned int RIGHT = 11;		// 右
-			static const unsigned int LEFT  = 22;		// 左
-			static const unsigned int UP    = 33;		// 上
-			static const unsigned int DOWN  = 44;		// 下
-			static const unsigned int FRONT = 55;		// 前
-			static const unsigned int BACK  = 66;		// 後ろ
-			static const unsigned int NONE  = 99;		// 当っていない
+			static const unsigned int RIGHT = 1;		// 右
+			static const unsigned int LEFT  = 2;		// 左
+			static const unsigned int UP    = 3;		// 上
+			static const unsigned int DOWN  = 4;		// 下
+			static const unsigned int FRONT = 5;		// 前
+			static const unsigned int BACK  = 6;		// 後ろ
+			static const unsigned int NONE  = 9;		// 当っていない
 		};
 
 	public:
@@ -54,10 +54,10 @@ namespace Collider
 					 const DirectX::SimpleMath::Vector3& sz2);
 
 		// 当った位置を返す
-		unsigned int GetHitFace() { return m_hitFace; }
+		const unsigned int& GetHitFace() { return m_hitFace; }
 
 		// 当ったか判定
-		const bool& GetHitBoxFlag() { return is_hitFlag; }
+		const bool& IsHitBoxFlag() { return is_hitFlag; }
 
 		// 押し戻し処理をするか
 		void SetPushMode(bool flag) { is_pushMode = flag; }
@@ -82,7 +82,7 @@ namespace Collider
 			            float radius1,float radius2);
 
 		// 当っているかどうか判定する
-		const bool& GetHitSphereFlag() { return is_hitFlag; }
+		const bool& IsHitSphereFlag() { return is_hitFlag; }
 
 		// 押し戻し処理をするか
 		void SetPushMode(const bool& flag) { is_pushMode = flag; }
@@ -99,9 +99,9 @@ namespace Collider
 
 		// 当っているかどうかを返す
 		bool HitAABB_2D(const DirectX::SimpleMath::Vector2& pos1,
-			const DirectX::SimpleMath::Vector2& pos2,
-			const DirectX::SimpleMath::Vector2& sz1,
-			const DirectX::SimpleMath::Vector2& sz2);
+						const DirectX::SimpleMath::Vector2& pos2,
+						const DirectX::SimpleMath::Vector2& sz1,
+						const DirectX::SimpleMath::Vector2& sz2);
 	};
 }
 

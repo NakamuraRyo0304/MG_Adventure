@@ -75,14 +75,6 @@ public:
 	// ブロックの種類
 	enum { GRASS, COIN, CLOWD, RECLOWD, LENGTH };
 
-	// ライティング設定用構造体
-	struct BOOL3
-	{
-		bool _1 = false;
-		bool _2 = false;
-		bool _3 = false;
-	};
-
 public:
 
 	// コンストラクタ

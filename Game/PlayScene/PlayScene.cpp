@@ -469,7 +469,7 @@ void PlayScene::Judgement()
 	// 当たり判定を取る
 	for (auto& obj : m_blocks->GetMapData())
 	{
-		// プレイヤの半径2.0fの範囲になければ処理しない
+		// プレイヤの半径1.5fの範囲になければ処理しない
 		if (UserUtility::CheckPointInSphere(
 			m_player->GetPosition(),									// 中心点
 			JUDGE_AREA,													// 半径
@@ -484,7 +484,7 @@ void PlayScene::Judgement()
 			);
 
 			// 当たっていたら処理する
-			if (is_boxCol.GetHitBoxFlag())
+			if (is_boxCol.IsHitBoxFlag())
 			{
 				// 衝突したオブジェクトをリストに追加
 				m_hitObjects.push_back(obj);
@@ -624,51 +624,6 @@ bool PlayScene::StartTimer()
 	}
 
 	return false;
-}
-
-/// <summary>
-/// デバッグログ
-/// </summary>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
-/// <returns>なし</returns>
-void PlayScene::DebugLog(SimpleMath::Matrix view, SimpleMath::Matrix proj)
-{
-	auto state = GetSystemManager()->GetCommonStates().get();
-
-	GetSystemManager()->GetString()->ChangeFontColor(Colors::Black);
-
-	// シーン名の表示
-	GetSystemManager()->GetString()->DrawFormatString(state, { 0,0 }, L"PlayScene");
-
-	// プレイヤの座標
-	wchar_t plr[64];
-	swprintf_s(plr, 64, L"PlayerPosition = %f,%f,%f", m_player->GetPosition().x, m_player->GetPosition().y, m_player->GetPosition().z);
-
-	GetSystemManager()->GetString()->DrawFormatString(state, { 0,20 }, plr);
-
-	// プレイヤの重力
-	wchar_t gra[32];
-	swprintf_s(gra, 32, L"Gravity = %f", m_player->GetGravity());
-
-	GetSystemManager()->GetString()->DrawFormatString(state, { 0,40 }, gra);
-
-	// コインカウンタ
-	wchar_t coi[32];
-	swprintf_s(coi, 32, L"Coin = %d", m_blocks->GetCoinCount());
-
-	GetSystemManager()->GetString()->DrawFormatString(state, { 0,60 }, coi);
-
-	// タイムリミット
-	wchar_t time[32];
-	swprintf_s(time, 32, L"Limit = %d", static_cast<int>(m_timeLimit));
-
-	GetSystemManager()->GetString()->DrawFormatString(state, { 0,80 }, time);
-
-	// デバイスコンテキストの取得：グリッドの描画に使用
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
-	// デバッググリッドの表示
-	GetSystemManager()->GetGridFloor()->Draw(context, state, view, proj);
 }
 
 /// <summary>

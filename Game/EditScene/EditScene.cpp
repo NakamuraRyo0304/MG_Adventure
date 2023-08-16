@@ -181,7 +181,7 @@ void EditScene::Draw()
 			SimpleMath::Vector3{ COMMON_SIZE }
 		);
 
-		m_mapObj[i].hit = is_boxCol.GetHitBoxFlag();
+		m_mapObj[i].hit = is_boxCol.IsHitBoxFlag();
 
 		if (m_mapObj[i].hit) // 選択中のマスにオブジェクトを描画
 		{
@@ -390,7 +390,7 @@ void EditScene::EditMap()
 		);
 
 		// 瞬間の当たり判定を取得
-		obj.hit = is_boxCol.GetHitBoxFlag();
+		obj.hit = is_boxCol.IsHitBoxFlag();
 
 		// クリックでブロック設置
 		if (obj.hit && GetSystemManager()->GetMouseTrack()->leftButton ==
