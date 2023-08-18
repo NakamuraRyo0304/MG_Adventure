@@ -72,7 +72,7 @@ public:
 	void Finalize();
 
 	// アイコンの描画
-	void DrawIcon(const float& imageScale);
+	void DrawIcon(const DirectX::SimpleMath::Vector2& imageScale);
 
 	// ステータスの変更
 	void ChangeState(DirectX::Mouse::State& mouseState);

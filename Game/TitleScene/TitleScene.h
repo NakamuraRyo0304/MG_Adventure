@@ -11,6 +11,7 @@
 
 #include "../IScene.h"
 
+class TitleUI;
 class TitleScene final : public IScene
 {
 private:
@@ -29,8 +30,16 @@ private:
 	const float MAX_HEIGHT = 10.0f;
 	float m_logoMoveScale;
 
+private:
+
+	// UI
+	std::unique_ptr<TitleUI> m_titleUI;
+
 	// Œˆ’è”»’è
 	bool is_startFlag;
+
+	// ‘I‘ðƒtƒ‰ƒO
+	bool is_gameFlag;
 
 public:
 

@@ -200,6 +200,12 @@ void GameMain::CreateScene()
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
+		case SCENE::ENDGAME:	// ÉQÅ[ÉÄèIóπ
+		{
+			m_nowScene = std::make_unique<TitleScene>();
+			m_nowScene->ExitApp();
+			break;
+		}
 		default:
 			break;
 	}

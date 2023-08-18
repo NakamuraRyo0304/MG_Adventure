@@ -118,7 +118,7 @@ public:
 	void SetStageNum(const int& num) { m_stageNum = num; }
 
 	// ディジットの計算
-	void RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position, float scale, int digitWidth, int digitHeight);
+	void RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position, DirectX::SimpleMath::Vector2 scale, int digitWidth, int digitHeight);
 
 	// コインセッター
 	void SetCoinNum(const int& coinNum) { m_coinNum = coinNum; }

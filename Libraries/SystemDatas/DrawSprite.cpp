@@ -77,7 +77,7 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 /// <param name="rect">Ø‚èæ‚èˆÊ’u</param>
 /// <returns>‚È‚µ</returns>
 void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos,
-	SimpleMath::Vector4 color, float rate, SimpleMath::Vector2 origin, RECT_U rect)
+	SimpleMath::Vector4 color, SimpleMath::Vector2 rate, SimpleMath::Vector2 origin, RECT_U rect)
 {
 	m_spriteBatch->Begin();
 

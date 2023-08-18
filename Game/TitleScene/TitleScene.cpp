@@ -7,6 +7,8 @@
 
 #include "pch.h"
 
+#include "Objects/TitleUI.h"
+
 #include "TitleScene.h"
 
  /// <summary>
@@ -21,7 +23,8 @@ TitleScene::TitleScene():
 	m_miniatureModel{},
 	m_moveY{0.0f},
 	is_startFlag{false},
-	m_logoMoveScale{}
+	m_logoMoveScale{},
+	is_gameFlag{true}
 {
 }
 
@@ -52,6 +55,9 @@ void TitleScene::Initialize()
 
 	// ロゴの大きさ
 	m_logoMoveScale = 1.0f;
+
+	// ゲームを開始/ゲームを終了
+	is_gameFlag = true;
 }
 
 /// <summary>
@@ -75,6 +81,20 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
+	// 決定していなければ選択を切り替える
+	if (!is_startFlag)
+	{
+		if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left))
+		{
+			is_gameFlag = true;
+		}
+		if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
+		{
+			is_gameFlag = false;
+		}
+	}
+
+	// 遷移先を決定する(ゲーム開始 OR ゲーム終了)
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		is_startFlag = true;
@@ -83,11 +103,22 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	{
 		m_moveY++;
 
+		// 演出が終わったら遷移
 		if (m_moveY > MAX_HEIGHT)
 		{
-			ChangeScene(SCENE::SELECT);
+			if (is_gameFlag)	// Startを選択したらセレクトシーンに行く
+			{
+				ChangeScene(SCENE::SELECT);
+			}
+			else				// Exitを選択したらゲームを終了する
+			{
+				ChangeScene(SCENE::ENDGAME);
+			}
 		}
 	}
+
+	// UIの更新
+	m_titleUI->Update(is_gameFlag);
 }
 
 /// <summary>
@@ -149,8 +180,7 @@ void TitleScene::Draw()
 
 	// ビュー行列
 	SimpleMath::Vector3    eye(0.0f, 0.1f + m_moveY, 8.0f);
-	SimpleMath::Vector3 target(0.0f, 0.0f, 0.0f);
-	view = SimpleMath::Matrix::CreateLookAt(eye, target, SimpleMath::Vector3::Up);
+	view = SimpleMath::Matrix::CreateLookAt(eye, SimpleMath::Vector3::Zero, SimpleMath::Vector3::Up);
 
 	// プロジェクション行列
 	proj = GetSystemManager()->GetCamera()->GetProjection();
@@ -184,6 +214,9 @@ void TitleScene::Draw()
 	m_miniatureModel->Draw(context, states, stageMat, view, proj);	// ステージ
 	m_titleLogoModel->Draw(context, states, logoMat, view, proj);	// ロゴ
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);  	// スカイドーム
+
+	// UIの描画
+	m_titleUI->Render();
 }
 
 /// <summary>
@@ -197,6 +230,9 @@ void TitleScene::Finalize()
 	ModelFactory::DeleteModel(m_titleLogoModel);
 	ModelFactory::DeleteModel(m_miniatureModel);
 	ModelFactory::DeleteModel(m_skyDomeModel);
+
+	// UIの終了処理
+	m_titleUI->Finalize();
 }
 
 /// <summary>
@@ -223,7 +259,7 @@ void TitleScene::CreateWindowDependentResources()
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, 45.0f);
 
-	// モデルの作成
+	// モデルの作成---------------------------------------------------------------------------------
 
 	// タイトルロゴ
 	m_titleLogoModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleLogo.cmo");
@@ -248,5 +284,10 @@ void TitleScene::CreateWindowDependentResources()
 			{
 				basicEffect->SetEmissiveColor(Colors::White);
 			}
-		});
+		}
+	);
+
+	// UIの初期化
+	m_titleUI = std::make_unique<TitleUI>(SimpleMath::Vector2{ width, height });
+	m_titleUI->Create(GetSystemManager(), context, device);
 }

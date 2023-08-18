@@ -146,6 +146,15 @@
     <Filter Include="Scenes\PlayScene\System">
       <UniqueIdentifier>{aab73a85-14ec-48b6-9c65-8b55d8270078}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Textures\TITLE_BUTTON">
+      <UniqueIdentifier>{db1f1fe7-7225-4562-8991-e7eaa3f4504b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\TitleScene\Objects">
+      <UniqueIdentifier>{d8578fdf-1848-4fc0-ad4f-d5921d2d1bb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\TitleScene\Objects\TitleUI">
+      <UniqueIdentifier>{b0719780-d5f7-4350-a413-edae7b8899c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -244,6 +253,9 @@
     <ClInclude Include="Game\PlayScene\System\ThirdPersonCamera.h">
       <Filter>Scenes\PlayScene\System</Filter>
     </ClInclude>
+    <ClInclude Include="Game\TitleScene\Objects\TitleUI.h">
+      <Filter>Scenes\TitleScene\Objects\TitleUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -336,6 +348,9 @@
     <ClCompile Include="Game\PlayScene\System\ThirdPersonCamera.cpp">
       <Filter>Scenes\PlayScene\System</Filter>
     </ClCompile>
+    <ClCompile Include="Game\TitleScene\Objects\TitleUI.cpp">
+      <Filter>Scenes\TitleScene\Objects\TitleUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Icon\Icon.rc">
@@ -417,6 +432,15 @@
     </Image>
     <Image Include="Resources\Textures\ToolOn.dds">
       <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\TITLE_BUTTON\Exit.dds">
+      <Filter>Resources\Textures\TITLE_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\TITLE_BUTTON\Start.dds">
+      <Filter>Resources\Textures\TITLE_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\TITLE_BUTTON\UnderLine.dds">
+      <Filter>Resources\Textures\TITLE_BUTTON</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

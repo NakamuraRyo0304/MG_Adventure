@@ -176,7 +176,7 @@ void UserInterface::Update(Mouse::State& mouseState)
 void UserInterface::Render()
 {
 	// 画像の拡大率をウィンドウをもとに計算
-	float imageScale = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
+	SimpleMath::Vector2 imageScale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// ツールフラグがTrueならツールバーを表示する
 	if (is_toolFlag)
@@ -297,7 +297,7 @@ void UserInterface::Finalize()
 /// </summary>
 /// <param name="imageScale">拡大率</param>
 /// <returns>なし</returns>
-void UserInterface::DrawIcon(const float& imageScale)
+void UserInterface::DrawIcon(const SimpleMath::Vector2& imageScale)
 {
 	for (int idx = 0; idx < MapState::LENGTH; ++idx)
 	{

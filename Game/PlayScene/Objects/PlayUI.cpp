@@ -17,7 +17,7 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-PlayUI::PlayUI(const DirectX::SimpleMath::Vector2& windowSize):
+PlayUI::PlayUI(const SimpleMath::Vector2& windowSize):
 	m_system{},
 	m_windowSize{ windowSize },
 	m_timeLimit{0},
@@ -58,23 +58,16 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"Death", L"Resources/Textures/DeathEffect.dds", device);
 
-	// 画面サイズの格納
-	float width =
-		static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right);
-
 	// 比率を計算
-	float span = static_cast<float>(width) / FULL_SCREEN_SIZE.x;
+	SimpleMath::Vector2 span = m_windowSize / FULL_SCREEN_SIZE;
 
 	// スプライトの位置を計算
-	m_oneSecPos = { 1010.0f * span, 80.0f * span };
-	m_tenSecPos = {  910.0f * span, 80.0f * span };
+	m_oneSecPos = { 1010.0f * span.x, 80.0f * span.y };
+	m_tenSecPos = {  910.0f * span.x, 80.0f * span.y };
 
-    // 座標補正 FIXED
-    if (static_cast<int>(m_windowSize.x) == 1280)
-    {
-        m_oneSecPos.x -= 50.0f * span;
-        m_tenSecPos.x -= 50.0f * span;
-    }
+    // 座標補正
+    m_oneSecPos.x -= 50.0f * span.x;
+    m_tenSecPos.x -= 50.0f * span.x;
 
 	// 落下フラグを切る
 	is_effectFlag = false;
@@ -98,7 +91,7 @@ void PlayUI::Update(const float& timelimit)
 void PlayUI::Render()
 {
     // 比率を計算
-    float scale = static_cast<float>(m_windowSize.x / FULL_SCREEN_SIZE.x);
+	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
 
     // 秒数を計算
     int oneSec = m_timeLimit / 60;
@@ -146,14 +139,14 @@ void PlayUI::RenderCountDown(const float& countDown)
 /// <param name="digitWidth">数字の幅</param>
 /// <param name="digitHeight">数字の高さ</param>
 /// <returns>なし</returns>
-void PlayUI::RenderDigit(int digit, const SimpleMath::Vector2& position, float scale, int digitWidth, int digitHeight)
+void PlayUI::RenderDigit(int digit, const SimpleMath::Vector2& position, SimpleMath::Vector2 scale, int digitWidth, int digitHeight)
 {
 	// スプライトの位置を計算
-	float spritePosX = position.x * scale;
-	float spritePosY = position.y * scale;
+	float spritePosX = position.x * scale.x;
+	float spritePosY = position.y * scale.y;
 
 	// スプライトの中心位置を計算
-	SimpleMath::Vector2 center = { spritePosX * scale / 2.0f, spritePosY * scale / 2.0f };
+	SimpleMath::Vector2 center = { spritePosX * scale.x / 2.0f, spritePosY * scale.y / 2.0f };
 
 	// 切り取り位置の設定
 	RECT_U rect;

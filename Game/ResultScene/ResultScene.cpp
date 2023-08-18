@@ -222,14 +222,14 @@ void ResultScene::Draw()
 	//-------------------------------------------------------------------------------------//
 
 	// 画像の拡大率をウィンドウをもとに計算
-	float imageScale = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
+	SimpleMath::Vector2 imageScale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// 画面を薄暗くする
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
 			L"BLIND",										// 登録キー
 			SimpleMath::Vector2::Zero,						// 座標
 			{ 1.0f,1.0f,1.0f,0.5f },						// 色
-			1.0f,											// 拡大率
+			1.0f * imageScale,								// 拡大率
 			SimpleMath::Vector2::Zero						// 中心位置
 		);
 
@@ -238,7 +238,7 @@ void ResultScene::Draw()
 			L"COINS",										// 登録キー
 			m_coinsPos,										// 座標
 			{ 1.0f,1.0f,1.0f,1.0f },						// 色
-			IMAGE_RATE * imageScale * 1.0f,					// 拡大率
+			IMAGE_RATE * imageScale,						// 拡大率
 			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
 		);
 
@@ -402,14 +402,14 @@ void ResultScene::CreateWindowDependentResources()
 /// <param name="digitWidth">数字の幅</param>
 /// <param name="digitHeight">数字の高さ</param>
 /// <returns>なし</returns>
-void ResultScene::RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position, float scale, int digitWidth, int digitHeight)
+void ResultScene::RenderDigit(int digit, const SimpleMath::Vector2& position, SimpleMath::Vector2  scale, int digitWidth, int digitHeight)
 {
 	// スプライトの位置を計算
-	float spritePosX = position.x * scale;
-	float spritePosY = position.y * scale;
+	float spritePosX = position.x * scale.x;
+	float spritePosY = position.y * scale.y;
 
 	// スプライトの中心位置を計算
-	SimpleMath::Vector2 center = { spritePosX  * scale / 2.0f, spritePosY  * scale / 2.0f };
+	SimpleMath::Vector2 center = { spritePosX  * scale.x / 2.0f, spritePosY  * scale.y / 2.0f };
 
 	// 切り取り位置の設定
 	RECT_U rect;
