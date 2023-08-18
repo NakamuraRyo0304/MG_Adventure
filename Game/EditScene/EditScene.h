@@ -20,7 +20,7 @@
 using MapState = MapLoad::BoxState;
 
 class UserInterface;
-class EditScene : public IScene
+class EditScene final : public IScene
 {
 private:
 	// タイマー

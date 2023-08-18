@@ -13,7 +13,7 @@
 #include "../IScene.h"
 
 class Blocks;
-class SelectScene : public IScene
+class SelectScene final : public IScene
 {
 private:
 

@@ -11,7 +11,7 @@
 
 #include "../IScene.h"
 
-class TitleScene : public IScene
+class TitleScene final : public IScene
 {
 private:
 	// タイマー

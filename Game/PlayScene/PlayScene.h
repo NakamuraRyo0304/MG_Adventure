@@ -20,7 +20,7 @@ class PlayerShadow;
 class PlayUI;
 class Blocks;
 class ThirdPersonCamera;
-class PlayScene : public IScene
+class PlayScene final : public IScene
 {
 private:
 	// タイマー

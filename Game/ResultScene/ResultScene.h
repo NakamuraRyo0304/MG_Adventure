@@ -12,7 +12,7 @@
 #include "../IScene.h"
 
 class Blocks;
-class ResultScene : public IScene
+class ResultScene final : public IScene
 {
 private:
 	// ÉÇÅ[Éh
