@@ -22,6 +22,14 @@ private:
 	// セレクトフラグ
 	bool is_selectFlag;
 
+	// サイズ
+	DirectX::SimpleMath::Vector2 m_startRate;
+	DirectX::SimpleMath::Vector2 m_exitRate;
+
+	// 色
+	DirectX::SimpleMath::Color m_startColor;
+	DirectX::SimpleMath::Color m_exitColor;
+
 private:
 	// フルスクリーンサイズ
 	DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
