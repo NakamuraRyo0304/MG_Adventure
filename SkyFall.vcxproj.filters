@@ -155,6 +155,18 @@
     <Filter Include="Scenes\TitleScene\Objects\TitleUI">
       <UniqueIdentifier>{b0719780-d5f7-4350-a413-edae7b8899c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Textures\EditScene">
+      <UniqueIdentifier>{5bbfed9e-5864-4179-9609-ce004e514ba6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures\ResultScene">
+      <UniqueIdentifier>{ce8e8b18-cb64-4c58-9c1a-17335cc519ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures\Common">
+      <UniqueIdentifier>{4126d17c-f051-4be2-ac0c-55f8ae1682ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures\PLAY_UI">
+      <UniqueIdentifier>{f3d64e40-0e24-4d52-a60d-4d7bf3f2c721}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -361,26 +373,8 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Textures\SaveFile.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\Camera.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\CameraMove.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\OpenFile.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\FadeBlind.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
     <Image Include="Resources\Textures\PlayerPoint.png">
       <Filter>Resources\ShaderTextures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\Number.dds">
-      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\FONT\SELECT.dds">
       <Filter>Resources\Textures\FONT</Filter>
@@ -391,20 +385,8 @@
     <Image Include="Resources\Textures\FONT\RETRY.dds">
       <Filter>Resources\Textures\FONT</Filter>
     </Image>
-    <Image Include="Resources\Textures\ResultBack.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
     <Image Include="Resources\Textures\FONT\COINS.dds">
       <Filter>Resources\Textures\FONT</Filter>
-    </Image>
-    <Image Include="Resources\Textures\DeathEffect.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\EditToolBar.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\Clock.dds">
-      <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="Resources\Textures\PlayerShadow.png">
       <Filter>Resources\ShaderTextures</Filter>
@@ -427,12 +409,6 @@
     <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds">
       <Filter>Resources\Textures\BLOCK</Filter>
     </Image>
-    <Image Include="Resources\Textures\ToolOff.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="Resources\Textures\ToolOn.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
     <Image Include="Resources\Textures\TITLE_BUTTON\Exit.dds">
       <Filter>Resources\Textures\TITLE_BUTTON</Filter>
     </Image>
@@ -441,6 +417,42 @@
     </Image>
     <Image Include="Resources\Textures\TITLE_BUTTON\UnderLine.dds">
       <Filter>Resources\Textures\TITLE_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Camera.dds">
+      <Filter>Resources\Textures\EditScene</Filter>
+    </Image>
+    <Image Include="Resources\Textures\CameraMove.dds">
+      <Filter>Resources\Textures\EditScene</Filter>
+    </Image>
+    <Image Include="Resources\Textures\EditToolBar.dds">
+      <Filter>Resources\Textures\EditScene</Filter>
+    </Image>
+    <Image Include="Resources\Textures\OpenFile.dds">
+      <Filter>Resources\Textures\EditScene</Filter>
+    </Image>
+    <Image Include="Resources\Textures\SaveFile.dds">
+      <Filter>Resources\Textures\EditScene</Filter>
+    </Image>
+    <Image Include="Resources\Textures\ToolOn.dds">
+      <Filter>Resources\Textures\EditScene</Filter>
+    </Image>
+    <Image Include="Resources\Textures\ToolOff.dds">
+      <Filter>Resources\Textures\EditScene</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Clock.dds">
+      <Filter>Resources\Textures\ResultScene</Filter>
+    </Image>
+    <Image Include="Resources\Textures\ResultBack.dds">
+      <Filter>Resources\Textures\ResultScene</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Number.dds">
+      <Filter>Resources\Textures\Common</Filter>
+    </Image>
+    <Image Include="Resources\Textures\DeathEffect.dds">
+      <Filter>Resources\Textures\Common</Filter>
+    </Image>
+    <Image Include="Resources\Textures\FadeBlind.dds">
+      <Filter>Resources\Textures\Common</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

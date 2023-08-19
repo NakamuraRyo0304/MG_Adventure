@@ -10,6 +10,9 @@
 // システムマネージャ
 #include "../../../Libraries/SystemManager/SystemManager.h"
 
+// ユーザーユーティリティ
+#include "../../../Libraries/UserUtility.h"
+
 #include "PlayUI.h"
 
  /// <summary>
@@ -42,8 +45,8 @@ PlayUI::~PlayUI()
 /// 作成処理
 /// </summary>
 /// <param name="system">システムマネージャ</param>
-/// <param name="context">ID3D11DeviceContext1ポインタ</param>
-/// <param name="device">ID3D11Device1ポインタ</param>
+/// <param name="context">コンテキストポインタ</param>
+/// <param name="device">デバイスポインタ</param>
 /// <returns>なし</returns>
 void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	ID3D11DeviceContext1* context, ID3D11Device1* device)

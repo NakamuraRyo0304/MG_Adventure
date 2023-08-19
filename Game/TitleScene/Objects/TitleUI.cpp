@@ -37,6 +37,7 @@ TitleUI::TitleUI(const SimpleMath::Vector2& windowSize):
 /// <returns>‚È‚µ</returns>
 TitleUI::~TitleUI()
 {
+	Finalize();
 }
 
 /// <summary>
@@ -73,13 +74,21 @@ void TitleUI::Update(const bool& selectFlag)
 {
 	if (selectFlag) // True‚ÌŽž‚ÍStart
 	{
+		// ‰æ‘œ‚ÌŠg‘å—¦
 		m_startRate = UserUtility::Lerp(m_startRate, SimpleMath::Vector2{ 1.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
 		m_exitRate  = UserUtility::Lerp(m_exitRate,  SimpleMath::Vector2{ 0.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
+		// ‰æ‘œ‚Ì“§–¾“x
+		m_startColor = SimpleMath::Vector4{ 1.0f,1.0f,1.0f,1.0f };
+		m_exitColor  = SimpleMath::Vector4{ 1.0f,1.0f,1.0f,0.5f };
 	}
 	else			// False‚ÌŽž‚ÍExit
 	{
+		// ‰æ‘œ‚ÌŠg‘å—¦
 		m_startRate = UserUtility::Lerp(m_startRate, SimpleMath::Vector2{ 0.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
 		m_exitRate  = UserUtility::Lerp(m_exitRate,  SimpleMath::Vector2{ 1.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
+		// ‰æ‘œ‚Ì“§–¾“x
+		m_startColor = SimpleMath::Vector4{ 1.0f,1.0f,1.0f,0.5f };
+		m_exitColor  = SimpleMath::Vector4{ 1.0f,1.0f,1.0f,1.0f };
 	}
 }
 
@@ -97,7 +106,7 @@ void TitleUI::Render()
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Start",
 		SimpleMath::Vector2{ 100.0f,720.0f } * posRate,
-		SimpleMath::Color{ 1.0f,1.0f,1.0f,1.0f },
+		m_startColor,
 		1.0f * posRate,
 		SimpleMath::Vector2::Zero
 	);
@@ -105,7 +114,7 @@ void TitleUI::Render()
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Exit",
 		SimpleMath::Vector2{ 1000.0f,720.0f } * posRate,
-		SimpleMath::Color{ 1.0f,1.0f,1.0f,1.0f },
+		m_exitColor,
 		1.0f * posRate,
 		SimpleMath::Vector2::Zero
 	);
@@ -136,4 +145,5 @@ void TitleUI::Render()
 /// <returns>‚È‚µ</returns>
 void TitleUI::Finalize()
 {
+	m_system.reset();
 }
