@@ -220,6 +220,23 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 				lights->SetLightDiffuseColor(1, lightColor);
 				lights->SetLightDiffuseColor(2, lightColor);
 			}
+
+			// フォグ
+			auto fog = dynamic_cast<IEffectFog*>(effect);
+			if (fog)
+			{
+				// 霧を使うシェーダーに切り替える
+				fog->SetFogEnabled(true);
+
+				// フォグの色を決める
+				fog->SetFogColor(Colors::White);
+
+				// スタート
+				fog->SetFogStart(-50.0f);
+
+				// エンド
+				fog->SetFogEnd(150.0f);
+			}
 		};
 
 
