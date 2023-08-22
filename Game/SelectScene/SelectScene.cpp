@@ -193,12 +193,8 @@ void SelectScene::Draw()
 /// <returns>なし</returns>
 void SelectScene::Finalize()
 {
-	// マップの後処理
 	// モデル削除
-	for (int i = 0; i < MAX_STAGE_NUM; ++i)
-	{
-		m_blocks[i]->Finalize();
-	}
+	m_blocks[0]->Finalize();
 }
 
 /// <summary>

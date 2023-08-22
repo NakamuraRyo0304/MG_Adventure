@@ -266,11 +266,32 @@ void TitleScene::CreateWindowDependentResources()
 
 	// ステージモデル
 	m_miniatureModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleStage.cmo");
+	m_miniatureModel->UpdateEffects([](IEffect* effect)
+		{
+			// フォグ
+			auto fog = dynamic_cast<IEffectFog*>(effect);
+			if (fog)
+			{
+				// 霧を使うシェーダーに切り替える
+				fog->SetFogEnabled(true);
+
+				// フォグの色を決める
+				fog->SetFogColor(Colors::White);
+
+				// スタート
+				fog->SetFogStart(0.0f);
+
+				// エンド
+				fog->SetFogEnd(50.0f);
+			}
+		}
+	);
 
 	// スカイドーム
 	m_skyDomeModel = ModelFactory::GetCreateModel(device, L"Resources/Models/ShineSky.cmo");
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
+			// ライティング
 			auto lights = dynamic_cast<IEffectLights*>(effect);
 			if (lights)
 			{
@@ -286,6 +307,7 @@ void TitleScene::CreateWindowDependentResources()
 			}
 		}
 	);
+
 
 	// UIの初期化
 	m_titleUI = std::make_unique<TitleUI>(SimpleMath::Vector2{ width, height });
