@@ -167,6 +167,9 @@
     <Filter Include="Resources\Textures\PLAY_UI">
       <UniqueIdentifier>{f3d64e40-0e24-4d52-a60d-4d7bf3f2c721}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Textures\PLAY_UI\PLAY_HELP">
+      <UniqueIdentifier>{8a98519b-37bd-4a79-be13-4abedcb3ba54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -453,6 +456,12 @@
     </Image>
     <Image Include="Resources\Textures\FadeBlind.dds">
       <Filter>Resources\Textures\Common</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_HELP\Help.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_HELP\HelpBack.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

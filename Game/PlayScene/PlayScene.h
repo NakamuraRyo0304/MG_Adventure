@@ -66,6 +66,9 @@ private:
 	// 前回のインデックス
 	std::deque<int> m_prevIndex;
 
+	// ヘルプ表示フラグ
+	bool is_helpFlag;
+
 private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;

@@ -119,6 +119,12 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 
 	// UIの更新
 	m_titleUI->Update(is_gameFlag);
+
+	// エスケープで終了
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
+	{
+		ExitApp();
+	}
 }
 
 /// <summary>

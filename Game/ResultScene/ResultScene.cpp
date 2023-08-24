@@ -190,6 +190,12 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 			break;
 		}
 	}
+
+	// エスケープで終了
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
+	{
+		ExitApp();
+	}
 }
 
 /// <summary>

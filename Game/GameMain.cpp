@@ -84,12 +84,6 @@ void GameMain::Update(const DX::StepTimer& timer)
 	auto ms = Mouse::Get().GetState();
 	m_mouseStateTracker->Update(ms);
 
-	// エスケープでゲーム終了
-	if (kb.Escape)
-	{
-		m_nowScene->ExitApp();
-	}
-
 	// 次のシーンが設定されていたらシーン切り替え
 	if (m_nextScene != SCENE::NONE && m_fade->GetEndFlag())
 	{

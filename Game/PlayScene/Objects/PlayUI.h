@@ -33,6 +33,9 @@ private:
 	// 落下エフェクトフラグ
 	bool is_effectFlag;
 
+	// 操作説明表示フラグ
+	bool is_helpFlag;
+
 
 public:
 	PlayUI(const DirectX::SimpleMath::Vector2& windowSize);
@@ -60,6 +63,9 @@ public:
 
 	// エフェクトフラグのセット
 	void SetEffectFlag(const bool& flag) { is_effectFlag = flag; }
+
+	// ヘルプフラグのセット
+	void SetHelpFlag(const bool& flag) { is_helpFlag = flag; }
 };
 
 #endif //PLAYUI

@@ -92,6 +92,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// UIの処理
 	m_userInterface->Update(mouseState);
 
+	// 選択しているオブジェクトを格納
 	m_nowState = m_userInterface->GetNowState();
 
 	// セーブフラグがたったらファイルを保存
@@ -118,7 +119,6 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
 	}
 
-
 	// カメラモードじゃなければ編集できる
 	if (m_userInterface->GetCameraFlag() == false)
 	{
@@ -129,6 +129,12 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		ChangeScene(SCENE::SELECT);
+	}
+
+	// エスケープで終了
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
+	{
+		ExitApp();
 	}
 }
 

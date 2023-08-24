@@ -51,7 +51,8 @@ PlayScene::PlayScene() :
 	is_boxCol{},					// 立方体当たり判定
 	m_skyDomeModel{ nullptr },		// スカイドームモデル
 	m_skyColor{},					// 空の変化
-	is_thirdPersonMode{false}		// サードパーソンモード
+	is_thirdPersonMode{false},		// サードパーソンモード
+	is_helpFlag{false}				// ヘルプ表示フラグ
 {
 }
 
@@ -105,6 +106,9 @@ void PlayScene::Initialize()
 
 	// サードパーソンモードを切る
 	is_thirdPersonMode = false;
+
+	// ヘルプを表示しない
+	is_helpFlag = false;
 }
 
 /// <summary>
@@ -124,6 +128,16 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// マウス情報を取得する
 	GetSystemManager()->GetMouseTrack()->Update(mouseState);
+
+	// ヘルプ表示を切り替える
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Escape))
+	{
+		is_helpFlag = !is_helpFlag;
+		m_userInterFace->SetHelpFlag(is_helpFlag);
+	}
+
+	// ヘルプ表示中は処理しない
+	if (is_helpFlag) return;
 
 	// カメラの更新
 	if (is_thirdPersonMode)
