@@ -632,7 +632,7 @@ void PlayScene::UpdateSky()
 /// スタートのカウントダウン
 /// </summary>
 /// <param name="引数無し"></param>
-/// <returns>なし</returns>
+/// <returns>終わっていたらTrueを返す</returns>
 bool PlayScene::StartTimer()
 {
 	m_startTimer--;

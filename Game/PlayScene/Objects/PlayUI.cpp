@@ -26,6 +26,7 @@ PlayUI::PlayUI(const SimpleMath::Vector2& windowSize):
 	m_timeLimit{0},
     m_oneSecPos{SimpleMath::Vector2::Zero},
     m_tenSecPos{SimpleMath::Vector2::Zero},
+	m_countDownPos{SimpleMath::Vector2::Zero},
 	is_effectFlag{false},
 	is_helpFlag{false}
 {
@@ -64,17 +65,20 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	m_system->GetDrawSprite()->AddTextureData(L"Help", L"Resources/Textures/PLAY_HELP/Help.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"HelpBack", L"Resources/Textures/PLAY_HELP/HelpBack.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp", L"Resources/Textures/PLAY_HELP/OpenHelp.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"GameStart", L"Resources/Textures/PLAY_HELP/GameStart.dds", device);
 
 	// 比率を計算
 	SimpleMath::Vector2 span = m_windowSize / FULL_SCREEN_SIZE;
 
 	// スプライトの位置を計算
-	m_oneSecPos = { 1010.0f * span.x, 80.0f * span.y };
-	m_tenSecPos = {  910.0f * span.x, 80.0f * span.y };
+	m_oneSecPos	   = { 1010.0f * span.x, 80.0f * span.y };
+	m_tenSecPos	   = {  910.0f * span.x, 80.0f * span.y };
+	m_countDownPos = {  960.0f * span.x, 80.0f * span.y };
 
     // 座標補正
-    m_oneSecPos.x -= 50.0f * span.x;
-    m_tenSecPos.x -= 50.0f * span.x;
+    m_oneSecPos.x	 -= NUMBER_SPRITE_SIZE / 2 * span.x;
+    m_tenSecPos.x	 -= NUMBER_SPRITE_SIZE / 2 * span.x;
+	m_countDownPos.x -= NUMBER_SPRITE_SIZE / 2 * span.x;
 
 	// 落下フラグを切る
 	is_effectFlag = false;
@@ -105,15 +109,11 @@ void PlayUI::Render()
     // 秒数を計算
     int oneSec = m_timeLimit / 60;
 
-    // 数字の幅と高さ
-    const int digitWidth = 100;
-    const int digitHeight = 100;
-
     // 一桁目の数字を表示
-    RenderDigit(oneSec % 10, m_oneSecPos, scale, digitWidth, digitHeight);
+    RenderDigit(oneSec % 10, m_oneSecPos, scale, NUMBER_SPRITE_SIZE, NUMBER_SPRITE_SIZE);
 
     // 十の桁の数字を表示
-    RenderDigit((oneSec / 10) % 10, m_tenSecPos, scale, digitWidth, digitHeight);
+    RenderDigit((oneSec / 10) % 10, m_tenSecPos, scale, NUMBER_SPRITE_SIZE, NUMBER_SPRITE_SIZE);
 
 	// 落下エフェクト
 	if (is_effectFlag)
@@ -164,8 +164,29 @@ void PlayUI::Render()
 /// <returns>なし</returns>
 void PlayUI::RenderCountDown(const float& countDown)
 {
-	countDown;
+	// 比率を計算
+	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
 
+	if (static_cast<int>(countDown / 60) == 0)
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"GameStart",                      // 登録キー
+			SimpleMath::Vector2::Zero,         // 座標
+			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
+			scale,                             // 拡大率
+			SimpleMath::Vector2::Zero          // 中心位置
+		);
+		return;
+	}
+
+	// 画像表示
+	RenderDigit(
+		static_cast<int>(countDown / 60),
+		m_countDownPos,
+		scale,
+		NUMBER_SPRITE_SIZE,
+		NUMBER_SPRITE_SIZE
+	);
 }
 
 /// <summary>
