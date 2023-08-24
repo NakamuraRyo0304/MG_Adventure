@@ -130,7 +130,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	GetSystemManager()->GetMouseTrack()->Update(mouseState);
 
 	// ヘルプ表示を切り替える
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Escape))
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Enter))
 	{
 		is_helpFlag = !is_helpFlag;
 		m_userInterFace->SetHelpFlag(is_helpFlag);
@@ -262,6 +262,12 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_player->GetDeathFlag())
 	{
 		ChangeScene(SCENE::PLAY);
+	}
+
+	// エスケープで終了
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
+	{
+		ExitApp();
 	}
 }
 

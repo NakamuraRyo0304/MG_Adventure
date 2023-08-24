@@ -463,6 +463,9 @@
     <Image Include="Resources\Textures\PLAY_HELP\HelpBack.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
     </Image>
+    <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">

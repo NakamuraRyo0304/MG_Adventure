@@ -63,6 +63,7 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	m_system->GetDrawSprite()->AddTextureData(L"Death", L"Resources/Textures/DeathEffect.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"Help", L"Resources/Textures/PLAY_HELP/Help.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"HelpBack", L"Resources/Textures/PLAY_HELP/HelpBack.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp", L"Resources/Textures/PLAY_HELP/OpenHelp.dds", device);
 
 	// 比率を計算
 	SimpleMath::Vector2 span = m_windowSize / FULL_SCREEN_SIZE;
@@ -138,6 +139,16 @@ void PlayUI::Render()
 		);
 		m_system->GetDrawSprite()->DrawTexture(
 			L"Help",                           // 登録キー
+			SimpleMath::Vector2::Zero,         // 座標
+			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
+			scale,                             // 拡大率
+			SimpleMath::Vector2::Zero          // 中心位置
+		);
+	}
+	else
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"OpenHelp",                       // 登録キー
 			SimpleMath::Vector2::Zero,         // 座標
 			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
 			scale,                             // 拡大率

@@ -286,6 +286,7 @@
     <Image Include="Resources\Textures\PlayerShadow.png" />
     <Image Include="Resources\Textures\PLAY_HELP\Help.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\HelpBack.dds" />
+    <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds" />
     <Image Include="Resources\Textures\ResultBack.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
     <Image Include="Resources\Textures\TITLE_BUTTON\Exit.dds" />
