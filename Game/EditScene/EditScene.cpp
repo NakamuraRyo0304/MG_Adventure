@@ -399,8 +399,7 @@ void EditScene::EditMap()
 		obj.hit = is_boxCol.IsHitBoxFlag();
 
 		// クリックでブロック設置
-		if (obj.hit && GetSystemManager()->GetMouseTrack()->leftButton ==
-			Mouse::ButtonStateTracker::RELEASED)
+		if (obj.hit &&  mouse.leftButton)
 		{
 			obj.id = m_nowState;
 		}
