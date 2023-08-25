@@ -129,6 +129,12 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// マウス情報を取得する
 	GetSystemManager()->GetMouseTrack()->Update(mouseState);
 
+	// エスケープで終了
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
+	{
+		ExitApp();
+	}
+
 	// ヘルプ表示を切り替える
 	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Enter) && StartTimer())
 	{
@@ -262,12 +268,6 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_player->GetDeathFlag())
 	{
 		ChangeScene(SCENE::PLAY);
-	}
-
-	// エスケープで終了
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
-	{
-		ExitApp();
 	}
 }
 

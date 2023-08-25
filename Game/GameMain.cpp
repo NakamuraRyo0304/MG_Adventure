@@ -25,14 +25,14 @@
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
 GameMain::GameMain():
-	m_nextScene{ SCENE::TITLE },
-	m_prevScene{ SCENE::NONE },
-	m_nowScene{ nullptr },
-	m_num{1},
-	m_clearTime{0.0f},
-	m_coinNum{0},
-	m_screenWidth{},
-	m_screenHeight{}
+	m_nextScene{ SCENE::TITLE },		// 最初のシーン
+	m_prevScene{ SCENE::NONE },			// 前回のシーン
+	m_nowScene{ nullptr },				// 今のシーンポインタ
+	m_num{1},							// ステージ番号
+	m_clearTime{0.0f},					// クリアタイム
+	m_coinNum{0},						// 獲得コイン数
+	m_screenWidth{},					// スクリーンサイズ(横)
+	m_screenHeight{}					// スクリーンサイズ(縦)
 {
 }
 

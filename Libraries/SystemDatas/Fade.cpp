@@ -99,8 +99,12 @@ void Fade::Update()
 /// <returns>なし</returns>
 void Fade::Draw()
 {
+	// フェードが終わっていたら描画しない
+	if (is_endFlag) return;
+
 	m_spriteBatch->Begin();
 
+	// フェード用画像の描画
 	m_spriteBatch->Draw(
 		m_SRV.Get(),												// スプライト
 		SimpleMath::Vector2{0.0f},									// 座標
