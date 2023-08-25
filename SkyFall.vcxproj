@@ -213,6 +213,7 @@
     <ClInclude Include="Libraries\SystemDatas\GridFloor.h" />
     <ClInclude Include="Libraries\SystemDatas\LoadFile.h" />
     <ClInclude Include="Libraries\SystemDatas\MapLoad.h" />
+    <ClInclude Include="Libraries\SystemDatas\MouseCursor.h" />
     <ClInclude Include="Libraries\SystemDatas\ParticleUtility.h" />
     <ClInclude Include="Libraries\SystemDatas\RayCast.h" />
     <ClInclude Include="Libraries\SystemManager\SystemManager.h" />
@@ -248,6 +249,7 @@
     <ClCompile Include="Libraries\SystemDatas\GridFloor.cpp" />
     <ClCompile Include="Libraries\SystemDatas\LoadFile.cpp" />
     <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\MouseCursor.cpp" />
     <ClCompile Include="Libraries\SystemDatas\ParticleUtility.cpp" />
     <ClCompile Include="Libraries\SystemDatas\RayCast.cpp" />
     <ClCompile Include="Libraries\SystemManager\SystemManager.cpp" />

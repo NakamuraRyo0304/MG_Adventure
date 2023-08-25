@@ -170,6 +170,9 @@
     <Filter Include="Resources\Textures\PLAY_UI\PLAY_HELP">
       <UniqueIdentifier>{8a98519b-37bd-4a79-be13-4abedcb3ba54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\MouseCursor">
+      <UniqueIdentifier>{dec65e1a-97d1-40d8-88cf-2337775d9678}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -271,6 +274,9 @@
     <ClInclude Include="Game\TitleScene\Objects\TitleUI.h">
       <Filter>Scenes\TitleScene\Objects\TitleUI</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\MouseCursor.h">
+      <Filter>Common\MouseCursor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -365,6 +371,9 @@
     </ClCompile>
     <ClCompile Include="Game\TitleScene\Objects\TitleUI.cpp">
       <Filter>Scenes\TitleScene\Objects\TitleUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\MouseCursor.cpp">
+      <Filter>Common\MouseCursor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

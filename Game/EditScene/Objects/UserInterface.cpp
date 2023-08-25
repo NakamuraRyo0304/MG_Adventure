@@ -19,7 +19,7 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-UserInterface::UserInterface(const DirectX::SimpleMath::Vector2& windowSize):
+UserInterface::UserInterface(const SimpleMath::Vector2& windowSize):
 	m_system{},						// システムマネージャ
 	m_windowSize{windowSize},		// 画面サイズ
 	m_imageHitter{},				// 当たり判定
