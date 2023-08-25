@@ -130,7 +130,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	GetSystemManager()->GetMouseTrack()->Update(mouseState);
 
 	// ƒwƒ‹ƒv•\Ž¦‚ðØ‚è‘Ö‚¦‚é
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Enter))
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Enter) && StartTimer())
 	{
 		is_helpFlag = !is_helpFlag;
 		m_userInterFace->SetHelpFlag(is_helpFlag);
