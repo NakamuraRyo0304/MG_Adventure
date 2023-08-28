@@ -20,6 +20,7 @@
 using MapState = MapLoad::BoxState;
 
 class UserInterface;
+class MouseCursor;
 class EditScene final : public IScene
 {
 private:
@@ -30,6 +31,7 @@ private:
 	enum { WRITE, READ };
 
 	// カーソル位置
+	std::unique_ptr<MouseCursor> m_mouseCursor;
 	DirectX::SimpleMath::Vector3 m_cursorPos;
 	const float CURSOR_MIN = -2.0f;
 	const float CURSOR_MAX = static_cast<float>(MapLoad::MAP_HEIGHT);
@@ -47,20 +49,21 @@ private:
 	std::unique_ptr<UserInterface> m_userInterface;
 	std::shared_ptr<SystemManager> m_sharedSystem;
 
-	// モデル
-	std::unique_ptr<DirectX::Model>m_grassModel;		// 草モデル
-	std::unique_ptr<DirectX::Model>m_noneModel;			// 消しゴムモデル
-	std::unique_ptr<DirectX::Model>m_coinModel;			// コインモデル
-	std::unique_ptr<DirectX::Model>m_clowdModel;		// 雲モデル
-	std::unique_ptr<DirectX::Model>m_resetPtModel;	// 雲リセットモデル
-	std::unique_ptr<DirectX::Model>m_skyDomeModel;		// スカイドームモデル
-	std::unique_ptr<DirectX::Model>m_playerModel;		// プレイヤモデル
-
 	// 現在のブロックステータス
 	int m_nowState;
 
 	// パスの格納
 	std::wstring m_filePath;
+
+private:
+	// モデル
+	std::unique_ptr<DirectX::Model>m_grassModel;		// 草モデル
+	std::unique_ptr<DirectX::Model>m_noneModel;			// 消しゴムモデル
+	std::unique_ptr<DirectX::Model>m_coinModel;			// コインモデル
+	std::unique_ptr<DirectX::Model>m_clowdModel;		// 雲モデル
+	std::unique_ptr<DirectX::Model>m_resetPtModel;		// 雲リセットモデル
+	std::unique_ptr<DirectX::Model>m_skyDomeModel;		// スカイドームモデル
+	std::unique_ptr<DirectX::Model>m_playerModel;		// プレイヤモデル
 
 private:
 	// マップサイズ(Stage)

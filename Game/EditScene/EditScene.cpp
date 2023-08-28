@@ -10,6 +10,9 @@
 // UI
 #include "Objects/UserInterface.h"
 
+// マウスカーソル
+#include "../../Libraries/SystemDatas/MouseCursor.h"
+
 #include "EditScene.h"
 
  /// <summary>
@@ -19,20 +22,21 @@
  /// <returns>なし</returns>
 EditScene::EditScene() :
 	IScene(),
-	m_timer{0.0f},					// タイマー
-	m_cursorPos{0.0f,0.0f,0.0f},	// カーソルの位置
-	m_mapObj{0},					// 格納配列
-	m_nowState{},					// 現在のブロックの種類
-	m_map{},						// マップ
-	is_boxCol{},					// 立方体当たり判定
-	m_grassModel{ nullptr },		// モデル＿草
-	m_noneModel{ nullptr },			// モデル＿消しゴム
-	m_coinModel{ nullptr },			// モデル＿コイン
-	m_clowdModel{ nullptr },		// モデル＿雲
-	m_resetPtModel{ nullptr },		// モデル＿リセットポイント
-	m_skyDomeModel{ nullptr },		// モデル＿スカイドーム
-	m_sharedSystem{}				// システムデータ
+	m_timer{0.0f},						// タイマー
+	m_cursorPos{0.0f,0.0f,0.0f},		// カーソルの位置
+	m_mapObj{0},						// 格納配列
+	m_nowState{},						// 現在のブロックの種類
+	m_map{},							// マップ
+	is_boxCol{},						// 立方体当たり判定
+	m_grassModel{ nullptr },			// モデル＿草
+	m_noneModel{ nullptr },				// モデル＿消しゴム
+	m_coinModel{ nullptr },				// モデル＿コイン
+	m_clowdModel{ nullptr },			// モデル＿雲
+	m_resetPtModel{ nullptr },			// モデル＿リセットポイント
+	m_skyDomeModel{ nullptr },			// モデル＿スカイドーム
+	m_sharedSystem{}					// システムデータ
 {
+	ShowCursor(false);
 }
 
 /// <summary>
@@ -43,6 +47,7 @@ EditScene::EditScene() :
 EditScene::~EditScene()
 {
 	Finalize();
+	ShowCursor(true);
 }
 
 /// <summary>
@@ -91,6 +96,9 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// UIの処理
 	m_userInterface->Update(mouseState);
+
+	// マウスカーソルの位置を更新
+	m_mouseCursor->Update(SimpleMath::Vector2{ static_cast<float>(mouseState.x),static_cast<float>(mouseState.y) });
 
 	// 選択しているオブジェクトを格納
 	m_nowState = m_userInterface->GetNowState();
@@ -215,6 +223,9 @@ void EditScene::Draw()
 
 	// 画像の描画
 	m_userInterface->Render();
+
+	// マウスカーソルの描画
+	m_mouseCursor->Render();
 }
 
 /// <summary>
@@ -355,6 +366,10 @@ void EditScene::CreateWindowDependentResources()
 			}
 		}
 	);
+
+	// マウスカーソルの作成
+	m_mouseCursor = std::make_unique<MouseCursor>(context);
+	m_mouseCursor->Initialize(L"Resources/Textures/MouseCursor.dds", device);
 }
 
 /// <summary>
