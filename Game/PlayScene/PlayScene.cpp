@@ -259,6 +259,12 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 		// 当たり判定の更新
 		Judgement();
+
+		// 衝突したオブジェクトごとに押し戻し処理を行う
+		for (auto& obj : m_hitObjects)
+		{
+			ApplyPushBack(obj);
+		}
 	}
 
 	// UIの更新
@@ -510,12 +516,6 @@ void PlayScene::Judgement()
 				m_hitObjects.push_back(obj);
 			}
 		}
-	}
-
-	// 衝突したオブジェクトごとに押し戻し処理を行う
-	for (auto& obj : m_hitObjects)
-	{
-		ApplyPushBack(obj);
 	}
 }
 
