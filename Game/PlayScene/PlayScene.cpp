@@ -151,7 +151,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		m_thirdCamera->UpdateFollow(
 			m_player->GetPosition(),				// ターゲット座標
 			m_player->GetNeckRotate(),				// 回転量
-			SimpleMath::Vector3(0.0f, 2.0f, 4.0f)	// ターゲットからの距離
+			SimpleMath::Vector3(0.0f, 2.5f, 6.0f)	// ターゲットからの距離
 		);
 	}
 	else

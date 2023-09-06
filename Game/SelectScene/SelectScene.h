@@ -53,7 +53,9 @@ private:
 	// 切り替え時読み込み演出
 	float m_targetY;
 
+	// ブロックのローディング
 	std::future<void> m_loadTask;
+	std::mutex m_mutex;
 
 public:
 

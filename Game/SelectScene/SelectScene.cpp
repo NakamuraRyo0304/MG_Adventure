@@ -7,6 +7,9 @@
 
 #include "pch.h"
 
+#include <thread>
+#include <mutex>
+
 // マップローダー
 #include "Libraries/SystemDatas/MapLoad.h"
 
@@ -25,7 +28,8 @@ SelectScene::SelectScene():
 	m_timer{},				// タイマー
 	m_flashCount{},			// 点滅のカウンタ
 	m_stageNum{1},			// ステージ番号
-	m_targetY{}				// カメラのターゲットのY座標
+	m_targetY{},			// カメラのターゲットのY座標
+	m_mutex{}				// ロック
 {
 }
 
@@ -187,7 +191,6 @@ void SelectScene::Draw()
 	stageMat *= SimpleMath::Matrix::CreateScale(10.0f);
 	stageMat *= SimpleMath::Matrix::CreateTranslation(sinf(rotValue), 10.0f, cosf(rotValue));
 
-
 	// ステージ番号表示
 	m_stageModels[m_stageNum]->Draw(context, states, stageMat, view, proj);
 }
@@ -251,7 +254,11 @@ void SelectScene::CreateWindowDependentResources()
 	);
 
 	// ブロックの作成を裏で処理
-	m_loadTask = std::async(std::launch::async, [&]() { LoadStage(device); });
+	{
+		std::lock_guard<std::mutex>guard(m_mutex);
+
+		m_loadTask = std::async(std::launch::async, [&]() { LoadStage(device); });
+	}
 
 	// ステージ番号のモデル
 	for (int i = 0; i < MAX_STAGE_NUM; ++i)
@@ -263,8 +270,7 @@ void SelectScene::CreateWindowDependentResources()
 		}
 		else
 		{
-			std::wstring stageNumber = std::to_wstring(i);
-			std::wstring path = L"Resources/Models/Stage" + stageNumber + L".cmo";
+			std::wstring path = L"Resources/Models/Stage" + std::to_wstring(i) + L".cmo";
 			m_stageModels[i] = ModelFactory::GetCreateModel(device, path.c_str());
 		}
 	}

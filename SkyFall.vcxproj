@@ -282,6 +282,7 @@
     <Image Include="Resources\Textures\FONT\RETRY.dds" />
     <Image Include="Resources\Textures\FONT\SELECT.dds" />
     <Image Include="Resources\Textures\FONT\TITLE.dds" />
+    <Image Include="Resources\Textures\LoadingCircle.dds" />
     <Image Include="Resources\Textures\Number.dds" />
     <Image Include="Resources\Textures\OpenFile.dds" />
     <Image Include="Resources\Textures\PlayerPoint.png" />
