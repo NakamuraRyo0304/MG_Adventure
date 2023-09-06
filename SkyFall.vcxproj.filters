@@ -475,9 +475,6 @@
     <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
     </Image>
-    <Image Include="Resources\Textures\LoadingCircle.dds">
-      <Filter>Resources\Textures</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -571,6 +568,9 @@
     </None>
     <None Include="Resources\Models\Head.cmo">
       <Filter>Resources\Models\Player</Filter>
+    </None>
+    <None Include="Resources\Models\TitleLogoVer2.cmo">
+      <Filter>Resources\Models\TitleScene</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

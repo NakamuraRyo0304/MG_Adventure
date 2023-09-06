@@ -22,11 +22,6 @@ private:
 
 	// 点滅カウンタ
 	float m_flashCount;
-	const float MAX_FLASH = 180.0f;
-
-	// カメラアングル
-	const float CAMERA_ANGLE = 45.0f;
-	const float CAMERA_POS_Y = 30.0f;
 
 	// スカイドーム
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
@@ -34,11 +29,27 @@ private:
 	// ステージ番号
 	int m_stageNum;
 
-	// 最大ステージ数
-	const int MAX_STAGE_NUM = 10;
 	std::unique_ptr<Blocks> m_blocks[10];
 	std::unique_ptr<DirectX::Model> m_stageModels[10];
 
+	// 切り替え時読み込み演出
+	float m_targetY;
+
+	// ブロックのローディング
+	std::future<void> m_loadTask;
+	std::mutex m_mutex;
+
+private:
+	// 定数-----------------------------------------------------------------------------------
+
+	const float MAX_FLASH = 180.0f;
+
+	// カメラアングル
+	const float CAMERA_ANGLE = 45.0f;
+	const float CAMERA_POS_Y = 30.0f;
+
+	// 最大ステージ数
+	const int MAX_STAGE_NUM = 10;
 	// カメラの回転半径
 	const float CAMERA_RADIUS = 4.0f;
 
@@ -49,13 +60,6 @@ private:
 	const float UP_VALUE = 60.0f;
 	// 見下げ速度
 	const float DOWN_SPEED = 0.7f;
-
-	// 切り替え時読み込み演出
-	float m_targetY;
-
-	// ブロックのローディング
-	std::future<void> m_loadTask;
-	std::mutex m_mutex;
 
 public:
 

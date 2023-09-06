@@ -123,15 +123,15 @@ void TitleUI::Render()
 	m_system->GetDrawSprite()->DrawTexture(
 		L"UnderLine",
 		SimpleMath::Vector2{ 100.0f,720.0f } * posRate,
-		SimpleMath::Color{ 1.0f,1.0f,1.0f,1.0f },
+		SimpleMath::Vector4::One,
 		m_startRate * posRate,
 		SimpleMath::Vector2::Zero,
-		{0,0,768,256}
+		{ 0,0,768,256 }
 	);
 	m_system->GetDrawSprite()->DrawTexture(
 		L"UnderLine",
 		SimpleMath::Vector2{ 1000.0f,720.0f } * posRate,
-		SimpleMath::Color{ 1.0f,1.0f,1.0f,1.0f },
+		SimpleMath::Vector4::One,
 		m_exitRate * posRate,
 		SimpleMath::Vector2::Zero,
 		{ 0,0,768,256 }

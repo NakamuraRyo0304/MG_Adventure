@@ -268,7 +268,25 @@ void TitleScene::CreateWindowDependentResources()
 	// モデルの作成---------------------------------------------------------------------------------
 
 	// タイトルロゴ
-	m_titleLogoModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleLogo.cmo");
+	m_titleLogoModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleLogoVer2.cmo");
+	m_titleLogoModel->UpdateEffects([](IEffect* effect)
+		{
+			// ライティング
+			auto lights = dynamic_cast<IEffectLights*>(effect);
+			if (lights)
+			{
+				// ライトの指定
+				lights->SetLightEnabled(0, true);
+				lights->SetLightEnabled(1, true);
+				lights->SetLightEnabled(2, false);
+
+				// ライトの方向を設定
+				SimpleMath::Vector3 lightDirection = -SimpleMath::Vector3::UnitZ;
+				lights->SetLightDirection(0, lightDirection);
+				lights->SetLightDirection(1, lightDirection);
+			}
+		}
+	);
 
 	// ステージモデル
 	m_miniatureModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleStage.cmo");

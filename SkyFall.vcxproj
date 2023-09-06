@@ -282,7 +282,6 @@
     <Image Include="Resources\Textures\FONT\RETRY.dds" />
     <Image Include="Resources\Textures\FONT\SELECT.dds" />
     <Image Include="Resources\Textures\FONT\TITLE.dds" />
-    <Image Include="Resources\Textures\LoadingCircle.dds" />
     <Image Include="Resources\Textures\Number.dds" />
     <Image Include="Resources\Textures\OpenFile.dds" />
     <Image Include="Resources\Textures\PlayerPoint.png" />
@@ -328,6 +327,7 @@
     <None Include="Resources\Models\Stage9.cmo" />
     <None Include="Resources\Models\StageEdit.cmo" />
     <None Include="Resources\Models\TitleLogo.cmo" />
+    <None Include="Resources\Models\TitleLogoVer2.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
     <None Include="Resources\Shaders\PlayerPoint.hlsli" />
     <None Include="Resources\Shaders\PlayerShadow.hlsli" />
