@@ -113,7 +113,11 @@ public:
 	const std::vector<Object>& GetMapData() { return m_mapObj; }
 
 	// ブロック単体の座標ゲッター
-	DirectX::SimpleMath::Vector3& GetBlockPosition(const int& index) { return m_mapObj[index].position; }
+	DirectX::SimpleMath::Vector3& GetBlockPosition(const int& index)
+	{
+		if (index >= m_mapObj.max_size()) throw std::out_of_range("Index out of range");
+		return m_mapObj[index].position;
+	}
 	void SetBlockPosition(const DirectX::SimpleMath::Vector3& newPos, const int& index) { m_mapObj[index].position = newPos; }
 
 	// ブロックの大きさゲッター
