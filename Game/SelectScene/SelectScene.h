@@ -13,6 +13,7 @@
 #include "../IScene.h"
 
 class Blocks;
+class SelectUI;
 class SelectScene final : public IScene
 {
 private:
@@ -29,6 +30,7 @@ private:
 	// ステージ番号
 	int m_stageNum;
 
+	// ブロックとステージ
 	std::unique_ptr<Blocks> m_blocks[10];
 	std::unique_ptr<DirectX::Model> m_stageModels[10];
 
@@ -38,6 +40,9 @@ private:
 	// ブロックのローディング
 	std::future<void> m_loadTask;
 	std::mutex m_mutex;
+
+	// UI
+	std::unique_ptr<SelectUI> m_userInterface;
 
 private:
 	// 定数-----------------------------------------------------------------------------------

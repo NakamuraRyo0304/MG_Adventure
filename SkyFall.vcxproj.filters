@@ -176,6 +176,15 @@
     <Filter Include="Resources\Textures\ADHESION">
       <UniqueIdentifier>{94cab510-cd66-4931-8cf4-dbb17e5120f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\SelectScene\Objects">
+      <UniqueIdentifier>{b184d944-50fd-427a-8bb5-0386bea9f225}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\SelectScene\Objects\SelectUI">
+      <UniqueIdentifier>{9670ac7c-69ce-4205-a50f-923f192e9366}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures\SELECT_INFO">
+      <UniqueIdentifier>{74b2bb85-213b-403d-9f9a-c6260d64bd24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -280,6 +289,9 @@
     <ClInclude Include="Libraries\SystemDatas\MouseCursor.h">
       <Filter>Common\MouseCursor</Filter>
     </ClInclude>
+    <ClInclude Include="Game\SelectScene\Objects\SelectUI.h">
+      <Filter>Scenes\SelectScene\Objects\SelectUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -377,6 +389,9 @@
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\MouseCursor.cpp">
       <Filter>Common\MouseCursor</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\SelectScene\Objects\SelectUI.cpp">
+      <Filter>Scenes\SelectScene\Objects\SelectUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -480,6 +495,12 @@
     </Image>
     <Image Include="Resources\Textures\ADHESION\Adhesion1.dds">
       <Filter>Resources\Textures\ADHESION</Filter>
+    </Image>
+    <Image Include="Resources\Textures\SELECT_INFO\LeftArrow.dds">
+      <Filter>Resources\Textures\SELECT_INFO</Filter>
+    </Image>
+    <Image Include="Resources\Textures\SELECT_INFO\RightArrow.dds">
+      <Filter>Resources\Textures\SELECT_INFO</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

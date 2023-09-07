@@ -16,6 +16,9 @@
 // ブロックの作成
 #include "../PlayScene/Objects/Blocks.h"
 
+// UI
+#include "Objects/SelectUI.h"
+
 #include "SelectScene.h"
 
 /// <summary>
@@ -125,6 +128,13 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		m_flashCount = 0.0f;
 	}
 
+	// UIの更新
+	m_userInterface->Update(
+		elapsedTime,	// 時間
+		keyState.Right,	// 右キー判定
+		keyState.Left	// 左キー判定
+	);
+
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
@@ -182,6 +192,9 @@ void SelectScene::Draw()
 
 	//-------------------------------------------------------------------------------------//
 
+	// UIの表示
+	m_userInterface->Render(m_stageNum);
+
 	// 点滅させる
 	if (m_flashCount > MAX_FLASH * 0.5f) return;
 
@@ -204,6 +217,7 @@ void SelectScene::Finalize()
 {
 	// モデル削除
 	m_blocks[0]->Finalize();
+	m_userInterface->Finalize();
 }
 
 /// <summary>
@@ -274,6 +288,10 @@ void SelectScene::CreateWindowDependentResources()
 			m_stageModels[i] = ModelFactory::GetCreateModel(device, path.c_str());
 		}
 	}
+
+	// UIの作成
+	m_userInterface = std::make_unique<SelectUI>(GetSystemManager(), context, device);
+	m_userInterface->Initialize(SimpleMath::Vector2{ width, height });
 }
 
 /// <summary>
