@@ -142,42 +142,40 @@ void TitleScene::Draw()
 	SimpleMath::Matrix logoMat, stageMat, skyMat, view, proj;
 
 	// 移動、回転行列
-	SimpleMath::Matrix logoTrans, logoRot;
-	SimpleMath::Matrix stageTrans, stageRotX, stageRotY, stageScale;
-	SimpleMath::Matrix skyTrans,skyRotX;
+	SimpleMath::Matrix logoTrans, logoRot,								// ロゴ
+					   stageTrans, stageRotX, stageRotY, stageScale,	// ステージ
+					   skyTrans, skyRotX;								// スカイドーム
 
 	// ワールド行列
-	logoMat = SimpleMath::Matrix::Identity;
-	stageMat = SimpleMath::Matrix::Identity;
-	skyMat = SimpleMath::Matrix::Identity;
+	logoMat = stageMat = skyMat = SimpleMath::Matrix::Identity;
 
 	// 回転行列
-	logoRot = SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
-	stageRotX = SimpleMath::Matrix::CreateRotationX(0.3f);
-	stageRotY = SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f);
-	skyRotX = SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
+	logoRot		= SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
+	stageRotX	= SimpleMath::Matrix::CreateRotationX(0.3f);
+	stageRotY	= SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f);
+	skyRotX		= SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
 
 	// 移動行列
-	logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, 2.0f, cosf(m_timer) * 0.5f);
-	stageTrans = SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
-	skyTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_moveY, 0.0f);
+	logoTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, 2.0f, cosf(m_timer) * 0.5f);
+	stageTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
+	skyTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, m_moveY, 0.0f);
 
 	// スケール行列
-	stageScale = SimpleMath::Matrix::CreateScale(1.2f);
+	stageScale	= SimpleMath::Matrix::CreateScale(1.2f);
 
 	// ロゴ
-	logoMat *= logoRot * logoTrans;
+	logoMat		*= logoRot * logoTrans;
 	// ステージ
-	stageMat *= stageScale * stageRotY * stageRotX * stageTrans;
+	stageMat	*= stageScale * stageRotY * stageRotX * stageTrans;
 	// スカイドーム
-	skyMat *= skyRotX;
+	skyMat		*= skyRotX;
 
-	// スタート演出の処理はこの中
+	// スタート演出の処理はこの中を処理する
 	if (is_startFlag)
 	{
 		// スカイドームの回転と移動
-		skyMat *= skyRotX;
-		skyMat *= skyTrans;
+		skyMat	*= skyRotX;
+		skyMat	*= skyTrans;
 
 		// ロゴも一緒に動く
 		m_logoMoveScale *= 1.05f;
@@ -185,15 +183,15 @@ void TitleScene::Draw()
 	}
 
 	// ビュー行列
-	SimpleMath::Vector3    eye(0.0f, 0.1f + m_moveY, 8.0f);
+	SimpleMath::Vector3 eye(0.0f, 0.1f + m_moveY, 8.0f);
 	view = SimpleMath::Matrix::CreateLookAt(eye, SimpleMath::Vector3::Zero, SimpleMath::Vector3::Up);
 
 	// プロジェクション行列
 	proj = GetSystemManager()->GetCamera()->GetProjection();
 
 	// ライトの設定
-	SimpleMath::Vector3 lightDirection(-1.0f, 1.0f, 1.0f);
-	SimpleMath::Color lightColor(0.3f, 0.3f, 0.3f, 1.0f);
+	SimpleMath::Vector3	 lightDirection	(-1.0f, 1.0f, 1.0f);
+	SimpleMath::Color	 lightColor		( 0.3f, 0.3f, 0.3f, 1.0f);
 
 	// アマチュアモデル設定
 	m_miniatureModel->UpdateEffects([&](IEffect* effect)
@@ -201,20 +199,17 @@ void TitleScene::Draw()
 			auto lights = dynamic_cast<IEffectLights*>(effect);
 			if (lights)
 			{
-				// ライトオン
-				lights->SetLightEnabled(0, true);
-				lights->SetLightEnabled(1, true);
-				lights->SetLightEnabled(2, true);
+				for (int i = 0; i < 3; ++i)
+				{
+					// ライトの使用を設定
+					lights->SetLightEnabled(i, true);
 
-				// ライトの方向を設定
-				lights->SetLightDirection(0, lightDirection);
-				lights->SetLightDirection(1, lightDirection);
-				lights->SetLightDirection(2, lightDirection);
+					// ライトの方向を設定
+					lights->SetLightDirection(i, lightDirection);
 
-				// ライトの色を設定
-				lights->SetLightDiffuseColor(0, lightColor);
-				lights->SetLightDiffuseColor(1, lightColor);
-				lights->SetLightDiffuseColor(2, lightColor);
+					// ライトの色を設定
+					lights->SetLightDiffuseColor(i, lightColor);
+				}
 			}
 		});
 	m_miniatureModel->Draw(context, states, stageMat, view, proj);	// ステージ

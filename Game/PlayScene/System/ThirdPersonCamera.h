@@ -21,19 +21,10 @@ private:
 	float m_adhesionTimer;
 	const float CHANGE_SPAN = 120.0f;
 	bool is_changeFlag;
-	enum adhesionType
-	{
-		first,
-		second,
-		third,
-		fourth,
-		fifth,
-		sixth,
-		length
-	};
 
-	// 画像の切り替え
-	adhesionType m_switching;
+private:
+	// フルスクリーンサイズ
+	DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
 	// 画像用にシステムを貰う
 	std::shared_ptr<SystemManager> m_system;

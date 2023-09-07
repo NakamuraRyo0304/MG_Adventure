@@ -267,7 +267,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\ADHESION\Adhesion1.dds" />
-    <Image Include="Resources\Textures\ADHESION\Adhesion2.dds" />
+    <ImageContentTask Include="Resources\Textures\ADHESION\Adhesion1.png" />
     <Image Include="Resources\Textures\BLOCK\ClowdIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\CoinIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds" />

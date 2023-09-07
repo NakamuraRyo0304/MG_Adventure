@@ -481,9 +481,6 @@
     <Image Include="Resources\Textures\ADHESION\Adhesion1.dds">
       <Filter>Resources\Textures\ADHESION</Filter>
     </Image>
-    <Image Include="Resources\Textures\ADHESION\Adhesion2.dds">
-      <Filter>Resources\Textures\ADHESION</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -609,5 +606,10 @@
     <FxCompile Include="Resources\Shaders\PlayerShadowVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Resources\Textures\ADHESION\Adhesion1.png">
+      <Filter>Resources\Textures\ADHESION</Filter>
+    </ImageContentTask>
   </ItemGroup>
 </Project>
