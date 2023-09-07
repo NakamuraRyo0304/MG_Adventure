@@ -23,8 +23,10 @@
 TitleUI::TitleUI(const SimpleMath::Vector2& windowSize):
 	is_selectFlag{},
 	m_windowSize{windowSize},
-	m_startRate{},
-	m_exitRate{},
+	m_sFontRate{},
+	m_eFontRate{},
+	m_sLineRate{},
+	m_eLineRate{},
 	m_startColor{},
 	m_exitColor{}
 {
@@ -56,13 +58,15 @@ void TitleUI::Create(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1
 	m_system->GetDrawSprite()->MakeSpriteBatch(context);
 
 	// 画像の追加
-	m_system->GetDrawSprite()->AddTextureData(L"Start", L"Resources/Textures/TITLE_BUTTON/Start.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Exit", L"Resources/Textures/TITLE_BUTTON/Exit.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Start",		L"Resources/Textures/TITLE_BUTTON/Start.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Exit",		L"Resources/Textures/TITLE_BUTTON/Exit.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"UnderLine", L"Resources/Textures/TITLE_BUTTON/UnderLine.dds", device);
 
 	// 拡大率の初期化
-	m_startRate = { 1.0f,1.0f };
-	m_exitRate  = { 0.0f,1.0f };
+	m_sFontRate = SimpleMath::Vector2{ DEFAULT_FONT_RATE };
+	m_eFontRate = SimpleMath::Vector2{ DEFAULT_FONT_RATE };
+	m_sLineRate = SimpleMath::Vector2{ DEFAULT_FONT_RATE };
+	m_eLineRate = SimpleMath::Vector2{ 0.0f,1.0f };
 }
 
 /// <summary>
@@ -74,19 +78,29 @@ void TitleUI::Update(const bool& selectFlag)
 {
 	if (selectFlag) // Trueの時はStart
 	{
-		// 画像の拡大率
-		m_startRate = UserUtility::Lerp(m_startRate, SimpleMath::Vector2::One,		   SimpleMath::Vector2{ 0.2f });
-		m_exitRate  = UserUtility::Lerp(m_exitRate,  SimpleMath::Vector2{ 0.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
-		// 画像の透明度
+		// 文字の拡大率
+		m_sFontRate = SimpleMath::Vector2{ SELECT_FONT_RATE };
+		m_eFontRate = SimpleMath::Vector2{ DEFAULT_FONT_RATE };
+
+		// 下線の拡大率
+		m_sLineRate  = UserUtility::Lerp(m_sLineRate,  SimpleMath::Vector2::One,	     SimpleMath::Vector2{ 0.2f });
+		m_eLineRate  = UserUtility::Lerp(m_eLineRate,  SimpleMath::Vector2{ 0.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
+
+		// 文字の透明度
 		m_startColor = SimpleMath::Vector4::One;
 		m_exitColor  = SimpleMath::Vector4{ 1.0f,1.0f,1.0f,0.5f };
 	}
 	else			// Falseの時はExit
 	{
-		// 画像の拡大率
-		m_startRate = UserUtility::Lerp(m_startRate, SimpleMath::Vector2{ 0.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
-		m_exitRate  = UserUtility::Lerp(m_exitRate,  SimpleMath::Vector2::One,		   SimpleMath::Vector2{ 0.2f });
-		// 画像の透明度
+		// 文字の拡大率
+		m_sFontRate = SimpleMath::Vector2{ DEFAULT_FONT_RATE };
+		m_eFontRate = SimpleMath::Vector2{ SELECT_FONT_RATE };
+
+		// 下線の拡大率
+		m_sLineRate  = UserUtility::Lerp(m_sLineRate,  SimpleMath::Vector2{ 0.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
+		m_eLineRate  = UserUtility::Lerp(m_eLineRate,  SimpleMath::Vector2::One,		 SimpleMath::Vector2{ 0.2f });
+
+		// 文字の透明度
 		m_startColor = SimpleMath::Vector4{ 1.0f,1.0f,1.0f,0.5f };
 		m_exitColor  = SimpleMath::Vector4::One;
 	}
@@ -102,29 +116,29 @@ void TitleUI::Render()
 	// 画面比率
 	SimpleMath::Vector2 posRate = m_windowSize / FULL_SCREEN_SIZE * 0.5f;
 
-	// スタートの文字
+	// スタートの文字--------------------------------(画面比率の変更を考慮した座標に設定)
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Start",
 		SimpleMath::Vector2{ 2048.0f,1792.0f } * posRate,
 		m_startColor,
-		posRate,
+		posRate * m_sFontRate,
 		SimpleMath::Vector2::Zero
 	);
-	// イグジットの文字
+	// イグジットの文字------------------------------------------------------------------
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Exit",
 		SimpleMath::Vector2{ 2816.0f,1792.0f } * posRate,
 		m_exitColor,
-		posRate,
+		posRate * m_eFontRate,
 		SimpleMath::Vector2::Zero
 	);
 
-	// アンダーライン
+	// アンダーライン--------------------------------------------------------------------
 	m_system->GetDrawSprite()->DrawTexture(
 		L"UnderLine",
 		SimpleMath::Vector2{ 2048.0f,1792.0f } * posRate,
 		SimpleMath::Vector4::One,
-		m_startRate * posRate,
+		m_sLineRate * posRate,
 		SimpleMath::Vector2::Zero,
 		{ 0,0,768,256 }
 	);
@@ -132,7 +146,7 @@ void TitleUI::Render()
 		L"UnderLine",
 		SimpleMath::Vector2{ 2816.0f,1792.0f } * posRate,
 		SimpleMath::Vector4::One,
-		m_exitRate * posRate,
+		m_eLineRate * posRate,
 		SimpleMath::Vector2::Zero,
 		{ 0,0,768,256 }
 	);

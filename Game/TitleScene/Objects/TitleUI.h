@@ -23,8 +23,12 @@ private:
 	bool is_selectFlag;
 
 	// サイズ
-	DirectX::SimpleMath::Vector2 m_startRate;
-	DirectX::SimpleMath::Vector2 m_exitRate;
+	const float SELECT_FONT_RATE = 1.05f;
+	const float DEFAULT_FONT_RATE = 1.0f;
+	DirectX::SimpleMath::Vector2 m_sFontRate;
+	DirectX::SimpleMath::Vector2 m_eFontRate;
+	DirectX::SimpleMath::Vector2 m_sLineRate;
+	DirectX::SimpleMath::Vector2 m_eLineRate;
 
 	// 色
 	DirectX::SimpleMath::Color m_startColor;
