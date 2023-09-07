@@ -23,7 +23,7 @@
 PlayUI::PlayUI(const SimpleMath::Vector2& windowSize):
 	m_system{},
 	m_windowSize{ windowSize },
-	m_timeLimit{0},
+	m_gameTimer{0},
     m_oneSecPos{SimpleMath::Vector2::Zero},
     m_tenSecPos{SimpleMath::Vector2::Zero},
 	m_countDownPos{SimpleMath::Vector2::Zero},
@@ -95,7 +95,7 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 /// <returns>‚È‚µ</returns>
 void PlayUI::Update(const float& timelimit)
 {
-	m_timeLimit = static_cast<int>(timelimit);
+	m_gameTimer = static_cast<int>(timelimit);
 }
 
 /// <summary>
@@ -109,7 +109,7 @@ void PlayUI::Render()
 	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
 
     // •b”‚ğŒvZ
-    int oneSec = m_timeLimit / 60;
+    int oneSec = m_gameTimer / 60;
 
     // ˆêŒ…–Ú‚Ì”š‚ğ•\¦
     RenderDigit(oneSec % 10, m_oneSecPos, scale, NUMBER_SPRITE_SIZE, NUMBER_SPRITE_SIZE);

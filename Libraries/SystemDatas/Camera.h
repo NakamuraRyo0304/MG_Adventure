@@ -61,6 +61,7 @@ private:
 	// 視点移動モード
 	bool is_eagleMode;
 	bool is_prevEagleMode;
+	bool is_allowMode;
 
 	// スクリーンサイズ
 	int m_screenWidth, m_screenHeight;
@@ -104,8 +105,10 @@ public:
 	const DirectX::SimpleMath::Matrix& GetProjection() { return m_proj; }
 
 	// カメラ視点移動モード切替
-	void SetEagleMode(bool flag) { is_eagleMode = flag; }
+	void SetEagleMode(const bool& flag) { is_eagleMode = flag; }
 	const bool GetEagleMode() { return is_eagleMode; }
+
+	void SetArrowMode(const bool& flag) { is_allowMode = flag; }
 
 };
 

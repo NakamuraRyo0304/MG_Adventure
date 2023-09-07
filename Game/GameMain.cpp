@@ -238,8 +238,8 @@ void GameMain::DeleteScene()
 	{
 		if (CastSceneType<ResultScene>(m_nowScene) == nullptr)
 		{
-			m_clearTime = CastSceneType<PlayScene>(m_nowScene)->GetTimeLimit();
-			m_coinNum = CastSceneType<PlayScene>(m_nowScene)->GetCoinNum();
+			m_clearTime = CastSceneType<PlayScene>(m_nowScene)->GetClearTime();
+			m_coinNum	= CastSceneType<PlayScene>(m_nowScene)->GetCoinNum();
 		}
 	}
 

@@ -30,8 +30,8 @@ private:
 	float m_startTimer;
 
 	// 制限時間
-	float m_timeLimit;
-	float m_returnTimeVal;
+	float m_gameTimer;
+	float m_clearTime;
 
 	// 空の色遷移
 	struct Color
@@ -158,7 +158,7 @@ public:
 	bool StartTimer();
 
 	// タイムリミットのゲッター
-	const float& GetTimeLimit() { return m_returnTimeVal; }
+	const float& GetClearTime() { return m_clearTime; }
 
 	// コインの枚数ゲッター
 	const int& GetCoinNum();

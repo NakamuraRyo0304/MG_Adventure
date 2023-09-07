@@ -36,11 +36,12 @@ Camera::Camera():
 	m_prevScrollWheelValue{},	// マウスホイールの回転量(前回の保存用)
 	m_view{},					// ビュー行列
 	m_proj{},					// プロジェクション行列
-	is_eagleMode{false},		// カメラの視点移動フラグマウスホイールを使用する
+	is_allowMode{false},		// カメラの視点移動フラグ十字で移動する
+	is_eagleMode{false},		// カメラの視点移動フラグマウスを使用する
 	is_prevEagleMode{false},	// カメラの視点移動フラグマウスホイールを使用する(前回の保存用)
 	m_screenHeight{},			// 画面の高さ
 	m_screenWidth{},			// 画面の幅
-	m_rotateMatrix{}						// 回転量
+	m_rotateMatrix{}			// 回転量
 {
 	// マウスの回転量をリセット
 	Mouse::Get().ResetScrollWheelValue();
@@ -70,6 +71,9 @@ void Camera::Update()
 	// マウスの左クリック＆ドラッグでカメラ座標を更新する
 	if (msState.leftButton)
 	{
+		// 視点移動しなければ処理しない
+		if (!is_eagleMode)	return;
+
 		// マウスのドラッグによるカメラ移動
 		DraggedDistance(msState.x, msState.y);
 	}
@@ -86,6 +90,9 @@ void Camera::Update()
 
 	// 上下回転のみ制限
 	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLEX_MIN, ANGLEX_MAX);
+
+	// 十字スイッチがオフなら動かさない
+	if (!is_allowMode) return;
 
 	// 移動量
 	SimpleMath::Vector2 moveVal = SimpleMath::Vector2::Zero;
@@ -108,9 +115,6 @@ void Camera::Update()
 /// <returns>なし</returns>
 void Camera::DraggedDistance(int x, int y)
 {
-	// 視点移動しなければ処理しない
-	if (!is_eagleMode)	return;
-
 	// マウスポインタの前回からの変位
 	// DEFAULT_CAMERA_SPEEDを乗算してドラッグの移動量を調整する
 	float dx = static_cast<float>(x - m_prevMouse.x) * DEFAULT_CAMERA_SPEED;

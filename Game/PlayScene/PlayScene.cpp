@@ -40,8 +40,8 @@ PlayScene::PlayScene() :
 	IScene(),
 	m_timer{0.0f},					// タイマー
 	m_startTimer{0.0f},				// 開始時間
-	m_timeLimit{0.0f},				// 制限時間
-	m_returnTimeVal{0.0f},			// 制限時間(戻り値)
+	m_gameTimer{0.0f},				// 制限時間
+	m_clearTime{0.0f},				// クリア時間
 	m_mapLoad{},					// マップ
 	m_stageNum{1},					// ステージ番号
 	m_fallValue{0.0f},				// 落下用変数
@@ -49,7 +49,7 @@ PlayScene::PlayScene() :
 	m_hitObjects{},					// 当っているオブジェクトの格納
 	m_lastObj{},					// 最後に当たったオブジェクトを保存
 	is_boxCol{},					// 立方体当たり判定
-	m_skyDomeModel{ nullptr },		// スカイドームモデル
+	m_skyDomeModel{nullptr},		// スカイドームモデル
 	m_skyColor{},					// 空の変化
 	is_thirdPersonMode{false},		// サードパーソンモード
 	is_helpFlag{false}				// ヘルプ表示フラグ
@@ -77,7 +77,8 @@ void PlayScene::Initialize()
 	CreateWindowDependentResources();
 
 	// カメラ視点移動
-	GetSystemManager()->GetCamera()->SetEagleMode(true);
+	GetSystemManager()->GetCamera()->SetEagleMode(false);
+	GetSystemManager()->GetCamera()->SetArrowMode(false);
 
 	// プレイヤの初期化
 	m_player->Initialize(std::make_shared<SystemManager>());
@@ -93,7 +94,9 @@ void PlayScene::Initialize()
 
 	// 制限時間の初期化
 	// 時間　×　フレームレート
-	m_timeLimit = TIME_LIMIT * FLAME_RATE;
+	m_gameTimer = TIME_LIMIT * FLAME_RATE;
+
+	m_clearTime = 0.0f;
 
 	// 開始カウントダウン(フェードも考慮)
 	m_startTimer = 4 * FLAME_RATE;
@@ -162,6 +165,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// カウントダウンが終わったらスタート
 	if (StartTimer() == false) return;
 
+	GetSystemManager()->GetCamera()->SetEagleMode(true);
+	GetSystemManager()->GetCamera()->SetArrowMode(true);
+
 	// サードパーソンモードの切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Space))
 	{
@@ -169,18 +175,18 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 
 	// コインをすべて獲得でリザルト
-	if (m_blocks->IsCollectedFlag() || m_timeLimit < 0.0f)
+	if (m_blocks->IsCollectedFlag() || m_gameTimer < 0.0f)
 	{
+		// クリアタイムを格納
+		m_clearTime = m_gameTimer / FLAME_RATE;
+
 		ChangeScene(SCENE::RESULT);
 		return;
 	}
 	else // クリアしていなければデクリメント
 	{
 		// 制限時間の計算
-		m_timeLimit--;
-
-		// クリアタイムを格納
-		m_returnTimeVal = m_timeLimit / FLAME_RATE;
+		m_gameTimer--;
 
 		// 空の処理
 		UpdateSky();
@@ -268,7 +274,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 
 	// UIの更新
-	m_userInterFace->Update(m_timeLimit);
+	m_userInterFace->Update(m_gameTimer);
 
 	// 落下したらリスタート
 	if (m_player->GetDeathFlag())
@@ -626,9 +632,9 @@ void PlayScene::UpdateSky()
 {
 	m_skyColor =
 	{
-		m_timeLimit / (TIME_LIMIT * FLAME_RATE), // 赤
-		m_timeLimit / (TIME_LIMIT * FLAME_RATE), // 緑
-		m_timeLimit / (TIME_LIMIT * FLAME_RATE)  // 青
+		m_gameTimer / (TIME_LIMIT * FLAME_RATE), // 赤
+		m_gameTimer / (TIME_LIMIT * FLAME_RATE), // 緑
+		m_gameTimer / (TIME_LIMIT * FLAME_RATE)  // 青
 	};
 }
 

@@ -33,7 +33,7 @@ private:
 	DirectX::SimpleMath::Vector2 m_countDownPos;
 
 	// 制限時間
-	int m_timeLimit;
+	int m_gameTimer;
 
 	// 落下エフェクトフラグ
 	bool is_effectFlag;
