@@ -173,6 +173,9 @@
     <Filter Include="Common\MouseCursor">
       <UniqueIdentifier>{dec65e1a-97d1-40d8-88cf-2337775d9678}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Textures\ADHESION">
+      <UniqueIdentifier>{94cab510-cd66-4931-8cf4-dbb17e5120f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -474,6 +477,12 @@
     </Image>
     <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
+    </Image>
+    <Image Include="Resources\Textures\ADHESION\Adhesion1.dds">
+      <Filter>Resources\Textures\ADHESION</Filter>
+    </Image>
+    <Image Include="Resources\Textures\ADHESION\Adhesion2.dds">
+      <Filter>Resources\Textures\ADHESION</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

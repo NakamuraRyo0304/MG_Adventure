@@ -11,12 +11,34 @@
 #ifndef THIRDPERSONCAMERA
 #define THIRDPERSONCAMERA
 
+class SystemManager;
 class ThirdPersonCamera final : public Camera
 {
 private:
 	DirectX::SimpleMath::Matrix m_followView;
+
+	// 画像更新用変数
+	float m_adhesionTimer;
+	const float CHANGE_SPAN = 120.0f;
+	bool is_changeFlag;
+	enum adhesionType
+	{
+		first,
+		second,
+		third,
+		fourth,
+		fifth,
+		sixth,
+		length
+	};
+
+	// 画像の切り替え
+	adhesionType m_switching;
+
+	// 画像用にシステムを貰う
+	std::shared_ptr<SystemManager> m_system;
 public:
-	ThirdPersonCamera();
+	ThirdPersonCamera(std::shared_ptr<SystemManager> system,ID3D11DeviceContext1* context, ID3D11Device1* device);
 	~ThirdPersonCamera();
 
 	// 追従処理
@@ -25,6 +47,8 @@ public:
 	// ビュー行列の取得
 	const DirectX::SimpleMath::Matrix& GetFollowView() { return m_followView; }
 
+	// 画像の描画
+	void DrawAdhesion();
 };
 
 #endif // THIRDPERSONCAMERA

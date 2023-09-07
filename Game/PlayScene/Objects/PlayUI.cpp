@@ -62,10 +62,12 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	// ‰æ‘œ‚ð“o˜^
 	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"Death", L"Resources/Textures/DeathEffect.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Help", L"Resources/Textures/PLAY_HELP/Help.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"HelpBack", L"Resources/Textures/PLAY_HELP/HelpBack.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp", L"Resources/Textures/PLAY_HELP/OpenHelp.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"GameStart", L"Resources/Textures/PLAY_HELP/GameStart.dds", device);
+
+	// ƒwƒ‹ƒv‰æ–Ê
+	m_system->GetDrawSprite()->AddTextureData(L"Help",	   L"Resources/Textures/PLAY_HELP/Help.dds",      device);
+	m_system->GetDrawSprite()->AddTextureData(L"HelpBack", L"Resources/Textures/PLAY_HELP/HelpBack.dds",  device);
+	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp", L"Resources/Textures/PLAY_HELP/OpenHelp.dds",  device);
+	m_system->GetDrawSprite()->AddTextureData(L"GameStart",L"Resources/Textures/PLAY_HELP/GameStart.dds", device);
 
 	// ”ä—¦‚ðŒvŽZ
 	SimpleMath::Vector2 span = m_windowSize / FULL_SCREEN_SIZE;

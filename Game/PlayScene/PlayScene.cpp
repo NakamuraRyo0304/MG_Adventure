@@ -342,6 +342,10 @@ void PlayScene::Draw()
 		);
 		m_playerBill->Render(m_player->GetPosition(), m_timer, view, proj);
 	}
+	else
+	{
+		m_thirdCamera->DrawAdhesion();
+	}
 
 	// プレイヤーの影の描画
 	m_playerShadow->Render(context, view, proj);
@@ -396,7 +400,7 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
 	// サードパーソンカメラの作成
-	m_thirdCamera = std::make_unique<ThirdPersonCamera>();
+	m_thirdCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager(), context, device);
 	m_thirdCamera->CreateProjection(width, height, CAMERA_ANGLE);
 
 	// 文字の設定

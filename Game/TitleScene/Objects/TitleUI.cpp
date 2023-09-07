@@ -18,7 +18,7 @@
  /// <summary>
  /// コンストラクタ
  /// </summary>
- /// <param name="引数無し"></param>
+ /// <param name="windowSize">画面サイズ</param>
  /// <returns>なし</returns>
 TitleUI::TitleUI(const SimpleMath::Vector2& windowSize):
 	is_selectFlag{},
@@ -75,20 +75,20 @@ void TitleUI::Update(const bool& selectFlag)
 	if (selectFlag) // Trueの時はStart
 	{
 		// 画像の拡大率
-		m_startRate = UserUtility::Lerp(m_startRate, SimpleMath::Vector2{ 1.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
+		m_startRate = UserUtility::Lerp(m_startRate, SimpleMath::Vector2::One,		   SimpleMath::Vector2{ 0.2f });
 		m_exitRate  = UserUtility::Lerp(m_exitRate,  SimpleMath::Vector2{ 0.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
 		// 画像の透明度
-		m_startColor = SimpleMath::Vector4{ 1.0f,1.0f,1.0f,1.0f };
+		m_startColor = SimpleMath::Vector4::One;
 		m_exitColor  = SimpleMath::Vector4{ 1.0f,1.0f,1.0f,0.5f };
 	}
 	else			// Falseの時はExit
 	{
 		// 画像の拡大率
 		m_startRate = UserUtility::Lerp(m_startRate, SimpleMath::Vector2{ 0.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
-		m_exitRate  = UserUtility::Lerp(m_exitRate,  SimpleMath::Vector2{ 1.0f,1.0f }, SimpleMath::Vector2{ 0.2f });
+		m_exitRate  = UserUtility::Lerp(m_exitRate,  SimpleMath::Vector2::One,		   SimpleMath::Vector2{ 0.2f });
 		// 画像の透明度
 		m_startColor = SimpleMath::Vector4{ 1.0f,1.0f,1.0f,0.5f };
-		m_exitColor  = SimpleMath::Vector4{ 1.0f,1.0f,1.0f,1.0f };
+		m_exitColor  = SimpleMath::Vector4::One;
 	}
 }
 
@@ -100,29 +100,29 @@ void TitleUI::Update(const bool& selectFlag)
 void TitleUI::Render()
 {
 	// 画面比率
-	SimpleMath::Vector2 posRate = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 posRate = m_windowSize / FULL_SCREEN_SIZE * 0.5f;
 
 	// スタートの文字
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Start",
-		SimpleMath::Vector2{ 100.0f,720.0f } * posRate,
+		SimpleMath::Vector2{ 2048.0f,1792.0f } * posRate,
 		m_startColor,
-		1.0f * posRate,
+		posRate,
 		SimpleMath::Vector2::Zero
 	);
 	// イグジットの文字
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Exit",
-		SimpleMath::Vector2{ 1000.0f,720.0f } * posRate,
+		SimpleMath::Vector2{ 2816.0f,1792.0f } * posRate,
 		m_exitColor,
-		1.0f * posRate,
+		posRate,
 		SimpleMath::Vector2::Zero
 	);
 
 	// アンダーライン
 	m_system->GetDrawSprite()->DrawTexture(
 		L"UnderLine",
-		SimpleMath::Vector2{ 100.0f,720.0f } * posRate,
+		SimpleMath::Vector2{ 2048.0f,1792.0f } * posRate,
 		SimpleMath::Vector4::One,
 		m_startRate * posRate,
 		SimpleMath::Vector2::Zero,
@@ -130,7 +130,7 @@ void TitleUI::Render()
 	);
 	m_system->GetDrawSprite()->DrawTexture(
 		L"UnderLine",
-		SimpleMath::Vector2{ 1000.0f,720.0f } * posRate,
+		SimpleMath::Vector2{ 2816.0f,1792.0f } * posRate,
 		SimpleMath::Vector4::One,
 		m_exitRate * posRate,
 		SimpleMath::Vector2::Zero,
