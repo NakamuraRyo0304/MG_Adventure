@@ -132,7 +132,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// エスケープで終了
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
 	{
-		ExitApp();
+		ChangeScene(SCENE::ENDGAME);
 	}
 
 	// ヘルプ表示を切り替える

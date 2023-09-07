@@ -78,22 +78,22 @@ void SelectUI::Render(const int& selectNum)
 	// ‰æ–Ê”ä—¦‚ðŒvŽZ
 	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
 
-	if (selectNum != 9)
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"RightArrow",
-			SimpleMath::Vector2{ 1650.0f,360.0f} * scale,
-			SimpleMath::Color{ 1.0f, 1.0f, 1.0f, m_rightAlpha },
-			scale,
-			SimpleMath::Vector2::Zero
-		);
-	}
 	if (selectNum != 0)
 	{
 		m_system->GetDrawSprite()->DrawTexture(
 			L"LeftArrow",
 			SimpleMath::Vector2{ 20.0f ,360.0f } * scale,
 			SimpleMath::Color{ 1.0f, 1.0f, 1.0f, m_leftAlpha },
+			scale,
+			SimpleMath::Vector2::Zero
+		);
+	}
+	if (selectNum != 9)
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"RightArrow",
+			SimpleMath::Vector2{ 1650.0f,360.0f} * scale,
+			SimpleMath::Color{ 1.0f, 1.0f, 1.0f, m_rightAlpha },
 			scale,
 			SimpleMath::Vector2::Zero
 		);
