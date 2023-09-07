@@ -149,7 +149,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (is_helpFlag) return;
 
 	// カメラの更新
-	if (is_thirdPersonMode)
+	if (is_thirdPersonMode) // 三人称カメラ
 	{
 		m_thirdCamera->UpdateFollow(
 			m_player->GetPosition(),				// ターゲット座標
@@ -157,7 +157,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 			SimpleMath::Vector3(0.0f, 2.5f, 6.0f)	// ターゲットからの距離
 		);
 	}
-	else
+	else // 固定カメラ
 	{
 		GetSystemManager()->GetCamera()->Update();
 	}
@@ -165,6 +165,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// カウントダウンが終わったらスタート
 	if (StartTimer() == false) return;
 
+	// カメラ操作制限を解除
 	GetSystemManager()->GetCamera()->SetEagleMode(true);
 	GetSystemManager()->GetCamera()->SetArrowMode(true);
 
@@ -174,7 +175,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		is_thirdPersonMode = !is_thirdPersonMode;
 	}
 
-	// コインをすべて獲得でリザルト
+	// コインをすべて獲得かタイムアップでリザルト
 	if (m_blocks->IsCollectedFlag() || m_gameTimer < 0.0f)
 	{
 		// クリアタイムを格納

@@ -354,9 +354,10 @@ void EditScene::CreateWindowDependentResources()
 			auto lights = dynamic_cast<IEffectLights*>(effect);
 			if (lights)
 			{
-				lights->SetLightEnabled(0, false);
-				lights->SetLightEnabled(1, false);
-				lights->SetLightEnabled(2, false);
+				for (int i = 0; i < 3; ++i)
+				{
+					lights->SetLightEnabled(i, false);
+				}
 			}
 			// Ž©ŒÈ”­Œõ‚·‚é
 			auto basicEffect = dynamic_cast<BasicEffect*>(effect);

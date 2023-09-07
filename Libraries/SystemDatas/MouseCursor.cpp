@@ -61,7 +61,7 @@ void MouseCursor::Render()
 		nullptr,					// 切り取り位置
 		Colors::White,				// 描画色
 		0.0f,						// 回転
-		SimpleMath::Vector2::Zero,	// 画像の原点
+		SimpleMath::Vector2{128.0f},// 画像の原点
 		0.5f,						// 拡大率
 		SpriteEffects_None, 0.0f	// 描画レイヤー
 	);
