@@ -200,10 +200,10 @@ Collider::AABBCollider::AABBCollider()
 /// <param name="sz2">大きさ</param>
 /// <returns>当たっていたらTrue</returns>
 // 第１、２引数：座標 第３、４引数：サイズ
-bool Collider::AABBCollider::HitAABB_2D(const SimpleMath::Vector2& pos1,
-								     const SimpleMath::Vector2& pos2,
-								     const SimpleMath::Vector2& sz1,
-								     const SimpleMath::Vector2& sz2)
+bool Collider::AABBCollider::IsHitAABB2D(const SimpleMath::Vector2& pos1,
+										 const SimpleMath::Vector2& pos2,
+										 const SimpleMath::Vector2& sz1,
+										 const SimpleMath::Vector2& sz2)
 {
 	// XZ平面における当たり判定
 	if (pos1.x - sz1.x / 2 < pos2.x + sz2.x / 2 &&

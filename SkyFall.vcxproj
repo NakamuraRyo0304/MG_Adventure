@@ -217,6 +217,7 @@
     <ClInclude Include="Libraries\SystemDatas\MouseCursor.h" />
     <ClInclude Include="Libraries\SystemDatas\ParticleUtility.h" />
     <ClInclude Include="Libraries\SystemDatas\RayCast.h" />
+    <ClInclude Include="Libraries\SystemDatas\SoundEffect.h" />
     <ClInclude Include="Libraries\SystemManager\SystemManager.h" />
     <ClInclude Include="Libraries\UserUtility.h" />
     <ClInclude Include="pch.h" />
@@ -254,6 +255,7 @@
     <ClCompile Include="Libraries\SystemDatas\MouseCursor.cpp" />
     <ClCompile Include="Libraries\SystemDatas\ParticleUtility.cpp" />
     <ClCompile Include="Libraries\SystemDatas\RayCast.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\SoundEffect.cpp" />
     <ClCompile Include="Libraries\SystemManager\SystemManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
@@ -269,9 +271,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\ADHESION\Adhesion1.dds" />
-    <ImageContentTask Include="Resources\Textures\ADHESION\Adhesion1.png">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ImageContentTask>
     <Image Include="Resources\Textures\BLOCK\ClowdIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\CoinIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds" />

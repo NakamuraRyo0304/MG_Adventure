@@ -18,7 +18,7 @@ public:
 	// ƒ‚ƒfƒ‹‚ğì¬‚·‚éŠÖ”
 	static std::unique_ptr<DirectX::DX11::Model> GetCreateModel(ID3D11Device1* device, const wchar_t* filename);
 
-	static void DeleteModel();
+	// ƒ‚ƒfƒ‹‚ğŠJ•ú‚·‚éŠÖ”
 	static void DeleteModel(std::unique_ptr<DirectX::Model>& model);
 };
 

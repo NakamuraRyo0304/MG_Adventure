@@ -56,18 +56,6 @@ std::unique_ptr<DX11::Model> ModelFactory::GetCreateModel(ID3D11Device1* device,
 /// <summary>
 /// モデルの解放
 /// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void ModelFactory::DeleteModel()
-{
-	// 空の引数を渡す(例外スロー防止用オーバーロード)
-	std::unique_ptr<Model> nullModel = nullptr;
-	DeleteModel(nullModel);
-}
-
-/// <summary>
-/// モデルの解放
-/// </summary>
 /// <param name="model">解放したいモデルデータ</param>
 /// <returns>なし</returns>
 void ModelFactory::DeleteModel(std::unique_ptr<Model>& model)

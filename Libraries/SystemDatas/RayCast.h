@@ -20,7 +20,6 @@ private:
 	// ƒNƒŠƒbƒN”»’è
 	bool is_clickFlag;
 
-
 public:
 	RayCast();
 	~RayCast();

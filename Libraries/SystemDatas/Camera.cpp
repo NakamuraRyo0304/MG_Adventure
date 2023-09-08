@@ -137,6 +137,78 @@ void Camera::DraggedDistance(int x, int y)
 }
 
 /// <summary>
+/// オブジェクトの振動処理
+/// </summary>
+/// <param name="duration">揺れ継続時間</param>
+/// <param name="tremor">揺れ幅</param>
+/// <param name="pos">対象オブジェのポジション</param>
+/// <returns>なし</returns>
+void Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
+{
+	int counta = 0;
+	counta++;
+
+	float d = (rand() % 10) * 0.01f * tremor;
+
+	SimpleMath::Vector3 sav = (*pos);
+
+	if (counta > duration)
+	{
+		(*pos) = sav;
+	}
+	else
+	{
+		(*pos).x += d * (rand() % 3 - 1);
+		(*pos).y += d * (rand() % 3 - 1);
+		(*pos).z += d * (rand() % 3 - 1);
+	}
+}
+
+
+/// <summary>
+/// 射影行列を作成
+/// </summary>
+/// <param name="width">画面横幅</param>
+/// <param name="height">画面縦幅</param>
+/// <param name="angle">カメラ画角</param>
+/// <returns>射影行列</returns>
+const SimpleMath::Matrix& Camera::CreateProjection(float width, float height, float angle)
+{
+	// 画面サイズとアングルの保存
+	m_screenWidth = static_cast<int>(width);
+	m_screenHeight = static_cast<int>(height);
+
+	// 画角
+	float fieldOfView = XMConvertToRadians(angle);
+
+	// 画面縦横比
+	float aspectRatio = width / height;
+
+	// カメラから一番近い投影面
+	float nearPlane = NEAR_PLANE;
+
+	// カメラから一番遠い投影面
+	float farPlane = FAR_PLANE;
+
+	// カメラのレンズの作成
+	SimpleMath::Matrix projection =
+		SimpleMath::Matrix::CreatePerspectiveFieldOfView(
+			fieldOfView,
+			aspectRatio,
+			nearPlane,
+			farPlane
+		);
+
+	m_angle.x = angle;
+
+	// カメラ内で使う変数
+	m_proj = projection;
+
+	// プロジェクション行列を返却
+	return m_proj;
+}
+
+/// <summary>
 /// ビュー行列計算
 /// </summary>
 /// <param name="引数無し"></param>
@@ -167,77 +239,6 @@ void Camera::CalculateViewMatrix()
 	m_target = target;
 	m_view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
 
-}
-
-/// <summary>
-/// オブジェクトの振動処理
-/// </summary>
-/// <param name="duration">揺れ継続時間</param>
-/// <param name="tremor">揺れ幅</param>
-/// <param name="pos">対象オブジェのポジション</param>
-/// <returns>なし</returns>
-void Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
-{
-	int counta = 0;
-	counta++;
-
-	float d = (rand() % 10) * 0.01f * tremor;
-
-	SimpleMath::Vector3 sav = (*pos);
-
-	if (counta > duration)
-	{
-		(*pos) = sav;
-	}
-	else
-	{
-		(*pos).x += d * (rand() % 3 - 1);
-		(*pos).y += d * (rand() % 3 - 1);
-		(*pos).z += d * (rand() % 3 - 1);
-	}
-}
-
-/// <summary>
-/// 射影行列を作成
-/// </summary>
-/// <param name="width">画面横幅</param>
-/// <param name="height">画面縦幅</param>
-/// <param name="angle">カメラ画角</param>
-/// <returns>射影行列</returns>
-const SimpleMath::Matrix& Camera::CreateProjection(float width, float height,float angle)
-{
-	// 画面サイズとアングルの保存
-	m_screenWidth = static_cast<int>(width);
-	m_screenHeight = static_cast<int>(height);
-
-	// 画角
-	float fieldOfView = XMConvertToRadians(angle);
-
-	// 画面縦横比
-	float aspectRatio = width / height;
-
-	// カメラから一番近い投影面
-	float nearPlane = NEAR_PLANE;
-
-	// カメラから一番遠い投影面
-	float farPlane = FAR_PLANE;
-
-	// カメラのレンズの作成
-	SimpleMath::Matrix projection =
-	SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-			fieldOfView,
-			aspectRatio,
-			nearPlane,
-			farPlane
-	);
-
-	m_angle.x = angle;
-
-	// カメラ内で使う変数
-	m_proj = projection;
-
-	// プロジェクション行列を返却
-	return m_proj;
 }
 
 /// <summary>

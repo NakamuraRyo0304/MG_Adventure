@@ -72,6 +72,8 @@ public:
 	// ‰æ–ÊˆË‘¶‚Ì‰Šú‰»
 	void CreateWindowDependentResources() override;
 
+private:
+
 	// ‰æ–Ê‰‰o
 	bool FlyStartObjects();
 };

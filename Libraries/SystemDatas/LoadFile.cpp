@@ -10,7 +10,6 @@
 // ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
 #include <fstream>
 #include <assert.h>
-#include <memory>
 
 #include "LoadFile.h"
 

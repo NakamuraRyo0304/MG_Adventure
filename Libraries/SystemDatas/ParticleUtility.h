@@ -22,18 +22,13 @@ private:
 	DirectX::SimpleMath::Vector3 m_accelerate;
 
 	// サイズ
-	DirectX::SimpleMath::Vector3 m_nowScale;
-	DirectX::SimpleMath::Vector3 m_startScale;
-	DirectX::SimpleMath::Vector3 m_endScale;
+	DirectX::SimpleMath::Vector3 m_startScale, m_nowScale, m_endScale;
 
 	// 生存時間
-	float m_life;
-	float m_startLife;
+	float m_startLife, m_life;
 
 	// 色
-	DirectX::SimpleMath::Color m_nowColor;
-	DirectX::SimpleMath::Color m_startColor;
-	DirectX::SimpleMath::Color m_endColor;
+	DirectX::SimpleMath::Color m_startColor, m_nowColor, m_endColor;
 
 public:
 	// コンストラクタ
@@ -42,8 +37,11 @@ public:
 		DirectX::SimpleMath::Vector3 pos,
 		DirectX::SimpleMath::Vector3 velocity,
 		DirectX::SimpleMath::Vector3 accele,
-		DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
-		DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor);
+		DirectX::SimpleMath::Vector3 startScale,
+		DirectX::SimpleMath::Vector3 endScale,
+		DirectX::SimpleMath::Color startColor,
+		DirectX::SimpleMath::Color endColor
+	);
 
 	// デストラクタ
 	~ParticleUtility();
@@ -52,12 +50,13 @@ public:
 	bool Update(float elapsedTime);
 
 // アクセサ群
+public:
 	const DirectX::SimpleMath::Vector3 GetPosition() { return m_position; }
-		
+
 	const DirectX::SimpleMath::Vector3 GetVelocity() { return m_velocity; }
 
 	const DirectX::SimpleMath::Vector3 GetAccele() { return m_accelerate; }
-		
+
 	const DirectX::SimpleMath::Vector3 GetNowScale() { return m_nowScale; }
 	const DirectX::SimpleMath::Vector3 GetStartScale() { return m_startScale; }
 	const DirectX::SimpleMath::Vector3 GetEndScale() { return m_endScale; }

@@ -11,7 +11,10 @@
 
 class Camera
 {
-public:
+public:	//-------------------------------------------------------------------------------------//
+	// スクリーンサイズ
+	int m_screenWidth, m_screenHeight;
+
 	// カメラの距離
 	static const float DEFAULT_CAMERA_DISTANCE;
 
@@ -30,20 +33,18 @@ public:
 	const float ANGLEX_MIN = 44.0f;
 	const float ANGLEX_MAX = 45.5f;
 
-private:
-	// 回転角
-	DirectX::SimpleMath::Vector2 m_angle;
+private: //-------------------------------------------------------------------------------------//
 
 	// 前回のマウス座標(X,Y)
 	DirectX::SimpleMath::Vector2 m_prevMouse;
-
 	// マウスホイールのスクロール値
 	int m_scrollWheelValue;
 	// 一時的なスクロール値の蓄積用変数
 	int m_tempScrollValue;
 	// 前回のスクロール値の保存変数
 	int m_prevScrollWheelValue;
-
+	// 回転角
+	DirectX::SimpleMath::Vector2 m_angle;
 
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
@@ -63,9 +64,6 @@ private:
 	bool is_prevEagleMode;
 	bool is_allowMode;
 
-	// スクリーンサイズ
-	int m_screenWidth, m_screenHeight;
-
 public:
 	Camera();
 	~Camera();
@@ -73,14 +71,16 @@ public:
 	// 更新処理
 	void Update();
 
+	// オブジェクトを揺らす処理
+	void ShakeObject(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
+
+
+private:
 	// マウスの移動距離の計算
 	void DraggedDistance(int x, int y);
 
 	// ビュー行列を計算する
 	void CalculateViewMatrix();
-
-	// オブジェクトを揺らす処理
-	void ShakeObject(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
 
 	// マウスホイールの拡縮処理
 	void RollWheelToRate(DirectX::Mouse::State state);
@@ -88,6 +88,7 @@ public:
 //--------------------------------------------------------//
 //アクセサ                                                //
 //--------------------------------------------------------//
+public:
 	// ビュー行列を取得する
 	const DirectX::SimpleMath::Matrix& GetView() { return m_view; }
 
@@ -106,8 +107,6 @@ public:
 
 	// カメラ視点移動モード切替
 	void SetEagleMode(const bool& flag) { is_eagleMode = flag; }
-	const bool GetEagleMode() { return is_eagleMode; }
-
 	void SetArrowMode(const bool& flag) { is_allowMode = flag; }
 
 };

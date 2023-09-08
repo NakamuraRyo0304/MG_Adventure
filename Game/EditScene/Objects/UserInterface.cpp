@@ -121,7 +121,7 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 void UserInterface::Update(Mouse::State& mouseState)
 {
 	// ツールバー表示切り替えアイコンをクリック
-	bool tool = m_imageHitter.HitAABB_2D(
+	bool tool = m_imageHitter.IsHitAABB2D(
 		{ (float)mouseState.x,(float)mouseState.y },		 // マウスの位置
 		{ m_toolButtonTexPos.x,m_toolButtonTexPos.y },	 	 // 画像の位置
 		SimpleMath::Vector2{ 5.0f }, 						 // サイズ
@@ -140,21 +140,21 @@ void UserInterface::Update(Mouse::State& mouseState)
 	ChangeState(mouseState);
 
 	// ファイルを開くアイコン
-	is_openFlag = m_imageHitter.HitAABB_2D(
+	is_openFlag = m_imageHitter.IsHitAABB2D(
 		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_openTexPos.x,m_openTexPos.y },		    // 画像の位置
 		SimpleMath::Vector2{ 5.0f },			    // サイズ
 		SimpleMath::Vector2{ 100.0f });				// サイズ
 
 	// ファイルを保存するアイコン
-	is_saveFlag = m_imageHitter.HitAABB_2D(
+	is_saveFlag = m_imageHitter.IsHitAABB2D(
 		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 		{ m_saveTexPos.x,m_saveTexPos.y },			// 画像の位置
 		SimpleMath::Vector2{ 5.0f },				// サイズ
 		SimpleMath::Vector2{ 100.0f });				// サイズ
 
 	// カメラアイコンをクリック
-	bool camera = m_imageHitter.HitAABB_2D(
+	bool camera = m_imageHitter.IsHitAABB2D(
 		{ (float)mouseState.x,(float)mouseState.y }, // マウスの位置
 		{ m_cameraTexPos.x,m_cameraTexPos.y },	 	 // 画像の位置
 		SimpleMath::Vector2{ 5.0f }, 				 // サイズ
@@ -340,7 +340,7 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 	// 各アイコンをクリックしたかどうかを判定し、フラグを立てる
 	for (int i = 0; i < MapState::LENGTH; ++i)
 	{
-		iconFlags[i] = m_imageHitter.HitAABB_2D(
+		iconFlags[i] = m_imageHitter.IsHitAABB2D(
 			{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 			m_imagePos[i],                              // 画像の位置
 			SimpleMath::Vector2{ 5.0f },                // 最小サイズ
