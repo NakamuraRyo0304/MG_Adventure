@@ -26,7 +26,7 @@ private:
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
 	// カメラ演出
-	float m_moveY;
+	float m_cameraMoveY;
 	const float MAX_HEIGHT = 10.0f;
 	float m_logoMoveScale;
 
@@ -34,6 +34,9 @@ private:
 	bool is_accelerateFlag;
 	const float MAX_ACCELERATE_TIME = 6.0f;
 	float m_accelerate;
+
+	// ロゴの開始時の演出
+	float m_logoMoveY;
 private:
 
 	// UI
@@ -67,9 +70,6 @@ public:
 
 	// 画面依存の初期化
 	void CreateWindowDependentResources() override;
-
-	// 次のシーンを決定する
-	const bool& SelectMenu();
 
 	// 画面演出
 	bool FlyStartObjects();

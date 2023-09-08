@@ -76,7 +76,7 @@ private:
 	const float	CAMERA_ANGLE = 44.5f;
 
 	// ホイールのスパン
-	const int WHEEL_SPAWN = 640;
+	const int WHEEL_SPAWN = 320;
 public:
 
 	// コンストラクタ

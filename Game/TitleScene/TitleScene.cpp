@@ -21,7 +21,8 @@ TitleScene::TitleScene():
 	m_timer{0.0f},
 	m_titleLogoModel{},
 	m_miniatureModel{},
-	m_moveY{0.0f},
+	m_cameraMoveY{0.0f},
+	m_logoMoveY{0.0f},
 	is_startFlag{false},
 	m_logoMoveScale{},
 	is_menuFlag{true},
@@ -56,6 +57,7 @@ void TitleScene::Initialize()
 	GetSystemManager()->GetCamera()->SetEyePosition(SimpleMath::Vector3(0.0f, -20.0f, -20.0f));
 
 	// ロゴの大きさ
+	m_logoMoveY = 10.0f;
 	m_logoMoveScale = 1.0f;
 
 	// ゲームを開始/ゲームを終了
@@ -86,10 +88,20 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
+	// XXX: 演出方法をイージングに変える
+	// 起動時のロゴの動き
+	m_logoMoveY -= m_logoMoveY > 2.0f ? 0.1f : 0.0f;
+
 	// 決定していなければ選択を切り替える
 	if (!is_startFlag)
 	{
-		is_accelerateFlag = SelectMenu() ? true : is_accelerateFlag;
+		// 選択項目を変更する
+		if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
+			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
+		{
+			is_menuFlag = !is_menuFlag;
+			is_accelerateFlag = true;
+		}
 
 		// 最大まで回転したら回転をやめる
 		is_accelerateFlag = m_accelerate >= MAX_ACCELERATE_TIME ? false : is_accelerateFlag;
@@ -150,9 +162,9 @@ void TitleScene::Draw()
 	skyRotX		= SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
 
 	// 移動行列
-	logoTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, 2.0f, cosf(m_timer) * 0.5f);
+	logoTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, m_logoMoveY, cosf(m_timer) * 0.5f);
 	stageTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
-	skyTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, m_moveY, 0.0f);
+	skyTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, m_cameraMoveY, 0.0f);
 
 	// スケール行列
 	stageScale	= SimpleMath::Matrix::CreateScale(1.2f);
@@ -177,7 +189,7 @@ void TitleScene::Draw()
 	}
 
 	// ビュー行列
-	SimpleMath::Vector3 eye(0.0f, 0.1f + m_moveY, 8.0f);
+	SimpleMath::Vector3 eye(0.0f, 0.1f + m_cameraMoveY, 8.0f);
 	view = SimpleMath::Matrix::CreateLookAt(eye, SimpleMath::Vector3::Zero, SimpleMath::Vector3::Up);
 
 	// プロジェクション行列
@@ -308,27 +320,6 @@ void TitleScene::CreateWindowDependentResources()
 }
 
 /// <summary>
-/// 次のシーンを決める
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>選択が変更されたとき返す</returns>
-const bool& TitleScene::SelectMenu()
-{
-	bool push = false;
-
-	// 選択項目を変更する
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
-		GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
-	{
-		is_menuFlag = !is_menuFlag;
-
-		push = true;
-	}
-
-	return push;
-}
-
-/// <summary>
 /// スタートを押したときの演出
 /// </summary>
 /// <param name="引数無し"></param>
@@ -337,10 +328,10 @@ bool TitleScene::FlyStartObjects()
 {
 	if (is_startFlag)
 	{
-		m_moveY++;
+		m_cameraMoveY++;
 
 		// 演出が終わったら遷移
-		if (m_moveY > MAX_HEIGHT)
+		if (m_cameraMoveY > MAX_HEIGHT)
 		{
 			return true;
 		}
