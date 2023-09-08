@@ -23,10 +23,10 @@
 TitleUI::TitleUI(const SimpleMath::Vector2& windowSize):
 	is_selectFlag{},
 	m_windowSize{windowSize},
-	m_sFontRate{},
-	m_eFontRate{},
-	m_sLineRate{},
-	m_eLineRate{},
+	m_sFontRate{},			// スタートフォントの拡大率
+	m_eFontRate{},			// エンドフォントの拡大率
+	m_sLineRate{},			// スタートラインの拡大率
+	m_eLineRate{},			// エンドラインの拡大率
 	m_startColor{},
 	m_exitColor{}
 {

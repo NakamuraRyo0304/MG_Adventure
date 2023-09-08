@@ -24,7 +24,9 @@ TitleScene::TitleScene():
 	m_moveY{0.0f},
 	is_startFlag{false},
 	m_logoMoveScale{},
-	is_gameFlag{true}
+	is_gameFlag{true},
+	m_accelerate{0.0f},
+	is_accelerateFlag{false}
 {
 }
 
@@ -58,6 +60,9 @@ void TitleScene::Initialize()
 
 	// ゲームを開始/ゲームを終了
 	is_gameFlag = true;
+
+	// 加速度を初期化
+	m_accelerate = 0.0f;
 }
 
 /// <summary>
@@ -84,13 +89,20 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	// 決定していなければ選択を切り替える
 	if (!is_startFlag)
 	{
-		if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left))
+		if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
+			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
 		{
-			is_gameFlag = true;
+			is_gameFlag = !is_gameFlag;
+			is_accelerateFlag = true;
 		}
-		if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
+		else
 		{
-			is_gameFlag = false;
+			// 最大まで回転したら回転をやめる
+			is_accelerateFlag = m_accelerate >= MAX_ACCELERATE_TIME ? false : is_accelerateFlag;
+			// 回転フラグが立っていたら加算
+			m_accelerate += is_accelerateFlag ? 0.1f : 0.0f;
+			// 回転フラグが立っていなければ初期化する
+			m_accelerate = !is_accelerateFlag ? 0.0f : m_accelerate;
 		}
 	}
 
@@ -106,14 +118,8 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 		// 演出が終わったら遷移
 		if (m_moveY > MAX_HEIGHT)
 		{
-			if (is_gameFlag)	// Startを選択したらセレクトシーンに行く
-			{
-				ChangeScene(SCENE::SELECT);
-			}
-			else				// Exitを選択したらゲームを終了する
-			{
-				ChangeScene(SCENE::ENDGAME);
-			}
+			// Startを選んだらセレクトへ以降、Exitを選んだらゲームを終了
+			ChangeScene(is_gameFlag ? SCENE::SELECT : SCENE::ENDGAME);
 		}
 	}
 
@@ -152,7 +158,7 @@ void TitleScene::Draw()
 	// 回転行列
 	logoRot		= SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
 	stageRotX	= SimpleMath::Matrix::CreateRotationX(0.3f);
-	stageRotY	= SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f);
+	stageRotY	= SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f + m_accelerate);
 	skyRotX		= SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
 
 	// 移動行列

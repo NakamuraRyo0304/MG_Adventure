@@ -30,6 +30,11 @@ private:
 	const float MAX_HEIGHT = 10.0f;
 	float m_logoMoveScale;
 
+	// ‘I‘ğ•ÏX‚Ì‰Á‘¬
+	bool is_accelerateFlag;
+	const float MAX_ACCELERATE_TIME = 6.0f;
+	float m_accelerate;
+
 private:
 
 	// UI
