@@ -24,7 +24,7 @@ TitleScene::TitleScene():
 	m_moveY{0.0f},
 	is_startFlag{false},
 	m_logoMoveScale{},
-	is_gameFlag{true},
+	is_menuFlag{true},
 	m_accelerate{0.0f},
 	is_accelerateFlag{false}
 {
@@ -59,7 +59,7 @@ void TitleScene::Initialize()
 	m_logoMoveScale = 1.0f;
 
 	// ゲームを開始/ゲームを終了
-	is_gameFlag = true;
+	is_menuFlag = true;
 
 	// 加速度を初期化
 	m_accelerate = 0.0f;
@@ -89,21 +89,14 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	// 決定していなければ選択を切り替える
 	if (!is_startFlag)
 	{
-		if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
-			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
-		{
-			is_gameFlag = !is_gameFlag;
-			is_accelerateFlag = true;
-		}
-		else
-		{
-			// 最大まで回転したら回転をやめる
-			is_accelerateFlag = m_accelerate >= MAX_ACCELERATE_TIME ? false : is_accelerateFlag;
-			// 回転フラグが立っていたら加算
-			m_accelerate += is_accelerateFlag ? 0.1f : 0.0f;
-			// 回転フラグが立っていなければ初期化する
-			m_accelerate = !is_accelerateFlag ? 0.0f : m_accelerate;
-		}
+		is_accelerateFlag = SelectMenu() ? true : is_accelerateFlag;
+
+		// 最大まで回転したら回転をやめる
+		is_accelerateFlag = m_accelerate >= MAX_ACCELERATE_TIME ? false : is_accelerateFlag;
+		// 回転フラグが立っていたら加算
+		m_accelerate += is_accelerateFlag ? 0.1f : 0.0f;
+		// 回転フラグが立っていなければ初期化する
+		m_accelerate = !is_accelerateFlag ? 0.0f : m_accelerate;
 	}
 
 	// 遷移先を決定する(ゲーム開始 OR ゲーム終了)
@@ -111,20 +104,15 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	{
 		is_startFlag = true;
 	}
-	if (is_startFlag)
+	// 演出が終わったかどうか判定する
+	if (FlyStartObjects())
 	{
-		m_moveY++;
-
-		// 演出が終わったら遷移
-		if (m_moveY > MAX_HEIGHT)
-		{
-			// Startを選んだらセレクトへ以降、Exitを選んだらゲームを終了
-			ChangeScene(is_gameFlag ? SCENE::SELECT : SCENE::ENDGAME);
-		}
+		// Startを選んだらセレクトへ以降、Exitを選んだらゲームを終了
+		ChangeScene(is_menuFlag ? SCENE::SELECT : SCENE::ENDGAME);
 	}
 
 	// UIの更新
-	m_titleUI->Update(is_gameFlag);
+	m_titleUI->Update(is_menuFlag);
 
 	// エスケープで終了
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
@@ -317,4 +305,46 @@ void TitleScene::CreateWindowDependentResources()
 	// UIの初期化
 	m_titleUI = std::make_unique<TitleUI>(SimpleMath::Vector2{ width, height });
 	m_titleUI->Create(GetSystemManager(), context, device);
+}
+
+/// <summary>
+/// 次のシーンを決める
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>選択が変更されたとき返す</returns>
+const bool& TitleScene::SelectMenu()
+{
+	bool push = false;
+
+	// 選択項目を変更する
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
+		GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
+	{
+		is_menuFlag = !is_menuFlag;
+
+		push = true;
+	}
+
+	return push;
+}
+
+/// <summary>
+/// スタートを押したときの演出
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>演出完了でTrueを返す</returns>
+bool TitleScene::FlyStartObjects()
+{
+	if (is_startFlag)
+	{
+		m_moveY++;
+
+		// 演出が終わったら遷移
+		if (m_moveY > MAX_HEIGHT)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

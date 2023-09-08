@@ -34,7 +34,6 @@ private:
 	bool is_accelerateFlag;
 	const float MAX_ACCELERATE_TIME = 6.0f;
 	float m_accelerate;
-
 private:
 
 	// UI
@@ -44,7 +43,7 @@ private:
 	bool is_startFlag;
 
 	// 選択フラグ
-	bool is_gameFlag;
+	bool is_menuFlag;
 
 public:
 
@@ -68,6 +67,12 @@ public:
 
 	// 画面依存の初期化
 	void CreateWindowDependentResources() override;
+
+	// 次のシーンを決定する
+	const bool& SelectMenu();
+
+	// 画面演出
+	bool FlyStartObjects();
 };
 
 #endif // TITLESCENE

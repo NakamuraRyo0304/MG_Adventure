@@ -269,7 +269,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\ADHESION\Adhesion1.dds" />
-    <ImageContentTask Include="Resources\Textures\ADHESION\Adhesion1.png" />
+    <ImageContentTask Include="Resources\Textures\ADHESION\Adhesion1.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ImageContentTask>
     <Image Include="Resources\Textures\BLOCK\ClowdIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\CoinIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds" />

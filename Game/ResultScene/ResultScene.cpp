@@ -241,48 +241,48 @@ void ResultScene::Draw()
 
 	// コイン文字
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"COINS",										// 登録キー
-			m_coinsPos,										// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },						// 色
-			IMAGE_RATE * imageScale,						// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
+			L"COINS",
+			m_coinsPos,
+			{ 1.0f,1.0f,1.0f,1.0f },
+			IMAGE_RATE * imageScale,
+			{ IMAGE_CENTER,IMAGE_CENTER }
 		);
 
 	// リトライ文字
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"RETRY",										// 登録キー
-			m_retryPos,										// 座標
-			{ 1.0f,1.0f,1.0f,m_retryAlpha },				// 色
-			IMAGE_RATE * imageScale * m_retryScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
+			L"RETRY",
+			m_retryPos,
+			{ 1.0f,1.0f,1.0f,m_retryAlpha },
+			IMAGE_RATE * imageScale * m_retryScale,
+			{ IMAGE_CENTER,IMAGE_CENTER }
 		);
 
 	// セレクト文字
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"SELECT",										// 登録キー
-			m_selectPos,									// 座標
-			{ 1.0f,1.0f,1.0f,m_selectAlpha },				// 色
-			IMAGE_RATE * imageScale * m_selectScale,		// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
+			L"SELECT",
+			m_selectPos,
+			{ 1.0f,1.0f,1.0f,m_selectAlpha },
+			IMAGE_RATE * imageScale * m_selectScale,
+			{ IMAGE_CENTER,IMAGE_CENTER }
 		);
 
 	// タイトル文字
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"TITLE",										// 登録キー
-			m_titlePos,										// 座標
-			{ 1.0f,1.0f,1.0f,m_titleAlpha },				// 色
-			IMAGE_RATE * imageScale * m_titleScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
+			L"TITLE",
+			m_titlePos,
+			{ 1.0f,1.0f,1.0f,m_titleAlpha },
+			IMAGE_RATE * imageScale * m_titleScale,
+			{ IMAGE_CENTER,IMAGE_CENTER }
 		);
 
 
 	// 時計画像
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Clock",										// 登録キー
-			m_clockPos,										// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },						// 色
-			DEFAULT_RATE * imageScale,						// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }					// 中心位置
+			L"Clock",
+			m_clockPos,
+			{ 1.0f,1.0f,1.0f,1.0f },
+			DEFAULT_RATE * imageScale,
+			{ IMAGE_CENTER,IMAGE_CENTER }
 		);
 
 
@@ -371,13 +371,13 @@ void ResultScene::CreateWindowDependentResources()
 	// 画像の設定
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(context);
 	// 画像を登録
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY", L"Resources/Textures/FONT/RETRY.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY",  L"Resources/Textures/FONT/RETRY.dds",  device);
 	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds", device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE", L"Resources/Textures/FONT/TITLE.dds", device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"COINS", L"Resources/Textures/FONT/COINS.dds", device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND", L"Resources/Textures/ResultBack.dds", device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Clock", L"Resources/Textures/Clock.dds", device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE",  L"Resources/Textures/FONT/TITLE.dds",  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"COINS",  L"Resources/Textures/FONT/COINS.dds",  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND",  L"Resources/Textures/ResultBack.dds",  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds",      device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Clock",  L"Resources/Textures/Clock.dds",       device);
 
 	// 比率を計算
 	float span = width / FULL_SCREEN_SIZE.x;
