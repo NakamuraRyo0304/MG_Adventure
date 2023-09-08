@@ -185,6 +185,9 @@
     <Filter Include="Resources\Textures\SELECT_INFO">
       <UniqueIdentifier>{74b2bb85-213b-403d-9f9a-c6260d64bd24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\SoundEffect">
+      <UniqueIdentifier>{5db3329a-55cd-4424-9dad-4178c5cbb029}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -292,6 +295,9 @@
     <ClInclude Include="Game\SelectScene\Objects\SelectUI.h">
       <Filter>Scenes\SelectScene\Objects\SelectUI</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\SoundEffect.h">
+      <Filter>Common\SoundEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -392,6 +398,9 @@
     </ClCompile>
     <ClCompile Include="Game\SelectScene\Objects\SelectUI.cpp">
       <Filter>Scenes\SelectScene\Objects\SelectUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\SoundEffect.cpp">
+      <Filter>Common\SoundEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

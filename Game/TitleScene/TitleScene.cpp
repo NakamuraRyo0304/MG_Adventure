@@ -88,9 +88,8 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
-	// XXX: 演出方法をイージングに変える
 	// 起動時のロゴの動き
-	m_logoMoveY -= m_logoMoveY > 2.0f ? 0.1f : 0.0f;
+	m_logoMoveY = UserUtility::Lerp(m_logoMoveY, END_MOVE_POS, 0.1f);
 
 	// 決定していなければ選択を切り替える
 	if (!is_startFlag)
@@ -148,40 +147,40 @@ void TitleScene::Draw()
 	SimpleMath::Matrix logoMat, stageMat, skyMat, view, proj;
 
 	// 移動、回転行列
-	SimpleMath::Matrix logoTrans, logoRot,								// ロゴ
-					   stageTrans, stageRotX, stageRotY, stageScale,	// ステージ
-					   skyTrans, skyRotX;								// スカイドーム
+	SimpleMath::Matrix logoTrans, logoRot,				// ロゴ
+		stageTrans, stageRotX, stageRotY, stageScale,	// ステージ
+		skyTrans, skyRotX;								// スカイドーム
 
 	// ワールド行列
 	logoMat = stageMat = skyMat = SimpleMath::Matrix::Identity;
 
 	// 回転行列
-	logoRot		= SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
-	stageRotX	= SimpleMath::Matrix::CreateRotationX(0.3f);
-	stageRotY	= SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f + m_accelerate);
-	skyRotX		= SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
+	logoRot = SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
+	stageRotX = SimpleMath::Matrix::CreateRotationX(0.3f);
+	stageRotY = SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f + m_accelerate);
+	skyRotX = SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
 
 	// 移動行列
-	logoTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, m_logoMoveY, cosf(m_timer) * 0.5f);
-	stageTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
-	skyTrans	= SimpleMath::Matrix::CreateTranslation(0.0f, m_cameraMoveY, 0.0f);
+	logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_logoMoveY, cosf(m_timer) * 0.5f);
+	stageTrans = SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
+	skyTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_cameraMoveY, 0.0f);
 
 	// スケール行列
-	stageScale	= SimpleMath::Matrix::CreateScale(1.2f);
+	stageScale = SimpleMath::Matrix::CreateScale(1.2f);
 
 	// ロゴ
-	logoMat		*= logoRot * logoTrans;
+	logoMat *= logoRot * logoTrans;
 	// ステージ
-	stageMat	*= stageScale * stageRotY * stageRotX * stageTrans;
+	stageMat *= stageScale * stageRotY * stageRotX * stageTrans;
 	// スカイドーム
-	skyMat		*= skyRotX;
+	skyMat *= skyRotX;
 
 	// スタート演出の処理はこの中を処理する
 	if (is_startFlag)
 	{
 		// スカイドームの回転と移動
-		skyMat	*= skyRotX;
-		skyMat	*= skyTrans;
+		skyMat *= skyRotX;
+		skyMat *= skyTrans;
 
 		// ロゴも一緒に動く
 		m_logoMoveScale *= 1.05f;
@@ -196,8 +195,8 @@ void TitleScene::Draw()
 	proj = GetSystemManager()->GetCamera()->GetProjection();
 
 	// ライトの設定
-	SimpleMath::Vector3	 lightDirection	(-1.0f, 1.0f, 1.0f);
-	SimpleMath::Color	 lightColor		( 0.3f, 0.3f, 0.3f, 1.0f);
+	SimpleMath::Vector3	 lightDirection(-1.0f, 1.0f, 1.0f);
+	SimpleMath::Color	 lightColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 	// アマチュアモデル設定
 	m_miniatureModel->UpdateEffects([&](IEffect* effect)
@@ -223,7 +222,10 @@ void TitleScene::Draw()
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);  	// スカイドーム
 
 	// UIの描画
-	m_titleUI->Render();
+	if (static_cast<int>(m_logoMoveY) == static_cast<int>(END_MOVE_POS))
+	{
+		m_titleUI->Render();
+	}
 }
 
 /// <summary>
