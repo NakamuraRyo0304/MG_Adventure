@@ -20,8 +20,10 @@
  /// <param name="device">デバイスポインタ</param>
  /// <returns>なし</returns>
 SelectUI::SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device)
-	:m_rightAlpha{}
-	,m_leftAlpha{}
+	: m_rightAlpha{}		// 右矢印の透明度
+	, m_leftAlpha{}			// 左矢印の透明度
+	, m_oneCoins{}			//  1の位のコイン数
+	, m_tenCoins{}			// 10の位のコイン数
 {
 	m_system = system;
 
@@ -30,6 +32,8 @@ SelectUI::SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* 
 	// 画像の登録
 	m_system->GetDrawSprite()->AddTextureData(L"RightArrow", L"Resources/Textures/SELECT_INFO/RightArrow.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"LeftArrow",  L"Resources/Textures/SELECT_INFO/LeftArrow.dds",  device);
+	m_system->GetDrawSprite()->AddTextureData(L"CenterCoin", L"Resources/Textures/SELECT_INFO/TotalCoins.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Number",	 L"Resources/Textures/Number.dds",				   device);
 }
 
 /// <summary>
@@ -77,8 +81,24 @@ void SelectUI::Render(const int& selectNum)
 {
 	// 画面比率を計算
 	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 coinsScale = m_windowSize / FULL_SCREEN_SIZE / 2;
 
-	if (selectNum != 0)
+	//-------------------------------------------------------------------------------------//
+
+	// 総獲得コイン数を表示
+	m_system->GetDrawSprite()->DrawTexture(
+		L"CenterCoin",
+		SimpleMath::Vector2{ 0.0f ,0.0f } * scale,
+		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
+		coinsScale,
+		SimpleMath::Vector2::Zero
+	);
+
+	DrawNumber(coinsScale);
+
+	//-------------------------------------------------------------------------------------//
+
+	if (selectNum != 0) // 左矢印を表示
 	{
 		m_system->GetDrawSprite()->DrawTexture(
 			L"LeftArrow",
@@ -88,7 +108,7 @@ void SelectUI::Render(const int& selectNum)
 			SimpleMath::Vector2::Zero
 		);
 	}
-	if (selectNum != 9)
+	if (selectNum != 9) // 右矢印を表示
 	{
 		m_system->GetDrawSprite()->DrawTexture(
 			L"RightArrow",
@@ -99,6 +119,7 @@ void SelectUI::Render(const int& selectNum)
 		);
 	}
 }
+
 /// <summary>
 /// 終了処理
 /// </summary>
@@ -107,4 +128,52 @@ void SelectUI::Render(const int& selectNum)
 void SelectUI::Finalize()
 {
 	m_system.reset();
+}
+
+/// <summary>
+/// 数字の描画
+/// </summary>
+/// <param name="scale">テクスチャのスケール</param>
+/// <returns>なし</returns>
+void SelectUI::DrawNumber(SimpleMath::Vector2 scale)
+{
+	// 画面サイズ
+	SimpleMath::Vector2 wScale = m_windowSize / FULL_SCREEN_SIZE;
+
+	// 初期値
+	RECT_U oneRec = { 0,0,1000,100 };
+	RECT_U tenRec = { 0,0,1000,100 };
+
+	oneRec = { m_oneCoins * 100, 0,m_oneCoins * 100 + 100, 100 };
+	tenRec = { m_tenCoins * 100, 0,m_tenCoins * 100 + 100, 100 };
+
+	m_system->GetDrawSprite()->DrawTexture(
+		L"Number",
+		SimpleMath::Vector2{ 400.0f ,50.0f } * wScale,
+		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
+		scale,
+		SimpleMath::Vector2::Zero,
+		tenRec
+	);
+
+	m_system->GetDrawSprite()->DrawTexture(
+		L"Number",
+		SimpleMath::Vector2{ 450.0f ,50.0f } * wScale,
+		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
+		scale,
+		SimpleMath::Vector2::Zero,
+		oneRec
+	);
+
+}
+
+/// <summary>
+/// 合計コイン数の計算
+/// </summary>
+/// <param name="totalCoinNum">コイン数</param>
+/// <returns>なし</returns>
+void SelectUI::SetTotalCoins(const int& totalCoinNum)
+{
+	m_oneCoins = totalCoinNum % 10;
+	m_tenCoins = totalCoinNum / 10;
 }

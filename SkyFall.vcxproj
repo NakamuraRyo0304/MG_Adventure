@@ -299,6 +299,7 @@
     <Image Include="Resources\Textures\SaveFile.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\LeftArrow.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\RightArrow.dds" />
+    <Image Include="Resources\Textures\SELECT_INFO\TotalCoins.dds" />
     <Image Include="Resources\Textures\TITLE_BUTTON\Exit.dds" />
     <Image Include="Resources\Textures\TITLE_BUTTON\Start.dds" />
     <Image Include="Resources\Textures\TITLE_BUTTON\UnderLine.dds" />

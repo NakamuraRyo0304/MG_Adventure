@@ -32,6 +32,9 @@ private:
 	// 未開放ステージ数
 	int m_noStageNum;
 
+	// 合計コイン数
+	int m_totalCoins;
+
 	// ブロックとステージ
 	std::unique_ptr<Blocks> m_blocks[10];
 	std::unique_ptr<DirectX::Model> m_stageModels[10];
@@ -102,6 +105,10 @@ public:
 
 	// 未開放ステージセッター
 	void SetNoStageNum(const int& stageNum) { m_noStageNum = stageNum; }
+
+	// 合計コインアクセサ
+	const int& GetTotalCoins() { return m_totalCoins; }
+	void SetTotalCoins(const int& num);
 };
 
 #endif // SELECTSCENE

@@ -29,6 +29,10 @@ private:
 	float m_rightAlpha;
 	float m_leftAlpha;
 
+	// 合計コイン数
+	int m_oneCoins;
+	int m_tenCoins;
+
 public:
 	SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device);
 	~SelectUI();
@@ -44,6 +48,13 @@ public:
 
 	// 終了処理
 	void Finalize();
+
+private:
+	void DrawNumber(DirectX::SimpleMath::Vector2 scale);
+
+public:
+	// コイン数セッター
+	void SetTotalCoins(const int& totalCoinNum);
 };
 
 #endif // SELECTUI

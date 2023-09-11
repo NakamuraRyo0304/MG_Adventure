@@ -32,6 +32,7 @@ SelectScene::SelectScene():
 	m_flashCount{},			// 点滅のカウンタ
 	m_stageNum{1},			// ステージ番号
 	m_noStageNum{},			// 未開放ステージ番号
+	m_totalCoins{},			// 合計コイン数
 	m_targetY{},			// カメラのターゲットのY座標
 	m_mutex{}				// ロック
 {
@@ -66,6 +67,8 @@ void SelectScene::Initialize()
 	// スタートが0
 	m_flashCount = 0.0f;
 
+	// コイン数をセット
+	m_userInterface->SetTotalCoins(m_totalCoins);
 }
 
 /// <summary>
@@ -331,4 +334,14 @@ void SelectScene::LoadStage(ID3D11Device1* device)
 		// 初期化処理
 		m_blocks[i]->Initialize(i);
 	}
+}
+
+/// <summary>
+/// コインセッター
+/// </summary>
+/// <param name="num">合計コイン数</param>
+/// <returns>なし</returns>
+void SelectScene::SetTotalCoins(const int& num)
+{
+	m_totalCoins = num;
 }

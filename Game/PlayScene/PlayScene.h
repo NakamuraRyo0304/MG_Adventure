@@ -145,6 +145,8 @@ public:
 	// 画面依存の初期化
 	void CreateWindowDependentResources() override;
 
+private:
+
 	// 当たり判定処理
 	void Judgement();
 
@@ -157,6 +159,8 @@ public:
 	// スタートのカウントダウン
 	bool StartTimer();
 
+public:
+
 	// タイムリミットのゲッター
 	const float& GetClearTime() { return m_clearTime; }
 
@@ -165,6 +169,7 @@ public:
 	const int& GetMaxCoinCount();
 
 	// マップ番号のセッター
+	const int& GetStageNum() { return m_stageNum; }
 	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
 
 };

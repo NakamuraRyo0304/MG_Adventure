@@ -41,7 +41,8 @@ GameMain::GameMain():
 	is_saveOnce{false},
 	//以下はセーブデータ対応------------------------------------------------------------------------//
 	m_closeNum{},						// 未開放ステージ
-	m_totalCoinNum{}					// 累計コイン枚数
+	m_totalCoinNum{},					// 累計コイン枚数
+	m_clearJudge{0}						// クリア判定
 {
 }
 
@@ -71,10 +72,15 @@ void GameMain::Initialize()
 	// ステージ番号
 	m_num = 1;
 
+	is_saveOnce = false;
+
+	for (int i = 0; i < 10; ++i)
+	{
+		m_clearJudge[i] = 0;
+	}
+
 	// セーブデータを読み込む
 	LoadSaveData();
-
-	is_saveOnce = false;
 }
 
 /// <summary>
@@ -176,6 +182,7 @@ void GameMain::CreateScene()
 		{
 			m_nowScene = std::make_unique<SelectScene>();
 			CastSceneType<SelectScene>(m_nowScene)->SetNoStageNum(m_closeNum);
+			CastSceneType<SelectScene>(m_nowScene)->SetTotalCoins(m_totalCoinNum);
 
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
@@ -315,33 +322,60 @@ void GameMain::CreateWindowDependentResources(const int& screenWidth, const int&
 /// <returns>なし</returns>
 void GameMain::LoadSaveData()
 {
-	std::ifstream ifs(L"Resources/SaveData.txt");
+	//-------------------------------------------------------------------------------------//
+	// 未開放ステージ数と獲得コイン数の取得
+	std::ifstream coinIfs(L"Resources/SaveData.txt");
 
 	std::string line;
 
-	// 識別用変数
-	int counta = 0;
-
 	// データがなくなるまで格納
-	for (; std::getline(ifs, line); )
+	for (; std::getline(coinIfs, line); )
 	{
+		if (!coinIfs) return;
+
 		// カンマを空白に変更
 		std::string tmp = std::regex_replace(line, std::regex(","), " ");
 
 		// 空白で分割する
 		std::istringstream iss(tmp);
 
-		if (counta == 0)
+		if (!(iss >> m_closeNum))
 		{
-			m_closeNum = std::stoi(line);
+			coinIfs.close();
+			return;
 		}
-		else
+
+		if (!(iss >> m_totalCoinNum))
 		{
-			m_totalCoinNum = std::stoi(line);
+			coinIfs.close();
+			return;
 		}
-		counta++;
 	}
-	ifs.close();
+	coinIfs.close();
+
+	//-------------------------------------------------------------------------------------//
+	// ステージクリア情報の取得
+	std::ifstream clearIfs(L"Resources/Restriction.txt");
+
+	// データがなくなるまで格納
+	for (int i = 0; std::getline(clearIfs, line); ++i)
+	{
+		if (!clearIfs) return;
+
+		// カンマを空白に変更
+		std::string tmp = std::regex_replace(line, std::regex(","), " ");
+
+		// 空白で分割する
+		std::istringstream clearIss(tmp);
+
+		// 1がクリア,0が未クリア
+		if (!(clearIss >> m_clearJudge[i]))
+		{
+			clearIfs.close();
+			return;
+		}
+	}
+	clearIfs.close();
 }
 
 /// <summary>
@@ -351,19 +385,40 @@ void GameMain::LoadSaveData()
 /// <returns>なし</returns>
 void GameMain::WriteSaveData()
 {
-	// ファイル出力変数を定義
-	std::ofstream ofs(L"Resources/SaveData.txt");
+	//-------------------------------------------------------------------------------------//
+	// 未開放ステージ数と獲得コイン数の書き出し
+	std::ofstream coinOfs(L"Resources/SaveData.txt");
 
 	// ファイルがなければ処理しない
-	if (!ofs)return;
+	if (coinOfs)
+	{
+		// ファイルを出力する
+		std::ostringstream coinOss;
 
-	// ファイルを出力する
-	std::ostringstream oss;
+		coinOss << m_closeNum << "," << m_totalCoinNum << ",";
+		coinOfs << coinOss.str();
 
-	oss << m_closeNum << "," << m_totalCoinNum << ",";
-	ofs << oss.str();
+		coinOfs.close();
+	}
 
-	ofs.close();
+	//-------------------------------------------------------------------------------------//
+	// クリア状況を書き出し
+	std::ofstream clearOfs(L"Resources/Restriction.txt");
+
+	// ファイルがなければ処理しない
+	if (clearOfs)
+	{
+		// ファイルを出力する
+		std::ostringstream clearOss;
+
+		for (int i = 0; i < 10; ++i)
+		{
+			clearOss << m_clearJudge[i] << ",";
+		}
+		clearOfs << clearOss.str();
+
+		clearOfs.close();
+	}
 }
 
 /// <summary>
@@ -375,17 +430,21 @@ void GameMain::OpenNewStage()
 {
 	if (m_nextScene != SCENE::RESULT || is_saveOnce) return;
 
-	// プレイ中のステージのコイン数をすべて獲得したら次のステージを開く
-	if (CastSceneType<PlayScene>(m_nowScene)->GetCoinNum() == CastSceneType<PlayScene>(m_nowScene)->GetMaxCoinCount())
+	// プレイ中のステージのコイン数をすべて獲得したら開く
+	if (CastSceneType<PlayScene>(m_nowScene)->GetCoinNum() == CastSceneType<PlayScene>(m_nowScene)->GetMaxCoinCount() &&
+		m_clearJudge[CastSceneType<PlayScene>(m_nowScene)->GetStageNum()] == 0)
 	{
-		m_closeNum -= 1;
+		// 全て解放していたら処理しない
+		m_closeNum -= m_closeNum > 0 ? 1 : 0;
 
-		m_totalCoinNum += m_coinNum;
-
-		// 最新状態を保存
-		WriteSaveData();
+		m_clearJudge[CastSceneType<PlayScene>(m_nowScene)->GetStageNum()] = 1;
 	}
 
+	m_totalCoinNum += m_coinNum;
+
+
+	// 最新状態を保存
+	WriteSaveData();
 
 	// 二回保存されないようにする
 	is_saveOnce = true;
