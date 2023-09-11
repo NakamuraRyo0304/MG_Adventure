@@ -30,6 +30,7 @@ PlayUI::PlayUI(const SimpleMath::Vector2& windowSize):
 	is_effectFlag{false},
 	is_helpFlag{false}
 {
+	m_windowSize = windowSize;
 }
 
 /// <summary>
@@ -61,7 +62,7 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 
 	// 画像を登録
 	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Death", L"Resources/Textures/DeathEffect.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Death",  L"Resources/Textures/DeathEffect.dds", device);
 
 	// ヘルプ画面
 	m_system->GetDrawSprite()->AddTextureData(L"Help",	   L"Resources/Textures/PLAY_HELP/Help.dds",      device);
@@ -70,17 +71,12 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	m_system->GetDrawSprite()->AddTextureData(L"GameStart",L"Resources/Textures/PLAY_HELP/GameStart.dds", device);
 
 	// 比率を計算
-	SimpleMath::Vector2 span = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// スプライトの位置を計算
-	m_oneSecPos	   = { 1010.0f * span.x, 80.0f * span.y };
-	m_tenSecPos	   = {  910.0f * span.x, 80.0f * span.y };
-	m_countDownPos = {  960.0f * span.x, 80.0f * span.y };
-
-    // 座標補正
-    m_oneSecPos.x	 -= NUMBER_SPRITE_SIZE / 2 * span.x;
-    m_tenSecPos.x	 -= NUMBER_SPRITE_SIZE / 2 * span.x;
-	m_countDownPos.x -= NUMBER_SPRITE_SIZE / 2 * span.x;
+	m_countDownPos = { (FULL_SCREEN_SIZE.x / 2 - NUM_SIZE / 2) * scale.x , 80.0f * scale.y };
+	m_oneSecPos = { m_countDownPos.x + static_cast<float>(NUM_SIZE / 2) * scale.x ,m_countDownPos.y };
+	m_tenSecPos = { m_countDownPos.x - static_cast<float>(NUM_SIZE / 2) * scale.x ,m_countDownPos.y };
 
 	// 落下フラグを切る
 	is_effectFlag = false;
@@ -108,15 +104,6 @@ void PlayUI::Render()
     // 比率を計算
 	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
 
-    // 秒数を計算
-    int oneSec = m_gameTimer / 60;
-
-    // 一桁目の数字を表示
-    RenderDigit(oneSec % 10, m_oneSecPos, scale, NUMBER_SPRITE_SIZE, NUMBER_SPRITE_SIZE);
-
-    // 十の桁の数字を表示
-    RenderDigit((oneSec / 10) % 10, m_tenSecPos, scale, NUMBER_SPRITE_SIZE, NUMBER_SPRITE_SIZE);
-
 	// 落下エフェクト
 	if (is_effectFlag)
 	{
@@ -128,6 +115,9 @@ void PlayUI::Render()
 			SimpleMath::Vector2::Zero          // 中心位置
 		);
 	}
+
+	// タイマーの描画
+	RenderTimer(scale);
 
 	// ヘルプフラグ(操作説明)
 	if (is_helpFlag)
@@ -181,54 +171,50 @@ void PlayUI::RenderCountDown(const float& countDown)
 		return;
 	}
 
-	// 画像表示
-	RenderDigit(
-		static_cast<int>(countDown / 60),
+	int num = static_cast<int>(countDown) / 60;
+	RECT_U countRec = { num * NUM_SIZE, 0, num * NUM_SIZE + NUM_SIZE, NUM_SIZE };
+
+	m_system->GetDrawSprite()->DrawTexture(
+		L"Number",
 		m_countDownPos,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
-		NUMBER_SPRITE_SIZE,
-		NUMBER_SPRITE_SIZE
+		SimpleMath::Vector2::Zero,
+		countRec
 	);
 }
 
 /// <summary>
-/// 数字を描画する
+/// タイマーの描画
 /// </summary>
-/// <param name="digit">描画する数字</param>
-/// <param name="position">座標</param>
 /// <param name="scale">拡大率</param>
-/// <param name="digitWidth">数字の幅</param>
-/// <param name="digitHeight">数字の高さ</param>
 /// <returns>なし</returns>
-void PlayUI::RenderDigit(int digit, const SimpleMath::Vector2& position, SimpleMath::Vector2 scale, int digitWidth, int digitHeight)
+void PlayUI::RenderTimer(SimpleMath::Vector2 scale)
 {
-	// スプライトの位置を計算
-	float spritePosX = position.x * scale.x;
-	float spritePosY = position.y * scale.y;
+	// 1の位に変換
+	int oneSec = m_gameTimer / 60 % 10;
+	int tenSec = m_gameTimer / 60 / 10 % 10;
 
-	// スプライトの中心位置を計算
-	SimpleMath::Vector2 center = { spritePosX * scale.x / 2.0f, spritePosY * scale.y / 2.0f };
+	// 切り取り位置設定
+	RECT_U oneRec = { oneSec * NUM_SIZE, 0, oneSec * NUM_SIZE + NUM_SIZE, NUM_SIZE };
+	RECT_U tenRec = { tenSec * NUM_SIZE, 0, tenSec * NUM_SIZE + NUM_SIZE, NUM_SIZE };
 
-	// 切り取り位置の設定
-	RECT_U rect;
-
-	// 切り取り開始位置を設定(横)
-	rect.left = digit * digitWidth;
-
-	// 切り取り終了位置を設定(横)
-	rect.right = rect.left + digitWidth;
-
-	// 画像縦幅を設定
-	rect.bottom = digitHeight;
-
-	// 数字表示
 	m_system->GetDrawSprite()->DrawTexture(
-		L"Number",                         // 登録キー
-		position + center,                 // 座標
-		{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-		scale,                             // 拡大率
-		center,                            // 中心位置
-		rect                               // 切り取り位置
+		L"Number",
+		m_tenSecPos,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		scale,
+		SimpleMath::Vector2::Zero,
+		tenRec
+	);
+
+	m_system->GetDrawSprite()->DrawTexture(
+		L"Number",
+		m_oneSecPos,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		scale,
+		SimpleMath::Vector2::Zero,
+		oneRec
 	);
 }
 

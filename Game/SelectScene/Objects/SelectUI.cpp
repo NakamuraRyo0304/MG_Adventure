@@ -70,7 +70,7 @@ void SelectUI::Update(const float& timer, const bool& rightFlag, const bool& lef
 
 	// ƒtƒ‰ƒO‚É‚æ‚Á‚Ä“§–¾“x‚ð•Ï‚¦‚é
 	m_rightAlpha = !rightFlag ? 0.5f : 1.0f;
-	m_leftAlpha = !leftFlag ? 0.5f : 1.0f;
+	m_leftAlpha  = !leftFlag  ? 0.5f : 1.0f;
 }
 
 /// <summary>

@@ -23,7 +23,7 @@ private:
 	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
 	// タイマーのスプライトのサイズ
-	const int NUMBER_SPRITE_SIZE = 100;
+	const int NUM_SIZE = 100;
 
 	// タイマーの座標(1の位)
 	DirectX::SimpleMath::Vector2 m_oneSecPos;
@@ -58,8 +58,8 @@ public:
 	// カウントダウン
 	void RenderCountDown(const float& countDown);
 
-	// ディジットの計算
-	void RenderDigit(int digit, const DirectX::SimpleMath::Vector2& position, DirectX::SimpleMath::Vector2 scale, int digitWidth, int digitHeight);
+	// タイマーの描画
+	void RenderTimer(DirectX::SimpleMath::Vector2 scale);
 
 	// 終了処理
 	void Finalize();
