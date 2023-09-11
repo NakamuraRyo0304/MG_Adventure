@@ -18,16 +18,16 @@
  /// <returns>なし</returns>
 TitleScene::TitleScene():
 	IScene(),
-	m_timer{0.0f},
-	m_titleLogoModel{},
-	m_miniatureModel{},
-	m_cameraMoveY{0.0f},
-	m_logoMoveY{0.0f},
-	is_startFlag{false},
-	m_logoMoveScale{},
-	is_menuFlag{true},
-	m_accelerate{0.0f},
-	is_accelerateFlag{false}
+	m_timer{0.0f},				// タイマー
+	m_titleLogoModel{},			// タイトルロゴのモデル
+	m_miniatureModel{},			// 中央ステージのモデル
+	m_cameraMoveY{0.0f},		// カメラ演出(スタート時)
+	m_logoMoveY{0.0f},			// ロゴの動き(移動)
+	m_logoMoveScale{},			// ロゴの動き(サイズ)
+	is_startFlag{false},		// 開始フラグ
+	is_menuFlag{true},			// 選択フラグ
+	m_accelerate{0.0f},			// 選択変更時のステージの回転加速
+	is_accelerateFlag{false}	// 回転加速しているかの判定フラグ
 {
 }
 
@@ -146,6 +146,8 @@ void TitleScene::Draw()
 	// カメラ用行列
 	SimpleMath::Matrix logoMat, stageMat, skyMat, view, proj;
 
+	//-------------------------------------------------------------------------------------//
+
 	// 移動、回転行列
 	SimpleMath::Matrix logoTrans, logoRot,				// ロゴ
 		stageTrans, stageRotX, stageRotY, stageScale,	// ステージ
@@ -154,19 +156,27 @@ void TitleScene::Draw()
 	// ワールド行列
 	logoMat = stageMat = skyMat = SimpleMath::Matrix::Identity;
 
+	//-------------------------------------------------------------------------------------//
+
 	// 回転行列
 	logoRot = SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
 	stageRotX = SimpleMath::Matrix::CreateRotationX(0.3f);
 	stageRotY = SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f + m_accelerate);
 	skyRotX = SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
 
+	//-------------------------------------------------------------------------------------//
+
 	// 移動行列
 	logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_logoMoveY, cosf(m_timer) * 0.5f);
 	stageTrans = SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
 	skyTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_cameraMoveY, 0.0f);
 
+	//-------------------------------------------------------------------------------------//
+
 	// スケール行列
 	stageScale = SimpleMath::Matrix::CreateScale(1.2f);
+
+	//-------------------------------------------------------------------------------------//
 
 	// ロゴ
 	logoMat *= logoRot * logoTrans;
@@ -174,6 +184,8 @@ void TitleScene::Draw()
 	stageMat *= stageScale * stageRotY * stageRotX * stageTrans;
 	// スカイドーム
 	skyMat *= skyRotX;
+
+	//-------------------------------------------------------------------------------------//
 
 	// スタート演出の処理はこの中を処理する
 	if (is_startFlag)

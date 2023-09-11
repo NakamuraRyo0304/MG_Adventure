@@ -157,7 +157,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 			SimpleMath::Vector3(0.0f, 2.5f, 6.0f)	// ターゲットからの距離
 		);
 	}
-	else // 固定カメラ
+	else // 見下ろしカメラ
 	{
 		GetSystemManager()->GetCamera()->Update();
 	}

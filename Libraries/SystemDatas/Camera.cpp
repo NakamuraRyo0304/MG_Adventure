@@ -36,9 +36,9 @@ Camera::Camera():
 	m_prevScrollWheelValue{},	// マウスホイールの回転量(前回の保存用)
 	m_view{},					// ビュー行列
 	m_proj{},					// プロジェクション行列
-	is_allowMode{false},		// カメラの視点移動フラグ十字で移動する
-	is_eagleMode{false},		// カメラの視点移動フラグマウスを使用する
-	is_prevEagleMode{false},	// カメラの視点移動フラグマウスホイールを使用する(前回の保存用)
+	is_allowMode{false},		// カメラの視点移動フラグ(十字操作)
+	is_eagleMode{false},		// カメラの視点移動フラグ(マウス操作)
+	is_prevEagleMode{false},	// カメラの視点移動フラグ(前回の保存用)
 	m_screenHeight{},			// 画面の高さ
 	m_screenWidth{},			// 画面の幅
 	m_rotateMatrix{}			// 回転量
@@ -88,9 +88,6 @@ void Camera::Update()
 	// ビュー行列の算出
 	CalculateViewMatrix();
 
-	// 上下回転のみ制限
-	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLEX_MIN, ANGLEX_MAX);
-
 	// 十字スイッチがオフなら動かさない
 	if (!is_allowMode) return;
 
@@ -98,10 +95,10 @@ void Camera::Update()
 	SimpleMath::Vector2 moveVal = SimpleMath::Vector2::Zero;
 
 	// 移動量を設定
-	if (kbState.Right){ moveVal.y =  0.01f; }
-	if (kbState.Left) { moveVal.y = -0.01f; }
-	if (kbState.Up)   { moveVal.x =  0.01f; }
-	if (kbState.Down) { moveVal.x = -0.01f; }
+	if (kbState.Right) { moveVal.y =  ALLOW_SPEED; }
+	if (kbState.Left)  { moveVal.y = -ALLOW_SPEED; }
+	if (kbState.Up)    { moveVal.x =  ALLOW_SPEED; }
+	if (kbState.Down)  { moveVal.x = -ALLOW_SPEED; }
 
 	// 角度変更
 	m_angle += moveVal;
@@ -132,7 +129,7 @@ void Camera::DraggedDistance(int x, int y)
 	}
 
 	// カメラの角度をクランプ
-	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLEX_MIN, ANGLEX_MAX);
+	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLE_X_MIN, ANGLE_X_MAX);
 
 }
 
@@ -175,7 +172,7 @@ void Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
 const SimpleMath::Matrix& Camera::CreateProjection(float width, float height, float angle)
 {
 	// 画面サイズとアングルの保存
-	m_screenWidth = static_cast<int>(width);
+	m_screenWidth  = static_cast<int>(width);
 	m_screenHeight = static_cast<int>(height);
 
 	// 画角
@@ -199,13 +196,11 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height, fl
 			farPlane
 		);
 
+	// カメラ画角
 	m_angle.x = angle;
 
-	// カメラ内で使う変数
-	m_proj = projection;
-
 	// プロジェクション行列を返却
-	return m_proj;
+	return m_proj = projection;
 }
 
 /// <summary>
@@ -239,6 +234,8 @@ void Camera::CalculateViewMatrix()
 	m_target = target;
 	m_view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
 
+	// 上下回転のみ制限
+	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLE_X_MIN, ANGLE_X_MAX);
 }
 
 /// <summary>

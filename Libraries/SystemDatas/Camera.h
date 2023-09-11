@@ -20,6 +20,7 @@ public:	//----------------------------------------------------------------------
 
 	// カメラの移動速度
 	static const float DEFAULT_CAMERA_SPEED;
+	const float ALLOW_SPEED = 0.01f;
 
 	// カメラホイール上下限
 	static const int MAX_SCROLL_VALUE;
@@ -30,8 +31,8 @@ public:	//----------------------------------------------------------------------
 	const float FAR_PLANE = 245.0f;
 
 	// カメラ画角上下限
-	const float ANGLEX_MIN = 44.0f;
-	const float ANGLEX_MAX = 45.5f;
+	const float ANGLE_X_MIN = 44.0f;
+	const float ANGLE_X_MAX = 45.5f;
 
 private: //-------------------------------------------------------------------------------------//
 

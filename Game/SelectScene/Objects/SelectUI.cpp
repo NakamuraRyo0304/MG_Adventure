@@ -141,14 +141,10 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 scale)
 	// 画面サイズ
 	SimpleMath::Vector2 wScale = m_windowSize / FULL_SCREEN_SIZE;
 
-	// 初期値
-	RECT_U oneRec = { 0,0,1000,100 };
-	RECT_U tenRec = { 0,0,1000,100 };
-	RECT_U hanRec = { 0,0,1000,100 };
-
-	oneRec = { m_oneCoins * 100, 0,m_oneCoins * 100 + 100, 100 };
-	tenRec = { m_tenCoins * 100, 0,m_tenCoins * 100 + 100, 100 };
-	hanRec = { m_hanCoins * 100, 0,m_hanCoins * 100 + 100, 100 };
+	// 切り取り位置設定
+	RECT_U oneRec = { m_oneCoins * 100, 0,m_oneCoins * 100 + 100, 100 };
+	RECT_U tenRec = { m_tenCoins * 100, 0,m_tenCoins * 100 + 100, 100 };
+	RECT_U hanRec = { m_hanCoins * 100, 0,m_hanCoins * 100 + 100, 100 };
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
