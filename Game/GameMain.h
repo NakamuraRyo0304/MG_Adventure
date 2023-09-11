@@ -58,11 +58,18 @@ private:
     // ステージ番号を保存する
     int m_num;
 
+    // 未開放ステージ番号を保存する
+    int m_closeNum;
+
     // クリア時間を保存する
     float m_clearTime;
 
     // コインの枚数を保存する
     int m_coinNum;
+
+    // 今までの累計コイン枚数
+    int m_totalCoinNum;
+    bool is_saveOnce;
 
     // デフォルトのフェード速度
     const float DEFAULT_FADE_SPEED = 4.0f;
@@ -100,6 +107,15 @@ public:
     {
         return dynamic_cast<T*>(scene.get());
     }
+
+    // セーブデータを読み込む
+    void LoadSaveData();
+
+    // セーブデータを書き込む
+    void WriteSaveData();
+
+    // ステージを開放する
+    void OpenNewStage();
 };
 
 #endif // GAMEMAIN

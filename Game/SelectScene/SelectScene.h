@@ -29,6 +29,8 @@ private:
 
 	// ステージ番号
 	int m_stageNum;
+	// 未開放ステージ数
+	int m_noStageNum;
 
 	// ブロックとステージ
 	std::unique_ptr<Blocks> m_blocks[10];
@@ -97,6 +99,9 @@ public:
 	// ステージ番号のアクセサ
 	const int& GetStageNum() { return m_stageNum; }
 	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
+
+	// 未開放ステージセッター
+	void SetNoStageNum(const int& stageNum) { m_noStageNum = stageNum; }
 };
 
 #endif // SELECTSCENE

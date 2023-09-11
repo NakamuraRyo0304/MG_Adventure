@@ -31,6 +31,7 @@ SelectScene::SelectScene():
 	m_timer{},				// タイマー
 	m_flashCount{},			// 点滅のカウンタ
 	m_stageNum{1},			// ステージ番号
+	m_noStageNum{},			// 未開放ステージ番号
 	m_targetY{},			// カメラのターゲットのY座標
 	m_mutex{}				// ロック
 {
@@ -64,6 +65,7 @@ void SelectScene::Initialize()
 
 	// スタートが0
 	m_flashCount = 0.0f;
+
 }
 
 /// <summary>
@@ -112,7 +114,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if(keyState.Right)
 	{
 		// ステージ番号が最大なら処理しない
-		if (m_stageNum == MAX_STAGE_NUM - 1) return;
+		if (m_stageNum == MAX_STAGE_NUM - 1 - m_noStageNum) return;
 
 		m_targetY = UP_VALUE;
 		m_stageNum++;
@@ -275,7 +277,7 @@ void SelectScene::CreateWindowDependentResources()
 	}
 
 	// ステージ番号のモデル
-	for (int i = 0; i < MAX_STAGE_NUM; ++i)
+	for (int i = 0; i < MAX_STAGE_NUM - m_noStageNum; ++i)
 	{
 		// 0番目はエディタの文字
 		if (i == 0)

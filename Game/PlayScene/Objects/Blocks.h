@@ -104,6 +104,7 @@ public:
 	// コインのカウントアップ
 	void CountUpCoin(int index);
 	const int& GetCoinCount() { return m_coinCount; }
+	const int& GetMaxCoinCount() { return m_maxCoins; }
 	const bool& IsCollectedFlag();
 
 	// プレイヤー座標ゲッター

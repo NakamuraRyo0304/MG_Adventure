@@ -162,6 +162,7 @@ public:
 
 	// コインの枚数ゲッター
 	const int& GetCoinNum();
+	const int& GetMaxCoinCount();
 
 	// マップ番号のセッター
 	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }

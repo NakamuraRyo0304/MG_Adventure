@@ -9,6 +9,11 @@
 
 #include "GameMain.h"
 
+ // ファイルの保存に使用
+#include<sstream>
+#include<fstream>
+#include<regex>
+
 // フェードオブジェクト
 #include "../Libraries/SystemDatas/Fade.h"
 
@@ -32,7 +37,11 @@ GameMain::GameMain():
 	m_clearTime{0.0f},					// クリアタイム
 	m_coinNum{0},						// 獲得コイン数
 	m_screenWidth{},					// スクリーンサイズ(横)
-	m_screenHeight{}					// スクリーンサイズ(縦)
+	m_screenHeight{},					// スクリーンサイズ(縦)
+	is_saveOnce{false},
+	//以下はセーブデータ対応------------------------------------------------------------------------//
+	m_closeNum{},						// 未開放ステージ
+	m_totalCoinNum{}					// 累計コイン枚数
 {
 }
 
@@ -61,6 +70,11 @@ void GameMain::Initialize()
 
 	// ステージ番号
 	m_num = 1;
+
+	// セーブデータを読み込む
+	LoadSaveData();
+
+	is_saveOnce = false;
 }
 
 /// <summary>
@@ -100,7 +114,7 @@ void GameMain::Update(const DX::StepTimer& timer)
 		// シーンの更新処理
 		m_nowScene->Update(time, kb, ms);
 
-			// フェードが終わっていたらシーンを切り替える
+		// フェードが終わっていたらシーンを切り替える
 		if (m_fade->GetEndFlag())
 		{
 			m_nextScene = m_nowScene->GetNextScene();
@@ -136,8 +150,6 @@ void GameMain::Draw()
 /// <returns>なし</returns>
 void GameMain::Finalize()
 {
-	// シーン削除
-	DeleteScene();
 }
 
 /// <summary>
@@ -163,6 +175,7 @@ void GameMain::CreateScene()
 		case SCENE::SELECT:		// ステージセレクトシーン
 		{
 			m_nowScene = std::make_unique<SelectScene>();
+			CastSceneType<SelectScene>(m_nowScene)->SetNoStageNum(m_closeNum);
 
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
@@ -196,6 +209,7 @@ void GameMain::CreateScene()
 		}
 		case SCENE::ENDGAME:	// ゲーム終了
 		{
+			WriteSaveData(); // データを書き出し
 			m_nowScene = std::make_unique<TitleScene>();
 			m_nowScene->ExitApp();
 			break;
@@ -212,6 +226,8 @@ void GameMain::CreateScene()
 
 	// 次へのシーン情報を初期化
 	m_nextScene = SCENE::NONE;
+
+	is_saveOnce = false;
 }
 /// <summary>
 /// シーンの削除
@@ -223,24 +239,27 @@ void GameMain::DeleteScene()
 	// シーンが作成されていなければ処理しない
 	if (!m_nowScene) return;
 
-	// 現在がセレクトシーンならステージ番号を保持
-	if (m_nextScene == SCENE::PLAY)
+	switch (m_nextScene)
 	{
+	case SCENE::PLAY:
 		// 再読み込みでなければ処理する
 		if (m_nextScene != m_prevScene && m_prevScene != SCENE::RESULT)
 		{
+			// ステージ番号を保持
 			m_num = CastSceneType<SelectScene>(m_nowScene)->GetStageNum();
 		}
-	}
-
-	// 現在がプレイシーンならタイムリミットを保持
-	if (m_nextScene == SCENE::RESULT)
-	{
+		break;
+	case SCENE::RESULT:
 		if (CastSceneType<ResultScene>(m_nowScene) == nullptr)
 		{
+			// クリアタイムと獲得コイン数を保持
 			m_clearTime = CastSceneType<PlayScene>(m_nowScene)->GetClearTime();
-			m_coinNum	= CastSceneType<PlayScene>(m_nowScene)->GetCoinNum();
+			m_coinNum = CastSceneType<PlayScene>(m_nowScene)->GetCoinNum();
+			OpenNewStage();
 		}
+		break;
+	default:
+		break;
 	}
 
 	// 現シーンの終了処理
@@ -287,4 +306,87 @@ void GameMain::CreateWindowDependentResources(const int& screenWidth, const int&
 	// フェードオブジェクトの初期化
 	m_fade = std::make_unique<Fade>(DEFAULT_FADE_SPEED);
 	m_fade->Initialize(context, device);
+}
+
+/// <summary>
+/// セーブデータを読み込む
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void GameMain::LoadSaveData()
+{
+	std::ifstream ifs(L"Resources/SaveData.txt");
+
+	std::string line;
+
+	// 識別用変数
+	int counta = 0;
+
+	// データがなくなるまで格納
+	for (; std::getline(ifs, line); )
+	{
+		// カンマを空白に変更
+		std::string tmp = std::regex_replace(line, std::regex(","), " ");
+
+		// 空白で分割する
+		std::istringstream iss(tmp);
+
+		if (counta == 0)
+		{
+			m_closeNum = std::stoi(line);
+		}
+		else
+		{
+			m_totalCoinNum = std::stoi(line);
+		}
+		counta++;
+	}
+	ifs.close();
+}
+
+/// <summary>
+/// セーブデータを書き出す
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void GameMain::WriteSaveData()
+{
+	// ファイル出力変数を定義
+	std::ofstream ofs(L"Resources/SaveData.txt");
+
+	// ファイルがなければ処理しない
+	if (!ofs)return;
+
+	// ファイルを出力する
+	std::ostringstream oss;
+
+	oss << m_closeNum << "," << m_totalCoinNum << ",";
+	ofs << oss.str();
+
+	ofs.close();
+}
+
+/// <summary>
+/// ステージ解放処理
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void GameMain::OpenNewStage()
+{
+	if (m_nextScene != SCENE::RESULT || is_saveOnce) return;
+
+	// プレイ中のステージのコイン数をすべて獲得したら次のステージを開く
+	if (CastSceneType<PlayScene>(m_nowScene)->GetCoinNum() == CastSceneType<PlayScene>(m_nowScene)->GetMaxCoinCount())
+	{
+		m_closeNum -= 1;
+
+		m_totalCoinNum += m_coinNum;
+
+		// 最新状態を保存
+		WriteSaveData();
+	}
+
+
+	// 二回保存されないようにする
+	is_saveOnce = true;
 }

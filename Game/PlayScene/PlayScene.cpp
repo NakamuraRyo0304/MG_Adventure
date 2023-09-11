@@ -666,3 +666,13 @@ const int& PlayScene::GetCoinNum()
 {
 	return m_blocks->GetCoinCount();
 }
+
+/// <summary>
+/// コインゲッター
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>ステージの最大コインの枚数</returns>
+const int& PlayScene::GetMaxCoinCount()
+{
+	return m_blocks->GetMaxCoinCount();
+}

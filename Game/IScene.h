@@ -11,7 +11,7 @@
 
 #include "GameMain.h"
 
-// ライブラリ
+ // ライブラリ
 #include "../Libraries/SystemManager/SystemManager.h"
 #include "../Libraries/UserUtility.h"
 #include "../Libraries/Factories/ModelFactory.h"

@@ -7,5 +7,7 @@
 
 #include "pch.h"
 
+#include "X3DAudio.h"
+
 #include "SoundEffect.h"
 
