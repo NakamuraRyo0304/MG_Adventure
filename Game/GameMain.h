@@ -57,7 +57,6 @@ private:
 
     // ステージ番号を保存する
     int m_num;
-    int m_clearJudge[10];
 
     // 未開放ステージ番号を保存する
     int m_closeNum;

@@ -22,8 +22,9 @@
 SelectUI::SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device)
 	: m_rightAlpha{}		// 右矢印の透明度
 	, m_leftAlpha{}			// 左矢印の透明度
-	, m_oneCoins{}			//  1の位のコイン数
-	, m_tenCoins{}			// 10の位のコイン数
+	, m_oneCoins{}			//   1の位のコイン数
+	, m_tenCoins{}			//  10の位のコイン数
+	, m_hanCoins{}			// 100の位のコイン数
 {
 	m_system = system;
 
@@ -143,13 +144,24 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 scale)
 	// 初期値
 	RECT_U oneRec = { 0,0,1000,100 };
 	RECT_U tenRec = { 0,0,1000,100 };
+	RECT_U hanRec = { 0,0,1000,100 };
 
 	oneRec = { m_oneCoins * 100, 0,m_oneCoins * 100 + 100, 100 };
 	tenRec = { m_tenCoins * 100, 0,m_tenCoins * 100 + 100, 100 };
+	hanRec = { m_hanCoins * 100, 0,m_hanCoins * 100 + 100, 100 };
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 400.0f ,50.0f } * wScale,
+		SimpleMath::Vector2{ 450.0f ,45.0f } * wScale,
+		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
+		scale,
+		SimpleMath::Vector2::Zero,
+		hanRec
+	);
+
+	m_system->GetDrawSprite()->DrawTexture(
+		L"Number",
+		SimpleMath::Vector2{ 500.0f ,45.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,
@@ -158,7 +170,7 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 scale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 450.0f ,50.0f } * wScale,
+		SimpleMath::Vector2{ 550.0f ,45.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,
@@ -175,5 +187,6 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 scale)
 void SelectUI::SetTotalCoins(const int& totalCoinNum)
 {
 	m_oneCoins = totalCoinNum % 10;
-	m_tenCoins = totalCoinNum / 10;
+	m_tenCoins = totalCoinNum / 10 % 10;
+	m_hanCoins = totalCoinNum / 100;
 }

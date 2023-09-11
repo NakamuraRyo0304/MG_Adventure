@@ -41,8 +41,7 @@ GameMain::GameMain():
 	is_saveOnce{false},
 	//以下はセーブデータ対応------------------------------------------------------------------------//
 	m_closeNum{},						// 未開放ステージ
-	m_totalCoinNum{},					// 累計コイン枚数
-	m_clearJudge{0}						// クリア判定
+	m_totalCoinNum{}					// 累計コイン枚数
 {
 }
 
@@ -73,11 +72,6 @@ void GameMain::Initialize()
 	m_num = 1;
 
 	is_saveOnce = false;
-
-	for (int i = 0; i < 10; ++i)
-	{
-		m_clearJudge[i] = 0;
-	}
 
 	// セーブデータを読み込む
 	LoadSaveData();
@@ -181,6 +175,7 @@ void GameMain::CreateScene()
 		case SCENE::SELECT:		// ステージセレクトシーン
 		{
 			m_nowScene = std::make_unique<SelectScene>();
+			CastSceneType<SelectScene>(m_nowScene)->SetStageNum(m_num);
 			CastSceneType<SelectScene>(m_nowScene)->SetNoStageNum(m_closeNum);
 			CastSceneType<SelectScene>(m_nowScene)->SetTotalCoins(m_totalCoinNum);
 
@@ -294,8 +289,8 @@ void GameMain::DeleteScene()
 void GameMain::CreateWindowDependentResources(const int& screenWidth, const int& screenHeight)
 {
 	DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();
-	auto device = pDR->GetD3DDevice();
-	auto context = pDR->GetD3DDeviceContext();
+	ID3D11Device1* device = pDR->GetD3DDevice();
+	ID3D11DeviceContext1* context = pDR->GetD3DDeviceContext();
 
 	// スクリーンサイズの設定
 	m_screenWidth = screenWidth;
@@ -322,7 +317,6 @@ void GameMain::CreateWindowDependentResources(const int& screenWidth, const int&
 /// <returns>なし</returns>
 void GameMain::LoadSaveData()
 {
-	//-------------------------------------------------------------------------------------//
 	// 未開放ステージ数と獲得コイン数の取得
 	std::ifstream coinIfs(L"Resources/SaveData.txt");
 
@@ -352,30 +346,6 @@ void GameMain::LoadSaveData()
 		}
 	}
 	coinIfs.close();
-
-	//-------------------------------------------------------------------------------------//
-	// ステージクリア情報の取得
-	std::ifstream clearIfs(L"Resources/Restriction.txt");
-
-	// データがなくなるまで格納
-	for (int i = 0; std::getline(clearIfs, line); ++i)
-	{
-		if (!clearIfs) return;
-
-		// カンマを空白に変更
-		std::string tmp = std::regex_replace(line, std::regex(","), " ");
-
-		// 空白で分割する
-		std::istringstream clearIss(tmp);
-
-		// 1がクリア,0が未クリア
-		if (!(clearIss >> m_clearJudge[i]))
-		{
-			clearIfs.close();
-			return;
-		}
-	}
-	clearIfs.close();
 }
 
 /// <summary>
@@ -385,7 +355,6 @@ void GameMain::LoadSaveData()
 /// <returns>なし</returns>
 void GameMain::WriteSaveData()
 {
-	//-------------------------------------------------------------------------------------//
 	// 未開放ステージ数と獲得コイン数の書き出し
 	std::ofstream coinOfs(L"Resources/SaveData.txt");
 
@@ -400,25 +369,6 @@ void GameMain::WriteSaveData()
 
 		coinOfs.close();
 	}
-
-	//-------------------------------------------------------------------------------------//
-	// クリア状況を書き出し
-	std::ofstream clearOfs(L"Resources/Restriction.txt");
-
-	// ファイルがなければ処理しない
-	if (clearOfs)
-	{
-		// ファイルを出力する
-		std::ostringstream clearOss;
-
-		for (int i = 0; i < 10; ++i)
-		{
-			clearOss << m_clearJudge[i] << ",";
-		}
-		clearOfs << clearOss.str();
-
-		clearOfs.close();
-	}
 }
 
 /// <summary>
@@ -431,17 +381,14 @@ void GameMain::OpenNewStage()
 	if (m_nextScene != SCENE::RESULT || is_saveOnce) return;
 
 	// プレイ中のステージのコイン数をすべて獲得したら開く
-	if (CastSceneType<PlayScene>(m_nowScene)->GetCoinNum() == CastSceneType<PlayScene>(m_nowScene)->GetMaxCoinCount() &&
-		m_clearJudge[CastSceneType<PlayScene>(m_nowScene)->GetStageNum()] == 0)
+	if (CastSceneType<PlayScene>(m_nowScene)->GetCoinNum() == CastSceneType<PlayScene>(m_nowScene)->GetMaxCoinCount())
 	{
 		// 全て解放していたら処理しない
 		m_closeNum -= m_closeNum > 0 ? 1 : 0;
-
-		m_clearJudge[CastSceneType<PlayScene>(m_nowScene)->GetStageNum()] = 1;
 	}
 
+	// コイン数を加算
 	m_totalCoinNum += m_coinNum;
-
 
 	// 最新状態を保存
 	WriteSaveData();

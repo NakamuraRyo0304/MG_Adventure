@@ -32,6 +32,7 @@ private:
 	// ‡ŒvƒRƒCƒ“”
 	int m_oneCoins;
 	int m_tenCoins;
+	int m_hanCoins;
 
 public:
 	SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device);
