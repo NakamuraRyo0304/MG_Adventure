@@ -188,6 +188,7 @@ void GameMain::CreateScene()
 
 			// 選択したステージを渡す
 			CastSceneType<PlayScene>(m_nowScene)->SetStageNum(m_num);
+
 			m_fade->SetFadeSpeed(PLAY_FADE_SPEED);
 			break;
 		}
@@ -199,6 +200,7 @@ void GameMain::CreateScene()
 			CastSceneType<ResultScene>(m_nowScene)->SetStageNum(m_num);
 			CastSceneType<ResultScene>(m_nowScene)->SetClearTime(m_clearTime);
 			CastSceneType<ResultScene>(m_nowScene)->SetCoinNum(m_coinNum);
+
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
