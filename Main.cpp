@@ -111,26 +111,26 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         {
             // フルスクリーンにしない
             fullFlag = false;
-        }      
-        
+        }
+
         HWND hwnd = CreateWindowExW(
-            0, 
-            L"_3DPGWindowClass", 
-            Game::TITLE, //L"3DPG", 
+            0,
+            L"_3DPGWindowClass",
+            Game::TITLE, //L"3DPG",
             WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-            CW_USEDEFAULT, 
-            CW_USEDEFAULT, 
-            rc.right - rc.left, 
-            rc.bottom - rc.top, 
-            nullptr, 
-            nullptr, 
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            rc.right - rc.left,
+            rc.bottom - rc.top,
+            nullptr,
+            nullptr,
             hInstance,
             nullptr
         );
 
     	// デスクトップの中心にスクリーンを持っていく
         DesktopCenterWindow(hwnd);
-    	
+
         if (!hwnd)
             return 1;
 
@@ -140,9 +140,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             SetWindowLongPtr(hwnd, GWL_STYLE, 0);
             SetWindowLongPtr(hwnd, GWL_EXSTYLE, WS_EX_TOPMOST);
 
-            SetWindowPos(hwnd, 
-                HWND_TOP, 
-                0, 0, 0, 0, 
+            SetWindowPos(hwnd,
+                HWND_TOP,
+                0, 0, 0, 0,
                 WS_MY_FULL);
 
             ShowWindow(hwnd, SW_SHOWMAXIMIZED);
@@ -312,11 +312,4 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
 
     return DefWindowProc(hWnd, message, wParam, lParam);
-}
-
-
-// Exit helper
-void ExitGame() noexcept
-{
-    PostQuitMessage(0);
 }

@@ -118,7 +118,7 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	// 演出が終わったかどうか判定する
 	if (FlyStartObjects())
 	{
-		// Startを選んだらセレクトへ以降、Exitを選んだらゲームを終了
+		// Startを選んだらセレクトへ移行、Exitを選んだらゲームを終了
 		ChangeScene(is_menuFlag ? SCENE::SELECT : SCENE::ENDGAME);
 	}
 
