@@ -112,6 +112,9 @@ void PlayScene::Initialize()
 
 	// ヘルプを表示しない
 	is_helpFlag = false;
+
+	// BGMを鳴らす
+	GetSystemManager()->GetSoundManager()->SetSound(XACT_WAVEBANK_SKBX_BGM_PLAY, true);
 }
 
 /// <summary>
@@ -131,6 +134,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// マウス情報を取得する
 	GetSystemManager()->GetMouseTrack()->Update(mouseState);
+
+	// サウンドの更新
+	GetSystemManager()->GetSoundManager()->Update();
 
 	// エスケープで終了
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))

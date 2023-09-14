@@ -69,6 +69,9 @@ void SelectScene::Initialize()
 
 	// コイン数をセット
 	m_userInterface->SetTotalCoins(m_totalCoins);
+
+	// BGMを鳴らす
+	GetSystemManager()->GetSoundManager()->SetSound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
 }
 
 /// <summary>
@@ -91,6 +94,9 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
+
+	// サウンドの更新
+	GetSystemManager()->GetSoundManager()->Update();
 
 	// 動きが終わっていなければ見下げる
 	if (m_targetY > 1.0f)

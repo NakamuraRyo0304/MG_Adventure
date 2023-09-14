@@ -16,6 +16,7 @@
 #include "../SystemDatas/GridFloor.h"
 #include "../SystemDatas/RayCast.h"
 #include "../SystemDatas/DrawSprite.h"
+#include "../SystemDatas/SoundManager.h"
 
 class SystemManager
 {
@@ -40,6 +41,8 @@ private:
 	std::unique_ptr<DirectX::BasicEffect>						m_effect;
 	// カメラ
 	std::unique_ptr<Camera>										m_camera;
+	// サウンド
+	std::unique_ptr<SoundManager>								m_soundManager;
 
 public: // ゲッター、セッター、ファクトリー
 	// 共通のメイクユニーク
@@ -76,6 +79,10 @@ public: // ゲッター、セッター、ファクトリー
 
 	// エフェクトの取得
 	const std::unique_ptr<DirectX::BasicEffect>& GetBasicEffect();
+
+	// サウンドマネージャの取得
+	const std::unique_ptr<SoundManager>& GetSoundManager();
+
 
 public:
 	SystemManager();

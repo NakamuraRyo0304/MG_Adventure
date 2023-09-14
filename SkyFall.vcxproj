@@ -222,6 +222,7 @@
     <ClInclude Include="Libraries\UserUtility.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resources\Icon\Icon.h" />
+    <ClInclude Include="SoundList.h" />
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -283,9 +284,9 @@
     <Image Include="Resources\Textures\DeathEffect.dds" />
     <Image Include="Resources\Textures\EditToolBar.dds" />
     <Image Include="Resources\Textures\FadeBlind.dds" />
-    <Image Include="Resources\Textures\FONT\ClearTimeFont.dds" />
+    <Image Include="Resources\Textures\FONT\CLEAR.dds" />
     <Image Include="Resources\Textures\FONT\COINS.dds" />
-    <Image Include="Resources\Textures\FONT\FontGetCoinNum.dds" />
+    <Image Include="Resources\Textures\FONT\GETCOINS.dds" />
     <Image Include="Resources\Textures\FONT\RETRY.dds" />
     <Image Include="Resources\Textures\FONT\SELECT.dds" />
     <Image Include="Resources\Textures\FONT\TITLE.dds" />

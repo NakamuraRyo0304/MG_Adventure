@@ -65,6 +65,9 @@ void TitleScene::Initialize()
 
 	// 加速度を初期化
 	m_accelerate = 0.0f;
+
+	// BGMを鳴らす
+	GetSystemManager()->GetSoundManager()->SetSound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
 }
 
 /// <summary>
@@ -87,6 +90,9 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
+
+	// サウンドの更新
+	GetSystemManager()->GetSoundManager()->Update();
 
 	// 起動時のロゴの動き
 	m_logoMoveY = UserUtility::Lerp(m_logoMoveY, END_MOVE_POS, 0.1f);

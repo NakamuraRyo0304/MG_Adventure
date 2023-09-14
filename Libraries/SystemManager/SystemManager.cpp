@@ -190,6 +190,20 @@ SystemManager::GetBasicEffect()
 }
 
 /// <summary>
+/// サウンドマネージャの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>サウンドマネージャのユニークポインタ</returns>
+const std::unique_ptr<SoundManager>& SystemManager::GetSoundManager()
+{
+	if (!m_soundManager)
+	{
+		m_soundManager = std::make_unique<SoundManager>();
+	}
+	return m_soundManager;
+}
+
+/// <summary>
 /// 一括でシステムのリソースを作成
 /// </summary>
 /// <param name="device">ID3D11Device1のポインタ</param>
@@ -228,4 +242,7 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 
 	// ベーシックエフェクト
 	m_effect = std::make_unique<BasicEffect>(device);
+
+	// サウンドマネージャ
+	m_soundManager = std::make_unique<SoundManager>();
 }

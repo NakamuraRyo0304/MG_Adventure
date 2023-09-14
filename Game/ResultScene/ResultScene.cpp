@@ -90,6 +90,9 @@ void ResultScene::Initialize()
 
 	// 演出時間 最初のフェードも考慮して多めに取る
 	m_directionTime = 120.0f;
+
+	// BGMを鳴らす
+	GetSystemManager()->GetSoundManager()->SetSound(XACT_WAVEBANK_SKBX_BGM_RESULT, true);
 }
 
 /// <summary>
@@ -127,6 +130,9 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
+
+	// サウンドの更新
+	GetSystemManager()->GetSoundManager()->Update();
 
 	// メニューセレクト
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Down))

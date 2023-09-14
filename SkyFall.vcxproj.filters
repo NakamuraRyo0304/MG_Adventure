@@ -298,6 +298,9 @@
     <ClInclude Include="Libraries\SystemDatas\SoundManager.h">
       <Filter>Common\SoundEffect</Filter>
     </ClInclude>
+    <ClInclude Include="SoundList.h">
+      <Filter>Common\SoundEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -517,10 +520,10 @@
     <Image Include="Resources\Textures\SELECT_INFO\TotalCoins.dds">
       <Filter>Resources\Textures\SELECT_INFO</Filter>
     </Image>
-    <Image Include="Resources\Textures\FONT\ClearTimeFont.dds">
+    <Image Include="Resources\Textures\FONT\CLEAR.dds">
       <Filter>Resources\Textures\ResultScene</Filter>
     </Image>
-    <Image Include="Resources\Textures\FONT\FontGetCoinNum.dds">
+    <Image Include="Resources\Textures\FONT\GETCOINS.dds">
       <Filter>Resources\Textures\ResultScene</Filter>
     </Image>
   </ItemGroup>
