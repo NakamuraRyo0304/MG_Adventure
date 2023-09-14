@@ -22,7 +22,7 @@ private:
 	float m_timer;
 
 	// セレクト
-	int m_selectNum;
+	int m_selectingScene;
 
 	// クリアタイム
 	float m_clearTime;
@@ -83,7 +83,15 @@ private:
 	const float FONT_WIDTH = 512.0f;
 
 	// 画像の１スプライトサイズ
-	const int SPRITE_SIZE = 100;
+	const float SPRITE_SIZE = 100.0f;
+
+	// フォントサイズ
+	const float DEFAULT_FONT_SCALE = 1.0f;
+	const float SELECT_FONT_SCALE = 1.1f;
+
+	// フォント透明度
+	const float DEFAULT_FONT_ALPHA = 0.5f;
+	const float SELECT_FONT_ALPHA = 1.0f;
 
 public:
 

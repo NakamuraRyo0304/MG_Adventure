@@ -30,26 +30,31 @@
 ResultScene::ResultScene():
 	IScene(),
 	m_timer{0.0f},				// 時計
+	m_windowSize{},				// ウィンドウサイズ
 	m_clearTime{0.0f},			// クリアタイムを格納
 	m_saveTime{0.0f},			// クリアタイムを保存する変数
 	m_directionTime{0.0f},		// 演出する時間
-	m_selectNum{RETRY},			// 次のシーン選択
-	m_coinNum{0},				// コインの枚数
+	m_selectingScene{RETRY},	// 次のシーン選択
 	m_stageNum{1},				// 背景のステージ番号(初期化で1)
-	m_clearPos{},				// クリアテキストの位置
+	//-------------------------------------------------------------------------------------//
 	m_retryPos{},				// リトライテキストの位置
-	m_retryAlpha{},				// リトライテキストの透明度
-	m_retryScale{},				// リトライテキストの大きさ
+	m_retryAlpha{},				// 透明度
+	m_retryScale{},				// 大きさ
+	//-------------------------------------------------------------------------------------//
 	m_selectPos{},				// セレクトテキストの位置
-	m_selectAlpha{},			// セレクトテキストの透明度
-	m_selectScale{},			// セレクトテキストの大きさ
+	m_selectAlpha{},			// 透明度
+	m_selectScale{},			// 大きさ
+	//-------------------------------------------------------------------------------------//
 	m_titlePos{},				// タイトルテキストの位置
-	m_titleAlpha{},				// タイトルテキストの透明度
-	m_titleScale{},				// タイトルテキストの大きさ
+	m_titleAlpha{},				// 透明度
+	m_titleScale{},				// 大きさ
+	//-------------------------------------------------------------------------------------//
 	m_coinsPos{},				// コインテキストの位置
-	m_oneCoiPos{},				// コインの1の位の座標
-	m_tenCoiPos{},				// コインの10の位の座標
-	m_windowSize{}				// ウィンドウサイズ
+	m_coinNum{0},				// 枚数
+	m_oneCoiPos{},				// 1の位の座標
+	m_tenCoiPos{},				// 10の位の座標
+	//-------------------------------------------------------------------------------------//
+	m_clearPos{}				// クリアテキストの位置
 {
 	// ランダムの生成
 	srand(unsigned int(time(0)));
@@ -126,47 +131,47 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// メニューセレクト
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Down))
 	{
-		m_selectNum++;
-		if (m_selectNum == 3) // ループ処理
-		{
-			m_selectNum = RETRY;
-		}
+		m_selectingScene++;
+		m_selectingScene = m_selectingScene ==  3 ? RETRY : m_selectingScene;
 	}
 	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Up))
 	{
-		m_selectNum--;
-		if (m_selectNum < 0) // ループ処理
-		{
-			m_selectNum = TITLE;
-		}
+		m_selectingScene--;
+		m_selectingScene = m_selectingScene == -1 ? TITLE : m_selectingScene;
 	}
 
 	// アルファ値とスケールの変更
-	switch (m_selectNum)
+	switch (m_selectingScene)
 	{
 	case RETRY:
-		m_retryAlpha  = 1.0f;
-		m_selectAlpha = 0.5f;
-		m_titleAlpha  = 0.5f;
-		m_retryScale  = 1.1f;
-		m_selectScale = 1.0f;
-		m_titleScale  = 1.0f;
+		// 透明度
+		m_retryAlpha  = SELECT_FONT_ALPHA;
+		m_selectAlpha = DEFAULT_FONT_ALPHA;
+		m_titleAlpha  = DEFAULT_FONT_ALPHA;
+		// サイズ
+		m_retryScale  = SELECT_FONT_SCALE;
+		m_selectScale = DEFAULT_FONT_SCALE;
+		m_titleScale  = DEFAULT_FONT_SCALE;
 		break;
 	case SELECT:
-		m_retryAlpha  = 0.5f;
-		m_selectAlpha = 1.0f;
-		m_titleAlpha  = 0.5f;
-		m_retryScale  = 1.0f;
-		m_selectScale = 1.1f;
-		m_titleScale  = 1.0f;
+		// 透明度
+		m_retryAlpha  = DEFAULT_FONT_ALPHA;
+		m_selectAlpha = SELECT_FONT_ALPHA;
+		m_titleAlpha  = DEFAULT_FONT_ALPHA;
+		// サイズ
+		m_retryScale  = DEFAULT_FONT_SCALE;
+		m_selectScale = SELECT_FONT_SCALE;
+		m_titleScale  = DEFAULT_FONT_SCALE;
 		break;
 	case TITLE:
-		m_retryAlpha  = 0.5f;
-		m_selectAlpha = 0.5f;
-		m_titleAlpha  = 1.0f;
-		m_retryScale  = 1.0f;
-		m_selectScale = 1.0f;
-		m_titleScale  = 1.1f;
+		// 透明度
+		m_retryAlpha  = DEFAULT_FONT_ALPHA;
+		m_selectAlpha = DEFAULT_FONT_ALPHA;
+		m_titleAlpha  = SELECT_FONT_ALPHA;
+		// サイズ
+		m_retryScale  = DEFAULT_FONT_SCALE;
+		m_selectScale = DEFAULT_FONT_SCALE;
+		m_titleScale  = SELECT_FONT_SCALE;
 		break;
 	default:
 		break;
@@ -175,7 +180,7 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
-		switch (m_selectNum)
+		switch (m_selectingScene)
 		{
 		case RETRY:
 			ChangeScene(SCENE::PLAY);
@@ -247,19 +252,19 @@ void ResultScene::Draw()
 	int sec = static_cast<int>(m_clearTime);
 
 	// 一桁目の数字を表示
-	RenderDigit(sec % 10, m_oneSecPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
+	RenderDigit(sec % 10,		 m_oneSecPos, imageScale, static_cast<int>(SPRITE_SIZE), static_cast<int>(SPRITE_SIZE));
 
 	// 十の桁の数字を表示
-	RenderDigit((sec / 10) % 10, m_tenSecPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
+	RenderDigit((sec / 10) % 10, m_tenSecPos, imageScale, static_cast<int>(SPRITE_SIZE), static_cast<int>(SPRITE_SIZE));
 
 	//-------------------------------------------------------------------------------------//
 	// 獲得コイン数を表示
 
 	// 一桁目の数字を表示
-	RenderDigit(m_coinNum % 10, m_oneCoiPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
+	RenderDigit(m_coinNum % 10,		   m_oneCoiPos, imageScale, static_cast<int>(SPRITE_SIZE), static_cast<int>(SPRITE_SIZE));
 
 	// 十の桁の数字を表示
-	RenderDigit((m_coinNum / 10) % 10, m_tenCoiPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
+	RenderDigit((m_coinNum / 10) % 10, m_tenCoiPos, imageScale, static_cast<int>(SPRITE_SIZE), static_cast<int>(SPRITE_SIZE));
 }
 
 
@@ -290,10 +295,8 @@ void ResultScene::CreateWindowDependentResources()
 	GetSystemManager()->GetString()->CreateString(device, context);
 
 	// 画面サイズの格納
-	float width  =
-		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height =
-		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
+	float width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
+	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// ウィンドウサイズを取得
 	m_windowSize = SimpleMath::Vector2{ width,height };
@@ -328,19 +331,19 @@ void ResultScene::CreateWindowDependentResources()
 	// 画像の設定
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(context);
 	// 画像を登録
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY",     L"Resources/Textures/FONT/RETRY.dds",			device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT",    L"Resources/Textures/FONT/SELECT.dds",		device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE",     L"Resources/Textures/FONT/TITLE.dds",			device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND",     L"Resources/Textures/ResultBack.dds",			device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number",    L"Resources/Textures/Number.dds",				device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Clear",     L"Resources/Textures/FONT/ClearTimeFont.dds",	device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TotalCoin", L"Resources/Textures/FONT/FontGetCoinNum.dds",device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY",     L"Resources/Textures/FONT/RETRY.dds",	  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT",    L"Resources/Textures/FONT/SELECT.dds",  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE",     L"Resources/Textures/FONT/TITLE.dds",	  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Clear",     L"Resources/Textures/FONT/CLEAR.dds",	  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TotalCoin", L"Resources/Textures/FONT/GETCOINS.dds",device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND",     L"Resources/Textures/ResultBack.dds",	  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number",    L"Resources/Textures/Number.dds",		  device);
 
 	// 比率を計算
 	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// 共通部分を定義
-	float spCenterX   = static_cast<float>(SPRITE_SIZE) / 2 * scale.x;
+	float spCenterX   = SPRITE_SIZE / 2 * scale.x;
 	float numCenterX  = FULL_SCREEN_SIZE.x / 2 * scale.x - spCenterX;
 
 	// 各座標を決定
@@ -349,8 +352,8 @@ void ResultScene::CreateWindowDependentResources()
 	m_oneCoiPos = { numCenterX + spCenterX ,540.0f * scale.y };
 	m_tenCoiPos = { numCenterX - spCenterX ,540.0f * scale.y };
 
-	m_coinsPos  = { 50.0f, m_oneCoiPos.y - 40.0f * scale.y };
-	m_clearPos  = { 50.0f, m_oneSecPos.y - 40.0f * scale.y };
+	m_coinsPos  = { 50.0f, m_oneCoiPos.y - 40.0f };
+	m_clearPos  = { 50.0f, m_oneSecPos.y - 40.0f };
 	m_retryPos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 700.0f };
 	m_selectPos = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 800.0f };
 	m_titlePos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 900.0f };
