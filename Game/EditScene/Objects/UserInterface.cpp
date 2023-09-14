@@ -25,11 +25,13 @@ UserInterface::UserInterface(const SimpleMath::Vector2& windowSize):
 	m_imageHitter{},				// 当たり判定
 	m_saveTexPos{},					// 画像座標
 	m_cameraTexPos{},				// |
+	m_backTexPos{},					// |
 	m_openTexPos{},					// |
 	is_saveFlag{},					// 保存フラグ
 	is_openFlag{},					// 開くフラグ
 	is_cameraFlag{ true },			// カメラモードONでスタート
 	is_boxState{ false },			// 画像フラグ
+	is_backFlag{ false },			// セレクトに戻るフラグ
 	m_nowState{},					// 最新のステート
 	m_boxHover{},					// ホバー時のサイズ
 	is_toolFlag{ true }				// ツールバーを表示するフラグ
@@ -70,6 +72,7 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_system->GetDrawSprite()->AddTextureData(L"CameraMove",L"Resources/Textures/CameraMove.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"ToolOn",	L"Resources/Textures/ToolOn.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"ToolOff",	L"Resources/Textures/ToolOff.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"BackSelect",L"Resources/Textures/BackSelect.dds", device);
 
 	// 背景の帯
 	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",   L"Resources/Textures/EditToolBar.dds", device);
@@ -94,9 +97,10 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
 
 	// 座標情報
-	m_openTexPos	 = {  80 * span , 80 * span};
-	m_saveTexPos     = { 218 * span , 80 * span};
-	m_cameraTexPos   = { 356 * span , 80 * span};
+	m_openTexPos	   = {  80 * span , 80 * span};
+	m_saveTexPos       = { 218 * span , 80 * span};
+	m_cameraTexPos     = { 356 * span , 80 * span};
+	m_backTexPos	   = { m_windowSize.x - (244 * span)  ,80 * span};
 	m_toolButtonTexPos = { m_windowSize.x - (96 * span)  ,80 * span};
 	for (int i = 0; i < MapState::LENGTH; i++)
 	{
@@ -138,6 +142,19 @@ void UserInterface::Update(Mouse::State& mouseState)
 
 	// ボックスのアイコン
 	ChangeState(mouseState);
+
+	// セレクトに戻るボタンをクリック
+	bool back = m_imageHitter.IsHitAABB2D(
+		{ (float)mouseState.x,(float)mouseState.y },		 // マウスの位置
+		{ m_backTexPos.x,m_backTexPos.y },	 				 // 画像の位置
+		SimpleMath::Vector2{ 5.0f }, 						 // サイズ
+		SimpleMath::Vector2{ 80.0f });						 // サイズ
+
+	// ツールを表示するフラグを切り替え
+	if (back && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	{
+		is_backFlag = true;
+	}
 
 	// ファイルを開くアイコン
 	is_openFlag = m_imageHitter.IsHitAABB2D(
@@ -255,6 +272,15 @@ void UserInterface::Render()
 				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 			);
 		}
+
+		// セレクトに戻るボタン
+		m_system->GetDrawSprite()->DrawTexture(
+				L"BackSelect",
+				m_backTexPos,
+				{ 1.0f,1.0f,1.0f,1.0f },
+				IMAGE_RATE * imageScale,
+				{ IMAGE_CENTER,IMAGE_CENTER }
+			);
 
 		// ブロックのアイコン
 		DrawIcon(imageScale);

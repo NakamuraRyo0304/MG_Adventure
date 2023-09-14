@@ -34,6 +34,7 @@ private:
 	DirectX::SimpleMath::Vector2 m_openTexPos;
 	DirectX::SimpleMath::Vector2 m_cameraTexPos;
 	DirectX::SimpleMath::Vector2 m_toolButtonTexPos;
+	DirectX::SimpleMath::Vector2 m_backTexPos;
 
 	// 現在のステータス
 	int m_nowState;
@@ -43,6 +44,7 @@ private:
 	bool is_openFlag;
 	bool is_cameraFlag;
 	bool is_toolFlag;
+	bool is_backFlag;
 
 private:
 	// ボックスステータスの配列
@@ -89,6 +91,9 @@ public:
 	// セーブフラグ
 	const bool& GetSaveFlag() { return is_saveFlag; }
 	void SetSaveFlag(const bool flag) { is_saveFlag = flag; }
+
+	// バックボタンフラグ
+	const bool& GetBackSelectFlag() { return is_backFlag; }
 
 	// 今のステータスを取得
 	const int& GetNowState() { return m_nowState; }

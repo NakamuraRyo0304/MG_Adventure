@@ -67,7 +67,7 @@ void TitleScene::Initialize()
 	m_accelerate = 0.0f;
 
 	// BGM‚ð–Â‚ç‚·
-	GetSystemManager()->GetSoundManager()->SetSound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
 }
 
 /// <summary>

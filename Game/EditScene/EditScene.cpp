@@ -133,8 +133,9 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		EditMap();
 	}
 
-	// Spaceキーでシーン切り替え
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
+	// Spaceキーかボタンクリックでセレクトに戻る
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space) ||
+		m_userInterface->GetBackSelectFlag())
 	{
 		ChangeScene(SCENE::SELECT);
 	}

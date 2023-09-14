@@ -92,7 +92,7 @@ void ResultScene::Initialize()
 	m_directionTime = 120.0f;
 
 	// BGM‚ð–Â‚ç‚·
-	GetSystemManager()->GetSoundManager()->SetSound(XACT_WAVEBANK_SKBX_BGM_RESULT, true);
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_RESULT, true);
 }
 
 /// <summary>
@@ -358,8 +358,8 @@ void ResultScene::CreateWindowDependentResources()
 	m_oneCoiPos = { numCenterX + spCenterX ,540.0f * scale.y };
 	m_tenCoiPos = { numCenterX - spCenterX ,540.0f * scale.y };
 
-	m_coinsPos  = { 50.0f, m_oneCoiPos.y - 40.0f };
-	m_clearPos  = { 50.0f, m_oneSecPos.y - 40.0f };
+	m_coinsPos  = { 50.0f * scale.x , m_oneCoiPos.y * scale.y};
+	m_clearPos  = { 50.0f * scale.x , m_oneSecPos.y * scale.y };
 	m_retryPos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 700.0f };
 	m_selectPos = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 800.0f };
 	m_titlePos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 900.0f };

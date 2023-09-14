@@ -526,6 +526,9 @@
     <Image Include="Resources\Textures\FONT\GETCOINS.dds">
       <Filter>Resources\Textures\ResultScene</Filter>
     </Image>
+    <Image Include="Resources\Textures\BackSelect.dds">
+      <Filter>Resources\Textures\EditScene</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">

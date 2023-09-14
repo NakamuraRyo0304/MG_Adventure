@@ -45,7 +45,7 @@ public:
     // アクセサ  --------------------------------------------------------------------------//
 
     // TYPE : BGM or SE //// NAME : ならしたい音の名前 : bool trueでループ再生　falseで単発再生
-    void SetSound(const XACT_WAVEBANK_SKBX& WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME, const bool& playType);
+    void PlaySound(const XACT_WAVEBANK_SKBX& WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME, const bool& playType);
 
     // マスター音量の調整
     void SetMasterVolume(const float& volume);

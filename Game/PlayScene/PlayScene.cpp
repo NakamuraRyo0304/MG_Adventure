@@ -114,7 +114,7 @@ void PlayScene::Initialize()
 	is_helpFlag = false;
 
 	// BGMを鳴らす
-	GetSystemManager()->GetSoundManager()->SetSound(XACT_WAVEBANK_SKBX_BGM_PLAY, true);
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_PLAY, true);
 }
 
 /// <summary>
@@ -564,6 +564,9 @@ void PlayScene::ApplyPushBack(Object& obj)
 
 		// コインカウントアップ
 		m_blocks->CountUpCoin(obj.index);
+
+		// コインのサウンドを鳴らす
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_COINGETTER, false);
 	}
 
 	//-------------------------------------------------------------------------------------//
