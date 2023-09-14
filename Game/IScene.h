@@ -31,6 +31,9 @@ private:
 	// シーン切り替えフェード速度
 	float m_fadeSpeed;
 
+	// フェードの値
+	float m_fadeValue;
+
 public:
 	IScene();
 
@@ -54,7 +57,11 @@ public:
 public:
 	// フェード速度アクセサ
 	const float& GetFadeSpeed(){ return m_fadeSpeed; }
-	void SetFadeSpeed(float speed) { m_fadeSpeed = speed; }
+	void SetFadeSpeed(const float& speed) { m_fadeSpeed = speed; }
+
+	// フェード値アクセサ
+	const float& GetFadeValue() { return m_fadeValue; }
+	void SetFadeValue(const float& value) { m_fadeValue = value; }
 
 public:
 	// 遷移先のシーン設定

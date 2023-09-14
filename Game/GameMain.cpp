@@ -114,6 +114,9 @@ void GameMain::Update(const DX::StepTimer& timer)
 		// シーンの更新処理
 		m_nowScene->Update(time, kb, ms);
 
+		// フェードの値をセット
+		m_nowScene->SetFadeValue(m_fade->GetFadeNum());
+
 		// フェードが終わっていたらシーンを切り替える
 		if (m_fade->GetEndFlag())
 		{
