@@ -22,7 +22,7 @@ private:
 	std::vector<Object> m_mapObj;
 
 	// 雲ステータス
-	struct Clowd
+	struct Cloud
 	{
 		bool moveFlag = false;
 		float timer = 0.0f;
@@ -31,7 +31,7 @@ private:
 	};
 
 	// フラグ管理
-	std::map<int, Clowd> m_clowdState;
+	std::map<int, Cloud> m_cloudState;
 
 	// プレイヤー座標
 	DirectX::SimpleMath::Vector3 m_playerPos;
@@ -68,7 +68,7 @@ private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_grassModel;
 	std::unique_ptr<DirectX::Model> m_coinModel;
-	std::unique_ptr<DirectX::Model> m_clowdModel;
+	std::unique_ptr<DirectX::Model> m_cloudModel;
 	std::unique_ptr<DirectX::Model> m_resetPtModel;
 
 public:
@@ -125,10 +125,10 @@ public:
 	const float& GetObjSize(const int& objName);
 
 	// 雲を元の場所に戻す処理
-	void RestoreClowdPosition();
+	void RestoreCloudPosition();
 
 	// 雲の判定アクセサ
-	void SetClowdHitFlag(const int& index, bool flag) { m_clowdState[index].moveFlag = flag; }
+	void SetCloudHitFlag(const int& index, bool flag) { m_cloudState[index].moveFlag = flag; }
 
 private:
 

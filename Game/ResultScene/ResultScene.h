@@ -46,8 +46,8 @@ private:
 	DirectX::SimpleMath::Vector2 m_retryPos;
 	DirectX::SimpleMath::Vector2 m_selectPos;
 	DirectX::SimpleMath::Vector2 m_titlePos;
+	DirectX::SimpleMath::Vector2 m_clearPos;
 	DirectX::SimpleMath::Vector2 m_coinsPos;
-	DirectX::SimpleMath::Vector2 m_clockPos;
 
 	// タイマーの座標(1の位)
 	DirectX::SimpleMath::Vector2 m_oneSecPos;
@@ -80,10 +80,7 @@ private:
 	const float DEFAULT_RATE = 1.0f;
 	// 画像の中心位置
 	const float	IMAGE_CENTER = 128.0f;
-
-	// テキストのオフセット
-	const float NUM_OFFSET = 960.0f;
-	const float TEXT_OFFSET = 940.0f;
+	const float FONT_WIDTH = 512.0f;
 
 	// 画像の１スプライトサイズ
 	const int SPRITE_SIZE = 100;
@@ -123,9 +120,10 @@ public:
 	// コインセッター
 	void SetCoinNum(const int& coinNum) { m_coinNum = coinNum; }
 
-	// オフセット補正
-	void CorrectionOffset(float width, float span);
+private:
 
+	// 文字の描画
+	void DrawTextFonts(DirectX::SimpleMath::Vector2 imageScale);
 };
 
 #endif // RESULTSCENE

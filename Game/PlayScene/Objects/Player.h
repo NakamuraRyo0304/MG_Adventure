@@ -66,7 +66,7 @@ private:
 	const float ROT_SPEED = 0.05f;
 	const float NECK_ROT_SPEED = 0.30f;
 	// –€CŒW”
-	const float DECELERATION = 0.842f;
+	const float DECELERATION = 0.851f;
 	// ƒvƒŒƒCƒ„‚Ì•‚—V
 	const float OFFSET_Y = 0.2f;
 	// €–Sƒ‰ƒCƒ“

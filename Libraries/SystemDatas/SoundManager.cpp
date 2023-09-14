@@ -1,5 +1,5 @@
 /*
- *	@File	SoundEffect.cpp
+ *	@File	SoundManager.cpp
  *	@Brief	SEの再生に使うマネージャクラス。
  *	@Date	2023-09-08
  *  @Author NakamuraRyo
@@ -7,17 +7,21 @@
 
 #include "pch.h"
 
-#include "xaudio2.h"
-
-#include "SoundEffect.h"
+#include "SoundManager.h"
 
  /// <summary>
  /// コンストラクタ
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-SoundEffect::SoundEffect()
+SoundManager::SoundManager()
 {
+	AUDIO_ENGINE_FLAGS eflags = AudioEngine_Default;
+#ifdef _DEBUG
+	eflags |= AudioEngine_Debug;
+#endif
+	m_audioEngine = std::make_unique<AudioEngine>(eflags);
+
 }
 
 /// <summary>
@@ -25,7 +29,7 @@ SoundEffect::SoundEffect()
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-SoundEffect::~SoundEffect()
+SoundManager::~SoundManager()
 {
 }
 
@@ -35,13 +39,8 @@ SoundEffect::~SoundEffect()
 /// <param name="key">登録キー</param>
 /// <param name="path">リソースのパス</param>
 /// <returns>なし</returns>
-void SoundEffect::AddSoundEffects(const wchar_t* key, const wchar_t* path)
+void SoundManager::AddSoundEffects(const wchar_t* key, const wchar_t* path)
 {
-	// キーパスの保存
-	m_sounds.emplace(key, path);
-
-	// 対象パスを確保
-	std::map<const wchar_t*, const wchar_t*>::const_iterator it = m_sounds.find(key);
 
 
 }

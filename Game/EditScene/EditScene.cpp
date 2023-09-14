@@ -31,7 +31,7 @@ EditScene::EditScene() :
 	m_grassModel{ nullptr },			// モデル＿草
 	m_noneModel{ nullptr },				// モデル＿消しゴム
 	m_coinModel{ nullptr },				// モデル＿コイン
-	m_clowdModel{ nullptr },			// モデル＿雲
+	m_cloudModel{ nullptr },			// モデル＿雲
 	m_resetPtModel{ nullptr },			// モデル＿リセットポイント
 	m_skyDomeModel{ nullptr },			// モデル＿スカイドーム
 	m_sharedSystem{}					// システムデータ
@@ -252,10 +252,10 @@ void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	Comm
 	case MapState::CoinBox:		// コイン
 		m_coinModel->Draw(context, *states, rotY * world, view, proj);
 		break;
-	case MapState::ClowdBox:	// 雲
-		m_clowdModel->Draw(context, *states, world, view, proj);
+	case MapState::CloudBox:	// 雲
+		m_cloudModel->Draw(context, *states, world, view, proj);
 		break;
-	case MapState::ResetClowd:	// 雲リセット
+	case MapState::ResetCloud:	// 雲リセット
 		m_resetPtModel->Draw(context, *states, world, view, proj);
 		break;
 	case MapState::PlayerPos:	// プレイヤー
@@ -279,7 +279,7 @@ void EditScene::Finalize()
 	// モデルの破棄
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
-	ModelFactory::DeleteModel(m_clowdModel);
+	ModelFactory::DeleteModel(m_cloudModel);
 	ModelFactory::DeleteModel(m_resetPtModel);
 	ModelFactory::DeleteModel(m_playerModel);
 	ModelFactory::DeleteModel(m_skyDomeModel);
@@ -327,7 +327,7 @@ void EditScene::CreateWindowDependentResources()
 		device,
 		L"Resources/Models/Coin.cmo"
 	);
-	m_clowdModel = ModelFactory::GetCreateModel(		// 雲ブロック
+	m_cloudModel = ModelFactory::GetCreateModel(		// 雲ブロック
 		device,
 		L"Resources/Models/MoveBlock.cmo"
 	);

@@ -295,7 +295,7 @@
     <ClInclude Include="Game\SelectScene\Objects\SelectUI.h">
       <Filter>Scenes\SelectScene\Objects\SelectUI</Filter>
     </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\SoundEffect.h">
+    <ClInclude Include="Libraries\SystemDatas\SoundManager.h">
       <Filter>Common\SoundEffect</Filter>
     </ClInclude>
   </ItemGroup>
@@ -399,7 +399,7 @@
     <ClCompile Include="Game\SelectScene\Objects\SelectUI.cpp">
       <Filter>Scenes\SelectScene\Objects\SelectUI</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\SoundEffect.cpp">
+    <ClCompile Include="Libraries\SystemDatas\SoundManager.cpp">
       <Filter>Common\SoundEffect</Filter>
     </ClCompile>
   </ItemGroup>
@@ -516,6 +516,12 @@
     </Image>
     <Image Include="Resources\Textures\SELECT_INFO\TotalCoins.dds">
       <Filter>Resources\Textures\SELECT_INFO</Filter>
+    </Image>
+    <Image Include="Resources\Textures\FONT\ClearTimeFont.dds">
+      <Filter>Resources\Textures\ResultScene</Filter>
+    </Image>
+    <Image Include="Resources\Textures\FONT\FontGetCoinNum.dds">
+      <Filter>Resources\Textures\ResultScene</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

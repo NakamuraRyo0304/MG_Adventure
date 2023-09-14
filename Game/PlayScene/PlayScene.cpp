@@ -563,7 +563,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	//-------------------------------------------------------------------------------------//
 
 	// 雲の処理
-	if (obj.id == MapState::ClowdBox)
+	if (obj.id == MapState::CloudBox)
 	{
 		// プレイヤーが下にいたら押し戻ししない
 		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(obj.id))
@@ -579,7 +579,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 		m_prevIndex.push_back(obj.index);
 
 		// 当たっている判定を出す
-		m_blocks->SetClowdHitFlag(m_prevIndex.front(), true);
+		m_blocks->SetCloudHitFlag(m_prevIndex.front(), true);
 
 		// 空なら処理しない
 		if (m_prevIndex.empty()) return;
@@ -590,10 +590,10 @@ void PlayScene::ApplyPushBack(Object& obj)
 
 
 	// リセット処理
-	if (obj.id == MapState::ResetClowd)
+	if (obj.id == MapState::ResetCloud)
 	{
 		is_boxCol.SetPushMode(false);
-		m_blocks->RestoreClowdPosition();
+		m_blocks->RestoreCloudPosition();
 	}
 
 	//-------------------------------------------------------------------------------------//

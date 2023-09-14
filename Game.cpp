@@ -12,7 +12,7 @@
 const wchar_t* Game::TITLE = L"SkyFall";
 const int Game::SCREEN_W = 1280;
 const int Game::SCREEN_H = 720;
-const XMVECTORF32 SCREEN_COLOR = Colors::LightSkyBlue;
+const XMVECTORF32 SCREEN_COLOR = XMVECTORF32{ 0.133333f,0.266666f,0.411765f,1.0f };
 
 extern void ExitGame();
 
@@ -109,7 +109,7 @@ void Game::Draw()
 void Game::Clear()
 {
     DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();
-  
+
     pDR->PIXBeginEvent(L"Clear");
 
     // ビューの初期化
@@ -169,7 +169,7 @@ void Game::OnWindowSizeChanged(int width, int height)
         return;
 
     CreateWindowSizeDependentResources();
-    
+
 }
 
 // Properties
@@ -185,7 +185,7 @@ void Game::GetDefaultSize(int& width, int& height) const
 void Game::CreateDeviceDependentResources()
 {
     DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();
-    
+
     auto device = pDR->GetD3DDevice();
 
     // デバイス依存のオブジェクトをここで初期化する

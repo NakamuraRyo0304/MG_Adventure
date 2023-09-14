@@ -24,19 +24,20 @@
  /// <param name="left">左足モデルデータ</param>
  /// <returns>なし</returns>
 Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body, std::unique_ptr<Model> right, std::unique_ptr<Model> left):
-	m_head{std::move(head)},
-	m_body{std::move(body)},
-	m_rightLeg{std::move(right)},
-	m_leftLeg{std::move(left)},
-	m_position{},
-	m_parameter{},
-	m_system{},
-	is_deathFlag{},
-	m_footMove{0.0f},
-	m_neckQuaternion{},
-	m_neckRotate{},
-	is_lookFlag{},
-	m_thirdRotate{}
+	m_timer{0.0f},					// タイマー
+	m_system{},						// システム
+	m_parameter{},					// パラメーター
+	m_head{std::move(head)},		// 頭のモデル
+	m_body{std::move(body)},		// 身体のモデル
+	m_rightLeg{std::move(right)},	// 右足のモデル
+	m_leftLeg{std::move(left)},		// 左足のモデル
+	m_position{},					// ポジション
+	is_deathFlag{},					// 死亡フラグ
+	m_footMove{0.0f},				// 足の動き
+	m_neckQuaternion{},				// 首の回転行列
+	m_neckRotate{},					// 首の回転量
+	is_lookFlag{},					// 視点フラグ
+	m_thirdRotate{}					// 三人称視点の回転量
 {
 }
 

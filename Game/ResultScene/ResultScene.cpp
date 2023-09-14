@@ -36,6 +36,7 @@ ResultScene::ResultScene():
 	m_selectNum{RETRY},			// 次のシーン選択
 	m_coinNum{0},				// コインの枚数
 	m_stageNum{1},				// 背景のステージ番号(初期化で1)
+	m_clearPos{},				// クリアテキストの位置
 	m_retryPos{},				// リトライテキストの位置
 	m_retryAlpha{},				// リトライテキストの透明度
 	m_retryScale{},				// リトライテキストの大きさ
@@ -48,8 +49,7 @@ ResultScene::ResultScene():
 	m_coinsPos{},				// コインテキストの位置
 	m_oneCoiPos{},				// コインの1の位の座標
 	m_tenCoiPos{},				// コインの10の位の座標
-	m_windowSize{},				// ウィンドウサイズ
-	m_clockPos{}				// タイマーの座標
+	m_windowSize{}				// ウィンドウサイズ
 {
 	// ランダムの生成
 	srand(unsigned int(time(0)));
@@ -234,57 +234,13 @@ void ResultScene::Draw()
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
 			L"BLIND",										// 登録キー
 			SimpleMath::Vector2::Zero,						// 座標
-			{ 1.0f,1.0f,1.0f,0.5f },						// 色
+			{ 1.0f,1.0f,1.0f,0.3f },						// 色
 			1.0f * imageScale,								// 拡大率
 			SimpleMath::Vector2::Zero						// 中心位置
 		);
 
-	// コイン文字
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"COINS",
-			m_coinsPos,
-			{ 1.0f,1.0f,1.0f,1.0f },
-			IMAGE_RATE * imageScale,
-			{ IMAGE_CENTER,IMAGE_CENTER }
-		);
-
-	// リトライ文字
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"RETRY",
-			m_retryPos,
-			{ 1.0f,1.0f,1.0f,m_retryAlpha },
-			IMAGE_RATE * imageScale * m_retryScale,
-			{ IMAGE_CENTER,IMAGE_CENTER }
-		);
-
-	// セレクト文字
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"SELECT",
-			m_selectPos,
-			{ 1.0f,1.0f,1.0f,m_selectAlpha },
-			IMAGE_RATE * imageScale * m_selectScale,
-			{ IMAGE_CENTER,IMAGE_CENTER }
-		);
-
-	// タイトル文字
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"TITLE",
-			m_titlePos,
-			{ 1.0f,1.0f,1.0f,m_titleAlpha },
-			IMAGE_RATE * imageScale * m_titleScale,
-			{ IMAGE_CENTER,IMAGE_CENTER }
-		);
-
-
-	// 時計画像
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"Clock",
-			m_clockPos,
-			{ 1.0f,1.0f,1.0f,1.0f },
-			DEFAULT_RATE * imageScale,
-			{ IMAGE_CENTER,IMAGE_CENTER }
-		);
-
+	// 文字を描画
+	DrawTextFonts(imageScale);
 
 	//-------------------------------------------------------------------------------------//
 	// 秒数を計算
@@ -297,6 +253,7 @@ void ResultScene::Draw()
 	RenderDigit((sec / 10) % 10, m_tenSecPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
 
 	//-------------------------------------------------------------------------------------//
+	// 獲得コイン数を表示
 
 	// 一桁目の数字を表示
 	RenderDigit(m_coinNum % 10, m_oneCoiPos, imageScale, SPRITE_SIZE, SPRITE_SIZE);
@@ -371,32 +328,32 @@ void ResultScene::CreateWindowDependentResources()
 	// 画像の設定
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(context);
 	// 画像を登録
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY",  L"Resources/Textures/FONT/RETRY.dds",  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds", device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE",  L"Resources/Textures/FONT/TITLE.dds",  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"COINS",  L"Resources/Textures/FONT/COINS.dds",  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND",  L"Resources/Textures/ResultBack.dds",  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds",      device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Clock",  L"Resources/Textures/Clock.dds",       device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY",     L"Resources/Textures/FONT/RETRY.dds",			device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT",    L"Resources/Textures/FONT/SELECT.dds",		device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE",     L"Resources/Textures/FONT/TITLE.dds",			device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND",     L"Resources/Textures/ResultBack.dds",			device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number",    L"Resources/Textures/Number.dds",				device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Clear",     L"Resources/Textures/FONT/ClearTimeFont.dds",	device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TotalCoin", L"Resources/Textures/FONT/FontGetCoinNum.dds",device);
 
 	// 比率を計算
-	float span = width / FULL_SCREEN_SIZE.x;
+	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
 
-	// スプライトの位置を計算
-	m_oneSecPos = { (NUM_OFFSET + static_cast<float>(SPRITE_SIZE / 2)) * span, 100.0f * span };
-	m_tenSecPos = { (NUM_OFFSET - static_cast<float>(SPRITE_SIZE / 2)) * span, 100.0f * span };
-	m_oneCoiPos = { (NUM_OFFSET + static_cast<float>(SPRITE_SIZE / 2)) * span, 440.0f * span };
-	m_tenCoiPos = { (NUM_OFFSET - static_cast<float>(SPRITE_SIZE / 2)) * span, 440.0f * span };
+	// 共通部分を定義
+	float spCenterX   = static_cast<float>(SPRITE_SIZE) / 2 * scale.x;
+	float numCenterX  = FULL_SCREEN_SIZE.x / 2 * scale.x - spCenterX;
 
-	// 座標情報
-	m_coinsPos  = { TEXT_OFFSET * span, 400.0f * span };
-	m_retryPos  = { TEXT_OFFSET * span, 700.0f * span };
-	m_selectPos = { TEXT_OFFSET * span, 800.0f * span };
-	m_titlePos  = { TEXT_OFFSET * span, 900.0f * span };
-	m_clockPos  = { (SPRITE_SIZE + width * span) / 2,150.0f * span };
+	// 各座標を決定
+	m_oneSecPos = { numCenterX + spCenterX ,200.0f * scale.y };
+	m_tenSecPos = { numCenterX - spCenterX ,200.0f * scale.y };
+	m_oneCoiPos = { numCenterX + spCenterX ,540.0f * scale.y };
+	m_tenCoiPos = { numCenterX - spCenterX ,540.0f * scale.y };
 
-	// 座標補正
-	CorrectionOffset(width, span);
+	m_coinsPos  = { 50.0f, m_oneCoiPos.y - 40.0f * scale.y };
+	m_clearPos  = { 50.0f, m_oneSecPos.y - 40.0f * scale.y };
+	m_retryPos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 700.0f };
+	m_selectPos = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 800.0f };
+	m_titlePos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 900.0f };
 }
 
 /// <summary>
@@ -408,7 +365,7 @@ void ResultScene::CreateWindowDependentResources()
 /// <param name="digitWidth">数字の幅</param>
 /// <param name="digitHeight">数字の高さ</param>
 /// <returns>なし</returns>
-void ResultScene::RenderDigit(int digit, const SimpleMath::Vector2& position, SimpleMath::Vector2  scale, int digitWidth, int digitHeight)
+void ResultScene::RenderDigit(int digit, const SimpleMath::Vector2& position, SimpleMath::Vector2 scale, int digitWidth, int digitHeight)
 {
 	// スプライトの位置を計算
 	float spritePosX = position.x * scale.x;
@@ -418,7 +375,7 @@ void ResultScene::RenderDigit(int digit, const SimpleMath::Vector2& position, Si
 	SimpleMath::Vector2 center = { spritePosX  * scale.x / 2.0f, spritePosY  * scale.y / 2.0f };
 
 	// 切り取り位置の設定
-	RECT_U rect;
+	RECT_U rect = RECT_U();
 
 	// 切り取り開始位置を設定(横)
 	rect.left = digit * digitWidth;
@@ -441,19 +398,51 @@ void ResultScene::RenderDigit(int digit, const SimpleMath::Vector2& position, Si
 }
 
 /// <summary>
-/// オフセット値を変更する関数
+/// フォントを描画する
 /// </summary>
-/// <param name="width">画面横幅</param>
-/// <param name="span">最大サイズとの比率</param>
+/// <param name="imageScale">画像比率</param>
 /// <returns>なし</returns>
-void ResultScene::CorrectionOffset(float width ,float span)
+void ResultScene::DrawTextFonts(SimpleMath::Vector2 imageScale)
 {
-	// 座標補正
-	if (static_cast<int>(width) != 1280) return;
+	// コイン文字
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+		L"TotalCoin",
+		m_coinsPos * imageScale,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		IMAGE_RATE * imageScale,
+		SimpleMath::Vector2::Zero
+	);
+	// クリアタイム文字
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+		L"Clear",
+		m_clearPos * imageScale,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		IMAGE_RATE * imageScale,
+		SimpleMath::Vector2::Zero
+	);
 
-	m_oneSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.50f * span);
-	m_tenSecPos.x -= static_cast<float>(SPRITE_SIZE / 1.50f * span);
-	m_oneCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.50f * span);
-	m_tenCoiPos.x -= static_cast<float>(SPRITE_SIZE / 1.50f * span);
-	m_clockPos.x  += static_cast<float>(SPRITE_SIZE * 2.95f * span);
+	//-------------------------------------------------------------------------------------//
+
+	// シーン選択文字(リトライ、セレクト、タイトル)
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+		L"RETRY",
+		m_retryPos * imageScale,
+		{ 1.0f, 1.0f, 1.0f, m_retryAlpha },
+		IMAGE_RATE * imageScale * m_retryScale,
+		SimpleMath::Vector2::Zero
+	);
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+		L"SELECT",
+		m_selectPos * imageScale,
+		{ 1.0f, 1.0f, 1.0f, m_selectAlpha },
+		IMAGE_RATE * imageScale * m_selectScale,
+		SimpleMath::Vector2::Zero
+	);
+	GetSystemManager()->GetDrawSprite()->DrawTexture(
+		L"TITLE",
+		m_titlePos * imageScale,
+		{ 1.0f, 1.0f, 1.0f, m_titleAlpha },
+		IMAGE_RATE * imageScale * m_titleScale,
+		SimpleMath::Vector2::Zero
+	);
 }

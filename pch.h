@@ -99,3 +99,4 @@ using namespace DirectX;
 #include "StepTimer.h"                  // 時間
 #include "Effects.h"                    // エフェクトを使用可能にする
 #include "VertexTypes.h"                // 板ポリゴンを描画するのに使用
+#include "Audio.h"                      // サウンドで使用

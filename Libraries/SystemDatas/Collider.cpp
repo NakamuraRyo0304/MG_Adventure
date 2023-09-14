@@ -58,13 +58,13 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 	is_hitFlag = true;
 
 	// é©êgÇÃïùÇ∆çÇÇ≥ÇåvéZ
-	float lenghtX = (moveObj->x + cS1.x) - (moveObj->x - cS1.x);
+	float lengthX = (moveObj->x + cS1.x) - (moveObj->x - cS1.x);
 	float lengthY = (moveObj->y + cS1.y) - (moveObj->y - cS1.y);
 	float lengthZ = (moveObj->z + cS1.z) - (moveObj->z - cS1.z);
 
 	// äeï˚å¸ÇÃÇﬂÇËçûÇ›ãÔçá
-	float leftRatio  = ((moveObj->x + cS1.x) - (constObj.x - cS2.x)) / lenghtX;
-	float rightRatio = ((constObj.x + cS2.x) - (moveObj->x - cS1.x)) / lenghtX;
+	float leftRatio  = ((moveObj->x + cS1.x) - (constObj.x - cS2.x)) / lengthX;
+	float rightRatio = ((constObj.x + cS2.x) - (moveObj->x - cS1.x)) / lengthX;
 
 	float upRatio    = ((moveObj->y + cS1.y) - (constObj.y - cS2.y)) / lengthY;
 	float downRatio  = ((constObj.y + cS2.y) - (moveObj->y - cS1.y)) / lengthY;
@@ -142,7 +142,7 @@ Collider::SphereCollider::SphereCollider() :
 /// <param name="pos1">ç¿ïW</param>
 /// <param name="pos2">ç¿ïW</param>
 /// <param name="radius1">îºåa</param>
-/// <param name="raidus2">îºåa</param>
+/// <param name="radius2">îºåa</param>
 /// <returns>Ç»Çµ</returns>
 void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1,
 	                                      SimpleMath::Vector3& pos2,

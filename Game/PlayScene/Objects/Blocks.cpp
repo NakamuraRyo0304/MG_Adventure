@@ -31,7 +31,7 @@ Blocks::Blocks():
 	m_playerPos{SimpleMath::Vector3::Zero},	// プレイヤーポジション
 	m_grassModel{ nullptr },				// 草ブロックのモデル
 	m_coinModel{ nullptr },					// コインブロックのモデル
-	m_clowdModel{ nullptr }					// 雲ブロックのモデル
+	m_cloudModel{ nullptr }					// 雲ブロックのモデル
 {
 	m_mapLoad = std::make_unique<MapLoad>();
 }
@@ -85,16 +85,16 @@ void Blocks::Initialize(int stageNum)
 			m_maxCoins++;
 		}
 		// 雲フラグ登録
-		if (m_mapObj[i].id == MapState::ClowdBox)
+		if (m_mapObj[i].id == MapState::CloudBox)
 		{
 			// ステータス登録
-			m_clowdState[i].moveFlag = false;
+			m_cloudState[i].moveFlag = false;
 
 			// 始発点を保存
-			m_clowdState[i].initPosition = m_mapObj[i].position;
+			m_cloudState[i].initPosition = m_mapObj[i].position;
 
 			// 終着点を保存
-			m_clowdState[i].endPosition = SimpleMath::Vector3
+			m_cloudState[i].endPosition = SimpleMath::Vector3
 			{
 				m_mapObj[i].position.x,
 				m_mapObj[i].position.y + COMMON_SIZE + CLOWD_SIZE,
@@ -134,16 +134,16 @@ void Blocks::Update(float elapsedTime)
 	// 雲は上下移動する
 	for(int i = 0; i < m_mapObj.size();++i)
 	{
-		if (m_mapObj[i].id == MapState::ClowdBox)
+		if (m_mapObj[i].id == MapState::CloudBox)
 		{
 			// 触れているときは終点まで
-			if (m_clowdState[i].moveFlag)
+			if (m_cloudState[i].moveFlag)
 			{
 				// Y座標を終点まで動かす
 				m_mapObj[i].position.y = UserUtility::Lerp
 				(
 					m_mapObj[i].position.y,
-					m_clowdState[i].endPosition.y,
+					m_cloudState[i].endPosition.y,
 					CLOWD_SPEED
 				);
 			}
@@ -255,25 +255,25 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		}
 
 		// 雲ブロック
-		if (m_mapObj[i].id == MapState::ClowdBox)
+		if (m_mapObj[i].id == MapState::CloudBox)
 		{
-			if (m_clowdState[i].moveFlag)
+			if (m_cloudState[i].moveFlag)
 			{
 				// 色を暗く変更
-				ChangeModelColors(m_clowdModel, static_cast<SimpleMath::Vector4>(Colors::DarkGray));
+				ChangeModelColors(m_cloudModel, static_cast<SimpleMath::Vector4>(Colors::DarkGray));
 			}
 			else
 			{
 				// 色をデフォルトに戻す
-				ChangeModelColors(m_clowdModel,static_cast<SimpleMath::Vector4>(Colors::White));
+				ChangeModelColors(m_cloudModel,static_cast<SimpleMath::Vector4>(Colors::White));
 			}
 
-			m_clowdModel->UpdateEffects(setLightForModel);
-			m_clowdModel->Draw(context, states, rotateY * world, view, proj);
+			m_cloudModel->UpdateEffects(setLightForModel);
+			m_cloudModel->Draw(context, states, rotateY * world, view, proj);
 		}
 
 		// 雲のリセットポイント
-		if (m_mapObj[i].id == MapState::ResetClowd)
+		if (m_mapObj[i].id == MapState::ResetCloud)
 		{
 			// 反転防止
 			if (sinf(restrictedTimer) < 0.0f)
@@ -300,7 +300,7 @@ void Blocks::Finalize()
 	// モデルの解放
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
-	ModelFactory::DeleteModel(m_clowdModel);
+	ModelFactory::DeleteModel(m_cloudModel);
 	ModelFactory::DeleteModel(m_resetPtModel);
 }
 
@@ -321,7 +321,7 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 		m_coinModel = std::move(model);
 		break;
 	case CLOWD:									// 雲ブロック
-		m_clowdModel = std::move(model);
+		m_cloudModel = std::move(model);
 		break;
 	case RECLOWD:								// 雲リセット
 		m_resetPtModel = std::move(model);
@@ -365,12 +365,12 @@ const float& Blocks::GetObjSize(const int& objName)
 		// コインは小さめサイズ
 		return COIN_SIZE;
 	}
-	else if (objName == MapState::ClowdBox)
+	else if (objName == MapState::CloudBox)
 	{
 		// 雲も小さめサイズ
 		return CLOWD_SIZE;
 	}
-	else if (objName == MapState::ResetClowd)
+	else if (objName == MapState::ResetCloud)
 	{
 		// 雲リセットエリアは大きめsサイズ
 		return CLOWD_RESET_SIZE;
@@ -387,22 +387,22 @@ const float& Blocks::GetObjSize(const int& objName)
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void Blocks::RestoreClowdPosition()
+void Blocks::RestoreCloudPosition()
 {
 
 	for (auto& i : m_mapObj)
 	{
 		// 雲のみを対象とする
-		if (i.id == MapState::ClowdBox)
+		if (i.id == MapState::CloudBox)
 		{
 			// Y座標を始点まで動かす
 			i.position.y = UserUtility::Lerp
 			(
 				i.position.y,
-				m_clowdState[i.index].initPosition.y,
+				m_cloudState[i.index].initPosition.y,
 				CLOWD_SPEED * 0.5f
 			);
-			m_clowdState[i.index].moveFlag = false;
+			m_cloudState[i.index].moveFlag = false;
 		}
 	}
 }
