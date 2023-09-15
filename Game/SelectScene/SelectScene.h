@@ -96,8 +96,8 @@ public:
 
 private:
 	// ステージのローディング
-	void LoadStage(ID3D11Device1* device);
-
+	void CreateStages(ID3D11Device1* device);
+	void CreateFirstStage(ID3D11Device1* device);
 public:
 	// ステージ番号のアクセサ
 	const int& GetStageNum() { return m_stageNum; }

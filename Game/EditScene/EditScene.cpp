@@ -141,10 +141,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 
 	// エスケープで終了
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
-	{
-		ChangeScene(SCENE::ENDGAME);
-	}
+	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
 }
 
 /// <summary>

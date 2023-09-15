@@ -120,23 +120,31 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	m_flashCount = m_flashCount > MAX_FLASH * 0.75f ? 0.0f : m_flashCount;
 
 	// ステージ番号変更
-	if(keyState.Right)
 	{
-		// ステージ番号が最大なら処理しない
-		if (m_stageNum == MAX_STAGE_NUM - 1 - m_noStageNum) return;
+		if (keyState.Right)
+		{
+			// ステージ番号が最大なら処理しない
+			if (m_stageNum == MAX_STAGE_NUM - 1 - m_noStageNum) return;
 
-		m_targetY = UP_VALUE;
-		m_stageNum++;
-		m_flashCount = 0.0f;
-	}
-	if (keyState.Left)
-	{
-		// ステージ番号が0なら処理しない
-		if (m_stageNum == 0) return;
+			// 選択音を鳴らす
+			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 
-		m_targetY = UP_VALUE;
-		m_stageNum--;
-		m_flashCount = 0.0f;
+			m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, 0.75f);
+			m_stageNum++;
+			m_flashCount = 0.0f;
+		}
+		if (keyState.Left)
+		{
+			// ステージ番号が0なら処理しない
+			if (m_stageNum == 0) return;
+
+			// 選択音を鳴らす
+			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
+
+			m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, 0.75f);
+			m_stageNum--;
+			m_flashCount = 0.0f;
+		}
 	}
 
 	// UIの更新
@@ -154,10 +162,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 
 	// エスケープで終了
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
-	{
-		ChangeScene(SCENE::ENDGAME);
-	}
+	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
 }
 
 /// <summary>
@@ -256,47 +261,51 @@ void SelectScene::CreateWindowDependentResources()
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
 	// スカイドームモデルを作成する
-	m_skyDomeModel = ModelFactory::GetCreateModel(
-		device,
-		L"Resources/Models/ShineSky.cmo"
-	);
-	m_skyDomeModel->UpdateEffects([](IEffect* effect)
-		{
-			auto lights = dynamic_cast<IEffectLights*>(effect);
-			if (lights)
+	{
+		m_skyDomeModel = ModelFactory::GetCreateModel(
+			device,
+			L"Resources/Models/ShineSky.cmo"
+		);
+		m_skyDomeModel->UpdateEffects([](IEffect* effect)
 			{
-				lights->SetLightEnabled(0, false);
-				lights->SetLightEnabled(1, false);
-				lights->SetLightEnabled(2, false);
+				auto lights = dynamic_cast<IEffectLights*>(effect);
+				if (lights)
+				{
+					lights->SetLightEnabled(0, false);
+					lights->SetLightEnabled(1, false);
+					lights->SetLightEnabled(2, false);
+				}
+				// 自己発光する
+				auto basicEffect = dynamic_cast<BasicEffect*>(effect);
+				if (basicEffect)
+				{
+					basicEffect->SetEmissiveColor(Colors::White);
+				}
 			}
-			// 自己発光する
-			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (basicEffect)
-			{
-				basicEffect->SetEmissiveColor(Colors::White);
-			}
-		}
-	);
+		);
+	}
 
 	// ブロックの作成を裏で処理
 	{
 		std::lock_guard<std::mutex>guard(m_mutex);
 
-		m_loadTask = std::async(std::launch::async, [&]() { LoadStage(device); });
+		m_loadTask = std::async(std::launch::async, [&]() { CreateStages(device); });
 	}
 
-	// ステージ番号のモデル
-	for (int i = 0; i < MAX_STAGE_NUM - m_noStageNum; ++i)
+	// ステージ番号のモデルの作成
 	{
-		// 0番目はエディタの文字
-		if (i == 0)
+		for (int i = 0; i < MAX_STAGE_NUM - m_noStageNum; ++i)
 		{
-			m_stageModels[0] = ModelFactory::GetCreateModel(device, L"Resources/Models/StageEdit.cmo");
-		}
-		else
-		{
-			std::wstring path = L"Resources/Models/Stage" + std::to_wstring(i) + L".cmo";
-			m_stageModels[i] = ModelFactory::GetCreateModel(device, path.c_str());
+			// 0番目はエディタの文字
+			if (i == 0)
+			{
+				m_stageModels[0] = ModelFactory::GetCreateModel(device, L"Resources/Models/StageEdit.cmo");
+			}
+			else
+			{
+				std::wstring path = L"Resources/Models/Stage" + std::to_wstring(i) + L".cmo";
+				m_stageModels[i] = ModelFactory::GetCreateModel(device, path.c_str());
+			}
 		}
 	}
 
@@ -310,36 +319,75 @@ void SelectScene::CreateWindowDependentResources()
 /// </summary>
 /// <param name="device">デバイスポインタ</param>
 /// <returns>なし</returns>
-void SelectScene::LoadStage(ID3D11Device1* device)
+void SelectScene::CreateStages(ID3D11Device1* device)
 {
+	// 選択中のステージを先に作成
+	CreateFirstStage(device);
+
 	for (int i = 0; i < MAX_STAGE_NUM; ++i)
 	{
-		m_blocks[i] = std::make_unique<Blocks>();
+		//パスの格納---------------------------------------------------------------------------//
+		const wchar_t* grassPath = L"Resources/Models/GrassBlock.cmo";		// 草ブロック      //
+		const wchar_t* coinPath  = L"Resources/Models/Coin.cmo";			// コイン          //
+		const wchar_t* cloudPath = L"Resources/Models/MoveBlock.cmo";		// 雲              //
+		const wchar_t* resetPath = L"Resources/Models/ResetPt.cmo";			// リセットポイント//
+		//-------------------------------------------------------------------------------------//
 
-		// 草ブロックの作成
-		m_blocks[i]->CreateModels(
-			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo")),
-			m_blocks[i]->GRASS
-		);
-		// コインの作成
-		m_blocks[i]->CreateModels(
-			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo")),
-			m_blocks[i]->COIN
-		);
-		// 雲ブロックの作成
-		m_blocks[i]->CreateModels(
-			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo")),
-			m_blocks[i]->CLOWD
-		);
-		// 雲リセットブロックの作成
-		m_blocks[i]->CreateModels(
-			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo")),
-			m_blocks[i]->RECLOWD
-		);
+		// 作成されていない場合は作成する
+		if (!m_blocks[i])
+		{
+			// ブロックの作成
+			m_blocks[i] = std::make_unique<Blocks>();
 
-		// 初期化処理
-		m_blocks[i]->Initialize(i);
+			// 草ブロックの作成
+			m_blocks[i]->CreateModels(std::move(ModelFactory::GetCreateModel(device, grassPath)), m_blocks[i]->GRASS);
+
+			// コインの作成
+			m_blocks[i]->CreateModels(std::move(ModelFactory::GetCreateModel(device, coinPath)), m_blocks[i]->COIN);
+
+			// 雲ブロックの作成
+			m_blocks[i]->CreateModels(std::move(ModelFactory::GetCreateModel(device, cloudPath)), m_blocks[i]->CLOWD);
+
+			// 雲リセットブロックの作成
+			m_blocks[i]->CreateModels(std::move(ModelFactory::GetCreateModel(device, resetPath)), m_blocks[i]->RECLOWD);
+
+			// 初期化処理
+			m_blocks[i]->Initialize(i);
+		}
 	}
+}
+
+/// <summary>
+/// 最初のステージだけ先に作成する(async用)
+/// </summary>
+/// <param name="device">デバイスポインタ</param>
+/// <returns>なし</returns>
+void SelectScene::CreateFirstStage(ID3D11Device1* device)
+{
+	//パスの格納---------------------------------------------------------------------------//
+	const wchar_t* grassPath = L"Resources/Models/GrassBlock.cmo";		// 草ブロック      //
+	const wchar_t* coinPath  = L"Resources/Models/Coin.cmo";			// コイン          //
+	const wchar_t* cloudPath = L"Resources/Models/MoveBlock.cmo";		// 雲              //
+	const wchar_t* resetPath = L"Resources/Models/ResetPt.cmo";			// リセットポイント//
+	//-------------------------------------------------------------------------------------//
+
+	// ブロックの作成
+	m_blocks[m_stageNum] = std::make_unique<Blocks>();
+
+	// 草ブロックの作成
+	m_blocks[m_stageNum]->CreateModels(std::move(ModelFactory::GetCreateModel(device, grassPath)),
+																				m_blocks[m_stageNum]->GRASS);
+	// コインの作成
+	m_blocks[m_stageNum]->CreateModels(std::move(ModelFactory::GetCreateModel(device, coinPath)),
+																				m_blocks[m_stageNum]->COIN);
+	// 雲ブロックの作成
+	m_blocks[m_stageNum]->CreateModels(std::move(ModelFactory::GetCreateModel(device, cloudPath)),
+																				m_blocks[m_stageNum]->CLOWD);
+	// 雲リセットブロックの作成
+	m_blocks[m_stageNum]->CreateModels(std::move(ModelFactory::GetCreateModel(device, resetPath)),
+																				m_blocks[m_stageNum]->RECLOWD);
+	// 初期化処理
+	m_blocks[m_stageNum]->Initialize(m_stageNum);
 }
 
 /// <summary>

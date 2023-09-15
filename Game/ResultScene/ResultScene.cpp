@@ -139,11 +139,13 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	{
 		m_selectingScene++;
 		m_selectingScene = m_selectingScene ==  3 ? RETRY : m_selectingScene;
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 	}
 	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Up))
 	{
 		m_selectingScene--;
 		m_selectingScene = m_selectingScene == -1 ? TITLE : m_selectingScene;
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 	}
 
 	// アルファ値とスケールの変更
@@ -203,10 +205,7 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 
 	// エスケープで終了
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
-	{
-		ChangeScene(SCENE::ENDGAME);
-	}
+	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
 }
 
 /// <summary>

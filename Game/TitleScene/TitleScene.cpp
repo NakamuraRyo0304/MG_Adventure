@@ -106,6 +106,7 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 		{
 			is_menuFlag = !is_menuFlag;
 			is_accelerateFlag = true;
+			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 		}
 
 		// 最大まで回転したら回転をやめる
@@ -132,10 +133,7 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	m_titleUI->Update(is_menuFlag);
 
 	// エスケープで終了
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
-	{
-		ChangeScene(SCENE::ENDGAME);
-	}
+	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
 }
 
 /// <summary>

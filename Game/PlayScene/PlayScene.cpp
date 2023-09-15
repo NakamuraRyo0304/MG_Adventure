@@ -138,11 +138,11 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
 
+	// 風の音を鳴らす
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_WIND, true);
+
 	// エスケープで終了
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape))
-	{
-		ChangeScene(SCENE::ENDGAME);
-	}
+	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
 
 	// ヘルプ表示を切り替える
 	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Enter) && StartTimer())
@@ -179,6 +179,12 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Space))
 	{
 		is_thirdPersonMode = !is_thirdPersonMode;
+	}
+
+	// コインすべて獲得でクリア音を鳴らす なんかならないから要修正
+	if (m_blocks->IsCollectedFlag())
+	{
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_CLEAR, false);
 	}
 
 	// コインをすべて獲得かタイムアップでリザルト
