@@ -146,15 +146,11 @@ void SelectScene::Draw()
 	proj = GetSystemManager()->GetCamera()->GetProjection();
 
 	// マップの描画
-	if(m_blocks[m_stageNum] != nullptr)
-	{
-		m_blocks[m_stageNum]->Render(context, states, view, proj, m_timer);
-	}
+	m_blocks[m_stageNum] != nullptr ? m_blocks[m_stageNum]->Render(context, states, view, proj, m_timer) : void();
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
-
 
 	//-------------------------------------------------------------------------------------//
 
