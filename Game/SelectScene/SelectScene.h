@@ -98,6 +98,16 @@ private:
 	// ステージのローディング
 	void CreateStages(ID3D11Device1* device);
 	void CreateFirstStage(ID3D11Device1* device);
+
+	// ステージ番号の変更
+	void ChangeStageNumber(DirectX::Keyboard::State keyState);
+
+	// セレクト演出
+	void DirectionSelectChange();
+
+	// テキストのマトリックス
+	DirectX::SimpleMath::Matrix CreateTextMatrix(const float& rotValue);
+
 public:
 	// ステージ番号のアクセサ
 	const int& GetStageNum() { return m_stageNum; }

@@ -98,61 +98,14 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
 
-	// 動きが終わっていなければ見下げる
-	if (m_targetY > 1.0f)
-	{
-		m_targetY -= DOWN_SPEED;
-	}
-	else if(m_targetY > 0.0f)
-	{
-		m_targetY -= DOWN_SPEED * 0.5f;
-	}
-	else
-	{
-		m_targetY = 0.0f;
-	}
+	// 選択変更時の演出
+	DirectionSelectChange();
 
-	// 切り替え可能なタイミングはここで変更
-	if (m_targetY >= UP_VALUE * 0.25f) return;
-
-	// フラッシュカウンタ
-	m_flashCount++;
-	m_flashCount = m_flashCount > MAX_FLASH * 0.75f ? 0.0f : m_flashCount;
-
-	// ステージ番号変更
-	{
-		if (keyState.Right)
-		{
-			// ステージ番号が最大なら処理しない
-			if (m_stageNum == MAX_STAGE_NUM - 1 - m_noStageNum) return;
-
-			// 選択音を鳴らす
-			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
-
-			m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, 0.75f);
-			m_stageNum++;
-			m_flashCount = 0.0f;
-		}
-		if (keyState.Left)
-		{
-			// ステージ番号が0なら処理しない
-			if (m_stageNum == 0) return;
-
-			// 選択音を鳴らす
-			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
-
-			m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, 0.75f);
-			m_stageNum--;
-			m_flashCount = 0.0f;
-		}
-	}
+	// ステージの変更
+	ChangeStageNumber(keyState);
 
 	// UIの更新
-	m_userInterface->Update(
-		elapsedTime,	// 時間
-		keyState.Right,	// 右キー判定
-		keyState.Left	// 左キー判定
-	);
+	m_userInterface->Update(elapsedTime, keyState.Right, keyState.Left);
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
@@ -215,10 +168,7 @@ void SelectScene::Draw()
 	if (m_flashCount > MAX_FLASH * 0.5f) return;
 
 	// テキストの移動アニメーション
-	SimpleMath::Matrix stageMat = SimpleMath::Matrix::Identity;
-	stageMat *= SimpleMath::Matrix::CreateRotationY(rotValue);
-	stageMat *= SimpleMath::Matrix::CreateScale(10.0f);
-	stageMat *= SimpleMath::Matrix::CreateTranslation(sinf(rotValue), 10.0f, cosf(rotValue));
+	SimpleMath::Matrix stageMat = CreateTextMatrix(rotValue);
 
 	// ステージ番号表示
 	m_stageModels[m_stageNum]->Draw(context, states, stageMat, view, proj);
@@ -388,6 +338,83 @@ void SelectScene::CreateFirstStage(ID3D11Device1* device)
 																				m_blocks[m_stageNum]->RECLOWD);
 	// 初期化処理
 	m_blocks[m_stageNum]->Initialize(m_stageNum);
+}
+
+/// <summary>
+/// ステージの選択
+/// </summary>
+/// <param name="keyState">キーボード</param>
+/// <returns>なし</returns>
+void SelectScene::ChangeStageNumber(Keyboard::State keyState)
+{
+	// 切り替え可能なタイミングはここで変更
+	if (m_targetY >= UP_VALUE * 0.25f) return;
+
+	if (keyState.Right)
+	{
+		// ステージ番号が最大なら処理しない
+		if (m_stageNum == MAX_STAGE_NUM - 1 - m_noStageNum) return;
+
+		// 選択音を鳴らす
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
+
+		m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, 0.8f);
+		m_stageNum++;
+		m_flashCount = 0.0f;
+	}
+	if (keyState.Left)
+	{
+		// ステージ番号が0なら処理しない
+		if (m_stageNum == 0) return;
+
+		// 選択音を鳴らす
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
+
+		m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, 0.8f);
+		m_stageNum--;
+		m_flashCount = 0.0f;
+	}
+}
+
+/// <summary>
+/// セレクト変更時の演出
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void SelectScene::DirectionSelectChange()
+{
+	// 動きが終わっていなければ見下げる
+	if (m_targetY > 1.0f)
+	{
+		m_targetY -= DOWN_SPEED;
+	}
+	else if (m_targetY > 0.0f)
+	{
+		m_targetY -= DOWN_SPEED * 0.5f;
+	}
+	else
+	{
+		m_targetY = 0.0f;
+	}
+
+	// フラッシュカウンタ
+	m_flashCount++;
+	m_flashCount = m_flashCount > MAX_FLASH * 0.75f ? 0.0f : m_flashCount;
+}
+
+/// <summary>
+///	テキストのマトリックスを作成
+/// </summary>
+/// <param name="rotValue">回転する値</param>
+/// <returns>なし</returns>
+SimpleMath::Matrix SelectScene::CreateTextMatrix(const float& rotValue)
+{
+	SimpleMath::Matrix mat = SimpleMath::Matrix::Identity;
+	mat *= SimpleMath::Matrix::CreateRotationY(rotValue);
+	mat *= SimpleMath::Matrix::CreateScale(10.0f);
+	mat *= SimpleMath::Matrix::CreateTranslation(sinf(rotValue), 10.0f, cosf(rotValue));
+
+	return mat;
 }
 
 /// <summary>
