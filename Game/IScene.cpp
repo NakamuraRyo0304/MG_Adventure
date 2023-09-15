@@ -18,7 +18,8 @@ IScene::IScene():
 	m_system{std::make_shared<SystemManager>()},
 	m_nextScene{SCENE::NONE},
 	is_changeFlag{false},
-	m_fadeSpeed{4.0f}
+	m_fadeSpeed{4.0f},
+	m_fadeValue{0.0f}
 {
 	// ì¬‚³‚ê‚Ä‚¢‚È‚¯‚ê‚ÎƒVƒXƒeƒ€‚ğì¬
 	if (!m_system)

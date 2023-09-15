@@ -53,18 +53,12 @@ void TitleScene::Initialize()
 
 	// カメラ視点移動
 	GetSystemManager()->GetCamera()->SetEagleMode(false);
+
 	// カメラ座標設定
 	GetSystemManager()->GetCamera()->SetEyePosition(SimpleMath::Vector3(0.0f, -20.0f, -20.0f));
 
-	// ロゴの大きさ
-	m_logoMoveY = 10.0f;
-	m_logoMoveScale = 1.0f;
-
-	// ゲームを開始/ゲームを終了
-	is_menuFlag = true;
-
-	// 加速度を初期化
-	m_accelerate = 0.0f;
+	// 変数の初期化
+	SetSceneValues();
 
 	// BGMを鳴らす
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
@@ -335,6 +329,24 @@ void TitleScene::CreateWindowDependentResources()
 	// UIの初期化
 	m_titleUI = std::make_unique<TitleUI>(SimpleMath::Vector2{ width, height });
 	m_titleUI->Create(GetSystemManager(), context, device);
+}
+
+/// <summary>
+/// シーン内の変数初期化関数
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void TitleScene::SetSceneValues()
+{
+	// ロゴの大きさ
+	m_logoMoveY = 10.0f;
+	m_logoMoveScale = 1.0f;
+
+	// ゲームを開始/ゲームを終了
+	is_menuFlag = true;
+
+	// 加速度を初期化
+	m_accelerate = 0.0f;
 }
 
 /// <summary>

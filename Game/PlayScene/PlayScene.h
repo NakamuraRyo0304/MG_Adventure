@@ -147,6 +147,11 @@ public:
 
 private:
 
+	// ƒV[ƒ““à‚Ì•Ï”‰Šú‰»ŠÖ”
+	void SetSceneValues() override;
+
+private:
+
 	// “–‚½‚è”»’èˆ—
 	void Judgement();
 

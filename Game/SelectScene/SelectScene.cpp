@@ -61,11 +61,8 @@ void SelectScene::Initialize()
 	// カメラ視点移動を切る
 	GetSystemManager()->GetCamera()->SetEagleMode(false);
 
-	// 見上げ距離
-	m_targetY = UP_VALUE;
-
-	// スタートが0
-	m_flashCount = 0.0f;
+	// 変数の初期化
+	SetSceneValues();
 
 	// コイン数をセット
 	m_userInterface->SetTotalCoins(m_totalCoins);
@@ -262,6 +259,20 @@ void SelectScene::CreateWindowDependentResources()
 	// UIの作成
 	m_userInterface = std::make_unique<SelectUI>(GetSystemManager(), context, device);
 	m_userInterface->Initialize(SimpleMath::Vector2{ width, height });
+}
+
+/// <summary>
+/// シーン内の変数初期化関数
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void SelectScene::SetSceneValues()
+{
+	// 見上げ距離
+	m_targetY = UP_VALUE;
+
+	// スタートが0
+	m_flashCount = 0.0f;
 }
 
 /// <summary>

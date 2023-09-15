@@ -116,6 +116,13 @@ public:
 	// 画面依存の初期化
 	void CreateWindowDependentResources() override;
 
+private:
+
+	// シーン内の変数初期化関数
+	void SetSceneValues() override;
+
+public:
+
 	// クリアタイムセッター
 	void SetClearTime(const float& clearTime) { m_clearTime = clearTime; }
 

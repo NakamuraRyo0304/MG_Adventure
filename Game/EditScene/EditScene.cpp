@@ -63,11 +63,11 @@ void EditScene::Initialize()
 	// カメラ視点移動を有効にする
 	GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
 
+	// 変数の初期化
+	SetSceneValues();
+
 	// マップ読み込み//初回読み込み
 	LoadMap(L"Resources/Maps/StageEdit.csv");
-
-	// 初期値は草ブロック
-	m_nowState = MapState::GrassBox;
 }
 
 /// <summary>
@@ -369,6 +369,17 @@ void EditScene::CreateWindowDependentResources()
 	// マウスカーソルの作成
 	m_mouseCursor = std::make_unique<MouseCursor>(context);
 	m_mouseCursor->Initialize(L"Resources/Textures/MouseCursor.dds", device);
+}
+
+/// <summary>
+/// シーン内の変数初期化関数
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void EditScene::SetSceneValues()
+{
+	// 初期値は草ブロック
+	m_nowState = MapState::GrassBox;
 }
 
 /// <summary>

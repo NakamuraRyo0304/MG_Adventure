@@ -34,6 +34,11 @@ private:
 	// フェードの値
 	float m_fadeValue;
 
+private:
+
+	// シーン内の変数の初期化関数
+	virtual void SetSceneValues() = 0;
+
 public:
 	IScene();
 

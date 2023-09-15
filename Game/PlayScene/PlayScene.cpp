@@ -89,29 +89,8 @@ void PlayScene::Initialize()
 	// プレイヤー座標設定
 	m_player->SetPosition(m_blocks->GetPlayerPosition());
 
-	// 判定の初期化
-	m_hitObjects.clear();
-
-	// 制限時間の初期化
-	// 時間　×　フレームレート
-	m_gameTimer = TIME_LIMIT * FLAME_RATE;
-
-	m_clearTime = 0.0f;
-
-	// 開始カウントダウン(フェードも考慮)
-	m_startTimer = 4 * FLAME_RATE;
-
-	// 死亡エフェクトを切る
-	m_userInterFace->SetEffectFlag(false);
-
-	// 空の色の初期化
-	m_skyColor = { 1.0f,1.0f,1.0f };
-
-	// サードパーソンモードを切る
-	is_thirdPersonMode = false;
-
-	// ヘルプを表示しない
-	is_helpFlag = false;
+	// 変数の初期化
+	SetSceneValues();
 
 	// BGMを鳴らす
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_PLAY, true);
@@ -503,6 +482,38 @@ void PlayScene::CreateWindowDependentResources()
 	m_userInterFace->Create(GetSystemManager(),context, device);
 
 	//-------------------------------------------------------------------------------------//
+}
+
+/// <summary>
+/// シーン内の変数初期化関数
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void PlayScene::SetSceneValues()
+{
+	// 判定の初期化
+	m_hitObjects.clear();
+
+	// 制限時間の初期化
+	// 時間　×　フレームレート
+	m_gameTimer = TIME_LIMIT * FLAME_RATE;
+
+	m_clearTime = 0.0f;
+
+	// 開始カウントダウン(フェードも考慮)
+	m_startTimer = 4 * FLAME_RATE;
+
+	// 死亡エフェクトを切る
+	m_userInterFace->SetEffectFlag(false);
+
+	// 空の色の初期化
+	m_skyColor = { 1.0f,1.0f,1.0f };
+
+	// サードパーソンモードを切る
+	is_thirdPersonMode = false;
+
+	// ヘルプを表示しない
+	is_helpFlag = false;
 }
 
 /// <summary>

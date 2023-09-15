@@ -95,6 +95,12 @@ public:
 	void CreateWindowDependentResources() override;
 
 private:
+
+	// シーン内の変数初期化関数
+	void SetSceneValues() override;
+
+private:
+
 	// ステージのローディング
 	void CreateStages(ID3D11Device1* device);
 	void CreateFirstStage(ID3D11Device1* device);

@@ -74,6 +74,11 @@ public:
 
 private:
 
+	// ƒV[ƒ““à‚Ì•Ï”‰Šú‰»ŠÖ”
+	void SetSceneValues() override;
+
+private:
+
 	// ‰æ–Ê‰‰o
 	bool FlyStartObjects();
 };

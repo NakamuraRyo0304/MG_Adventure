@@ -85,11 +85,8 @@ void ResultScene::Initialize()
 	// マップ読み込み
 	m_blocks->Initialize(m_stageNum);
 
-	// タイマーの保存
-	m_saveTime = m_clearTime;
-
-	// 演出時間 最初のフェードも考慮して多めに取る
-	m_directionTime = 120.0f;
+	// 変数の初期化
+	SetSceneValues();
 
 	// BGMを鳴らす
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_RESULT, true);
@@ -362,6 +359,20 @@ void ResultScene::CreateWindowDependentResources()
 	m_retryPos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 700.0f };
 	m_selectPos = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 800.0f };
 	m_titlePos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 900.0f };
+}
+
+/// <summary>
+/// シーン内の変数初期化関数
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void ResultScene::SetSceneValues()
+{
+	// タイマーの保存
+	m_saveTime = m_clearTime;
+
+	// 演出時間 最初のフェードも考慮して多めに取る
+	m_directionTime = 120.0f;
 }
 
 /// <summary>
