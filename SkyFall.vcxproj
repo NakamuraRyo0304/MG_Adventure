@@ -196,7 +196,6 @@
     <ClInclude Include="Game\PlayScene\Objects\Blocks.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h" />
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
-    <ClInclude Include="Game\PlayScene\Objects\PlayerShadow.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h" />
     <ClInclude Include="Game\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\PlayScene\System\ThirdPersonCamera.h" />
@@ -235,7 +234,6 @@
     <ClCompile Include="Game\PlayScene\Objects\Blocks.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayerBill.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />
-    <ClCompile Include="Game\PlayScene\Objects\PlayerShadow.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayUI.cpp" />
     <ClCompile Include="Game\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\PlayScene\System\ThirdPersonCamera.cpp" />
@@ -295,11 +293,12 @@
     <Image Include="Resources\Textures\Number.dds" />
     <Image Include="Resources\Textures\OpenFile.dds" />
     <Image Include="Resources\Textures\PlayerPoint.png" />
-    <Image Include="Resources\Textures\PlayerShadow.png" />
     <Image Include="Resources\Textures\PLAY_HELP\Help.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\HelpBack.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds" />
     <Image Include="Resources\Textures\ResultBack.dds" />
+    <Image Include="Resources\Textures\ResultFonts.dds" />
+    <ImageContentTask Include="Resources\Textures\ResultFonts.png" />
     <Image Include="Resources\Textures\SaveFile.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\LeftArrow.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\RightArrow.dds" />
@@ -343,7 +342,6 @@
     <None Include="Resources\Models\TitleLogoVer2.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
     <None Include="Resources\Shaders\PlayerPoint.hlsli" />
-    <None Include="Resources\Shaders\PlayerShadow.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt" />
@@ -363,23 +361,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\PlayerPointVS.hlsl">
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PlayerShadowGS.hlsl">
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PlayerShadowPS.hlsl">
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PlayerShadowVS.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>

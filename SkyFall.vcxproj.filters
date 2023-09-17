@@ -122,9 +122,6 @@
     <Filter Include="Resources\Models\Stage">
       <UniqueIdentifier>{6f458962-5566-44f3-8d4b-67fc1e47e5f2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scenes\PlayScene\Objects\PlayerShadow">
-      <UniqueIdentifier>{e4f75a71-4601-46d0-9dea-a89921cb85f4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Textures\BLOCK">
       <UniqueIdentifier>{8efaf320-95be-4e10-a39b-7f7fe4ff6a4b}</UniqueIdentifier>
     </Filter>
@@ -280,9 +277,6 @@
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h">
       <Filter>Scenes\PlayScene\Objects\PlayUI</Filter>
     </ClInclude>
-    <ClInclude Include="Game\PlayScene\Objects\PlayerShadow.h">
-      <Filter>Scenes\PlayScene\Objects\PlayerShadow</Filter>
-    </ClInclude>
     <ClInclude Include="Game\PlayScene\System\ThirdPersonCamera.h">
       <Filter>Scenes\PlayScene\System</Filter>
     </ClInclude>
@@ -387,9 +381,6 @@
     <ClCompile Include="Game\PlayScene\Objects\PlayUI.cpp">
       <Filter>Scenes\PlayScene\Objects\PlayUI</Filter>
     </ClCompile>
-    <ClCompile Include="Game\PlayScene\Objects\PlayerShadow.cpp">
-      <Filter>Scenes\PlayScene\Objects\PlayerShadow</Filter>
-    </ClCompile>
     <ClCompile Include="Game\PlayScene\System\ThirdPersonCamera.cpp">
       <Filter>Scenes\PlayScene\System</Filter>
     </ClCompile>
@@ -429,9 +420,6 @@
     </Image>
     <Image Include="Resources\Textures\FONT\COINS.dds">
       <Filter>Resources\Textures\FONT</Filter>
-    </Image>
-    <Image Include="Resources\Textures\PlayerShadow.png">
-      <Filter>Resources\ShaderTextures</Filter>
     </Image>
     <Image Include="Resources\Textures\BLOCK\ClowdIcon.dds">
       <Filter>Resources\Textures\BLOCK</Filter>
@@ -529,6 +517,9 @@
     <Image Include="Resources\Textures\BackSelect.dds">
       <Filter>Resources\Textures\EditScene</Filter>
     </Image>
+    <Image Include="Resources\Textures\ResultFonts.dds">
+      <Filter>Resources\Textures\ResultScene</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -565,9 +556,6 @@
     </None>
     <None Include="Resources\Models\Stage5.cmo">
       <Filter>Resources\Models\Stage</Filter>
-    </None>
-    <None Include="Resources\Shaders\PlayerShadow.hlsli">
-      <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="Resources\Models\Stage6.cmo">
       <Filter>Resources\Models\Stage</Filter>
@@ -645,14 +633,10 @@
     <FxCompile Include="Resources\Shaders\PlayerPointVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\PlayerShadowGS.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PlayerShadowPS.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PlayerShadowVS.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Resources\Textures\ResultFonts.png">
+      <Filter>Resources\Textures\ResultScene</Filter>
+    </ImageContentTask>
   </ItemGroup>
 </Project>

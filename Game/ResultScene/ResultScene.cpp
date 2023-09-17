@@ -49,12 +49,10 @@ ResultScene::ResultScene():
 	m_titleAlpha{},				// 透明度
 	m_titleScale{},				// 大きさ
 	//-------------------------------------------------------------------------------------//
-	m_coinsPos{},				// コインテキストの位置
 	m_coinNum{0},				// 枚数
-	m_oneCoiPos{},				// 1の位の座標
-	m_tenCoiPos{},				// 10の位の座標
+	m_oneCoiPos{},				//  1の位の座標
+	m_tenCoiPos{}				// 10の位の座標
 	//-------------------------------------------------------------------------------------//
-	m_clearPos{}				// クリアテキストの位置
 {
 	// ランダムの生成
 	srand(unsigned int(time(0)));
@@ -149,34 +147,13 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	switch (m_selectingScene)
 	{
 	case RETRY:
-		// 透明度
-		m_retryAlpha  = SELECT_FONT_ALPHA;
-		m_selectAlpha = DEFAULT_FONT_ALPHA;
-		m_titleAlpha  = DEFAULT_FONT_ALPHA;
-		// サイズ
-		m_retryScale  = SELECT_FONT_SCALE;
-		m_selectScale = DEFAULT_FONT_SCALE;
-		m_titleScale  = DEFAULT_FONT_SCALE;
+		CaseRetry();
 		break;
 	case SELECT:
-		// 透明度
-		m_retryAlpha  = DEFAULT_FONT_ALPHA;
-		m_selectAlpha = SELECT_FONT_ALPHA;
-		m_titleAlpha  = DEFAULT_FONT_ALPHA;
-		// サイズ
-		m_retryScale  = DEFAULT_FONT_SCALE;
-		m_selectScale = SELECT_FONT_SCALE;
-		m_titleScale  = DEFAULT_FONT_SCALE;
+		CaseSelect();
 		break;
 	case TITLE:
-		// 透明度
-		m_retryAlpha  = DEFAULT_FONT_ALPHA;
-		m_selectAlpha = DEFAULT_FONT_ALPHA;
-		m_titleAlpha  = SELECT_FONT_ALPHA;
-		// サイズ
-		m_retryScale  = DEFAULT_FONT_SCALE;
-		m_selectScale = DEFAULT_FONT_SCALE;
-		m_titleScale  = SELECT_FONT_SCALE;
+		CaseTitle();
 		break;
 	default:
 		break;
@@ -254,19 +231,19 @@ void ResultScene::Draw()
 	int sec = static_cast<int>(m_clearTime);
 
 	// 一桁目の数字を表示
-	RenderDigit(sec % 10,		 m_oneSecPos, imageScale, static_cast<int>(SPRITE_SIZE), static_cast<int>(SPRITE_SIZE));
+	RenderDigit(sec % 10,		 m_oneSecPos, imageScale, static_cast<int>(NUM_SIZE), static_cast<int>(NUM_SIZE));
 
 	// 十の桁の数字を表示
-	RenderDigit((sec / 10) % 10, m_tenSecPos, imageScale, static_cast<int>(SPRITE_SIZE), static_cast<int>(SPRITE_SIZE));
+	RenderDigit((sec / 10) % 10, m_tenSecPos, imageScale, static_cast<int>(NUM_SIZE), static_cast<int>(NUM_SIZE));
 
 	//-------------------------------------------------------------------------------------//
 	// 獲得コイン数を表示
 
 	// 一桁目の数字を表示
-	RenderDigit(m_coinNum % 10,		   m_oneCoiPos, imageScale, static_cast<int>(SPRITE_SIZE), static_cast<int>(SPRITE_SIZE));
+	RenderDigit(m_coinNum % 10,		   m_oneCoiPos, imageScale, static_cast<int>(NUM_SIZE), static_cast<int>(NUM_SIZE));
 
 	// 十の桁の数字を表示
-	RenderDigit((m_coinNum / 10) % 10, m_tenCoiPos, imageScale, static_cast<int>(SPRITE_SIZE), static_cast<int>(SPRITE_SIZE));
+	RenderDigit((m_coinNum / 10) % 10, m_tenCoiPos, imageScale, static_cast<int>(NUM_SIZE), static_cast<int>(NUM_SIZE));
 }
 
 
@@ -333,29 +310,26 @@ void ResultScene::CreateWindowDependentResources()
 	// 画像の設定
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(context);
 	// 画像を登録
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY",     L"Resources/Textures/FONT/RETRY.dds",	  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT",    L"Resources/Textures/FONT/SELECT.dds",  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE",     L"Resources/Textures/FONT/TITLE.dds",	  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Clear",     L"Resources/Textures/FONT/CLEAR.dds",	  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TotalCoin", L"Resources/Textures/FONT/GETCOINS.dds",device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND",     L"Resources/Textures/ResultBack.dds",	  device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number",    L"Resources/Textures/Number.dds",		  device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY",     L"Resources/Textures/FONT/RETRY.dds",	device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT",    L"Resources/Textures/FONT/SELECT.dds",device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE",     L"Resources/Textures/FONT/TITLE.dds",	device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RFont",     L"Resources/Textures/ResultFonts.dds",device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND",     L"Resources/Textures/ResultBack.dds",	device);
+	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number",    L"Resources/Textures/Number.dds",		device);
 
 	// 比率を計算
 	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// 共通部分を定義
-	float spCenterX   = SPRITE_SIZE / 2 * scale.x;
-	float numCenterX  = FULL_SCREEN_SIZE.x / 2 * scale.x - spCenterX;
+	float spCenterX   = (NUM_SIZE * scale.x ) / 2;
+	float numCenterX  = (FULL_SCREEN_SIZE.x - NUM_SIZE )* scale.x / 2;
 
 	// 各座標を決定
-	m_oneSecPos = { numCenterX + spCenterX ,200.0f * scale.y };
-	m_tenSecPos = { numCenterX - spCenterX ,200.0f * scale.y };
-	m_oneCoiPos = { numCenterX + spCenterX ,540.0f * scale.y };
-	m_tenCoiPos = { numCenterX - spCenterX ,540.0f * scale.y };
+	m_oneSecPos = { numCenterX + spCenterX ,300.0f * scale.y };
+	m_tenSecPos = { numCenterX - spCenterX ,300.0f * scale.y };
+	m_oneCoiPos = { numCenterX + spCenterX ,750.0f * scale.y };
+	m_tenCoiPos = { numCenterX - spCenterX ,750.0f * scale.y };
 
-	m_coinsPos  = { 50.0f * scale.x , m_oneCoiPos.y * scale.y};
-	m_clearPos  = { 50.0f * scale.x , m_oneSecPos.y * scale.y };
 	m_retryPos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 700.0f };
 	m_selectPos = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 800.0f };
 	m_titlePos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 900.0f };
@@ -386,15 +360,11 @@ void ResultScene::SetSceneValues()
 /// <returns>なし</returns>
 void ResultScene::RenderDigit(int digit, const SimpleMath::Vector2& position, SimpleMath::Vector2 scale, int digitWidth, int digitHeight)
 {
-	// スプライトの位置を計算
-	float spritePosX = position.x * scale.x;
-	float spritePosY = position.y * scale.y;
-
 	// スプライトの中心位置を計算
-	SimpleMath::Vector2 center = { spritePosX  * scale.x / 2.0f, spritePosY  * scale.y / 2.0f };
+	SimpleMath::Vector2 center = position * scale / 2.0f;
 
 	// 切り取り位置の設定
-	RECT_U rect = RECT_U();
+	RECT_U rect = RECT_U(0L, 0L, 1000L, 100L);
 
 	// 切り取り開始位置を設定(横)
 	rect.left = digit * digitWidth;
@@ -423,23 +393,14 @@ void ResultScene::RenderDigit(int digit, const SimpleMath::Vector2& position, Si
 /// <returns>なし</returns>
 void ResultScene::DrawTextFonts(SimpleMath::Vector2 imageScale)
 {
-	// コイン文字
+	// 後ろの文字
 	GetSystemManager()->GetDrawSprite()->DrawTexture(
-		L"TotalCoin",
-		m_coinsPos * imageScale,
+		L"RFont",
+		SimpleMath::Vector2::Zero,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		IMAGE_RATE * imageScale,
+		DEFAULT_RATE * imageScale,
 		SimpleMath::Vector2::Zero
 	);
-	// クリアタイム文字
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-		L"Clear",
-		m_clearPos * imageScale,
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		IMAGE_RATE * imageScale,
-		SimpleMath::Vector2::Zero
-	);
-
 	//-------------------------------------------------------------------------------------//
 
 	// シーン選択文字(リトライ、セレクト、タイトル)
@@ -464,4 +425,55 @@ void ResultScene::DrawTextFonts(SimpleMath::Vector2 imageScale)
 		IMAGE_RATE * imageScale * m_titleScale,
 		SimpleMath::Vector2::Zero
 	);
+}
+
+/// <summary>
+/// リトライを選択中のテクスチャの状態
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void ResultScene::CaseRetry()
+{
+	// 透明度
+	m_retryAlpha  = UserUtility::Lerp(m_retryAlpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
+	m_selectAlpha = DEFAULT_FONT_ALPHA;
+	m_titleAlpha  = DEFAULT_FONT_ALPHA;
+	// サイズ
+	m_retryScale  = UserUtility::Lerp(m_retryScale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
+	m_selectScale = DEFAULT_FONT_SCALE;
+	m_titleScale  = DEFAULT_FONT_SCALE;
+}
+
+/// <summary>
+/// セレクトを選択中のテクスチャの状態
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void ResultScene::CaseSelect()
+{
+	// 透明度
+	m_retryAlpha  = DEFAULT_FONT_ALPHA;
+	m_selectAlpha = UserUtility::Lerp(m_selectAlpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
+	m_titleAlpha  = DEFAULT_FONT_ALPHA;
+	// サイズ
+	m_retryScale  = DEFAULT_FONT_SCALE;
+	m_selectScale = UserUtility::Lerp(m_selectScale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
+	m_titleScale  = DEFAULT_FONT_SCALE;
+}
+
+/// <summary>
+/// タイトルを選択中のテクスチャの状態
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void ResultScene::CaseTitle()
+{
+	// 透明度
+	m_retryAlpha  = DEFAULT_FONT_ALPHA;
+	m_selectAlpha = DEFAULT_FONT_ALPHA;
+	m_titleAlpha  = UserUtility::Lerp(m_titleAlpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
+	// サイズ
+	m_retryScale  = DEFAULT_FONT_SCALE;
+	m_selectScale = DEFAULT_FONT_SCALE;
+	m_titleScale  = UserUtility::Lerp(m_titleScale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
 }

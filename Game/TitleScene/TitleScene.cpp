@@ -232,10 +232,7 @@ void TitleScene::Draw()
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);  	// スカイドーム
 
 	// UIの描画
-	if (static_cast<int>(m_logoMoveY) == static_cast<int>(END_MOVE_POS))
-	{
-		m_titleUI->Render();
-	}
+	static_cast<int>(m_logoMoveY) == static_cast<int>(END_MOVE_POS) ? m_titleUI->Render() : void();
 }
 
 /// <summary>
@@ -324,7 +321,6 @@ void TitleScene::CreateWindowDependentResources()
 			}
 		}
 	);
-
 
 	// UIの初期化
 	m_titleUI = std::make_unique<TitleUI>(SimpleMath::Vector2{ width, height });

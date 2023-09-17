@@ -46,8 +46,6 @@ private:
 	DirectX::SimpleMath::Vector2 m_retryPos;
 	DirectX::SimpleMath::Vector2 m_selectPos;
 	DirectX::SimpleMath::Vector2 m_titlePos;
-	DirectX::SimpleMath::Vector2 m_clearPos;
-	DirectX::SimpleMath::Vector2 m_coinsPos;
 
 	// タイマーの座標(1の位)
 	DirectX::SimpleMath::Vector2 m_oneSecPos;
@@ -83,7 +81,7 @@ private:
 	const float FONT_WIDTH = 512.0f;
 
 	// 画像の１スプライトサイズ
-	const float SPRITE_SIZE = 100.0f;
+	const float NUM_SIZE = 100.0f;
 
 	// フォントサイズ
 	const float DEFAULT_FONT_SCALE = 1.0f;
@@ -92,6 +90,9 @@ private:
 	// フォント透明度
 	const float DEFAULT_FONT_ALPHA = 0.5f;
 	const float SELECT_FONT_ALPHA = 1.0f;
+
+	// フォントの選択変更時の動き
+	const float SELECT_CHANGE_FADE = 0.45f;
 
 public:
 
@@ -139,6 +140,11 @@ private:
 
 	// 文字の描画
 	void DrawTextFonts(DirectX::SimpleMath::Vector2 imageScale);
+
+	// 各選択項目の変更
+	void CaseRetry();
+	void CaseSelect();
+	void CaseTitle();
 };
 
 #endif // RESULTSCENE

@@ -15,7 +15,6 @@
 
 // シェーダー
 #include "Objects/PlayerBill.h"
-#include "Objects/PlayerShadow.h"
 
 // プレイヤクラス
 #include "Objects/Player.h"
@@ -246,15 +245,6 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		// ブロックの更新
 		m_blocks->Update(elapsedTime);
 
-		// プレイヤーの影シェーダーの更新
-		m_playerShadow->Update(
-			SimpleMath::Vector3(
-				m_player->GetPosition().x,
-				m_lastObj.position.y + 0.55f,
-				m_player->GetPosition().z
-			)
-		);
-
 		// 当たり判定の更新
 		Judgement();
 
@@ -344,9 +334,6 @@ void PlayScene::Draw()
 	{
 		m_thirdCamera->DrawAdhesion();
 	}
-
-	// プレイヤーの影の描画
-	m_playerShadow->Render(context, view, proj);
 
 	// UIの描画
 	if (static_cast<int>(m_startTimer) == 0)
@@ -470,10 +457,6 @@ void PlayScene::CreateWindowDependentResources()
 	// 位置情報のシェーダーの作成
 	m_playerBill = std::make_unique<PlayerBill>();
 	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
-
-	// プレイヤーの影シェーダーの作成
-	m_playerShadow = std::make_unique<PlayerShadow>();
-	m_playerShadow->Create(GetSystemManager()->GetDeviceResources());
 
 	//-------------------------------------------------------------------------------------//
 

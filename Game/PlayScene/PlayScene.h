@@ -16,7 +16,6 @@
 
 class Player;
 class PlayerBill;
-class PlayerShadow;
 class PlayUI;
 class Blocks;
 class ThirdPersonCamera;
@@ -78,9 +77,6 @@ private:
 
 	// タイマー表示とコイン表示
 	std::unique_ptr<PlayUI> m_userInterFace;
-
-	// プレイヤーの影シェーダー
-	std::unique_ptr<PlayerShadow> m_playerShadow;
 
 	// サードパーソンカメラ
 	std::unique_ptr<ThirdPersonCamera> m_thirdCamera;
