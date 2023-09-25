@@ -199,6 +199,7 @@
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h" />
     <ClInclude Include="Game\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\PlayScene\System\ThirdPersonCamera.h" />
+    <ClInclude Include="Game\ResultScene\Objects\ResultUI.h" />
     <ClInclude Include="Game\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\SelectScene\Objects\SelectUI.h" />
     <ClInclude Include="Game\SelectScene\SelectScene.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="Game\PlayScene\Objects\PlayUI.cpp" />
     <ClCompile Include="Game\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\PlayScene\System\ThirdPersonCamera.cpp" />
+    <ClCompile Include="Game\ResultScene\Objects\ResultUI.cpp" />
     <ClCompile Include="Game\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Game\SelectScene\Objects\SelectUI.cpp" />
     <ClCompile Include="Game\SelectScene\SelectScene.cpp" />
@@ -298,7 +300,6 @@
     <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds" />
     <Image Include="Resources\Textures\ResultBack.dds" />
     <Image Include="Resources\Textures\ResultFonts.dds" />
-    <ImageContentTask Include="Resources\Textures\ResultFonts.png" />
     <Image Include="Resources\Textures\SaveFile.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\LeftArrow.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\RightArrow.dds" />

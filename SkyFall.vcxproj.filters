@@ -185,6 +185,9 @@
     <Filter Include="Common\SoundEffect">
       <UniqueIdentifier>{5db3329a-55cd-4424-9dad-4178c5cbb029}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\ResultScene\Objects">
+      <UniqueIdentifier>{7e95942f-3771-4368-ae2c-891d8bc05143}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -295,6 +298,9 @@
     <ClInclude Include="SoundList.h">
       <Filter>Common\SoundEffect</Filter>
     </ClInclude>
+    <ClInclude Include="Game\ResultScene\Objects\ResultUI.h">
+      <Filter>Scenes\ResultScene\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -395,6 +401,9 @@
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\SoundManager.cpp">
       <Filter>Common\SoundEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResultScene\Objects\ResultUI.cpp">
+      <Filter>Scenes\ResultScene\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -633,10 +642,5 @@
     <FxCompile Include="Resources\Shaders\PlayerPointVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ImageContentTask Include="Resources\Textures\ResultFonts.png">
-      <Filter>Resources\Textures\ResultScene</Filter>
-    </ImageContentTask>
   </ItemGroup>
 </Project>

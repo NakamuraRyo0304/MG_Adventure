@@ -7,14 +7,14 @@
 
 #include "pch.h"
 
-// ユーザーユーティリティ
-#include "Libraries/UserUtility.h"
-
  // CSV読み込み
 #include "../../Libraries/SystemDatas/MapLoad.h"
 
 // ブロック
 #include "../PlayScene/Objects/Blocks.h"
+
+// UI
+#include "Objects/ResultUI.h"
 
 // ランダム(演出用なのでランダムデバイスは使わない)
 #include <random>
@@ -31,28 +31,12 @@ ResultScene::ResultScene():
 	IScene(),
 	m_timer{0.0f},				// 時計
 	m_windowSize{},				// ウィンドウサイズ
+	m_coinNum{},				// コインの数
 	m_clearTime{0.0f},			// クリアタイムを格納
 	m_saveTime{0.0f},			// クリアタイムを保存する変数
 	m_directionTime{0.0f},		// 演出する時間
-	m_selectingScene{RETRY},	// 次のシーン選択
 	m_stageNum{1},				// 背景のステージ番号(初期化で1)
-	//-------------------------------------------------------------------------------------//
-	m_retryPos{},				// リトライテキストの位置
-	m_retryAlpha{},				// 透明度
-	m_retryScale{},				// 大きさ
-	//-------------------------------------------------------------------------------------//
-	m_selectPos{},				// セレクトテキストの位置
-	m_selectAlpha{},			// 透明度
-	m_selectScale{},			// 大きさ
-	//-------------------------------------------------------------------------------------//
-	m_titlePos{},				// タイトルテキストの位置
-	m_titleAlpha{},				// 透明度
-	m_titleScale{},				// 大きさ
-	//-------------------------------------------------------------------------------------//
-	m_coinNum{0},				// 枚数
-	m_oneCoiPos{},				//  1の位の座標
-	m_tenCoiPos{}				// 10の位の座標
-	//-------------------------------------------------------------------------------------//
+	m_selectingScene{ 0 }		// 現在選択中のシーン
 {
 	// ランダムの生成
 	srand(unsigned int(time(0)));
@@ -130,34 +114,25 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	GetSystemManager()->GetSoundManager()->Update();
 
 	// メニューセレクト
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Down))
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
 	{
 		m_selectingScene++;
 		m_selectingScene = m_selectingScene ==  3 ? RETRY : m_selectingScene;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 	}
-	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Up))
+	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left))
 	{
 		m_selectingScene--;
 		m_selectingScene = m_selectingScene == -1 ? TITLE : m_selectingScene;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 	}
 
-	// アルファ値とスケールの変更
-	switch (m_selectingScene)
-	{
-	case RETRY:
-		CaseRetry();
-		break;
-	case SELECT:
-		CaseSelect();
-		break;
-	case TITLE:
-		CaseTitle();
-		break;
-	default:
-		break;
-	}
+	// UIの更新
+	m_userInterface->Update(elapsedTime, static_cast<int>(m_clearTime));
+	// 現在選択中のシーンをセット
+	m_userInterface->SetSelecting(m_selectingScene);
+	// 獲得コイン数をセット
+	m_userInterface->SetCoins(m_coinNum);
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
@@ -177,7 +152,6 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 			break;
 		}
 	}
-
 	// エスケープで終了
 	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
 }
@@ -209,41 +183,8 @@ void ResultScene::Draw()
 	// マップの描画
 	m_blocks->Render(context, states, view, proj, m_timer);
 
-	//-------------------------------------------------------------------------------------//
-
-	// 画像の拡大率をウィンドウをもとに計算
-	SimpleMath::Vector2 imageScale = m_windowSize / FULL_SCREEN_SIZE;
-
-	// 画面を薄暗くする
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-			L"BLIND",										// 登録キー
-			SimpleMath::Vector2::Zero,						// 座標
-			{ 1.0f,1.0f,1.0f,0.3f },						// 色
-			1.0f * imageScale,								// 拡大率
-			SimpleMath::Vector2::Zero						// 中心位置
-		);
-
-	// 文字を描画
-	DrawTextFonts(imageScale);
-
-	//-------------------------------------------------------------------------------------//
-	// 秒数を計算
-	int sec = static_cast<int>(m_clearTime);
-
-	// 一桁目の数字を表示
-	RenderDigit(sec % 10,		 m_oneSecPos, imageScale, static_cast<int>(NUM_SIZE), static_cast<int>(NUM_SIZE));
-
-	// 十の桁の数字を表示
-	RenderDigit((sec / 10) % 10, m_tenSecPos, imageScale, static_cast<int>(NUM_SIZE), static_cast<int>(NUM_SIZE));
-
-	//-------------------------------------------------------------------------------------//
-	// 獲得コイン数を表示
-
-	// 一桁目の数字を表示
-	RenderDigit(m_coinNum % 10,		   m_oneCoiPos, imageScale, static_cast<int>(NUM_SIZE), static_cast<int>(NUM_SIZE));
-
-	// 十の桁の数字を表示
-	RenderDigit((m_coinNum / 10) % 10, m_tenCoiPos, imageScale, static_cast<int>(NUM_SIZE), static_cast<int>(NUM_SIZE));
+	// UIの表示
+	m_userInterface->Render();
 }
 
 
@@ -256,6 +197,9 @@ void ResultScene::Finalize()
 {
 	// マップの後処理
 	m_blocks->Finalize();
+
+	// UIの後処理
+	m_userInterface->Finalize();
 }
 
 /// <summary>
@@ -307,32 +251,10 @@ void ResultScene::CreateWindowDependentResources()
 		m_blocks->RECLOWD
 	);
 
-	// 画像の設定
-	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(context);
-	// 画像を登録
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RETRY",     L"Resources/Textures/FONT/RETRY.dds",	device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"SELECT",    L"Resources/Textures/FONT/SELECT.dds",device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"TITLE",     L"Resources/Textures/FONT/TITLE.dds",	device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"RFont",     L"Resources/Textures/ResultFonts.dds",device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"BLIND",     L"Resources/Textures/ResultBack.dds",	device);
-	GetSystemManager()->GetDrawSprite()->AddTextureData(L"Number",    L"Resources/Textures/Number.dds",		device);
+	// UIの作成
+	m_userInterface = std::make_unique<ResultUI>(GetSystemManager(), context, device);
+	m_userInterface->Initialize(SimpleMath::Vector2{ width, height });
 
-	// 比率を計算
-	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
-
-	// 共通部分を定義
-	float spCenterX   = (NUM_SIZE * scale.x ) / 2;
-	float numCenterX  = (FULL_SCREEN_SIZE.x - NUM_SIZE )* scale.x / 2;
-
-	// 各座標を決定
-	m_oneSecPos = { numCenterX + spCenterX ,300.0f * scale.y };
-	m_tenSecPos = { numCenterX - spCenterX ,300.0f * scale.y };
-	m_oneCoiPos = { numCenterX + spCenterX ,750.0f * scale.y };
-	m_tenCoiPos = { numCenterX - spCenterX ,750.0f * scale.y };
-
-	m_retryPos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 700.0f };
-	m_selectPos = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 800.0f };
-	m_titlePos  = { FULL_SCREEN_SIZE.x - FONT_WIDTH, 900.0f };
 }
 
 /// <summary>
@@ -350,130 +272,11 @@ void ResultScene::SetSceneValues()
 }
 
 /// <summary>
-/// 数字を描画する
+/// コインのセッター
 /// </summary>
-/// <param name="digit">描画する数字</param>
-/// <param name="position">座標</param>
-/// <param name="scale">拡大率</param>
-/// <param name="digitWidth">数字の幅</param>
-/// <param name="digitHeight">数字の高さ</param>
+/// <param name="coinNum">コイン数</param>
 /// <returns>なし</returns>
-void ResultScene::RenderDigit(int digit, const SimpleMath::Vector2& position, SimpleMath::Vector2 scale, int digitWidth, int digitHeight)
+void ResultScene::SetCoinNum(const int& coinNum)
 {
-	// スプライトの中心位置を計算
-	SimpleMath::Vector2 center = position * scale / 2.0f;
-
-	// 切り取り位置の設定
-	RECT_U rect = RECT_U(0L, 0L, 1000L, 100L);
-
-	// 切り取り開始位置を設定(横)
-	rect.left = digit * digitWidth;
-
-	// 切り取り終了位置を設定(横)
-	rect.right = rect.left + digitWidth;
-
-	// 画像縦幅を設定
-	rect.bottom = digitHeight;
-
-	// 数字表示
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-		L"Number",                         // 登録キー
-		position + center,                 // 座標
-		{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-		scale,                             // 拡大率
-		center,                            // 中心位置
-		rect                               // 切り取り位置
-	);
-}
-
-/// <summary>
-/// フォントを描画する
-/// </summary>
-/// <param name="imageScale">画像比率</param>
-/// <returns>なし</returns>
-void ResultScene::DrawTextFonts(SimpleMath::Vector2 imageScale)
-{
-	// 後ろの文字
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-		L"RFont",
-		SimpleMath::Vector2::Zero,
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		DEFAULT_RATE * imageScale,
-		SimpleMath::Vector2::Zero
-	);
-	//-------------------------------------------------------------------------------------//
-
-	// シーン選択文字(リトライ、セレクト、タイトル)
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-		L"RETRY",
-		m_retryPos * imageScale,
-		{ 1.0f, 1.0f, 1.0f, m_retryAlpha },
-		IMAGE_RATE * imageScale * m_retryScale,
-		SimpleMath::Vector2::Zero
-	);
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-		L"SELECT",
-		m_selectPos * imageScale,
-		{ 1.0f, 1.0f, 1.0f, m_selectAlpha },
-		IMAGE_RATE * imageScale * m_selectScale,
-		SimpleMath::Vector2::Zero
-	);
-	GetSystemManager()->GetDrawSprite()->DrawTexture(
-		L"TITLE",
-		m_titlePos * imageScale,
-		{ 1.0f, 1.0f, 1.0f, m_titleAlpha },
-		IMAGE_RATE * imageScale * m_titleScale,
-		SimpleMath::Vector2::Zero
-	);
-}
-
-/// <summary>
-/// リトライを選択中のテクスチャの状態
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void ResultScene::CaseRetry()
-{
-	// 透明度
-	m_retryAlpha  = UserUtility::Lerp(m_retryAlpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
-	m_selectAlpha = DEFAULT_FONT_ALPHA;
-	m_titleAlpha  = DEFAULT_FONT_ALPHA;
-	// サイズ
-	m_retryScale  = UserUtility::Lerp(m_retryScale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
-	m_selectScale = DEFAULT_FONT_SCALE;
-	m_titleScale  = DEFAULT_FONT_SCALE;
-}
-
-/// <summary>
-/// セレクトを選択中のテクスチャの状態
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void ResultScene::CaseSelect()
-{
-	// 透明度
-	m_retryAlpha  = DEFAULT_FONT_ALPHA;
-	m_selectAlpha = UserUtility::Lerp(m_selectAlpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
-	m_titleAlpha  = DEFAULT_FONT_ALPHA;
-	// サイズ
-	m_retryScale  = DEFAULT_FONT_SCALE;
-	m_selectScale = UserUtility::Lerp(m_selectScale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
-	m_titleScale  = DEFAULT_FONT_SCALE;
-}
-
-/// <summary>
-/// タイトルを選択中のテクスチャの状態
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void ResultScene::CaseTitle()
-{
-	// 透明度
-	m_retryAlpha  = DEFAULT_FONT_ALPHA;
-	m_selectAlpha = DEFAULT_FONT_ALPHA;
-	m_titleAlpha  = UserUtility::Lerp(m_titleAlpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
-	// サイズ
-	m_retryScale  = DEFAULT_FONT_SCALE;
-	m_selectScale = DEFAULT_FONT_SCALE;
-	m_titleScale  = UserUtility::Lerp(m_titleScale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
+	m_coinNum = coinNum;
 }
