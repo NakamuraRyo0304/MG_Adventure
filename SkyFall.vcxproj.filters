@@ -529,6 +529,12 @@
     <Image Include="Resources\Textures\ResultFonts.dds">
       <Filter>Resources\Textures\ResultScene</Filter>
     </Image>
+    <Image Include="Resources\Textures\UnderFont.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
+    </Image>
+    <Image Include="Resources\Textures\UnderLine.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">

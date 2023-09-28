@@ -41,6 +41,12 @@ private:
 	// 操作説明表示フラグ
 	bool is_helpFlag;
 
+	// 画面下の説明文の座標
+	DirectX::SimpleMath::Vector2 m_underFontPos;
+
+	// 下の文の流れる速度
+	const float UNDER_SPEED = 2.5f;
+
 
 public:
 	PlayUI(const DirectX::SimpleMath::Vector2& windowSize);

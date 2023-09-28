@@ -27,6 +27,7 @@ PlayUI::PlayUI(const SimpleMath::Vector2& windowSize):
     m_oneSecPos{SimpleMath::Vector2::Zero},
     m_tenSecPos{SimpleMath::Vector2::Zero},
 	m_countDownPos{SimpleMath::Vector2::Zero},
+	m_underFontPos{SimpleMath::Vector2::Zero},
 	is_effectFlag{false},
 	is_helpFlag{false}
 {
@@ -69,6 +70,8 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	m_system->GetDrawSprite()->AddTextureData(L"HelpBack", L"Resources/Textures/PLAY_HELP/HelpBack.dds",  device);
 	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp", L"Resources/Textures/PLAY_HELP/OpenHelp.dds",  device);
 	m_system->GetDrawSprite()->AddTextureData(L"GameStart",L"Resources/Textures/PLAY_HELP/GameStart.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"UnderBack",L"Resources/Textures/PLAY_HELP/UnderBack.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"UnderFont",L"Resources/Textures/PLAY_HELP/UnderFont.dds", device);
 
 	// 比率を計算
 	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
@@ -91,7 +94,18 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 /// <returns>なし</returns>
 void PlayUI::Update(const float& timelimit)
 {
+	// 比率を計算
+	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
+
 	m_gameTimer = static_cast<int>(timelimit);
+
+	// 移動処理
+	m_underFontPos.x -= UNDER_SPEED * scale.x;
+
+	if (m_underFontPos.x < -FULL_SCREEN_SIZE.x * 2 * scale.x)
+	{
+		m_underFontPos.x = FULL_SCREEN_SIZE.x;
+	}
 }
 
 /// <summary>
@@ -145,6 +159,24 @@ void PlayUI::Render()
 			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
 			scale,                             // 拡大率
 			SimpleMath::Vector2::Zero          // 中心位置
+		);
+
+		//-------------------------------------------------------------------------------------//
+		// 画面下のフォント
+		m_system->GetDrawSprite()->DrawTexture(
+			L"UnderBack",
+			SimpleMath::Vector2::Zero,
+			{ 1.0f, 1.0f, 1.0f, 1.0f },
+			scale,
+			SimpleMath::Vector2::Zero
+		);
+		m_system->GetDrawSprite()->DrawTexture(
+			L"UnderFont",
+			m_underFontPos,
+			{ 1.0f, 1.0f, 1.0f, 1.0f },
+			scale,
+			SimpleMath::Vector2::Zero,
+			{ 0,0,static_cast<LONG>(FULL_SCREEN_SIZE.x * 2),static_cast<LONG>(FULL_SCREEN_SIZE.y) }
 		);
 	}
 }

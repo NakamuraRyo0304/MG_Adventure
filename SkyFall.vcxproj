@@ -309,6 +309,8 @@
     <Image Include="Resources\Textures\TITLE_BUTTON\UnderLine.dds" />
     <Image Include="Resources\Textures\ToolOff.dds" />
     <Image Include="Resources\Textures\ToolOn.dds" />
+    <Image Include="Resources\Textures\UnderFont.dds" />
+    <Image Include="Resources\Textures\UnderLine.dds" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest" />
