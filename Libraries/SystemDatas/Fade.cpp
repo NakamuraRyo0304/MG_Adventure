@@ -14,12 +14,12 @@
  /// </summary>
  /// <param name="speed">フェードの速度</param>
  /// <returns>なし</returns>
-Fade::Fade(float speed):
-	m_fadeNum{},			// フェードカウンタ
-	is_fadeInFlag{},		// フェードインフラグ
-	is_fadeOutFlag{},		// フェードアウトフラグ
-	m_fadeSpeed{speed},		// フェード速度
-	is_endFlag{}			// 終了判定フラグ
+Fade::Fade(float speed)
+	: m_fadeNum{}			// フェードカウンタ
+	, m_fadeSpeed{speed}	// フェード速度
+	, is_fadeInFlag{}		// フェードインフラグ
+	, is_fadeOutFlag{}		// フェードアウトフラグ
+	, is_endFlag{}			// 終了判定フラグ
 {
 	m_fadeNum = MAX_NUM;
 }
@@ -50,7 +50,7 @@ void Fade::Initialize(ID3D11DeviceContext1* context, ID3D11Device1* device)
 	// 画像の登録
 	CreateDDSTextureFromFile(
 		device,
-		L"Resources/Textures/FadeBlind.dds",		// テクスチャのパス
+		L"Resources/Textures/FadeBlind.dds",
 		nullptr,
 		m_SRV.ReleaseAndGetAddressOf()
 	);

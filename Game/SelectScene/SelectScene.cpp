@@ -26,15 +26,15 @@
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-SelectScene::SelectScene():
-	IScene(),
-	m_timer{},				// タイマー
-	m_flashCount{},			// 点滅のカウンタ
-	m_stageNum{1},			// ステージ番号
-	m_noStageNum{},			// 未開放ステージ番号
-	m_totalCoins{},			// 合計コイン数
-	m_targetY{},			// カメラのターゲットのY座標
-	m_mutex{}				// ロック
+SelectScene::SelectScene()
+	: IScene()			// 基底クラスの初期化
+	, m_timer{}			// タイマー
+	, m_flashCount{}	// 点滅のカウンタ
+	, m_stageNum{1}		// ステージ番号
+	, m_noStageNum{}	// 未開放ステージ番号
+	, m_totalCoins{}	// 合計コイン数
+	, m_targetY{}		// カメラのターゲットのY座標
+	, m_mutex{}			// ロック
 {
 }
 

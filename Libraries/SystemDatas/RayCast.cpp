@@ -14,10 +14,10 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-RayCast::RayCast():
-	m_screenSize{},				// スクリーンのサイズ
-	is_clickFlag{},				// クリック判定
-	m_conScreenPos{}			// ワールド座標に変換した値を保存する変数
+RayCast::RayCast()
+	: m_screenSize{}			// スクリーンのサイズ
+	, m_conScreenPos{}			// ワールド座標に変換した値を保存する変数
+	, is_clickFlag{}			// クリック判定
 {
 
 }
@@ -61,13 +61,14 @@ SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 	int width, int height, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	// 各行列の逆行列を算出
-	XMMATRIX InvView, InvProj, VP, InvViewport = XMMATRIX::XMMATRIX();
+	XMMATRIX revView, revProj, viewport, revViewport = XMMATRIX::XMMATRIX();
 
 	// 逆行列に変換
-	InvView = XMMatrixInverse(nullptr, view);
-	InvProj = XMMatrixInverse(nullptr, proj);
+	revView = XMMatrixInverse(nullptr, view);
+	revProj = XMMatrixInverse(nullptr, proj);
 
-	VP = XMMatrixIdentity();
+	// ビューポートを初期化
+	viewport = XMMatrixIdentity();
 
 	XMFLOAT4X4 matrix = XMFLOAT4X4::XMFLOAT4X4();
 
@@ -77,12 +78,14 @@ SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 	matrix._41 =   width / 2.0f;
 	matrix._42 =  height / 2.0f;
 
-	VP += XMLoadFloat4x4(&matrix);
+	// ビューポートに行列変換
+	viewport += XMLoadFloat4x4(&matrix);
 
-	InvViewport = XMMatrixInverse(nullptr,VP);
+	// ビューポートの逆行列を作成
+	revViewport = XMMatrixInverse(nullptr,viewport);
 
 	// 逆変換
-	SimpleMath::Matrix tmp = InvViewport * InvProj * InvView;
+	SimpleMath::Matrix tmp = revViewport * revProj * revView;
 
 	SimpleMath::Vector3 value = XMVector3TransformCoord(
 		SimpleMath::Vector3(static_cast<float>(mx), static_cast<float>(my), fz), tmp);

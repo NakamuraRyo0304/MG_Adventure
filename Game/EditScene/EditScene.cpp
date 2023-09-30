@@ -20,21 +20,21 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-EditScene::EditScene() :
-	IScene(),
-	m_timer{0.0f},						// タイマー
-	m_cursorPos{0.0f,0.0f,0.0f},		// カーソルの位置
-	m_mapObj{0},						// 格納配列
-	m_nowState{},						// 現在のブロックの種類
-	m_map{},							// マップ
-	is_boxCol{},						// 立方体当たり判定
-	m_grassModel{ nullptr },			// モデル＿草
-	m_noneModel{ nullptr },				// モデル＿消しゴム
-	m_coinModel{ nullptr },				// モデル＿コイン
-	m_cloudModel{ nullptr },			// モデル＿雲
-	m_resetPtModel{ nullptr },			// モデル＿リセットポイント
-	m_skyDomeModel{ nullptr },			// モデル＿スカイドーム
-	m_sharedSystem{}					// システムデータ
+EditScene::EditScene()
+	: IScene()									// 基底クラスの初期化
+	, m_timer{ 0.0f }							// タイマー
+	, m_sharedSystem{}							// システムデータ
+	, m_map{}									// マップ
+	, m_mapObj{0}								// 格納配列
+	, m_nowState{}								// 現在のブロックの種類
+	, m_grassModel{ nullptr }					// モデル＿草
+	, m_noneModel{ nullptr }					// モデル＿消しゴム
+	, m_coinModel{ nullptr }					// モデル＿コイン
+	, m_cloudModel{ nullptr }					// モデル＿雲
+	, m_resetPtModel{ nullptr }					// モデル＿リセットポイント
+	, m_skyDomeModel{ nullptr }					// モデル＿スカイドーム
+	, m_cursorPos{ SimpleMath::Vector3::Zero }	// カーソルの位置
+	, is_boxCol{}								// 立方体当たり判定
 {
 	ShowCursor(false);
 }
@@ -206,7 +206,7 @@ void EditScene::Draw()
 	}
 
 	// マウス位置に描画
-	if (m_nowState == MapState::None) // 削除時以外は通常の描画
+	if (m_nowState == MapState::NONE) // 削除時以外は通常の描画
 	{
 		m_noneModel->Draw(context, states, world, view, proj);
 	}
@@ -244,19 +244,19 @@ void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	Comm
 
 	switch (objNum)
 	{
-	case MapState::GrassBox:	// 草
+	case MapState::GRASS:	// 草
 		m_grassModel->Draw(context, *states, world, view, proj);
 		break;
-	case MapState::CoinBox:		// コイン
+	case MapState::COIN:	// コイン
 		m_coinModel->Draw(context, *states, rotY * world, view, proj);
 		break;
-	case MapState::CloudBox:	// 雲
+	case MapState::CLOUD:	// 雲
 		m_cloudModel->Draw(context, *states, world, view, proj);
 		break;
-	case MapState::ResetCloud:	// 雲リセット
+	case MapState::RESET:	// 雲リセット
 		m_resetPtModel->Draw(context, *states, world, view, proj);
 		break;
-	case MapState::PlayerPos:	// プレイヤー
+	case MapState::PLAYER:	// プレイヤー
 		m_playerModel->Draw(context, *states, rotY * world, view, proj);
 		break;
 	default:
@@ -379,7 +379,7 @@ void EditScene::CreateWindowDependentResources()
 void EditScene::SetSceneValues()
 {
 	// 初期値は草ブロック
-	m_nowState = MapState::GrassBox;
+	m_nowState = MapState::GRASS;
 }
 
 /// <summary>

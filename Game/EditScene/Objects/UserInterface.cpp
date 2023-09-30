@@ -19,22 +19,22 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-UserInterface::UserInterface(const SimpleMath::Vector2& windowSize):
-	m_system{},						// システムマネージャ
-	m_windowSize{windowSize},		// 画面サイズ
-	m_imageHitter{},				// 当たり判定
-	m_saveTexPos{},					// 画像座標
-	m_cameraTexPos{},				// |
-	m_backTexPos{},					// |
-	m_openTexPos{},					// |
-	is_saveFlag{},					// 保存フラグ
-	is_openFlag{},					// 開くフラグ
-	is_cameraFlag{ true },			// カメラモードONでスタート
-	is_boxState{ false },			// 画像フラグ
-	is_backFlag{ false },			// セレクトに戻るフラグ
-	m_nowState{},					// 最新のステート
-	m_boxHover{},					// ホバー時のサイズ
-	is_toolFlag{ true }				// ツールバーを表示するフラグ
+UserInterface::UserInterface(const SimpleMath::Vector2& windowSize)
+	: m_system{}					// システムマネージャ
+	, m_windowSize{windowSize}		// 画面サイズ
+	, m_nowState{}					// 最新のステート
+	, m_imageHitter{}				// 当たり判定
+	, m_saveTexPos{}				// セーブアイコンの座標
+	, m_cameraTexPos{}				// カメラアイコンの座標
+	, m_backTexPos{}				// 戻るアイコンの座標
+	, m_openTexPos{}				// ファイルアイコンの座標
+	, m_boxHover{}					// ホバー時のサイズ
+	, is_boxState{ false }			// 画像フラグ
+	, is_saveFlag{ false }			// 保存フラグ
+	, is_openFlag{ false }			// 開くフラグ
+	, is_cameraFlag{ true }			// カメラモードONでスタート
+	, is_backFlag{ false }			// セレクトに戻るフラグ
+	, is_toolFlag{ true }			// ツールバーを表示するフラグ
 {
 }
 
@@ -86,12 +86,12 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_system->GetDrawSprite()->AddTextureData(L"Erase",     L"Resources/Textures/BLOCK/DeleteIcon.dds", device);
 
 	// IDを格納
-	m_texName[MapState::GrassBox]   = L"Grass";
-	m_texName[MapState::CloudBox]   = L"Cloud";
-	m_texName[MapState::CoinBox]    = L"Coin";
-	m_texName[MapState::ResetCloud] = L"ReCloud";
-	m_texName[MapState::PlayerPos]  = L"Player";
-	m_texName[MapState::None]       = L"Erase";
+	m_texName[MapState::GRASS]   = L"Grass";
+	m_texName[MapState::CLOUD]   = L"Cloud";
+	m_texName[MapState::COIN]    = L"Coin";
+	m_texName[MapState::RESET] = L"ReCloud";
+	m_texName[MapState::PLAYER]  = L"Player";
+	m_texName[MapState::NONE]       = L"Erase";
 
 	// 比率を計算
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
@@ -110,8 +110,8 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	}
 
 	// ステータスの初期値は草ブロック
-	m_nowState = MapState::GrassBox;
-	is_boxState[MapState::GrassBox] = true;
+	m_nowState = MapState::GRASS;
+	is_boxState[MapState::GRASS] = true;
 
 	// ツールバーを表示
 	is_toolFlag = true;
@@ -389,23 +389,23 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 			{
 				switch (i)
 				{
-				case MapState::GrassBox:
-					m_nowState = MapState::GrassBox;		// 草ブロック
+				case MapState::GRASS:
+					m_nowState = MapState::GRASS;		// 草ブロック
 					break;
-				case MapState::CoinBox:
-					m_nowState = MapState::CoinBox;			// コイン
+				case MapState::COIN:
+					m_nowState = MapState::COIN;			// コイン
 					break;
-				case MapState::CloudBox:
-					m_nowState = MapState::CloudBox;		// 雲
+				case MapState::CLOUD:
+					m_nowState = MapState::CLOUD;		// 雲
 					break;
-				case MapState::ResetCloud:
-					m_nowState = MapState::ResetCloud;		// リセットポイント
+				case MapState::RESET:
+					m_nowState = MapState::RESET;		// リセットポイント
 					break;
-				case MapState::PlayerPos:
-					m_nowState = MapState::PlayerPos;		// プレイヤー
+				case MapState::PLAYER:
+					m_nowState = MapState::PLAYER;		// プレイヤー
 					break;
-				case MapState::None:
-					m_nowState = MapState::None;			// 空気
+				case MapState::NONE:
+					m_nowState = MapState::NONE;			// 空気
 					break;
 				default:
 					break;

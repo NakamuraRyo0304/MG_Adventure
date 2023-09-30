@@ -16,18 +16,18 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-TitleScene::TitleScene():
-	IScene(),
-	m_timer{0.0f},				// タイマー
-	m_titleLogoModel{},			// タイトルロゴのモデル
-	m_miniatureModel{},			// 中央ステージのモデル
-	m_cameraMoveY{0.0f},		// カメラ演出(スタート時)
-	m_logoMoveY{0.0f},			// ロゴの動き(移動)
-	m_logoMoveScale{},			// ロゴの動き(サイズ)
-	is_startFlag{false},		// 開始フラグ
-	is_menuFlag{true},			// 選択フラグ
-	m_accelerate{0.0f},			// 選択変更時のステージの回転加速
-	is_accelerateFlag{false}	// 回転加速しているかの判定フラグ
+TitleScene::TitleScene()
+	: IScene()					// 基底クラスの初期化
+	, m_timer{0.0f}				// タイマー
+	, m_titleLogoModel{}		// タイトルロゴのモデル
+	, m_miniatureModel{}		// 中央ステージのモデル
+	, m_cameraMoveY{0.0f}		// カメラ演出(スタート時)
+	, m_logoMoveY{0.0f}			// ロゴの動き(移動)
+	, m_logoMoveScale{}			// ロゴの動き(サイズ)
+	, m_accelerate{ 0.0f }		// 選択変更時のステージの回転加速
+	, is_startFlag{ false }		// 開始フラグ
+	, is_menuFlag{ true }		// 選択フラグ
+	, is_accelerateFlag{ false }// 回転加速しているかの判定フラグ
 {
 }
 
@@ -53,9 +53,6 @@ void TitleScene::Initialize()
 
 	// カメラ視点移動
 	GetSystemManager()->GetCamera()->SetEagleMode(false);
-
-	// カメラ座標設定
-	GetSystemManager()->GetCamera()->SetEyePosition(SimpleMath::Vector3(0.0f, -20.0f, -20.0f));
 
 	// 変数の初期化
 	SetSceneValues();

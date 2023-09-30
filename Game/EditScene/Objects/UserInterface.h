@@ -13,7 +13,7 @@
 #include "Libraries/SystemDatas/Collider.h"
 
 // エイリアスを宣言
-using MapState = MapLoad::BoxState;
+using MapState = MapLoad::BOXSTATE;
 
 class SystemManager;
 class UserInterface

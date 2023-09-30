@@ -18,8 +18,8 @@
  /// </summary>
  /// <param name="ˆø”–³‚µ"></param>
  /// <returns>‚È‚µ</returns>
-DrawString::DrawString():
-	m_fontColor{Colors::Black}
+DrawString::DrawString()
+	: m_fontColor{Colors::Black}
 {
 }
 

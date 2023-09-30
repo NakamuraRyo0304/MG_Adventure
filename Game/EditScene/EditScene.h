@@ -17,7 +17,7 @@
 #include "../../Libraries/SystemDatas/Collider.h"
 
 // エイリアス
-using MapState = MapLoad::BoxState;
+using MapState = MapLoad::BOXSTATE;
 
 class UserInterface;
 class MouseCursor;

@@ -70,7 +70,7 @@ public:
 
 public:
 	// 遷移先のシーン設定
-	inline void ChangeScene(SCENE nextScene)
+	inline void ChangeScene(const SCENE& nextScene)
 	{
 		m_nextScene = nextScene;
 		is_changeFlag = true;
@@ -87,10 +87,10 @@ public:
 	inline void ExitApp(){	PostQuitMessage(0);	}
 
 	// 次のシーンをゲット
-	inline SCENE GetNextScene() { return m_nextScene; }
+	inline const SCENE& GetNextScene() { return m_nextScene; }
 
 	// システムマネージャをゲット
-	inline std::shared_ptr<SystemManager>& GetSystemManager() { return m_system; }
+	inline const std::shared_ptr<SystemManager>& GetSystemManager() { return m_system; }
 
 	// シーンフラグをゲット
 	inline const bool& GetChangeSceneFlag() { return is_changeFlag; }

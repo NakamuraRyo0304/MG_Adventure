@@ -11,12 +11,15 @@
 
 #include "Game/GameMain.h"
 
+ //-------------------------------------------------------------------------------------//
+ // システムのインクルード
 #include "../SystemDatas/DrawString.h"
 #include "../SystemDatas/Camera.h"
 #include "../SystemDatas/GridFloor.h"
 #include "../SystemDatas/RayCast.h"
 #include "../SystemDatas/DrawSprite.h"
 #include "../SystemDatas/SoundManager.h"
+//-------------------------------------------------------------------------------------//
 
 class SystemManager
 {
@@ -87,14 +90,6 @@ public: // ゲッター、セッター、ファクトリー
 public:
 	SystemManager();
 	~SystemManager();
-
-	// ポインタの削除
-	template <typename T>
-	inline void DeletePointer(T*& p)
-	{
-		delete p;
-		p = nullptr;
-	}
 };
 
 #endif // SYSTEMMANAGER

@@ -9,7 +9,7 @@
 #include <map>
 
 // エイリアス
-using MapState = MapLoad::BoxState;
+using MapState = MapLoad::BOXSTATE;
 
 class Blocks
 {

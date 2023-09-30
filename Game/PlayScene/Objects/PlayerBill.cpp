@@ -27,10 +27,10 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerBill::INPUT_LAYOUT =
  /// </summary>
  /// <param name="ˆø”–³‚µ"></param>
  /// <returns>‚È‚µ</returns>
-PlayerBill::PlayerBill():
-	m_pDR{nullptr},
-	m_defaultPos{SimpleMath::Vector3::Zero},
-	m_vertice{}
+PlayerBill::PlayerBill()
+	: m_pDR{nullptr}
+	, m_defaultPos{SimpleMath::Vector3::Zero}
+	, m_vertice{}
 {
 }
 

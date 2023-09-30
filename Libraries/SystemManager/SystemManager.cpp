@@ -15,16 +15,16 @@
  /// <param name="ˆø”–³‚µ"></param>
  /// <returns>‚È‚µ</returns>
 SystemManager::SystemManager()
-	:m_commonState{nullptr}
-	,m_drawSprite{nullptr}
-	,m_drawString{nullptr}
-	,m_effect{nullptr}
-	,m_gridFloor{nullptr}
-	,m_keyboardStateTracker{nullptr}
-	,m_mouseStateTracker{nullptr}
-	,m_camera{nullptr}
-	,m_pDR{nullptr}
-	,m_rayCast{nullptr}
+	: m_commonState{nullptr}
+	, m_drawSprite{nullptr}
+	, m_drawString{nullptr}
+	, m_effect{nullptr}
+	, m_gridFloor{nullptr}
+	, m_keyboardStateTracker{nullptr}
+	, m_mouseStateTracker{nullptr}
+	, m_camera{nullptr}
+	, m_pDR{nullptr}
+	, m_rayCast{nullptr}
 {
 }
 

@@ -14,10 +14,10 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-DrawSprite::DrawSprite():
-	m_textures{},
-	m_SRV{},
-	m_spriteBatch{}
+DrawSprite::DrawSprite()
+	: m_spriteBatch{}	// スプライトバッチ
+	, m_textures{}		// テクスチャ配列
+	, m_SRV{}			// シェーダーリソースビュー
 {
 }
 

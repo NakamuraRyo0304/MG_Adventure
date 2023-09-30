@@ -14,14 +14,11 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-Collider::BoxCollider::BoxCollider():
-	m_hitFace(),
-	is_hitFlag(),
-	is_pushMode()
+Collider::BoxCollider::BoxCollider()
+	: m_hitFace{ HIT_FACE::NONE }		// 当たっている面
+	, is_hitFlag{ false }				// 判定フラグ
+	, is_pushMode{ false }				// 押し戻し有効フラグ
 {
-	m_hitFace = HIT_FACE::NONE;
-	is_hitFlag = false;
-	is_pushMode = false;
 }
 
 /// <summary>

@@ -58,7 +58,7 @@ namespace DirectX
 
         enum Keys : unsigned char
         {
-            None = 0,
+            NONE = 0,
 
             Back = 0x8,
             Tab = 0x9,

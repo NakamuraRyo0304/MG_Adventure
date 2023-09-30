@@ -201,7 +201,7 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 1020.0f ,240.0f } * wScale,
+		SimpleMath::Vector2{ 1000.0f ,290.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,
@@ -210,7 +210,7 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 900.0f ,240.0f } * wScale,
+		SimpleMath::Vector2{ 860.0f ,290.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,
@@ -227,7 +227,7 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 1020.0f ,760.0f } * wScale,
+		SimpleMath::Vector2{ 1000.0f ,760.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,
@@ -236,7 +236,7 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 900.0f ,760.0f } * wScale,
+		SimpleMath::Vector2{ 860.0f ,760.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,

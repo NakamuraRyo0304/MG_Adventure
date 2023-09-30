@@ -29,19 +29,19 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-GameMain::GameMain():
-	m_nextScene{ SCENE::TITLE },		// 最初のシーン
-	m_prevScene{ SCENE::NONE },			// 前回のシーン
-	m_nowScene{ nullptr },				// 今のシーンポインタ
-	m_num{1},							// ステージ番号
-	m_clearTime{0.0f},					// クリアタイム
-	m_coinNum{0},						// 獲得コイン数
-	m_screenWidth{},					// スクリーンサイズ(横)
-	m_screenHeight{},					// スクリーンサイズ(縦)
-	is_saveOnce{false},
+GameMain::GameMain()
+	: m_nextScene{ SCENE::TITLE }		// 最初のシーン
+	, m_prevScene{ SCENE::NONE }		// 前回のシーン
+	, m_nowScene{ nullptr }				// 今のシーンポインタ
+	, m_num{1}							// ステージ番号
+	, m_clearTime{0.0f}					// クリアタイム
+	, m_coinNum{0}						// 獲得コイン数
+	, m_screenWidth{}					// スクリーンサイズ(横)
+	, m_screenHeight{}					// スクリーンサイズ(縦)
 	//以下はセーブデータ対応------------------------------------------------------------------------//
-	m_closeNum{},						// 未開放ステージ
-	m_totalCoinNum{}					// 累計コイン枚数
+	, is_saveOnce{false}				// セーブ済みか確認するフラグ
+	, m_closeNum{}						// 未開放ステージ
+	, m_totalCoinNum{}					// 累計コイン枚数
 {
 }
 
@@ -122,7 +122,7 @@ void GameMain::Update(const DX::StepTimer& timer)
 		{
 			m_nextScene = m_nowScene->GetNextScene();
 		}
-		else
+		else // フェードが終わるまで引き留める
 		{
 			m_nowScene->StopNextScene();
 		}
@@ -178,6 +178,8 @@ void GameMain::CreateScene()
 		case SCENE::SELECT:		// ステージセレクトシーン
 		{
 			m_nowScene = std::make_unique<SelectScene>();
+
+			// ステージ番号、未開放ステージ番号、合計コイン数を渡す
 			CastSceneType<SelectScene>(m_nowScene)->SetStageNum(m_num);
 			CastSceneType<SelectScene>(m_nowScene)->SetNoStageNum(m_closeNum);
 			CastSceneType<SelectScene>(m_nowScene)->SetTotalCoins(m_totalCoinNum);
@@ -199,7 +201,7 @@ void GameMain::CreateScene()
 		{
 			m_nowScene = std::make_unique<ResultScene>();
 
-			// クリアタイムを渡す
+			// ステージ番号、クリアタイム、獲得コイン数を渡す
 			CastSceneType<ResultScene>(m_nowScene)->SetStageNum(m_num);
 			CastSceneType<ResultScene>(m_nowScene)->SetClearTime(m_clearTime);
 			CastSceneType<ResultScene>(m_nowScene)->SetCoinNum(m_coinNum);

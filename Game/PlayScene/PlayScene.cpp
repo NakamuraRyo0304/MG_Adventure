@@ -35,23 +35,23 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-PlayScene::PlayScene() :
-	IScene(),
-	m_timer{0.0f},					// タイマー
-	m_startTimer{0.0f},				// 開始時間
-	m_gameTimer{0.0f},				// 制限時間
-	m_clearTime{0.0f},				// クリア時間
-	m_mapLoad{},					// マップ
-	m_stageNum{1},					// ステージ番号
-	m_fallValue{0.0f},				// 落下用変数
-	m_prevIndex{},					// 過去に当たったインデックス番号
-	m_hitObjects{},					// 当っているオブジェクトの格納
-	m_lastObj{},					// 最後に当たったオブジェクトを保存
-	is_boxCol{},					// 立方体当たり判定
-	m_skyDomeModel{nullptr},		// スカイドームモデル
-	m_skyColor{},					// 空の変化
-	is_thirdPersonMode{false},		// サードパーソンモード
-	is_helpFlag{false}				// ヘルプ表示フラグ
+PlayScene::PlayScene()
+	: IScene()						// 基底クラスの初期化
+	, m_timer{0.0f}					// タイマー
+	, m_startTimer{0.0f}			// 開始時間
+	, m_gameTimer{0.0f}				// 制限時間
+	, m_clearTime{0.0f}				// クリア時間
+	, m_mapLoad{}					// マップ
+	, m_stageNum{1}					// ステージ番号
+	, m_fallValue{0.0f}				// 落下用変数
+	, m_prevIndex{}					// 過去に当たったインデックス番号
+	, m_hitObjects{}				// 当っているオブジェクトの格納
+	, m_lastObj{}					// 最後に当たったオブジェクトを保存
+	, m_skyDomeModel{nullptr}		// スカイドームモデル
+	, m_skyColor{}					// 空の変化
+	, is_boxCol{}					// 立方体当たり判定
+	, is_thirdPersonMode{false}		// サードパーソンモード
+	, is_helpFlag{false}			// ヘルプ表示フラグ
 {
 }
 
@@ -147,8 +147,17 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 
 	// カウントダウンが終わったらスタート
-	if (StartTimer() == false) return;
-
+	if (StartTimer() == false)
+	{
+		GetSystemManager()->GetCamera()->SetEyePosition
+		(
+			UserUtility::Lerp(
+				GetSystemManager()->GetCamera()->GetEye(),
+				END_POS,
+				SimpleMath::Vector3{ 0.5f })
+		);
+		return;
+	}
 	// カメラ操作制限を解除
 	GetSystemManager()->GetCamera()->SetEagleMode(true);
 	GetSystemManager()->GetCamera()->SetArrowMode(true);
@@ -382,14 +391,12 @@ void PlayScene::CreateWindowDependentResources()
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// カメラの設定
+	GetSystemManager()->GetCamera()->SetEyePosition(START_POS);
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
 	// サードパーソンカメラの作成
 	m_thirdCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager(), context, device);
 	m_thirdCamera->CreateProjection(width, height, CAMERA_ANGLE);
-
-	// 文字の設定
-	GetSystemManager()->GetString()->CreateString(device, context);
 
 	//-------------------------------------------------------------------------------------//
 
@@ -544,7 +551,7 @@ void PlayScene::Judgement()
 void PlayScene::ApplyPushBack(Object& obj)
 {
 	// 当っているオブジェが空気の場合は処理しない
-	if (obj.id == MapState::None)
+	if (obj.id == MapState::NONE)
 	{
 		is_boxCol.SetPushMode(false);
 		return;
@@ -557,7 +564,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	//-------------------------------------------------------------------------------------//
 
 	// コインの処理
-	if (obj.id == MapState::CoinBox)
+	if (obj.id == MapState::COIN)
 	{
 		// 押し戻ししない
 		is_boxCol.SetPushMode(false);
@@ -572,7 +579,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	//-------------------------------------------------------------------------------------//
 
 	// 雲の処理
-	if (obj.id == MapState::CloudBox)
+	if (obj.id == MapState::CLOUD)
 	{
 		// プレイヤーが下にいたら押し戻ししない
 		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(obj.id))
@@ -599,7 +606,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 
 
 	// リセット処理
-	if (obj.id == MapState::ResetCloud)
+	if (obj.id == MapState::RESET)
 	{
 		is_boxCol.SetPushMode(false);
 		m_blocks->RestoreCloudPosition();

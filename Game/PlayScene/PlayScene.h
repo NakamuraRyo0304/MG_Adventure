@@ -114,6 +114,10 @@ private:
 	const float SHAKE_DURATION = 4.0f;		// 持続時間
 	const float SHAKE_TREMOR = 1.0f;		// 振動範囲
 
+	// 最初のカメラ演出終点
+	DirectX::SimpleMath::Vector3 START_POS = { 0.0f,30.0f,-16.0f };
+	DirectX::SimpleMath::Vector3 END_POS = { 0.0f,11.0f,16.0f };
+
 private:
 	// サードパーソンモード
 	bool is_thirdPersonMode;

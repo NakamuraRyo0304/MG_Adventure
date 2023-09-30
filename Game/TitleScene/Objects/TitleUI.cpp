@@ -20,15 +20,15 @@
  /// </summary>
  /// <param name="windowSize">画面サイズ</param>
  /// <returns>なし</returns>
-TitleUI::TitleUI(const SimpleMath::Vector2& windowSize):
-	is_selectFlag{},
-	m_windowSize{windowSize},
-	m_sFontRate{},			// スタートフォントの拡大率
-	m_eFontRate{},			// エンドフォントの拡大率
-	m_sLineRate{},			// スタートラインの拡大率
-	m_eLineRate{},			// エンドラインの拡大率
-	m_startColor{},
-	m_exitColor{}
+TitleUI::TitleUI(const SimpleMath::Vector2& windowSize)
+	: is_selectFlag{}			// 選択フラグ
+	, m_windowSize{windowSize}	// ウィンドウサイズ
+	, m_sFontRate{}				// スタートフォントの拡大率
+	, m_eFontRate{}				// エンドフォントの拡大率
+	, m_sLineRate{}				// スタートラインの拡大率
+	, m_eLineRate{}				// エンドラインの拡大率
+	, m_startColor{}			// 初めの色
+	, m_exitColor{}				// 終わりの色
 {
 }
 

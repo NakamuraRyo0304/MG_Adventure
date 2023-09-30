@@ -26,22 +26,21 @@ const int Camera::MIN_SCROLL_VALUE = -1440;
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-Camera::Camera():
-	m_angle{},					// 回転角
-	m_eye{},					// カメラの座標
-	m_eyePos{},					// カメラの移動座標
-	m_prevMouse{},				// 過去のマウスの位置
-	m_scrollWheelValue{},		// マウスホイールの回転量
-	m_tempScrollValue{},		// マウスホイールの回転量(不動時の蓄積用)
-	m_prevScrollWheelValue{},	// マウスホイールの回転量(前回の保存用)
-	m_view{},					// ビュー行列
-	m_proj{},					// プロジェクション行列
-	is_allowMode{false},		// カメラの視点移動フラグ(十字操作)
-	is_eagleMode{false},		// カメラの視点移動フラグ(マウス操作)
-	is_prevEagleMode{false},	// カメラの視点移動フラグ(前回の保存用)
-	m_screenHeight{},			// 画面の高さ
-	m_screenWidth{},			// 画面の幅
-	m_rotateMatrix{}			// 回転量
+Camera::Camera()
+	: m_screenHeight{}			// 画面の高さ
+	, m_screenWidth{}			// 画面の幅
+	, m_angle{}					// 回転角
+	, m_eye{}					// カメラの座標
+	, m_prevMouse{}				// 過去のマウスの位置
+	, m_scrollWheelValue{}		// マウスホイールの回転量
+	, m_tempScrollValue{}		// マウスホイールの回転量(不動時の蓄積用)
+	, m_prevScrollWheelValue{}	// マウスホイールの回転量(前回の保存用)
+	, m_view{}					// ビュー行列
+	, m_proj{}					// プロジェクション行列
+	, m_rotateMatrix{}			// 回転量
+	, is_allowMode{ false }		// カメラの視点移動フラグ(十字操作)
+	, is_eagleMode{ false }		// カメラの視点移動フラグ(マウス操作)
+	, is_prevEagleMode{ false }	// カメラの視点移動フラグ(前回の保存用)
 {
 	// マウスの回転量をリセット
 	Mouse::Get().ResetScrollWheelValue();

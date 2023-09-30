@@ -9,7 +9,7 @@
 
 #include<regex>       // 文字列の置換に使用
 #include<sstream>     // ファイルの保存に使用
-#include<fstream>     // |
+#include<fstream>     // ファイルの保存に使用
 #include<shobjidl.h>  // ダイアログ操作に使用
 
 // <shobjidl.h>の参考文献
@@ -27,11 +27,10 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-MapLoad::MapLoad() :
-	m_mapData{},
-    m_hWnd{nullptr},
-    is_saveFileOpenFlag{false},
-	is_editMode{false}
+MapLoad::MapLoad()
+	: m_mapData{}			// マップデータ
+	, m_hWnd{ nullptr }		// ウィンドウハンドル
+	, is_fileFlag{ false }	// ファイルを開くフラグ
 {
 }
 
@@ -379,11 +378,11 @@ void MapLoad::CreateNewMap()
 
 				if (y == 0)
 				{
-					newObj.id = BoxState::GrassBox;
+					newObj.id = BOXSTATE::GRASS;
 				}
 				else
 				{
-					newObj.id = BoxState::None;
+					newObj.id = BOXSTATE::NONE;
 				}
 				newObj.position.x = static_cast<float>(x);
 				newObj.position.y = static_cast<float>(y);

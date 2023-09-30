@@ -37,15 +37,15 @@ public:
 	static const int MAP_HEIGHT = 10;
 
 	// エリアボックスのステータス
-	struct BoxState
+	struct BOXSTATE
 	{
-		static const int None		= 0;		// データなし
-		static const int GrassBox	= 1;		// 草のブロック
-		static const int CloudBox	= 2;		// 動くブロック
-		static const int CoinBox	= 3;		// コインのブロック
-		static const int ResetCloud	= 4;		// 雲の位置のリセットブロック
-		static const int PlayerPos	= 5;		// プレイヤ
-		static const int LENGTH     = 6;		// ブロックステータスの長さ
+		static const int NONE	= 0;	// データなし
+		static const int GRASS	= 1;	// 草のブロック
+		static const int CLOUD	= 2;	// 動くブロック
+		static const int COIN	= 3;	// コインのブロック
+		static const int RESET	= 4;	// 雲の位置のリセットブロック
+		static const int PLAYER	= 5;	// プレイヤ
+		static const int LENGTH = 6;	// ブロックステータスの長さ
 	};
 
 private:
@@ -56,13 +56,10 @@ private:
 	std::wstring m_filename;
 
 	// ファイル保存用フラグ
-	bool is_saveFileOpenFlag;
+	bool is_fileFlag;
 
 	// ウィンドウハンドル
 	HWND m_hWnd;
-
-	// エディタモード
-	bool is_editMode;
 
 public:
 
@@ -74,9 +71,6 @@ public:
 
 	// マップの書き出し
 	void WriteMap(std::vector<Object> obj);
-
-	// エディットモード切替
-	void SetEditMode(const bool& flag) { is_editMode = flag; }
 
 	// マップのデータを渡す
 	std::vector<Object> GetMapData() { return m_mapData; }

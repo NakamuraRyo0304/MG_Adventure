@@ -27,16 +27,16 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-ResultScene::ResultScene():
-	IScene(),
-	m_timer{0.0f},				// 時計
-	m_windowSize{},				// ウィンドウサイズ
-	m_coinNum{},				// コインの数
-	m_clearTime{0.0f},			// クリアタイムを格納
-	m_saveTime{0.0f},			// クリアタイムを保存する変数
-	m_directionTime{0.0f},		// 演出する時間
-	m_stageNum{1},				// 背景のステージ番号(初期化で1)
-	m_selectingScene{ 0 }		// 現在選択中のシーン
+ResultScene::ResultScene()
+	: IScene()					// 基底クラスの初期化
+	, m_timer{0.0f}				// 時計
+	, m_windowSize{}			// ウィンドウサイズ
+	, m_coinNum{}				// コインの数
+	, m_clearTime{0.0f}			// クリアタイムを格納
+	, m_saveTime{0.0f}			// クリアタイムを保存する変数
+	, m_directionTime{0.0f}		// 演出する時間
+	, m_stageNum{1}				// 背景のステージ番号(初期化で1)
+	, m_selectingScene{ 0 }		// 現在選択中のシーン
 {
 	// ランダムの生成
 	srand(unsigned int(time(0)));

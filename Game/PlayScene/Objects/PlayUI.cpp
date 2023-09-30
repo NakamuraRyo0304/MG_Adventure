@@ -20,16 +20,16 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-PlayUI::PlayUI(const SimpleMath::Vector2& windowSize):
-	m_system{},
-	m_windowSize{ windowSize },
-	m_gameTimer{0},
-    m_oneSecPos{SimpleMath::Vector2::Zero},
-    m_tenSecPos{SimpleMath::Vector2::Zero},
-	m_countDownPos{SimpleMath::Vector2::Zero},
-	m_underFontPos{SimpleMath::Vector2::Zero},
-	is_effectFlag{false},
-	is_helpFlag{false}
+PlayUI::PlayUI(const SimpleMath::Vector2& windowSize)
+	: m_system{}								// システムマネージャ
+	, m_windowSize{ windowSize }				// ウィンドウサイズ
+	, m_gameTimer{0}							// ゲームのタイマー
+    , m_oneSecPos{SimpleMath::Vector2::Zero}	// 1秒の座標
+    , m_tenSecPos{SimpleMath::Vector2::Zero}	// 10秒の座標
+	, m_countDownPos{SimpleMath::Vector2::Zero}	// ３カウントダウンの座標
+	, m_underFontPos{SimpleMath::Vector2::Zero}	// 下の文字ロールの座標
+	, is_effectFlag{false}						// エフェクトの表示フラグ
+	, is_helpFlag{false}						// ヘルプ画面のフラグ
 {
 	m_windowSize = windowSize;
 }
@@ -94,10 +94,10 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 /// <returns>なし</returns>
 void PlayUI::Update(const float& timelimit)
 {
+	m_gameTimer = static_cast<int>(timelimit);
+
 	// 比率を計算
 	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
-
-	m_gameTimer = static_cast<int>(timelimit);
 
 	// 移動処理
 	m_underFontPos.x -= UNDER_SPEED * scale.x;
