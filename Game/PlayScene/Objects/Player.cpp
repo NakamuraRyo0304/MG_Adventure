@@ -13,6 +13,9 @@
 // インライン関数群
 #include "../../../Libraries/UserUtility.h"
 
+// モデルファクトリー
+#include "../../../Libraries/Factories/ModelFactory.h"
+
 #include "Player.h"
 
  /// <summary>
@@ -27,6 +30,7 @@ Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body, std::un
 	: m_timer{0.0f}					// タイマー
 	, m_system{}					// システム
 	, m_parameter{}					// パラメーター
+	, m_coinNum{}					// 合計獲得コイン数
 	, m_head{ std::move(head) }		// 頭のモデル
 	, m_body{ std::move(body) }		// 身体のモデル
 	, m_rightLeg{ std::move(right) }// 右足のモデル
@@ -76,6 +80,9 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 	m_neckQuaternion = SimpleMath::Quaternion::Identity;
 	m_thirdRotate = SimpleMath::Quaternion::Identity;
 	is_lookFlag = false;
+
+	// プレイヤーの色を変更する
+	ChangeModel();
 }
 
 /// <summary>
@@ -220,7 +227,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 		SimpleMath::Matrix::CreateTranslation(
 			0.0f,
 			0.0f,
-			sinf(m_footMove * 0.25f) * 0.1f
+			sinf(m_footMove * 0.25f) * 0.05f
 		);
 
 	// 行列計算
@@ -330,6 +337,34 @@ void Player::UpdateGravity()
 	{
 		is_deathFlag = true;
 	}
+}
+
+/// <summary>
+/// モデルを変更する
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void Player::ChangeModel()
+{
+	auto device = m_system->GetDeviceResources()->GetD3DDevice();
+
+	// 100未満は処理しない
+	if (m_coinNum < 100) return;
+
+	// モデル追加予定
+	if (m_coinNum >= 100)
+	{
+		// パスの格納
+		m_head =
+			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo"));
+		m_body =
+			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo"));
+		m_rightLeg =
+			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
+		m_leftLeg =
+			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
+	}
+
 }
 
 /// <summary>

@@ -32,6 +32,9 @@ private:
 	// 時間
 	float m_timer;
 
+	// セレクトから受け取ったコイン数
+	int m_coinNum;
+
 	// 脚の動きに使う変数
 	float m_footMove;
 
@@ -53,7 +56,7 @@ private:
 	std::unique_ptr<DirectX::Model> m_head, m_body, m_leftLeg, m_rightLeg;
 
 	// システム
-	std::weak_ptr<SystemManager> m_system;
+	std::shared_ptr<SystemManager> m_system;
 
 	// 死亡判定
 	bool is_deathFlag;
@@ -97,6 +100,10 @@ private:
 	// 重力処理
 	void UpdateGravity();
 
+	// モデルを変更する
+	void ChangeModel();
+
+
 public:
 
 	// アクセサ----------------------------------------------------------------------------//
@@ -125,6 +132,9 @@ public:
 
 	// 首の回転量を取得
 	const DirectX::SimpleMath::Quaternion& GetNeckRotate() { return m_thirdRotate; }
+
+	// 合計コイン数セッター
+	void SetAllCoins(const int& allCoins) { m_coinNum = allCoins; }
 };
 
 #endif // PLAYER
