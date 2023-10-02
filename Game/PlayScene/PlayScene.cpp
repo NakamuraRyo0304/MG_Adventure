@@ -41,6 +41,7 @@ PlayScene::PlayScene()
 	, m_startTimer{0.0f}			// 開始時間
 	, m_gameTimer{0.0f}				// 制限時間
 	, m_clearTime{0.0f}				// クリア時間
+	, m_allCoins{0}					// 保有コイン数
 	, m_mapLoad{}					// マップ
 	, m_stageNum{1}					// ステージ番号
 	, m_fallValue{0.0f}				// 落下用変数
@@ -80,6 +81,7 @@ void PlayScene::Initialize()
 	GetSystemManager()->GetCamera()->SetArrowMode(false);
 
 	// プレイヤの初期化
+	m_player->SetAllCoins(m_allCoins);
 	m_player->Initialize(std::make_shared<SystemManager>());
 
 	// マップ読み込み
@@ -426,12 +428,7 @@ void PlayScene::CreateWindowDependentResources()
 	//-------------------------------------------------------------------------------------//
 
 	// プレイヤーの作成
-	m_player = std::make_unique<Player>(
-		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/Head.cmo")),	// 頭
-		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/Body.cmo")),	// ボディ
-		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/LegR.cmo")),	// 右足
-		std::move(ModelFactory::GetCreateModel(device,L"Resources/Models/LegL.cmo"))	// 左足
-	);
+	MakePlayer(device);
 
 	//-------------------------------------------------------------------------------------//
 
@@ -671,6 +668,34 @@ bool PlayScene::StartTimer()
 	}
 
 	return false;
+}
+
+/// <summary>
+/// プレイヤーの作成
+/// </summary>
+/// <param name="device">デバイスポインタ</param>
+/// <returns>なし</returns>
+void PlayScene::MakePlayer(ID3D11Device1* device)
+{
+	//-------------------------------------------------------------------------------------//
+	// パスの格納
+	std::unique_ptr<Model> head =
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo"));
+	std::unique_ptr<Model> body =
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo"));
+	std::unique_ptr<Model> legR =
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
+	std::unique_ptr<Model> legL =
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
+	//-------------------------------------------------------------------------------------//
+
+	// プレイヤーを作成する
+	m_player = std::make_unique<Player>(
+		std::move(head),			// 頭のモデル
+		std::move(body),			// 身体のモデル
+		std::move(legR),			// 右足のモデル
+		std::move(legL)				// 左足のモデル
+	);
 }
 
 /// <summary>

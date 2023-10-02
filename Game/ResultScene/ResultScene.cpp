@@ -151,6 +151,9 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		default:
 			break;
 		}
+
+		// 決定音を鳴らす
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
 	// エスケープで終了
 	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();

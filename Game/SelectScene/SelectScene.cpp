@@ -109,6 +109,9 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	{
 		// ステージ番号が0ならエディタに、それ以外はプレイへ
 		m_stageNum == 0 ? ChangeScene(SCENE::EDIT) : ChangeScene(SCENE::PLAY);
+
+		// 決定音を鳴らす
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
 
 	// エスケープで終了

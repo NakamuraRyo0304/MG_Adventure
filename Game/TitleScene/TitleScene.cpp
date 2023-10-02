@@ -112,6 +112,9 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		is_startFlag = true;
+
+		// Œˆ’è‰¹‚ğ–Â‚ç‚·
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
 	// ‰‰o‚ªI‚í‚Á‚½‚©‚Ç‚¤‚©”»’è‚·‚é
 	if (FlyStartObjects())

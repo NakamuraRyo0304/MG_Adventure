@@ -192,6 +192,7 @@ void GameMain::CreateScene()
 			m_nowScene = std::make_unique<PlayScene>();
 
 			// 選択したステージを渡す
+			CastSceneType<PlayScene>(m_nowScene)->SetAllCoinNum(m_totalCoinNum);
 			CastSceneType<PlayScene>(m_nowScene)->SetStageNum(m_num);
 
 			m_fade->SetFadeSpeed(PLAY_FADE_SPEED);

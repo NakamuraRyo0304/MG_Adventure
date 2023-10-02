@@ -68,6 +68,9 @@ private:
 	// ヘルプ表示フラグ
 	bool is_helpFlag;
 
+	// 合計コイン数
+	int m_allCoins;
+
 private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
@@ -164,6 +167,9 @@ private:
 	// スタートのカウントダウン
 	bool StartTimer();
 
+	// プレイヤーの作成
+	void MakePlayer(ID3D11Device1* device);
+
 public:
 
 	// タイムリミットのゲッター
@@ -176,6 +182,9 @@ public:
 	// マップ番号のセッター
 	const int& GetStageNum() { return m_stageNum; }
 	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
+
+	// 合計コイン数セッター
+	void SetAllCoinNum(const int& allCoins) { m_allCoins = allCoins; }
 
 };
 
