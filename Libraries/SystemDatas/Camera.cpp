@@ -30,13 +30,13 @@ Camera::Camera()
 	: m_screenHeight{}			// 画面の高さ
 	, m_screenWidth{}			// 画面の幅
 	, m_angle{}					// 回転角
-	, m_eye{}					// カメラの座標
+	, m_position{}				// カメラの座標
 	, m_prevMouse{}				// 過去のマウスの位置
 	, m_scrollWheelValue{}		// マウスホイールの回転量
 	, m_tempScrollValue{}		// マウスホイールの回転量(不動時の蓄積用)
 	, m_prevScrollWheelValue{}	// マウスホイールの回転量(前回の保存用)
 	, m_view{}					// ビュー行列
-	, m_proj{}					// プロジェクション行列
+	, m_projection{}			// プロジェクション行列
 	, m_rotateMatrix{}			// 回転量
 	, is_allowMode{ false }		// カメラの視点移動フラグ(十字操作)
 	, is_eagleMode{ false }		// カメラの視点移動フラグ(マウス操作)
@@ -199,7 +199,7 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height, fl
 	m_angle.x = angle;
 
 	// プロジェクション行列を返却
-	return m_proj = projection;
+	return m_projection = projection;
 }
 
 /// <summary>
@@ -229,7 +229,7 @@ void Camera::CalculateViewMatrix()
 	up  = SimpleMath::Vector3::Transform(up,  rt.Invert());
 
 	// デフォルトの初期位置
-	m_eye = eye;
+	m_position = eye;
 	m_target = target;
 	m_view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
 

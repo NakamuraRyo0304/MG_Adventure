@@ -50,12 +50,12 @@ private: //---------------------------------------------------------------------
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 	// プロジェクション行列
-	DirectX::SimpleMath::Matrix m_proj;
+	DirectX::SimpleMath::Matrix m_projection;
 	// 回転量
 	DirectX::SimpleMath::Matrix m_rotateMatrix;
 
 	// カメラの座標
-	DirectX::SimpleMath::Vector3 m_eye;
+	DirectX::SimpleMath::Vector3 m_position;
 
 	// 注視点
 	DirectX::SimpleMath::Vector3 m_target;
@@ -94,17 +94,17 @@ public:
 	const DirectX::SimpleMath::Matrix& GetView() { return m_view; }
 
 	// カメラの座標を取得する
-	const DirectX::SimpleMath::Vector3& GetEye() { return m_eye; }
+	const DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
 
 	// カメラの座標移動用セッター(指定座標に移動)
-	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_eye = pos;}
+	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_position = pos;}
 
 	// ターゲットを取得する
-	const DirectX::SimpleMath::Vector3& GetTargetPosition() { return m_target; }
+	const DirectX::SimpleMath::Vector3& GetTarget() { return m_target; }
 
 	// 射影行列の取得
 	const DirectX::SimpleMath::Matrix& CreateProjection(float width, float height,float angle = 45.0f);
-	const DirectX::SimpleMath::Matrix& GetProjection() { return m_proj; }
+	const DirectX::SimpleMath::Matrix& GetProjection() { return m_projection; }
 
 	// カメラ視点移動モード切替
 	void SetEagleMode(const bool& flag) { is_eagleMode = flag; }

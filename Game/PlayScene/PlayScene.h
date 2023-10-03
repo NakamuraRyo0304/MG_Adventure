@@ -17,6 +17,7 @@
 class Player;
 class PlayerBill;
 class PlayUI;
+class PlayCamera;
 class Blocks;
 class ThirdPersonCamera;
 class PlayScene final : public IScene
@@ -71,6 +72,9 @@ private:
 	// 合計コイン数
 	int m_allCoins;
 
+	// サードパーソンモード
+	bool is_thirdPersonMode;
+
 private:
 	// モデル
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
@@ -83,6 +87,9 @@ private:
 
 	// サードパーソンカメラ
 	std::unique_ptr<ThirdPersonCamera> m_thirdCamera;
+
+	// スタートカメラ
+	std::unique_ptr<PlayCamera> m_playCamera;
 
 private:
 
@@ -117,13 +124,13 @@ private:
 	const float SHAKE_DURATION = 4.0f;		// 持続時間
 	const float SHAKE_TREMOR = 1.0f;		// 振動範囲
 
-	// 最初のカメラ演出終点
-	DirectX::SimpleMath::Vector3 START_POS = { 0.0f,30.0f,-16.0f };
-	DirectX::SimpleMath::Vector3 END_POS = { 0.0f,11.0f,16.0f };
+	// カウントダウンの速度
+	const float COUNT_SPEED = 0.5f;
 
-private:
-	// サードパーソンモード
-	bool is_thirdPersonMode;
+	// 最初のカメラ演出終点
+	const float MOVE_CAMERA_SPEED = 0.025f;
+	const DirectX::SimpleMath::Vector3 START_CAMERA_POS = { 0.0f,30.0f,40.0f };
+	const DirectX::SimpleMath::Vector3 END_CAMERA_POS	= { 0.0f,11.0f,16.0f };
 
 public:
 
@@ -166,6 +173,9 @@ private:
 
 	// スタートのカウントダウン
 	bool StartTimer();
+
+	// スタート演出
+	void MoveStart();
 
 	// プレイヤーの作成
 	void MakePlayer(ID3D11Device1* device);

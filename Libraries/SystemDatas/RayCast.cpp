@@ -5,6 +5,14 @@
  *  @Author NakamuraRyo
  */
 
+ // 使用関数群の参考文献
+ //-------------------------------------------------------------------------------------//
+ //   まるぺけ
+ //   その４８　スクリーン座標でワールド空間の地面を指す
+ //   http://marupeke296.com/DXG_No48_PointGroundInScreen.html
+ // 　⑦ 公開、スクリーン座標点と地面の交点算出関数より
+ //-------------------------------------------------------------------------------------//
+
 #include "pch.h"
 
 #include "RayCast.h"
@@ -43,7 +51,7 @@ void RayCast::Update(Mouse::State& mouseState)
 	is_clickFlag = mouseState.leftButton;
 
 	// レイを飛ばす処理
-	m_conScreenPos = ShotRayToWorld(mouseState.x, mouseState.y);
+	m_conScreenPos = ShotRay(mouseState.x, mouseState.y);
 }
 
 /// <summary>
@@ -99,22 +107,22 @@ SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 /// <param name="mx">マウスX</param>
 /// <param name="my">マウスY</param>
 /// <returns>当たった地面との交点</returns>
-SimpleMath::Vector3 RayCast::ShotRayToWorld(int mx, int my)
+SimpleMath::Vector3 RayCast::ShotRay(int mx, int my)
 {
 	// 最近、最遠、レイを定義
 	SimpleMath::Vector3 nearpos;
 	SimpleMath::Vector3 farpos;
 	SimpleMath::Vector3 ray;
 
-	// 最近距離をコンバート
+	// 最近距離をスクリーンからワールドに変換
 	nearpos = ConvertScreenToWorld(mx, my, 0.0f,
 		static_cast<int>(m_screenSize.x),  static_cast<int>(m_screenSize.y),
-		m_view, m_proj);
+		m_view, m_projection);
 
-	// 最遠距離をコンバート
+	// 最遠距離をスクリーンからワールドに変換
 	farpos  = ConvertScreenToWorld(mx, my, 1.0f,
 		static_cast<int>(m_screenSize.x),  static_cast<int>(m_screenSize.y),
-		m_view, m_proj);
+		m_view, m_projection);
 
 	// レイの長さを求めて正規化する
 	ray = farpos - nearpos;
@@ -126,13 +134,13 @@ SimpleMath::Vector3 RayCast::ShotRayToWorld(int mx, int my)
 	// 床との交差が起きている場合は交点、起きていない場合は遠くの壁との交点を出力
 	if (ray.y <= 0)
 	{
-		// 床交点
+		// 床との交点を求める
 		SimpleMath::Vector3 rDot = XMVector3Dot(     ray, SimpleMath::Vector3(0, 1, 0));
 		SimpleMath::Vector3 nDot = XMVector3Dot(-nearpos, SimpleMath::Vector3(0, 1, 0));
   		output = nearpos + (nDot / rDot) * ray;
 
-
 		// Y軸移動なくすために0代入
+		// 本ゲームでは、マウスホイールでY軸移動
 		output.y = 0;
 	}
 	else

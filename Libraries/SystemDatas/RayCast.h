@@ -12,7 +12,7 @@ private:
 	DirectX::SimpleMath::Vector3 m_conScreenPos;
 
 	// 行列
-	DirectX::SimpleMath::Matrix m_view, m_proj;
+	DirectX::SimpleMath::Matrix m_view, m_projection;
 
 	// スクリーンサイズ
 	DirectX::SimpleMath::Vector2 m_screenSize;
@@ -39,7 +39,7 @@ private:
 												 DirectX::SimpleMath::Matrix proj);		    	// 射影行列
 
 	// レイを飛ばして面との交点を求める
-	DirectX::SimpleMath::Vector3 ShotRayToWorld(int mx, int my);
+	DirectX::SimpleMath::Vector3 ShotRay(int mx, int my);
 
 public:
 	// マウスのワールド座標のゲッター
@@ -52,5 +52,5 @@ public:
 	void SetScreenSize(float width, float height) { m_screenSize = { width,height }; }
 
 	// 行列のセッター
-	void SetMatrix(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) { m_view = view; m_proj = proj; }
+	void SetMatrix(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj) { m_view = view; m_projection = proj; }
 };

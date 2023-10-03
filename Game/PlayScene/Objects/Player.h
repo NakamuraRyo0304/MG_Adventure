@@ -74,6 +74,8 @@ private:
 	const float OFFSET_Y = 0.2f;
 	// 死亡ライン
 	const float DEATH_LINE = -10.0f;
+	// スキンを変えるコインの枚数
+	const int CHANGE_SKIN_100 = 100;
 
 
 public:

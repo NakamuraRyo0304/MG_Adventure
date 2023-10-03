@@ -349,10 +349,11 @@ void Player::ChangeModel()
 	auto device = m_system->GetDeviceResources()->GetD3DDevice();
 
 	// 100未満は処理しない
-	if (m_coinNum < 100) return;
+	// ホワイトレグホンのまま（白色の鶏）
+	if (m_coinNum < CHANGE_SKIN_100) return;
 
 	// モデル追加予定
-	if (m_coinNum >= 100)
+	if (m_coinNum >= CHANGE_SKIN_100)
 	{
 		// パスの格納
 		m_head =
@@ -363,8 +364,9 @@ void Player::ChangeModel()
 			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
 		m_leftLeg =
 			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
-	}
 
+		return;
+	}
 }
 
 /// <summary>

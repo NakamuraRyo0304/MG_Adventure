@@ -198,6 +198,7 @@
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h" />
     <ClInclude Include="Game\PlayScene\PlayScene.h" />
+    <ClInclude Include="Game\PlayScene\System\PlayCamera.h" />
     <ClInclude Include="Game\PlayScene\System\ThirdPersonCamera.h" />
     <ClInclude Include="Game\ResultScene\Objects\ResultUI.h" />
     <ClInclude Include="Game\ResultScene\ResultScene.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayUI.cpp" />
     <ClCompile Include="Game\PlayScene\PlayScene.cpp" />
+    <ClCompile Include="Game\PlayScene\System\PlayCamera.cpp" />
     <ClCompile Include="Game\PlayScene\System\ThirdPersonCamera.cpp" />
     <ClCompile Include="Game\ResultScene\Objects\ResultUI.cpp" />
     <ClCompile Include="Game\ResultScene\ResultScene.cpp" />

@@ -7,13 +7,13 @@
 
 #include "pch.h"
 
- // CSV読み込み
+// CSV読み込みクラス
 #include "../../Libraries/SystemDatas/MapLoad.h"
 
 // コライダークラス
 #include "../../Libraries/SystemDatas/Collider.h"
 
-// シェーダー
+// シェーダー位置情報クラス
 #include "Objects/PlayerBill.h"
 
 // プレイヤクラス
@@ -25,8 +25,11 @@
 // インターフェース
 #include "Objects/PlayUI.h"
 
-// サードパーソンカメラ
+// サードパーソンカメラクラス
 #include "System/ThirdPersonCamera.h"
+
+// プレイカメラクラス(スタート演出用)
+#include "System/PlayCamera.h"
 
 #include "PlayScene.h"
 
@@ -151,15 +154,11 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// カウントダウンが終わったらスタート
 	if (StartTimer() == false)
 	{
-		GetSystemManager()->GetCamera()->SetEyePosition
-		(
-			UserUtility::Lerp(
-				GetSystemManager()->GetCamera()->GetEye(),
-				END_POS,
-				SimpleMath::Vector3{ 0.5f })
-		);
+		// スタートの動き
+		MoveStart();
 		return;
 	}
+
 	// カメラ操作制限を解除
 	GetSystemManager()->GetCamera()->SetEagleMode(true);
 	GetSystemManager()->GetCamera()->SetArrowMode(true);
@@ -290,18 +289,22 @@ void PlayScene::Draw()
 	// カメラ用行列
 	SimpleMath::Matrix view, proj;
 
-	// ビュー行列
-	if (!is_thirdPersonMode)
+	// ビュー行列&プロジェクション行列
+	if (StartTimer() == false)
+	{
+		view = m_playCamera->CreateView();
+		proj = m_playCamera->GetProjection();
+	}
+	else if (!is_thirdPersonMode)
 	{
 		view = GetSystemManager()->GetCamera()->GetView();
+		proj = GetSystemManager()->GetCamera()->GetProjection();
 	}
 	else
 	{
 		view = m_thirdCamera->GetFollowView();
+		proj = GetSystemManager()->GetCamera()->GetProjection();
 	}
-
-	// プロジェクション行列
-	proj = GetSystemManager()->GetCamera()->GetProjection();
 
 	// プレイヤの描画
 	m_player->Render(context, states, view, proj);
@@ -335,8 +338,8 @@ void PlayScene::Draw()
 	if (!is_thirdPersonMode)
 	{
 		m_playerBill->CreateBillboard(
-			GetSystemManager()->GetCamera()->GetTargetPosition(),	// カメラの注視点
-			GetSystemManager()->GetCamera()->GetEye(),				// カメラの座標
+			GetSystemManager()->GetCamera()->GetTarget(),	// カメラの注視点
+			GetSystemManager()->GetCamera()->GetPosition(),				// カメラの座標
 			SimpleMath::Vector3::Up
 		);
 		m_playerBill->Render(m_player->GetPosition(), m_timer, view, proj);
@@ -392,16 +395,18 @@ void PlayScene::CreateWindowDependentResources()
 	float width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
 	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
-	// カメラの設定
-	GetSystemManager()->GetCamera()->SetEyePosition(START_POS);
+	// デフォルトカメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
 
 	// サードパーソンカメラの作成
 	m_thirdCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager(), context, device);
 	m_thirdCamera->CreateProjection(width, height, CAMERA_ANGLE);
 
-	//-------------------------------------------------------------------------------------//
+	// スタート用カメラの作成
+	m_playCamera = std::make_unique<PlayCamera>(SimpleMath::Vector2(width, height));
+	m_playCamera->SetPosition(START_CAMERA_POS);
 
+	//-------------------------------------------------------------------------------------//
 	// スカイドームモデルを作成する
 	m_skyDomeModel = ModelFactory::GetCreateModel(
 		device,
@@ -426,12 +431,10 @@ void PlayScene::CreateWindowDependentResources()
 	);
 
 	//-------------------------------------------------------------------------------------//
-
 	// プレイヤーの作成
 	MakePlayer(device);
 
 	//-------------------------------------------------------------------------------------//
-
 	// ブロックの作成
 	m_blocks = std::make_unique<Blocks>();
 
@@ -457,18 +460,15 @@ void PlayScene::CreateWindowDependentResources()
 	);
 
 	//-------------------------------------------------------------------------------------//
-
 	// 位置情報のシェーダーの作成
 	m_playerBill = std::make_unique<PlayerBill>();
 	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
 
 	//-------------------------------------------------------------------------------------//
-
 	// UIの作成
 	m_userInterFace = std::make_unique<PlayUI>(SimpleMath::Vector2(width, height));
 	m_userInterFace->Create(GetSystemManager(),context, device);
 
-	//-------------------------------------------------------------------------------------//
 }
 
 /// <summary>
@@ -659,7 +659,7 @@ void PlayScene::UpdateSky()
 /// <returns>終わっていたらTrueを返す</returns>
 bool PlayScene::StartTimer()
 {
-	m_startTimer--;
+	m_startTimer -= COUNT_SPEED;
 
 	if (m_startTimer <= 0.0f)
 	{
@@ -668,6 +668,32 @@ bool PlayScene::StartTimer()
 	}
 
 	return false;
+}
+
+/// <summary>
+/// スタート演出
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void PlayScene::MoveStart()
+{
+	auto cam = *GetSystemManager()->GetCamera();
+
+	// カメラ座標の移動
+	m_playCamera->SetPosition(
+		UserUtility::Lerp(
+			m_playCamera->GetPosition(),
+			cam.GetPosition(),
+			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
+		)
+	);
+	m_playCamera->SetTarget(
+		UserUtility::Lerp(
+			m_playCamera->GetTarget(),
+			cam.GetTarget(),
+			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
+		)
+	);
 }
 
 /// <summary>
@@ -699,7 +725,7 @@ void PlayScene::MakePlayer(ID3D11Device1* device)
 }
 
 /// <summary>
-/// コインゲッター
+/// 獲得したコインゲッター
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>獲得したコインの枚数</returns>
@@ -709,7 +735,7 @@ const int& PlayScene::GetCoinNum()
 }
 
 /// <summary>
-/// コインゲッター
+/// ステージの最大コインゲッター
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>ステージの最大コインの枚数</returns>

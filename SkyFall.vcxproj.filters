@@ -301,6 +301,9 @@
     <ClInclude Include="Game\ResultScene\Objects\ResultUI.h">
       <Filter>Scenes\ResultScene\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Game\PlayScene\System\PlayCamera.h">
+      <Filter>Scenes\PlayScene\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -404,6 +407,9 @@
     </ClCompile>
     <ClCompile Include="Game\ResultScene\Objects\ResultUI.cpp">
       <Filter>Scenes\ResultScene\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\System\PlayCamera.cpp">
+      <Filter>Scenes\PlayScene\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
