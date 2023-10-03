@@ -13,7 +13,7 @@
 #include "Libraries/SystemDatas/Collider.h"
 
 // エイリアスを宣言
-using MapState = MapLoad::BOXSTATE;
+using MAPSTATE = MapLoad::BOXSTATE;
 
 class SystemManager;
 class UserInterface
@@ -48,10 +48,10 @@ private:
 
 private:
 	// ボックスステータスの配列
-	const wchar_t* m_texName[MapState::LENGTH];					// テクスチャ名
-	bool is_boxState[MapState::LENGTH];							// 現在のステート
-	float m_boxHover[MapState::LENGTH];							// ホバーチェック
-	DirectX::SimpleMath::Vector2 m_imagePos[MapState::LENGTH];	// テクスチャの座標
+	const wchar_t* m_texName[MAPSTATE::LENGTH];					// テクスチャ名
+	bool is_boxState[MAPSTATE::LENGTH];							// 現在のステート
+	float m_boxHover[MAPSTATE::LENGTH];							// ホバーチェック
+	DirectX::SimpleMath::Vector2 m_imagePos[MAPSTATE::LENGTH];	// テクスチャの座標
 
 	// 画像の中心位置
 	const float	IMAGE_CENTER = 128.0f;

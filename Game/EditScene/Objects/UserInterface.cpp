@@ -86,12 +86,12 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_system->GetDrawSprite()->AddTextureData(L"Erase",     L"Resources/Textures/BLOCK/DeleteIcon.dds", device);
 
 	// IDを格納
-	m_texName[MapState::GRASS]   = L"Grass";
-	m_texName[MapState::CLOUD]   = L"Cloud";
-	m_texName[MapState::COIN]    = L"Coin";
-	m_texName[MapState::RESET] = L"ReCloud";
-	m_texName[MapState::PLAYER]  = L"Player";
-	m_texName[MapState::NONE]       = L"Erase";
+	m_texName[MAPSTATE::GRASS]   = L"Grass";
+	m_texName[MAPSTATE::CLOUD]   = L"Cloud";
+	m_texName[MAPSTATE::COIN]    = L"Coin";
+	m_texName[MAPSTATE::RESET] = L"ReCloud";
+	m_texName[MAPSTATE::PLAYER]  = L"Player";
+	m_texName[MAPSTATE::NONE]       = L"Erase";
 
 	// 比率を計算
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
@@ -102,7 +102,7 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_cameraTexPos     = { 356 * span , 80 * span};
 	m_backTexPos	   = { m_windowSize.x - (244 * span)  ,80 * span};
 	m_toolButtonTexPos = { m_windowSize.x - (96 * span)  ,80 * span};
-	for (int i = 0; i < MapState::LENGTH; i++)
+	for (int i = 0; i < MAPSTATE::LENGTH; i++)
 	{
 		m_imagePos[i] = { 528 * span + (192 * span * i) , 80 * span};
 		is_boxState[i] = false;
@@ -110,8 +110,8 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	}
 
 	// ステータスの初期値は草ブロック
-	m_nowState = MapState::GRASS;
-	is_boxState[MapState::GRASS] = true;
+	m_nowState = MAPSTATE::GRASS;
+	is_boxState[MAPSTATE::GRASS] = true;
 
 	// ツールバーを表示
 	is_toolFlag = true;
@@ -325,7 +325,7 @@ void UserInterface::Finalize()
 /// <returns>なし</returns>
 void UserInterface::DrawIcon(const SimpleMath::Vector2& imageScale)
 {
-	for (int idx = 0; idx < MapState::LENGTH; ++idx)
+	for (int idx = 0; idx < MAPSTATE::LENGTH; ++idx)
 	{
 		if (is_boxState[idx])
 		{
@@ -361,10 +361,10 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 	if (mouseState.y > 170.0f * (m_windowSize.y / FULL_SCREEN_SIZE.y)) return;
 
 	// アイコンごとの初期値
-	bool iconFlags[MapState::LENGTH] = { false };
+	bool iconFlags[MAPSTATE::LENGTH] = { false };
 
 	// 各アイコンをクリックしたかどうかを判定し、フラグを立てる
-	for (int i = 0; i < MapState::LENGTH; ++i)
+	for (int i = 0; i < MAPSTATE::LENGTH; ++i)
 	{
 		iconFlags[i] = m_imageHitter.IsHitAABB2D(
 			{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
@@ -380,7 +380,7 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 	// マウスがクリックされた場合に、現在のステータスを更新する
 	if (mouseState.leftButton)
 	{
-		for (int i = 0; i < MapState::LENGTH; ++i)
+		for (int i = 0; i < MAPSTATE::LENGTH; ++i)
 		{
 			// 有効フラグを格納
 			is_boxState[i] = iconFlags[i];
@@ -389,23 +389,23 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 			{
 				switch (i)
 				{
-				case MapState::GRASS:
-					m_nowState = MapState::GRASS;		// 草ブロック
+				case MAPSTATE::GRASS:
+					m_nowState = MAPSTATE::GRASS;		// 草ブロック
 					break;
-				case MapState::COIN:
-					m_nowState = MapState::COIN;			// コイン
+				case MAPSTATE::COIN:
+					m_nowState = MAPSTATE::COIN;			// コイン
 					break;
-				case MapState::CLOUD:
-					m_nowState = MapState::CLOUD;		// 雲
+				case MAPSTATE::CLOUD:
+					m_nowState = MAPSTATE::CLOUD;		// 雲
 					break;
-				case MapState::RESET:
-					m_nowState = MapState::RESET;		// リセットポイント
+				case MAPSTATE::RESET:
+					m_nowState = MAPSTATE::RESET;		// リセットポイント
 					break;
-				case MapState::PLAYER:
-					m_nowState = MapState::PLAYER;		// プレイヤー
+				case MAPSTATE::PLAYER:
+					m_nowState = MAPSTATE::PLAYER;		// プレイヤー
 					break;
-				case MapState::NONE:
-					m_nowState = MapState::NONE;			// 空気
+				case MAPSTATE::NONE:
+					m_nowState = MAPSTATE::NONE;			// 空気
 					break;
 				default:
 					break;

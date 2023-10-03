@@ -590,11 +590,11 @@ void PlayScene::ApplyPushBack(Object& obj)
 		// インデックス番号を格納
 		m_prevIndex.push_back(obj.index);
 
-		// 当たっている判定を出す
-		m_blocks->SetCloudHitFlag(m_prevIndex.front(), true);
-
 		// 空なら処理しない
 		if (m_prevIndex.empty()) return;
+
+		// 当たっている判定を出す
+		m_blocks->SetCloudHitFlag(m_prevIndex.front(), true);
 
 		// 入っていたら先頭を削除
 		m_prevIndex.pop_front();
@@ -610,7 +610,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 
 	//-------------------------------------------------------------------------------------//
 
-	// プレイヤのポジションを保存
+	// 直前のプレイヤのポジションを保存
 	SimpleMath::Vector3 playerPos = m_player->GetPosition();
 
 	// 当たり判定を取って押し戻す

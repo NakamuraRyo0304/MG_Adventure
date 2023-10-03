@@ -206,7 +206,7 @@ void EditScene::Draw()
 	}
 
 	// マウス位置に描画
-	if (m_nowState == MapState::NONE) // 削除時以外は通常の描画
+	if (m_nowState == MAPSTATE::NONE) // 削除時以外は通常の描画
 	{
 		m_noneModel->Draw(context, states, world, view, proj);
 	}
@@ -244,19 +244,19 @@ void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	Comm
 
 	switch (objNum)
 	{
-	case MapState::GRASS:	// 草
+	case MAPSTATE::GRASS:	// 草
 		m_grassModel->Draw(context, *states, world, view, proj);
 		break;
-	case MapState::COIN:	// コイン
+	case MAPSTATE::COIN:	// コイン
 		m_coinModel->Draw(context, *states, rotY * world, view, proj);
 		break;
-	case MapState::CLOUD:	// 雲
+	case MAPSTATE::CLOUD:	// 雲
 		m_cloudModel->Draw(context, *states, world, view, proj);
 		break;
-	case MapState::RESET:	// 雲リセット
+	case MAPSTATE::RESET:	// 雲リセット
 		m_resetPtModel->Draw(context, *states, world, view, proj);
 		break;
-	case MapState::PLAYER:	// プレイヤー
+	case MAPSTATE::PLAYER:	// プレイヤー
 		m_playerModel->Draw(context, *states, rotY * world, view, proj);
 		break;
 	default:
@@ -379,7 +379,7 @@ void EditScene::CreateWindowDependentResources()
 void EditScene::SetSceneValues()
 {
 	// 初期値は草ブロック
-	m_nowState = MapState::GRASS;
+	m_nowState = MAPSTATE::GRASS;
 }
 
 /// <summary>

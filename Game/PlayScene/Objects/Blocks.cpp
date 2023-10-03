@@ -80,12 +80,12 @@ void Blocks::Initialize(int stageNum)
 		m_mapObj[i].position.z -= static_cast<float>(m_mapLoad->MAP_COLUMN) / 2 * COMMON_SIZE;
 
 		// コインの枚数のカウント
-		if (m_mapObj[i].id == MapState::COIN)
+		if (m_mapObj[i].id == MAPSTATE::COIN)
 		{
 			m_maxCoins++;
 		}
 		// 雲フラグ登録
-		if (m_mapObj[i].id == MapState::CLOUD)
+		if (m_mapObj[i].id == MAPSTATE::CLOUD)
 		{
 			// ステータス登録
 			m_cloudState[i].moveFlag = false;
@@ -102,7 +102,7 @@ void Blocks::Initialize(int stageNum)
 			};
 		}
 		// プレイヤの座標を代入
-		if (m_mapObj[i].id == MapState::PLAYER)
+		if (m_mapObj[i].id == MAPSTATE::PLAYER)
 		{
 			m_playerPos = SimpleMath::Vector3
 			{
@@ -112,7 +112,7 @@ void Blocks::Initialize(int stageNum)
 			};
 
 			// 代入後に該当マスを空気に変える(判定除去)
-			m_mapObj[i].id = MapState::NONE;
+			m_mapObj[i].id = MAPSTATE::NONE;
 		}
 	}
 
@@ -134,7 +134,7 @@ void Blocks::Update(float elapsedTime)
 	// 雲は上下移動する
 	for(int i = 0; i < m_mapObj.size();++i)
 	{
-		if (m_mapObj[i].id == MapState::CLOUD)
+		if (m_mapObj[i].id == MAPSTATE::CLOUD)
 		{
 			// 触れているときは終点まで
 			if (m_cloudState[i].moveFlag)
@@ -241,21 +241,21 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 
 
 		// 草ブロック
-		if (m_mapObj[i].id == MapState::GRASS)
+		if (m_mapObj[i].id == MAPSTATE::GRASS)
 		{
 			m_grassModel->UpdateEffects(setLightForModel);
 			m_grassModel->Draw(context, states, world, view, proj);
 		}
 
 		// コインブロック
-		if (m_mapObj[i].id == MapState::COIN)
+		if (m_mapObj[i].id == MAPSTATE::COIN)
 		{
 			m_coinModel->UpdateEffects(setLightForModel);
 			m_coinModel->Draw(context, states, rotateY * world, view, proj);
 		}
 
 		// 雲ブロック
-		if (m_mapObj[i].id == MapState::CLOUD)
+		if (m_mapObj[i].id == MAPSTATE::CLOUD)
 		{
 			if (m_cloudState[i].moveFlag)
 			{
@@ -273,7 +273,7 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		}
 
 		// 雲のリセットポイント
-		if (m_mapObj[i].id == MapState::RESET)
+		if (m_mapObj[i].id == MAPSTATE::RESET)
 		{
 			// 反転防止
 			if (sinf(restrictedTimer) < 0.0f)
@@ -339,7 +339,7 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 void Blocks::CountUpCoin(int index)
 {
 	m_coinCount++;
-	m_mapObj[index].id = MapState::NONE;
+	m_mapObj[index].id = MAPSTATE::NONE;
 }
 
 /// <summary>
@@ -360,17 +360,17 @@ const bool& Blocks::IsCollectedFlag()
 const float& Blocks::GetObjSize(const int& objName)
 
 {
-	if (objName == MapState::COIN)
+	if (objName == MAPSTATE::COIN)
 	{
 		// コインは小さめサイズ
 		return COIN_SIZE;
 	}
-	else if (objName == MapState::CLOUD)
+	else if (objName == MAPSTATE::CLOUD)
 	{
 		// 雲も小さめサイズ
 		return CLOWD_SIZE;
 	}
-	else if (objName == MapState::RESET)
+	else if (objName == MAPSTATE::RESET)
 	{
 		// 雲リセットエリアは大きめsサイズ
 		return CLOWD_RESET_SIZE;
@@ -393,7 +393,7 @@ void Blocks::RestoreCloudPosition()
 	for (auto& i : m_mapObj)
 	{
 		// 雲のみを対象とする
-		if (i.id == MapState::CLOUD)
+		if (i.id == MAPSTATE::CLOUD)
 		{
 			// Y座標を始点まで動かす
 			i.position.y = UserUtility::Lerp
