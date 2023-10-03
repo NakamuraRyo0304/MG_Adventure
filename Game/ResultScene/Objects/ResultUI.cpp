@@ -203,7 +203,7 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 		L"Number",
 		SimpleMath::Vector2{ 1000.0f ,290.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale,
+		scale * wScale,
 		SimpleMath::Vector2::Zero,
 		oneRec
 	);
@@ -212,7 +212,7 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 		L"Number",
 		SimpleMath::Vector2{ 860.0f ,290.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale,
+		scale * wScale,
 		SimpleMath::Vector2::Zero,
 		tenRec
 	);
@@ -229,7 +229,7 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 		L"Number",
 		SimpleMath::Vector2{ 1000.0f ,760.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale,
+		scale * wScale,
 		SimpleMath::Vector2::Zero,
 		oneRec
 	);
@@ -238,7 +238,7 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 		L"Number",
 		SimpleMath::Vector2{ 860.0f ,760.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale,
+		scale * wScale,
 		SimpleMath::Vector2::Zero,
 		tenRec
 	);

@@ -128,9 +128,8 @@ private:
 	const float COUNT_SPEED = 0.5f;
 
 	// 最初のカメラ演出終点
-	const float MOVE_CAMERA_SPEED = 0.025f;
-	const DirectX::SimpleMath::Vector3 START_CAMERA_POS = { 0.0f,30.0f,40.0f };
-	const DirectX::SimpleMath::Vector3 END_CAMERA_POS	= { 0.0f,11.0f,16.0f };
+	const float MOVE_CAMERA_SPEED = 0.05f;
+	const DirectX::SimpleMath::Vector3 START_CAMERA_POS = { 0.0f,50.0f,40.0f };
 
 public:
 
