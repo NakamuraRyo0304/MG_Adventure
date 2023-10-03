@@ -517,10 +517,9 @@ void PlayScene::Judgement()
 	for (auto& obj : m_blocks->GetMapData())
 	{
 		// プレイヤの半径1.5fの範囲になければ処理しない
+		// 引数（基準点、検索範囲、検索点）
 		if (UserUtility::CheckPointInSphere(
-			m_player->GetPosition(),									// 中心点
-			JUDGE_AREA,													// 半径
-			obj.position))												// あるか調べる点
+			m_player->GetPosition(),JUDGE_AREA,	obj.position))
 		{
 			// 判定を取る
 			is_boxCol.PushBox(
@@ -548,7 +547,7 @@ void PlayScene::Judgement()
 void PlayScene::ApplyPushBack(Object& obj)
 {
 	// 当っているオブジェが空気の場合は処理しない
-	if (obj.id == MapState::NONE)
+	if (obj.id == MAPSTATE::NONE)
 	{
 		is_boxCol.SetPushMode(false);
 		return;
@@ -561,7 +560,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	//-------------------------------------------------------------------------------------//
 
 	// コインの処理
-	if (obj.id == MapState::COIN)
+	if (obj.id == MAPSTATE::COIN)
 	{
 		// 押し戻ししない
 		is_boxCol.SetPushMode(false);
@@ -576,7 +575,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	//-------------------------------------------------------------------------------------//
 
 	// 雲の処理
-	if (obj.id == MapState::CLOUD)
+	if (obj.id == MAPSTATE::CLOUD)
 	{
 		// プレイヤーが下にいたら押し戻ししない
 		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(obj.id))
@@ -603,7 +602,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 
 
 	// リセット処理
-	if (obj.id == MapState::RESET)
+	if (obj.id == MAPSTATE::RESET)
 	{
 		is_boxCol.SetPushMode(false);
 		m_blocks->RestoreCloudPosition();
