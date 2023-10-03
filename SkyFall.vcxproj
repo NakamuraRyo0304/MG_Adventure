@@ -302,6 +302,7 @@
     <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds" />
     <Image Include="Resources\Textures\ResultBack.dds" />
     <Image Include="Resources\Textures\ResultFonts.dds" />
+    <ImageContentTask Include="Resources\Textures\ResultFonts.png" />
     <Image Include="Resources\Textures\SaveFile.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\LeftArrow.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\RightArrow.dds" />

@@ -80,9 +80,10 @@ void ResultUI::Initialize(const SimpleMath::Vector2& windowSize)
 	SimpleMath::Vector2 rate = m_windowSize / FULL_SCREEN_SIZE;
 
 	// 文字の座標の初期化
-	m_retryPos  = SimpleMath::Vector2{ FONT_WIDTH / 2, FULL_SCREEN_SIZE.y - 150.0f };
-	m_selectPos = SimpleMath::Vector2{ m_retryPos.x + FONT_WIDTH, FULL_SCREEN_SIZE.y - 150.0f };
-	m_titlePos  = SimpleMath::Vector2{ m_selectPos.x + FONT_WIDTH, FULL_SCREEN_SIZE.y - 150.0f };
+	float commonY = FULL_SCREEN_SIZE.y - 200.0f;
+	m_retryPos  = SimpleMath::Vector2{ FONT_WIDTH / 2, commonY };
+	m_selectPos = SimpleMath::Vector2{ m_retryPos.x + FONT_WIDTH, commonY };
+	m_titlePos  = SimpleMath::Vector2{ m_selectPos.x + FONT_WIDTH, commonY };
 }
 
 /// <summary>
@@ -190,7 +191,7 @@ void ResultUI::Finalize()
 /// <returns>なし</returns>
 void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 {
-	// 画面サイズ
+	// 画面サイズ比率
 	SimpleMath::Vector2 wScale = m_windowSize / FULL_SCREEN_SIZE;
 
 	//-------------------------------------------------------------------------------------//
@@ -218,8 +219,6 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 	);
 
 	//-------------------------------------------------------------------------------------//
-
-	//-------------------------------------------------------------------------------------//
 	// コインの数
 	// 切り取り位置設定
 	oneRec = { m_oneCoins * 100, 0,m_oneCoins * 100 + 100, 100 };
@@ -227,7 +226,7 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 1000.0f ,760.0f } * wScale,
+		SimpleMath::Vector2{ 1000.0f ,700.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale * wScale,
 		SimpleMath::Vector2::Zero,
@@ -236,13 +235,12 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 860.0f ,760.0f } * wScale,
+		SimpleMath::Vector2{ 860.0f ,700.0f } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale * wScale,
 		SimpleMath::Vector2::Zero,
 		tenRec
 	);
-	//-------------------------------------------------------------------------------------//
 }
 
 /// <summary>

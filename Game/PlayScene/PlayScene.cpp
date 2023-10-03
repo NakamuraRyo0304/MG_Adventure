@@ -292,17 +292,20 @@ void PlayScene::Draw()
 	// ビュー行列&プロジェクション行列
 	if (StartTimer() == false)
 	{
+		// スタート演出カメラ
 		view = m_playCamera->CreateView();
 		proj = m_playCamera->GetProjection();
 	}
-	else if (!is_thirdPersonMode)
+	else if (is_thirdPersonMode)
 	{
-		view = GetSystemManager()->GetCamera()->GetView();
+		// リアル視点(三人称)カメラ
+		view = m_thirdCamera->GetFollowView();
 		proj = GetSystemManager()->GetCamera()->GetProjection();
 	}
 	else
 	{
-		view = m_thirdCamera->GetFollowView();
+		// 通常カメラ
+		view = GetSystemManager()->GetCamera()->GetView();
 		proj = GetSystemManager()->GetCamera()->GetProjection();
 	}
 
@@ -339,7 +342,7 @@ void PlayScene::Draw()
 	{
 		m_playerBill->CreateBillboard(
 			GetSystemManager()->GetCamera()->GetTarget(),	// カメラの注視点
-			GetSystemManager()->GetCamera()->GetPosition(),				// カメラの座標
+			GetSystemManager()->GetCamera()->GetPosition(),	// カメラの座標
 			SimpleMath::Vector3::Up
 		);
 		m_playerBill->Render(m_player->GetPosition(), m_timer, view, proj);
@@ -600,7 +603,6 @@ void PlayScene::ApplyPushBack(Object& obj)
 		m_prevIndex.pop_front();
 	}
 
-
 	// リセット処理
 	if (obj.id == MAPSTATE::RESET)
 	{
@@ -629,8 +631,6 @@ void PlayScene::ApplyPushBack(Object& obj)
 	{
 		m_player->ResetGravity();
 	}
-
-	//-------------------------------------------------------------------------------------//
 
 	// 処理が終わったら要素を破棄
 	m_hitObjects.pop_back();
@@ -676,7 +676,13 @@ bool PlayScene::StartTimer()
 /// <returns>なし</returns>
 void PlayScene::MoveStart()
 {
-	auto cam = *GetSystemManager()->GetCamera();
+	Camera cam = *GetSystemManager()->GetCamera();
+
+	//-------------------//
+	// 現在位置
+	// 終点位置
+	// 移動速度
+	//-------------------//
 
 	// カメラ座標の移動
 	m_playCamera->SetPosition(

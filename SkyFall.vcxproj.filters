@@ -655,4 +655,9 @@
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Resources\Textures\ResultFonts.png">
+      <Filter>Resources\Textures\ResultScene</Filter>
+    </ImageContentTask>
+  </ItemGroup>
 </Project>
