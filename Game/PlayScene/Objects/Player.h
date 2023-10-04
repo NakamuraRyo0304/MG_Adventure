@@ -65,6 +65,9 @@ private:
 
 	// プレイヤのサイズ
 	const float SIZE = 0.85f;
+	// 移動速度
+	const float THIRD_SPEED = 0.015f;
+	const float NORMAL_SPEED = 0.01f;
 	// 回転速度
 	const float ROT_SPEED = 0.05f;
 	const float NECK_ROT_SPEED = 0.30f;

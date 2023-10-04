@@ -70,7 +70,7 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 	m_parameter.reset();
 
 	// 加速度の設定
-	m_parameter.accelerate = 0.01f;
+	m_parameter.accelerate = NORMAL_SPEED;
 
 	// 死亡判定の初期化
 	is_deathFlag = false;
@@ -97,6 +97,9 @@ void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
 	m_timer = timer;
 
 	is_lookFlag = lookFlag;
+
+	// 視点によって速度を変更する
+	m_parameter.accelerate = is_lookFlag ? THIRD_SPEED : NORMAL_SPEED;
 
 	// 重力処理
 	UpdateGravity();
