@@ -19,7 +19,6 @@
 ・2Pカラーモデルの作成
 
 ・ショップ機能作る
-（ShopScene追加）
 関数
 override群他、SelectScene同様の選択、店を出る選択（Editのような）
 

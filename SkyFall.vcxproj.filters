@@ -188,6 +188,9 @@
     <Filter Include="Scenes\ResultScene\Objects">
       <UniqueIdentifier>{7e95942f-3771-4368-ae2c-891d8bc05143}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\ShopScene">
+      <UniqueIdentifier>{1d496149-41bb-4186-a1b1-7d2a01bcff92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -304,6 +307,9 @@
     <ClInclude Include="Game\PlayScene\System\PlayCamera.h">
       <Filter>Scenes\PlayScene\System</Filter>
     </ClInclude>
+    <ClInclude Include="Game\ShopScene\ShopScene.h">
+      <Filter>Scenes\ShopScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -410,6 +416,9 @@
     </ClCompile>
     <ClCompile Include="Game\PlayScene\System\PlayCamera.cpp">
       <Filter>Scenes\PlayScene\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ShopScene\ShopScene.cpp">
+      <Filter>Scenes\ShopScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

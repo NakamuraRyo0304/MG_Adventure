@@ -204,6 +204,7 @@
     <ClInclude Include="Game\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\SelectScene\Objects\SelectUI.h" />
     <ClInclude Include="Game\SelectScene\SelectScene.h" />
+    <ClInclude Include="Game\ShopScene\ShopScene.h" />
     <ClInclude Include="Game\TitleScene\Objects\TitleUI.h" />
     <ClInclude Include="Game\TitleScene\TitleScene.h" />
     <ClInclude Include="Libraries\Factories\ModelFactory.h" />
@@ -244,6 +245,7 @@
     <ClCompile Include="Game\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Game\SelectScene\Objects\SelectUI.cpp" />
     <ClCompile Include="Game\SelectScene\SelectScene.cpp" />
+    <ClCompile Include="Game\ShopScene\ShopScene.cpp" />
     <ClCompile Include="Game\TitleScene\Objects\TitleUI.cpp" />
     <ClCompile Include="Game\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Libraries\Factories\ModelFactory.cpp" />

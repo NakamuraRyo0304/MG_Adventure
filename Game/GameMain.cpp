@@ -17,12 +17,16 @@
 // フェードオブジェクト
 #include "../Libraries/SystemDatas/Fade.h"
 
+// ユーザーユーティリティ
+#include "../Libraries/UserUtility.h"
+
 // TODO: シーン２：シーンのインクルード
 #include "Game/TitleScene/TitleScene.h"
 #include "Game/SelectScene/SelectScene.h"
 #include "Game/EditScene/EditScene.h"
 #include "Game/PlayScene/PlayScene.h"
 #include "Game/ResultScene/ResultScene.h"
+#include "Game/ShopScene/ShopScene.h"
 
  /// <summary>
  /// コンストラクタ
@@ -179,6 +183,9 @@ void GameMain::CreateScene()
 		{
 			m_nowScene = std::make_unique<SelectScene>();
 
+			// 合計コイン数を999で上限止め
+			m_totalCoinNum = UserUtility::Clamp(m_totalCoinNum, 0, 999);
+
 			// ステージ番号、未開放ステージ番号、合計コイン数を渡す
 			CastSceneType<SelectScene>(m_nowScene)->SetStageNum(m_num);
 			CastSceneType<SelectScene>(m_nowScene)->SetNoStageNum(m_closeNum);
@@ -217,6 +224,11 @@ void GameMain::CreateScene()
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
+		case SCENE::SHOP:		// ショップシーン
+			m_nowScene = std::make_unique<ShopScene>();
+
+			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
+			break;
 		case SCENE::ENDGAME:	// ゲーム終了
 		{
 			WriteSaveData(); // データを書き出し
