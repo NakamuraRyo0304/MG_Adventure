@@ -180,7 +180,7 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 scale)
 /// </summary>
 /// <param name="totalCoinNum">ÉRÉCÉìêî</param>
 /// <returns>Ç»Çµ</returns>
-void SelectUI::SetTotalCoins(const int& totalCoinNum)
+void SelectUI::SetAllCoins(const int& totalCoinNum)
 {
 	m_oneCoins = totalCoinNum % 10;
 	m_tenCoins = totalCoinNum / 10 % 10;

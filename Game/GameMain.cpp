@@ -45,7 +45,7 @@ GameMain::GameMain()
 	//以下はセーブデータ対応------------------------------------------------------------------------//
 	, is_saveOnce{false}				// セーブ済みか確認するフラグ
 	, m_closeNum{}						// 未開放ステージ
-	, m_totalCoinNum{}					// 累計コイン枚数
+	, m_allCoins{}						// 累計コイン枚数
 {
 }
 
@@ -183,13 +183,15 @@ void GameMain::CreateScene()
 		{
 			m_nowScene = std::make_unique<SelectScene>();
 
+			//-------------------------------------------------------------------------------------//
 			// 合計コイン数を999で上限止め
-			m_totalCoinNum = UserUtility::Clamp(m_totalCoinNum, 0, 999);
+			m_allCoins = UserUtility::Clamp(m_allCoins, 0, 999);
 
 			// ステージ番号、未開放ステージ番号、合計コイン数を渡す
 			CastSceneType<SelectScene>(m_nowScene)->SetStageNum(m_num);
 			CastSceneType<SelectScene>(m_nowScene)->SetNoStageNum(m_closeNum);
-			CastSceneType<SelectScene>(m_nowScene)->SetTotalCoins(m_totalCoinNum);
+			CastSceneType<SelectScene>(m_nowScene)->SetAllCoins(m_allCoins);
+			//-------------------------------------------------------------------------------------//
 
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
@@ -198,9 +200,11 @@ void GameMain::CreateScene()
 		{
 			m_nowScene = std::make_unique<PlayScene>();
 
+			//-------------------------------------------------------------------------------------//
 			// 選択したステージを渡す
-			CastSceneType<PlayScene>(m_nowScene)->SetAllCoinNum(m_totalCoinNum);
+			CastSceneType<PlayScene>(m_nowScene)->SetAllCoinNum(m_allCoins);
 			CastSceneType<PlayScene>(m_nowScene)->SetStageNum(m_num);
+			//-------------------------------------------------------------------------------------//
 
 			m_fade->SetFadeSpeed(PLAY_FADE_SPEED);
 			break;
@@ -209,10 +213,12 @@ void GameMain::CreateScene()
 		{
 			m_nowScene = std::make_unique<ResultScene>();
 
+			//-------------------------------------------------------------------------------------//
 			// ステージ番号、クリアタイム、獲得コイン数を渡す
 			CastSceneType<ResultScene>(m_nowScene)->SetStageNum(m_num);
 			CastSceneType<ResultScene>(m_nowScene)->SetClearTime(m_clearTime);
 			CastSceneType<ResultScene>(m_nowScene)->SetCoinNum(m_coinNum);
+			//-------------------------------------------------------------------------------------//
 
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
@@ -225,10 +231,17 @@ void GameMain::CreateScene()
 			break;
 		}
 		case SCENE::SHOP:		// ショップシーン
+		{
 			m_nowScene = std::make_unique<ShopScene>();
+
+			//-------------------------------------------------------------------------------------//
+			// 合計獲得コイン数を渡す
+			CastSceneType<ShopScene>(m_nowScene)->SetAllCoins(m_allCoins);
+			//-------------------------------------------------------------------------------------//
 
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
+		}
 		case SCENE::ENDGAME:	// ゲーム終了
 		{
 			WriteSaveData(); // データを書き出し
@@ -263,6 +276,13 @@ void GameMain::DeleteScene()
 
 	switch (m_nextScene)
 	{
+	case SCENE::SELECT:
+		// 前回のシーンがショップなら値を保存する
+		if (m_prevScene == SCENE::SHOP)
+		{
+			m_allCoins = CastSceneType<ShopScene>(m_nowScene)->GetAllCoins();
+		}
+		break;
 	case SCENE::PLAY:
 		// 再読み込みでなければ処理する
 		if (m_nextScene != m_prevScene && m_prevScene != SCENE::RESULT)
@@ -359,7 +379,7 @@ void GameMain::LoadSaveData()
 			return;
 		}
 
-		if (!(iss >> m_totalCoinNum))
+		if (!(iss >> m_allCoins))
 		{
 			coinIfs.close();
 			return;
@@ -384,7 +404,7 @@ void GameMain::WriteSaveData()
 		// ファイルを出力する
 		std::ostringstream coinOss;
 
-		coinOss << m_closeNum << "," << m_totalCoinNum << ",";
+		coinOss << m_closeNum << "," << m_allCoins << ",";
 		coinOfs << coinOss.str();
 
 		coinOfs.close();
@@ -408,7 +428,7 @@ void GameMain::OpenNewStage()
 	}
 
 	// コイン数を加算
-	m_totalCoinNum += m_coinNum;
+	m_allCoins += m_coinNum;
 
 	// 最新状態を保存
 	WriteSaveData();

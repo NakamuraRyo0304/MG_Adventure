@@ -33,7 +33,7 @@ private:
 	int m_noStageNum;
 
 	// 合計コイン数
-	int m_totalCoins;
+	int m_allCoins;
 
 	// ブロックとステージ
 	std::unique_ptr<Blocks> m_blocks[10];
@@ -50,6 +50,12 @@ private:
 	std::unique_ptr<SelectUI> m_userInterface;
 
 private:
+	// 静的定数-------------------------------------------------------------------------------
+
+	// デバッグフラグ(True:エディタでビルド、False:ショップでビルド)
+	static const bool DEBUG_FLAG;
+
+private:
 	// 定数-----------------------------------------------------------------------------------
 
 	const float MAX_FLASH = 180.0f;
@@ -60,6 +66,7 @@ private:
 
 	// 最大ステージ数
 	const int MAX_STAGE_NUM = 10;
+
 	// カメラの回転半径
 	const float CAMERA_RADIUS = 4.0f;
 
@@ -123,8 +130,8 @@ public:
 	void SetNoStageNum(const int& stageNum) { m_noStageNum = stageNum; }
 
 	// 合計コインアクセサ
-	const int& GetTotalCoins() { return m_totalCoins; }
-	void SetTotalCoins(const int& num);
+	const int& GetAllCoins() { return m_allCoins; }
+	void SetAllCoins(const int& num);
 };
 
 #endif // SELECTSCENE

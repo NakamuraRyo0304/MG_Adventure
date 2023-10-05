@@ -334,6 +334,7 @@
     <None Include="Resources\Models\MoveBlock.cmo" />
     <None Include="Resources\Models\ResetPt.cmo" />
     <None Include="Resources\Models\ShineSky.cmo" />
+    <None Include="Resources\Models\Shop.cmo" />
     <None Include="Resources\Models\Spacedome.cmo" />
     <None Include="Resources\Models\Stage1.cmo" />
     <None Include="Resources\Models\Stage2.cmo" />

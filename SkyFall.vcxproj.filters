@@ -119,9 +119,6 @@
     <Filter Include="Resources\Textures\FONT">
       <UniqueIdentifier>{509dc2a6-c44e-4a81-8770-7f94b47d8711}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Models\Stage">
-      <UniqueIdentifier>{6f458962-5566-44f3-8d4b-67fc1e47e5f2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Textures\BLOCK">
       <UniqueIdentifier>{8efaf320-95be-4e10-a39b-7f7fe4ff6a4b}</UniqueIdentifier>
     </Filter>
@@ -190,6 +187,9 @@
     </Filter>
     <Filter Include="Scenes\ShopScene">
       <UniqueIdentifier>{1d496149-41bb-4186-a1b1-7d2a01bcff92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Models\Fonts">
+      <UniqueIdentifier>{6f458962-5566-44f3-8d4b-67fc1e47e5f2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -570,34 +570,34 @@
       <Filter>Resources\Shaders</Filter>
     </None>
     <None Include="Resources\Models\Stage1.cmo">
-      <Filter>Resources\Models\Stage</Filter>
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Models\Stage2.cmo">
-      <Filter>Resources\Models\Stage</Filter>
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Models\Stage3.cmo">
-      <Filter>Resources\Models\Stage</Filter>
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Models\StageEdit.cmo">
-      <Filter>Resources\Models\Stage</Filter>
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Models\Stage4.cmo">
-      <Filter>Resources\Models\Stage</Filter>
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Models\Stage5.cmo">
-      <Filter>Resources\Models\Stage</Filter>
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Models\Stage6.cmo">
-      <Filter>Resources\Models\Stage</Filter>
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Models\Stage7.cmo">
-      <Filter>Resources\Models\Stage</Filter>
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Models\Stage8.cmo">
-      <Filter>Resources\Models\Stage</Filter>
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Models\Stage9.cmo">
-      <Filter>Resources\Models\Stage</Filter>
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Models\Bird.cmo">
       <Filter>Resources\Models\Player</Filter>
@@ -643,6 +643,9 @@
     </None>
     <None Include="Resources\Models\TitleLogoVer2.cmo">
       <Filter>Resources\Models\TitleScene</Filter>
+    </None>
+    <None Include="Resources\Models\Shop.cmo">
+      <Filter>Resources\Models\Fonts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

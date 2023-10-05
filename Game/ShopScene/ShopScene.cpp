@@ -15,6 +15,7 @@
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
 ShopScene::ShopScene()
+	: m_allCoins{}
 {
 }
 
@@ -34,6 +35,17 @@ ShopScene::~ShopScene()
 /// <returns>なし</returns>
 void ShopScene::Initialize()
 {
+	// 画面依存の初期化
+	CreateWindowDependentResources();
+
+	// カメラ視点移動を切る
+	GetSystemManager()->GetCamera()->SetEagleMode(false);
+
+	// 変数の初期化
+	SetSceneValues();
+
+	// BGMを鳴らす
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
 }
 
 /// <summary>
@@ -46,6 +58,24 @@ void ShopScene::Initialize()
 void ShopScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	Mouse::State& mouseState)
 {
+	// キー入力情報を取得する
+	GetSystemManager()->GetStateTrack()->Update(keyState);
+
+	// マウス情報を取得する
+	GetSystemManager()->GetMouseTrack()->Update(mouseState);
+
+	// カメラの更新
+	GetSystemManager()->GetCamera()->Update();
+
+	// サウンドの更新
+	GetSystemManager()->GetSoundManager()->Update();
+
+	// エスケープで終了
+	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+
+	//-------------------------------------------------------------------------------------//
+	// 購入処理を書く
+
 }
 
 /// <summary>
@@ -55,6 +85,10 @@ void ShopScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 /// <returns>なし</returns>
 void ShopScene::Draw()
 {
+	// 描画関連
+	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto& states = *GetSystemManager()->GetCommonStates();
+
 }
 
 /// <summary>
@@ -73,6 +107,24 @@ void ShopScene::Finalize()
 /// <returns>なし</returns>
 void ShopScene::CreateWindowDependentResources()
 {
+	// デバイスとデバイスコンテキストの取得
+	auto device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
+	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+
+	// メイクユニーク
+	GetSystemManager()->CreateUnique(device, context);
+	GetSystemManager()->GetString()->CreateString(device, context);
+
+	// 画面サイズの格納
+	float width =
+		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
+	float height =
+		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
+
+	// カメラの設定
+	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
+
+
 }
 
 /// <summary>

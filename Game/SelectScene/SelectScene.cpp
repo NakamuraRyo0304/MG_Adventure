@@ -27,16 +27,22 @@
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
 SelectScene::SelectScene()
-	: IScene()			// 基底クラスの初期化
-	, m_timer{}			// タイマー
-	, m_flashCount{}	// 点滅のカウンタ
-	, m_stageNum{1}		// ステージ番号
-	, m_noStageNum{}	// 未開放ステージ番号
-	, m_totalCoins{}	// 合計コイン数
-	, m_targetY{}		// カメラのターゲットのY座標
-	, m_mutex{}			// ロック
+	: IScene()					// 基底クラスの初期化
+	, m_timer{}					// タイマー
+	, m_flashCount{}			// 点滅のカウンタ
+	, m_stageNum{1}				// ステージ番号
+	, m_noStageNum{}			// 未開放ステージ番号
+	, m_allCoins{}				// 合計コイン数
+	, m_targetY{}				// カメラのターゲットのY座標
+	, m_mutex{}					// ロック
 {
 }
+
+//-------------------------------------------------------------------------------------//
+// デバッグフラグの初期化
+const bool SelectScene::DEBUG_FLAG = false;
+
+//-------------------------------------------------------------------------------------//
 
 /// <summary>
 /// デストラクタ
@@ -65,7 +71,7 @@ void SelectScene::Initialize()
 	SetSceneValues();
 
 	// コイン数をセット
-	m_userInterface->SetTotalCoins(m_totalCoins);
+	m_userInterface->SetAllCoins(m_allCoins);
 
 	// BGMを鳴らす
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
@@ -107,8 +113,16 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
-		// ステージ番号が0ならエディタに、それ以外はプレイへ
-		m_stageNum == 0 ? ChangeScene(SCENE::EDIT) : ChangeScene(SCENE::PLAY);
+		if (DEBUG_FLAG)
+		{
+			// ステージ番号が0ならエディタに、それ以外はプレイへ
+			m_stageNum == 0 ? ChangeScene(SCENE::EDIT) : ChangeScene(SCENE::PLAY);
+		}
+		else
+		{
+			// ステージ番号が0ならショップに、それ以外はプレイへ
+			m_stageNum == 0 ? ChangeScene(SCENE::SHOP) : ChangeScene(SCENE::PLAY);
+		}
 
 		// 決定音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
@@ -154,8 +168,6 @@ void SelectScene::Draw()
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
-
-	//-------------------------------------------------------------------------------------//
 
 	// UIの表示
 	m_userInterface->Render(m_stageNum);
@@ -208,10 +220,7 @@ void SelectScene::CreateWindowDependentResources()
 
 	// スカイドームモデルを作成する
 	{
-		m_skyDomeModel = ModelFactory::GetCreateModel(
-			device,
-			L"Resources/Models/ShineSky.cmo"
-		);
+		m_skyDomeModel = ModelFactory::GetCreateModel(device, L"Resources/Models/ShineSky.cmo");
 		m_skyDomeModel->UpdateEffects([](IEffect* effect)
 			{
 				auto lights = dynamic_cast<IEffectLights*>(effect);
@@ -245,7 +254,14 @@ void SelectScene::CreateWindowDependentResources()
 			// 0番目はエディタの文字
 			if (i == 0)
 			{
-				m_stageModels[0] = ModelFactory::GetCreateModel(device, L"Resources/Models/StageEdit.cmo");
+				if (DEBUG_FLAG)
+				{
+					m_stageModels[0] = ModelFactory::GetCreateModel(device, L"Resources/Models/StageEdit.cmo");
+				}
+				else
+				{
+					m_stageModels[0] = ModelFactory::GetCreateModel(device, L"Resources/Models/Shop.cmo");
+				}
 			}
 			else
 			{
@@ -432,7 +448,7 @@ SimpleMath::Matrix SelectScene::CreateTextMatrix(const float& rotValue)
 /// </summary>
 /// <param name="num">合計コイン数</param>
 /// <returns>なし</returns>
-void SelectScene::SetTotalCoins(const int& num)
+void SelectScene::SetAllCoins(const int& num)
 {
-	m_totalCoins = num;
+	m_allCoins = num;
 }

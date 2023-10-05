@@ -14,6 +14,14 @@ class ShopScene final : public IScene
 {
 private:
 
+	// 合計コイン数
+	int m_allCoins;
+
+private:
+
+	// カメラアングル
+	const float CAMERA_ANGLE = 44.5f;
+
 public:
 	// コンストラクタ
 	ShopScene();
@@ -41,6 +49,11 @@ private:
 	// シーン内の変数初期化関数
 	void SetSceneValues() override;
 
+public:
+
+	// コインアクセサ
+	const int& GetAllCoins() { return m_allCoins; }
+	void SetAllCoins(const int& allCoins) { m_allCoins = allCoins; }
 
 
 };

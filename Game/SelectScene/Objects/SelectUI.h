@@ -55,7 +55,7 @@ private:
 
 public:
 	// コイン数セッター
-	void SetTotalCoins(const int& totalCoinNum);
+	void SetAllCoins(const int& totalCoinNum);
 };
 
 #endif // SELECTUI
