@@ -83,16 +83,6 @@ void PlayScene::Initialize()
 	GetSystemManager()->GetCamera()->SetEagleMode(false);
 	GetSystemManager()->GetCamera()->SetArrowMode(false);
 
-	// プレイヤの初期化
-	m_player->SetAllCoins(m_allCoins);
-	m_player->Initialize(std::make_shared<SystemManager>());
-
-	// マップ読み込み
-	m_blocks->Initialize(m_stageNum);
-
-	// プレイヤー座標設定
-	m_player->SetPosition(m_blocks->GetPlayerPosition());
-
 	// 変数の初期化
 	SetSceneValues();
 
@@ -504,6 +494,16 @@ void PlayScene::SetSceneValues()
 
 	// ヘルプを表示しない
 	is_helpFlag = false;
+
+	// プレイヤの初期化
+	m_player->SetAllCoins(m_allCoins);
+	m_player->Initialize(GetSystemManager());
+
+	// マップ読み込み
+	m_blocks->Initialize(m_stageNum);
+
+	// プレイヤー座標設定
+	m_player->SetPosition(m_blocks->GetPlayerPosition());
 }
 
 /// <summary>

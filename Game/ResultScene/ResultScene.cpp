@@ -64,9 +64,6 @@ void ResultScene::Initialize()
 	// カメラ視点移動
 	GetSystemManager()->GetCamera()->SetEagleMode(false);
 
-	// マップ読み込み
-	m_blocks->Initialize(m_stageNum);
-
 	// 変数の初期化
 	SetSceneValues();
 
@@ -272,6 +269,9 @@ void ResultScene::SetSceneValues()
 
 	// 演出時間 最初のフェードも考慮して多めに取る
 	m_directionTime = 120.0f;
+
+	// マップ読み込み
+	m_blocks->Initialize(m_stageNum);
 }
 
 /// <summary>

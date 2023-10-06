@@ -65,9 +65,6 @@ void EditScene::Initialize()
 
 	// 変数の初期化
 	SetSceneValues();
-
-	// マップ読み込み//初回読み込み
-	LoadMap(L"Resources/Maps/StageEdit.csv");
 }
 
 /// <summary>
@@ -380,6 +377,9 @@ void EditScene::SetSceneValues()
 {
 	// 初期値は草ブロック
 	m_nowState = MAPSTATE::GRASS;
+
+	// マップ読み込み//初回読み込み
+	LoadMap(L"Resources/Maps/StageEdit.csv");
 }
 
 /// <summary>

@@ -45,7 +45,7 @@ void ShopScene::Initialize()
 	SetSceneValues();
 
 	// BGM‚ð–Â‚ç‚·
-	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_THINKING, true);
 }
 
 /// <summary>

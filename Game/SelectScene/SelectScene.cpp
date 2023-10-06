@@ -39,7 +39,7 @@ SelectScene::SelectScene()
 }
 
 //-------------------------------------------------------------------------------------//
-// デバッグフラグの初期化
+// デバッグフラグの初期化(True:エディタ/False:ショップ)
 const bool SelectScene::DEBUG_FLAG = false;
 
 //-------------------------------------------------------------------------------------//
@@ -69,9 +69,6 @@ void SelectScene::Initialize()
 
 	// 変数の初期化
 	SetSceneValues();
-
-	// コイン数をセット
-	m_userInterface->SetAllCoins(m_allCoins);
 
 	// BGMを鳴らす
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
@@ -288,6 +285,9 @@ void SelectScene::SetSceneValues()
 
 	// スタートが0
 	m_flashCount = 0.0f;
+
+	// コイン数をセット
+	m_userInterface->SetAllCoins(m_allCoins);
 }
 
 /// <summary>
