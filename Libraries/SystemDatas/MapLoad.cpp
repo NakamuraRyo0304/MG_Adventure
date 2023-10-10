@@ -49,8 +49,8 @@ MapLoad::~MapLoad()
 /// マップの読み込み
 /// </summary>
 /// <param name="filename">ファイルパスを指定(L"...csv")拡張子は「.csv」</param>
-/// <returns>なし</returns>
-void MapLoad::LoadMap(std::wstring filename)
+/// <returns>成功したか</returns>
+bool MapLoad::LoadMap(std::wstring filename)
 {
 	m_filename = filename;
 
@@ -67,6 +67,8 @@ void MapLoad::LoadMap(std::wstring filename)
 
 	// ファイルを開く
 	std::ifstream ifs(m_filename);
+
+	if (!ifs) return false;
 
 	std::string line;
 
@@ -86,7 +88,6 @@ void MapLoad::LoadMap(std::wstring filename)
 		{
 			ifs.close();
 			m_mapData.clear();
-			return;
 		}
 
 		// 座標情報
@@ -94,7 +95,6 @@ void MapLoad::LoadMap(std::wstring filename)
 		{
 			ifs.close();
 			m_mapData.clear();
-			return;
 		}
 
 		// 読み込んだデータを格納する
@@ -103,6 +103,8 @@ void MapLoad::LoadMap(std::wstring filename)
 
 	// 開いたファイルを閉じる
 	ifs.close();
+
+	return true;
 }
 
 /// <summary>
@@ -192,15 +194,6 @@ bool MapLoad::SaveMapPath(std::wstring& filePath)
 			{
 				// 選択されたファイルパスをfilePathに格納
 				filePath = tmpFilePath;
-
-				// メモリの解放
-				CoTaskMemFree(tmpFilePath);
-
-				// pItemの解放
-				pShell->Release();
-
-				// pFileDialogの解放
-				pFileDialog->Release();
 
 				// 選択されたフィルタのインデックスを取得
 				unsigned int filterIndex;

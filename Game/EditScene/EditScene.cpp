@@ -1,7 +1,7 @@
 /*
  *	@File	EditScene.cpp
  *	@Brief  エディットシーン。
- *	@Date	2023-03-31
+ *	@Date	2023-09-24
  *  @Author NakamuraRyo
  */
 
@@ -12,6 +12,8 @@
 
 // マウスカーソル
 #include "../../Libraries/SystemDatas/MouseCursor.h"
+
+#include "System/ClearChecker.h"
 
 #include "EditScene.h"
 
@@ -97,6 +99,9 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// マウスカーソルの位置を更新
 	m_mouseCursor->Update(SimpleMath::Vector2{ static_cast<float>(mouseState.x),static_cast<float>(mouseState.y) });
 
+	// エスケープで終了
+	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+
 	// 選択しているオブジェクトを格納
 	m_nowState = m_userInterface->GetNowState();
 
@@ -111,7 +116,11 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_userInterface->GetOpenFlag() &&
 		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
-		m_map.LoadMap(L"");						// ファイル新規作成
+		auto temp = m_map.GetMapData();
+		if (!m_map.LoadMap(L""))
+		{
+			return;
+		}
 		m_mapObj = m_map.GetMapData();			// 読み込み
 		OffsetPosition(&m_mapObj,READ);			// 座標補正
 	}
@@ -130,15 +139,33 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		EditMap();
 	}
 
-	// Spaceキーかボタンクリックでセレクトに戻る
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space) ||
-		m_userInterface->GetBackSelectFlag())
+	// ボタンクリックでセレクトに戻る
+	if (m_userInterface->GetBackSelectFlag())
 	{
 		ChangeScene(SCENE::SELECT);
 	}
 
-	// エスケープで終了
-	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+	// クリアチェック
+	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Enter))
+	{
+		// クリアチェッカーに配列を渡す
+		m_checker->SetMap(m_mapObj);
+		if (m_checker->RunCheck())
+		{
+			MessageBox(NULL, TEXT("必要条件を満たしています。"),
+				TEXT("必要事項確認"), MB_OK);
+			if (m_checker->GetPlayerNum() > 2)
+			{
+				MessageBox(NULL, TEXT("プレイヤーの数が多すぎます。"),
+					TEXT("注意"), MB_OK);
+			}
+		}
+		else
+		{
+			MessageBox(NULL, TEXT("必要条件を満たしていません。\n必ずプレイヤーとコインを配置してください。"),
+				TEXT("必要事項確認"), MB_OK);
+		}
+	}
 }
 
 /// <summary>
@@ -366,6 +393,9 @@ void EditScene::CreateWindowDependentResources()
 	// マウスカーソルの作成
 	m_mouseCursor = std::make_unique<MouseCursor>(context);
 	m_mouseCursor->Initialize(L"Resources/Textures/MouseCursor.dds", device);
+
+	// クリアチェッカーの作成
+	m_checker = std::make_unique<ClearChecker>();
 }
 
 /// <summary>
@@ -380,6 +410,9 @@ void EditScene::SetSceneValues()
 
 	// マップ読み込み//初回読み込み
 	LoadMap(L"Resources/Maps/StageEdit.csv");
+
+	// クリアチェッカーに配列を渡す
+	m_checker->SetMap(m_mapObj);
 }
 
 /// <summary>

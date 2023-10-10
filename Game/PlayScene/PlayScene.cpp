@@ -31,6 +31,9 @@
 // プレイカメラクラス(スタート演出用)
 #include "System/PlayCamera.h"
 
+// 影の表示
+#include "Resources/Shaders/Shadow.h"
+
 #include "PlayScene.h"
 
  /// <summary>
@@ -462,6 +465,10 @@ void PlayScene::CreateWindowDependentResources()
 	m_userInterFace = std::make_unique<PlayUI>(SimpleMath::Vector2(width, height));
 	m_userInterFace->Create(GetSystemManager(),context, device);
 
+	//-------------------------------------------------------------------------------------//
+	// 影の作成
+	m_shadow = std::make_unique<Shadow>();
+	m_shadow->CreateShadow(device);
 }
 
 /// <summary>

@@ -393,7 +393,7 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 					m_nowState = MAPSTATE::GRASS;		// 草ブロック
 					break;
 				case MAPSTATE::COIN:
-					m_nowState = MAPSTATE::COIN;			// コイン
+					m_nowState = MAPSTATE::COIN;		// コイン
 					break;
 				case MAPSTATE::CLOUD:
 					m_nowState = MAPSTATE::CLOUD;		// 雲
@@ -405,7 +405,7 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 					m_nowState = MAPSTATE::PLAYER;		// プレイヤー
 					break;
 				case MAPSTATE::NONE:
-					m_nowState = MAPSTATE::NONE;			// 空気
+					m_nowState = MAPSTATE::NONE;		// 空気
 					break;
 				default:
 					break;

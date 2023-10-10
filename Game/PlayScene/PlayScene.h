@@ -20,6 +20,7 @@ class PlayUI;
 class PlayCamera;
 class Blocks;
 class ThirdPersonCamera;
+class Shadow;
 class PlayScene final : public IScene
 {
 private:
@@ -47,12 +48,6 @@ private:
 	// マップ番号
 	int m_stageNum;
 
-	// プレイヤ
-	std::unique_ptr<Player> m_player;
-
-	// ブロック
-	std::unique_ptr<Blocks> m_blocks;
-
 	// 落下演出変数
 	float m_fallValue;
 
@@ -76,6 +71,13 @@ private:
 	bool is_thirdPersonMode;
 
 private:
+
+	// プレイヤ
+	std::unique_ptr<Player> m_player;
+
+	// ブロック
+	std::unique_ptr<Blocks> m_blocks;
+
 	// モデル
 	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
@@ -91,6 +93,8 @@ private:
 	// スタートカメラ
 	std::unique_ptr<PlayCamera> m_playCamera;
 
+	// 影
+	std::unique_ptr<Shadow> m_shadow;
 private:
 
 	// 制限時間(秒数)

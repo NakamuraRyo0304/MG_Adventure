@@ -1,7 +1,7 @@
 /*
  *	@File	EditScene.h
  *	@Brief  エディットシーン。
- *	@Date	2023-03-31
+ *	@Date	2023-09-24
  *  @Author NakamuraRyo
  */
 
@@ -19,6 +19,7 @@
 // エイリアス
 using MAPSTATE = MapLoad::BOXSTATE;
 
+class ClearChecker;
 class UserInterface;
 class MouseCursor;
 class EditScene final : public IScene
@@ -54,6 +55,9 @@ private:
 
 	// パスの格納
 	std::wstring m_filePath;
+
+	// クリアチェッカー
+	std::unique_ptr<ClearChecker> m_checker;
 
 private:
 	// モデル

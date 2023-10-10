@@ -19,6 +19,11 @@ struct Object
 	bool hit = false;							// 当たっていたらTrue
 	int index = 0;								// インデックス番号を格納
 
+	Object()
+		: id(0), position(DirectX::SimpleMath::Vector3(0, 0, 0)), hit(false), index(0)
+	{
+	}
+
 	// 演算子のオーバーロード
 	bool operator==(const Object& name) const
 	{
@@ -67,7 +72,7 @@ public:
 	~MapLoad();
 
 	// マップの読み込み
-	void LoadMap(std::wstring filename);
+	bool LoadMap(std::wstring filename);
 
 	// マップの書き出し
 	void WriteMap(std::vector<Object> obj);

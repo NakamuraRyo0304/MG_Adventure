@@ -34,13 +34,14 @@ SelectScene::SelectScene()
 	, m_noStageNum{}			// 未開放ステージ番号
 	, m_allCoins{}				// 合計コイン数
 	, m_targetY{}				// カメラのターゲットのY座標
-	, m_mutex{}					// ロック
+	, m_mutex{}					// アシンクロック
 {
 }
 
 //-------------------------------------------------------------------------------------//
+
 // デバッグフラグの初期化(True:エディタ/False:ショップ)
-const bool SelectScene::DEBUG_FLAG = false;
+const bool SelectScene::DEBUG_FLAG = true;
 
 //-------------------------------------------------------------------------------------//
 
