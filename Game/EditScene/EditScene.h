@@ -48,7 +48,7 @@ private:
 
 	// UI
 	std::unique_ptr<UserInterface> m_userInterface;
-	std::shared_ptr<SystemManager> m_sharedSystem;
+	std::shared_ptr<SystemManager> m_system;
 
 	// 現在のブロックステータス
 	int m_nowState;
@@ -81,6 +81,9 @@ private:
 
 	// ホイールのスパン
 	const int WHEEL_SPAWN = 320;
+
+	// カーソルの移動速度
+	const float CURSOR_MOVE_SPEED = 0.1f;
 public:
 
 	// コンストラクタ

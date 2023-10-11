@@ -25,7 +25,7 @@
 EditScene::EditScene()
 	: IScene()									// 基底クラスの初期化
 	, m_timer{ 0.0f }							// タイマー
-	, m_sharedSystem{}							// システムデータ
+	, m_system{}								// システムデータ
 	, m_map{}									// マップ
 	, m_mapObj{0}								// 格納配列
 	, m_nowState{}								// 現在のブロックの種類
@@ -310,8 +310,8 @@ void EditScene::CreateWindowDependentResources()
 
 	// UIの初期化
 	m_userInterface = std::make_unique<UserInterface>(SimpleMath::Vector2(width, height));
-	m_sharedSystem = GetSystemManager();
-	m_userInterface->Initialize(m_sharedSystem, context, device);
+	m_system = GetSystemManager();
+	m_userInterface->Initialize(m_system, context, device);
 
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
@@ -358,6 +358,7 @@ void EditScene::CreateWindowDependentResources()
 			auto lights = dynamic_cast<IEffectLights*>(effect);
 			if (lights)
 			{
+				// ライトの数分回す
 				for (int i = 0; i < 3; ++i)
 				{
 					lights->SetLightEnabled(i, false);
@@ -417,7 +418,7 @@ void EditScene::EditMap()
 	m_cursorPos.y = UserUtility::Lerp(
 		m_cursorPos.y,															// 開始地点
 		static_cast<float>(mouse.scrollWheelValue / WHEEL_SPAWN) + COMMON_LOW,	// 終了地点
-		0.1f																	// 速度
+		CURSOR_MOVE_SPEED														// 速度
 	);
 
 	// 制限をつける
@@ -516,15 +517,25 @@ void EditScene::SaveFile()
 /// <returns>なし</returns>
 bool EditScene::IsCanSave()
 {
+	// カーソルをつける
+	ShowCursor(true);
+
 	// クリアチェッカーに配列を渡す
 	m_checker->SetMap(m_mapObj);
 	if (m_checker->RunCheck())
 	{
 		if (!m_checker->GetCoinCheck())
 		{
-			MessageBox(NULL, TEXT("必要条件は満たしていますが、\nコインの数が多いか、離れているためクリアが困難な可能性があります。"),
-				TEXT("注意"), MB_OK);
+			if (MessageBox(NULL,
+				TEXT("必要条件は満たしていますが、\nコインの数が多いか、離れているためクリアが困難な可能性があります。"),
+				TEXT("注意"), MB_YESNO) == IDNO)
+			{
+				return false;
+			}
 		}
+
+		// カーソルを消す
+		ShowCursor(false);
 
 		// 要件を満たしていたらTrue
 		return true;
@@ -534,11 +545,31 @@ bool EditScene::IsCanSave()
 		if (m_checker->GetPlayerNum() > 1)
 		{
 			MessageBox(NULL, TEXT("プレイヤーの数が多すぎます。"),
-				TEXT("注意"), MB_OK);
+				TEXT("報告"), MB_OK);
+		}
+		else if (m_checker->GetPlayerNum() < 1)
+		{
+			MessageBox(NULL, TEXT("プレイヤーを設置してください。"),
+				TEXT("報告"), MB_OK);
+		}
+		if (m_checker->GetCoinNum() < 1)
+		{
+			MessageBox(NULL, TEXT("コインを設置してください。"),
+				TEXT("報告"), MB_OK);
+		}
+		if (m_checker->GetCloudFlag() == false)
+		{
+			MessageBox(NULL, TEXT("全ての雲の位置がプレイヤーより高いです。\n上に上がるには下に設置する必要があります。"),
+				TEXT("報告"), MB_OK);
+		}
+		if (m_checker->GetCanStart() == false)
+		{
+			MessageBox(NULL, TEXT("プレイヤーの下にブロックがないため、スタートできません。"),
+				TEXT("報告"), MB_OK);
 		}
 
-		MessageBox(NULL, TEXT("必要条件を満たしていません。\n必ずプレイヤーとコインを配置してください。"),
-			TEXT("必要事項確認"), MB_OK);
+		// カーソルを消す
+		ShowCursor(false);
 
 		// 要件を満たしていなければFalse
 		return false;

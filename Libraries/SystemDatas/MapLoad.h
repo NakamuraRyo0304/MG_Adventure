@@ -46,7 +46,7 @@ public:
 	{
 		static const int NONE	= 0;	// データなし
 		static const int GRASS	= 1;	// 草のブロック
-		static const int CLOUD	= 2;	// 動くブロック
+		static const int CLOUD	= 2;	// 雲のブロック
 		static const int COIN	= 3;	// コインのブロック
 		static const int RESET	= 4;	// 雲の位置のリセットブロック
 		static const int PLAYER	= 5;	// プレイヤ
