@@ -22,13 +22,27 @@ private:
 	std::vector<Object> m_checkMap;
 
 	// チェックフラグ
-	bool is_checkFlag;
+	bool is_playerCheck;
+	bool is_coinCheck;
 
 	// プレイヤーの数をチェックする
 	int m_playerNum;
 
+	// コインの数
+	int m_coinNum;
+	// コインの距離を測る
+	float m_coinLength;
+	bool is_coinPossibility;
+
+private:
 	// 範囲
 	const float JIDGE = 0.9f * 1.5f;
+
+	// コインのチェックボーダー
+	const int CHECK_COIN_NUM = 20;
+
+	const float CHECK_COIN_LENGTH = 12.5f;
+
 public:
 
 	ClearChecker();
@@ -42,6 +56,9 @@ public:
 
 	// プレイヤーの数
 	const int& GetPlayerNum() { return m_playerNum; }
+
+	// クリアできる可能性が高ければTrueを返す
+	const bool& GetCoinCheck();
 };
 
 #endif // CLEARCHECKER

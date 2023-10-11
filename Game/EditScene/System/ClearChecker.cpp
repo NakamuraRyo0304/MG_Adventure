@@ -18,9 +18,13 @@
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
 ClearChecker::ClearChecker()
-	: m_checkMap{}			// マップデータ
-	, m_playerNum{0}		// プレイヤーの数
-	, is_checkFlag{false}	// チェックフラグ
+	: m_checkMap{}				// マップデータ
+	, m_playerNum{0}			// プレイヤーの数
+	, m_coinNum{0}				// コインの数
+	, m_coinLength{0.0f}		// コインの距離
+	, is_coinPossibility{false}	// クリアできる想定範囲か
+	, is_playerCheck{false}		// プレイヤーフラグ
+	, is_coinCheck{false}		// コインフラグ
 {
 }
 
@@ -32,33 +36,67 @@ ClearChecker::ClearChecker()
 bool ClearChecker::RunCheck()
 {
 	m_playerNum = 0;
-	bool checkPlayer = false;
-	bool checkCoin = false;
+	m_coinNum = 0;
 
-	// 必須要素が含まれているか
-	for (auto& idx : m_checkMap)
+	is_playerCheck = false;
+	is_coinCheck = false;
+	is_coinPossibility = true;
+
+	// プレイヤーの数を計算
+	for (int i = 0; i < m_checkMap.size(); i++)
 	{
-		for (auto& jud : m_checkMap)
+		if (m_checkMap[i].id == MAPSTATE::PLAYER)
 		{
-			if (idx.id == MAPSTATE::PLAYER)
+			m_playerNum++;
+		}
+		if (m_checkMap[i].id == MAPSTATE::COIN)
+		{
+			m_coinNum++;
+		}
+	}
+
+	// コインの数が規定量を越えていないか計測
+	is_coinPossibility = m_coinNum < CHECK_COIN_NUM ? true : false;
+
+	// コインとコインの距離を計算する
+	m_coinLength = 0.0f;
+
+	for (auto& i : m_checkMap)
+	{
+		for (auto& j : m_checkMap)
+		{
+			if (i.id != MAPSTATE::COIN || j.id != MAPSTATE::COIN) continue;
+
+			float check = 0.0f;
+
+			// 距離を計算して最大を越えたら入れ替える
+			check = SimpleMath::Vector3::Distance(i.position, j.position);
+
+			if (check > m_coinLength)
 			{
-				if (checkPlayer)
-				{
-					m_playerNum++;
-				}
-				else
-				{
-					// プレイヤーがいたらTrue
-					checkPlayer = true;
-				}
-			}
-			if (idx.id == MAPSTATE::COIN)
-			{
-				// コインがあればTrue
-				checkCoin = true;
+				m_coinLength = check;
 			}
 		}
 	}
 
-	return checkPlayer && checkCoin;
+	// コイン間の距離が規定オーバーか計測
+	is_coinPossibility = m_coinLength < CHECK_COIN_LENGTH ? true : false;
+
+	// プレイヤーが１体しかいないことを確認
+	is_playerCheck = m_playerNum < 2 ? true : false;
+
+	// コインが置いてあることを確認
+	is_coinCheck = m_coinNum > 0 ? true : false;
+
+	return is_playerCheck && is_coinCheck;
+}
+
+/// <summary>
+/// クリアできる可能性が高ければTrueを返す
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>Summaryと同じ</returns>
+const bool& ClearChecker::GetCoinCheck()
+{
+	return is_coinPossibility;
 }

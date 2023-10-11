@@ -109,7 +109,11 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_userInterface->GetSaveFlag() &&
 		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
-		SaveFile();
+		// 要素チェックして保存可能なら実行
+		if (IsCanSave())
+		{
+			SaveFile();
+		}
 	}
 
 	// オープンフラグがたったらファイルを開く
@@ -143,28 +147,6 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_userInterface->GetBackSelectFlag())
 	{
 		ChangeScene(SCENE::SELECT);
-	}
-
-	// クリアチェック
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Enter))
-	{
-		// クリアチェッカーに配列を渡す
-		m_checker->SetMap(m_mapObj);
-		if (m_checker->RunCheck())
-		{
-			MessageBox(NULL, TEXT("必要条件を満たしています。"),
-				TEXT("必要事項確認"), MB_OK);
-			if (m_checker->GetPlayerNum() > 2)
-			{
-				MessageBox(NULL, TEXT("プレイヤーの数が多すぎます。"),
-					TEXT("注意"), MB_OK);
-			}
-		}
-		else
-		{
-			MessageBox(NULL, TEXT("必要条件を満たしていません。\n必ずプレイヤーとコインを配置してください。"),
-				TEXT("必要事項確認"), MB_OK);
-		}
 	}
 }
 
@@ -525,4 +507,40 @@ void EditScene::SaveFile()
 	OffsetPosition(&m_mapObj,WRITE);	// 書き出し用に座標補正
 	m_map.WriteMap(m_mapObj);			// ファイルの書き出し
 	OffsetPosition(&m_mapObj,READ);		// 読み込み用に座標補正
+}
+
+/// <summary>
+/// セーブ可能かを確認する
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+bool EditScene::IsCanSave()
+{
+	// クリアチェッカーに配列を渡す
+	m_checker->SetMap(m_mapObj);
+	if (m_checker->RunCheck())
+	{
+		if (!m_checker->GetCoinCheck())
+		{
+			MessageBox(NULL, TEXT("必要条件は満たしていますが、\nコインの数が多いか、離れているためクリアが困難な可能性があります。"),
+				TEXT("注意"), MB_OK);
+		}
+
+		// 要件を満たしていたらTrue
+		return true;
+	}
+	else
+	{
+		if (m_checker->GetPlayerNum() > 1)
+		{
+			MessageBox(NULL, TEXT("プレイヤーの数が多すぎます。"),
+				TEXT("注意"), MB_OK);
+		}
+
+		MessageBox(NULL, TEXT("必要条件を満たしていません。\n必ずプレイヤーとコインを配置してください。"),
+			TEXT("必要事項確認"), MB_OK);
+
+		// 要件を満たしていなければFalse
+		return false;
+	}
 }

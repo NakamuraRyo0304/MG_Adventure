@@ -127,6 +127,9 @@ public:
 	// ファイルをセーブする
 	void SaveFile();
 
+	// 要素チェック
+	bool IsCanSave();
+
 };
 
 #endif // EDITSCENE
