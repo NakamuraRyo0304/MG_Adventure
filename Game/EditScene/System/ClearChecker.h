@@ -77,7 +77,7 @@ public:
 
 private:
 
-	// コインとプレイヤーの座標の比較
+	// 雲とプレイヤーの座標の比較
 	bool CheckSameHeight();
 
 	// 正常スタート可能かチェック

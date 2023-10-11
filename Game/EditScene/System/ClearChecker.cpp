@@ -136,7 +136,7 @@ const bool& ClearChecker::GetCoinCheck()
 }
 
 /// <summary>
-/// プレイヤーとコインの座標比較
+/// プレイヤーと雲の座標比較
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>雲が乗れる位置にあればTrue</returns>
