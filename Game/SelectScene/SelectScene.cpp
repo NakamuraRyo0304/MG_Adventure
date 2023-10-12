@@ -377,7 +377,7 @@ void SelectScene::ChangeStageNumber(Keyboard::State keyState)
 	// 切り替え可能なタイミングはここで変更
 	if (m_targetY >= UP_VALUE * 0.25f) return;
 
-	if (keyState.Right)
+	if (keyState.Right || keyState.D)
 	{
 		// ステージ番号が最大なら処理しない
 		if (m_stageNum == MAX_STAGE_NUM - 1 - m_noStageNum) return;
@@ -389,7 +389,7 @@ void SelectScene::ChangeStageNumber(Keyboard::State keyState)
 		m_stageNum++;
 		m_flashCount = 0.0f;
 	}
-	if (keyState.Left)
+	if (keyState.Left || keyState.A)
 	{
 		// ステージ番号が0なら処理しない
 		if (m_stageNum == 0) return;

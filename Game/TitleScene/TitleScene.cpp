@@ -93,7 +93,9 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	{
 		// ‘I‘ð€–Ú‚ð•ÏX‚·‚é
 		if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
-			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
+			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right) ||
+			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::A) ||
+			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::D))
 		{
 			is_menuFlag = !is_menuFlag;
 			is_accelerateFlag = true;

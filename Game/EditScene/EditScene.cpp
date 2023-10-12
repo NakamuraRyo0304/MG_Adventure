@@ -524,7 +524,8 @@ bool EditScene::IsCanSave()
 	m_checker->SetMap(m_mapObj);
 	if (m_checker->RunCheck())
 	{
-		if (!m_checker->GetCoinCheck())
+		// クリアしやすいかチェックし、難しければ警告を出す
+		if (!m_checker->GetClearPossibility())
 		{
 			if (MessageBox(NULL,
 				TEXT("必要条件は満たしていますが、\nコインの数が多いか、離れているためクリアが困難な可能性があります。"),

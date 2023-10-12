@@ -24,7 +24,7 @@ ClearChecker::ClearChecker()
 	, m_coinNum{0}				// コインの数
 	, m_coinLength{0.0f}		// コインの距離
 	, m_cloudNum{0}				// 雲の数
-	, is_coinPossibility{false}	// クリアできる想定範囲か
+	, is_clearPossibility{false}// クリアできる想定範囲か
 	, is_playerCheck{false}		// プレイヤーフラグ
 	, is_coinCheck{false}		// コインフラグ
 	, is_cloudCheck{false}		// 雲フラグ
@@ -55,7 +55,7 @@ void ClearChecker::SetMap(const std::vector<Object>& map)
 	is_coinCheck = false;
 	is_cloudCheck = false;
 	is_startCheck = false;
-	is_coinPossibility = false;
+	is_clearPossibility = false;
 
 	// 距離
 	m_coinLength = 0.0f;
@@ -87,7 +87,7 @@ bool ClearChecker::RunCheck()
 	}
 
 	// コインの数が規定量を越えていないか計測
-	is_coinPossibility = m_coinNum < CHECK_COIN_NUM ? true : false;
+	is_clearPossibility = m_coinNum < CHECK_COIN_NUM ? true : false;
 
 	// コインとコインの距離を計算する
 	for (auto& i : m_checkMap)
@@ -108,7 +108,7 @@ bool ClearChecker::RunCheck()
 	}
 
 	// コイン間の距離が規定オーバーか計測
-	is_coinPossibility = m_coinLength < CHECK_COIN_LENGTH ? true : false;
+	is_clearPossibility = m_coinLength < CHECK_COIN_LENGTH ? true : false;
 
 	// プレイヤーが１体しかいないことを確認
 	is_playerCheck = m_playerNum < 2 ? true : false;
@@ -130,9 +130,9 @@ bool ClearChecker::RunCheck()
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>Summaryと同じ</returns>
-const bool& ClearChecker::GetCoinCheck()
+const bool& ClearChecker::GetClearPossibility()
 {
-	return is_coinPossibility;
+	return is_clearPossibility;
 }
 
 /// <summary>

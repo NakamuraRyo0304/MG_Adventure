@@ -111,13 +111,15 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	GetSystemManager()->GetSoundManager()->Update();
 
 	// メニューセレクト
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right))
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right) ||
+	    GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::D))
 	{
 		m_selectingScene++;
 		m_selectingScene = m_selectingScene ==  3 ? RETRY : m_selectingScene;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 	}
-	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left))
+	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
+			 GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::A))
 	{
 		m_selectingScene--;
 		m_selectingScene = m_selectingScene == -1 ? TITLE : m_selectingScene;

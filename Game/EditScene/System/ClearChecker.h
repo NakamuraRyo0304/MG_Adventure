@@ -35,7 +35,7 @@ private:
 	int m_coinNum;
 	// コインの距離を測る
 	float m_coinLength;
-	bool is_coinPossibility;
+	bool is_clearPossibility;
 
 	// 雲の数
 	int m_cloudNum;
@@ -73,7 +73,7 @@ public:
 	const bool& GetCanStart() { return is_startCheck; }
 
 	// クリアできる可能性が高ければTrueを返す
-	const bool& GetCoinCheck();
+	const bool& GetClearPossibility();
 
 private:
 
