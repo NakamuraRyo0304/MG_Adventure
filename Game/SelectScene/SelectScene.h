@@ -36,8 +36,8 @@ private:
 	int m_allCoins;
 
 	// ブロックとステージ
-	std::unique_ptr<Blocks> m_blocks[10];
-	std::unique_ptr<DirectX::Model> m_stageModels[10];
+	std::unique_ptr<Blocks> m_blocks[6];
+	std::unique_ptr<DirectX::Model> m_stageModels[6];
 
 	// 切り替え時読み込み演出
 	float m_targetY;
