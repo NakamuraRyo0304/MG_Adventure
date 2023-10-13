@@ -81,7 +81,7 @@ private:
 	const int STAGE_CREATE_PRICE = 10;
 
 	// カウントスピード
-	const float COUNT_SPEED = (0.5f / 60.0f);
+	const float COUNT_SPEED = (10.0f / 60.0f);
 
 public:
 

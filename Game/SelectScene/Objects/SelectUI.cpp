@@ -25,6 +25,7 @@ SelectUI::SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* 
 	, m_oneCoins{}			//   1の位のコイン数
 	, m_tenCoins{}			//  10の位のコイン数
 	, m_hanCoins{}			// 100の位のコイン数
+	, m_moveY{}				// 上下移動
 {
 	m_system = system;
 
@@ -60,14 +61,11 @@ void SelectUI::Initialize(const SimpleMath::Vector2& windowSize)
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="timer">時間</param>
 /// <param name="rightFlag">右キーを押した判定</param>
 /// <param name="leftFlag">左キーを押した判定</param>
 /// <returns>なし</returns>
-void SelectUI::Update(const float& timer, const bool& rightFlag, const bool& leftFlag)
+void SelectUI::Update(const bool& rightFlag, const bool& leftFlag)
 {
-	m_timer = timer;
-
 	// フラグによって透明度を変える
 	m_rightAlpha = !rightFlag ? 0.5f : 1.0f;
 	m_leftAlpha  = !leftFlag  ? 0.5f : 1.0f;
@@ -143,13 +141,15 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 scale)
 	SimpleMath::Vector2 wScale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// 切り取り位置設定
-	RECT_U oneRec = { m_oneCoins * 100, 0,m_oneCoins * 100 + 100, 100 };
-	RECT_U tenRec = { m_tenCoins * 100, 0,m_tenCoins * 100 + 100, 100 };
-	RECT_U hanRec = { m_hanCoins * 100, 0,m_hanCoins * 100 + 100, 100 };
+	RECT_U oneRec = { m_oneCoins * NUM_WIDTH, 0,m_oneCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
+	RECT_U tenRec = { m_tenCoins * NUM_WIDTH, 0,m_tenCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
+	RECT_U hanRec = { m_hanCoins * NUM_WIDTH, 0,m_hanCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
+
+	float positionY = 45.0f + sinf(m_moveY * MOVE_SPEED) * MOVE_WIDTH;
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 450.0f ,45.0f } * wScale,
+		SimpleMath::Vector2{ 450.0f ,positionY } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,
@@ -158,7 +158,7 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 scale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 500.0f ,45.0f } * wScale,
+		SimpleMath::Vector2{ 500.0f ,positionY } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,
@@ -167,7 +167,7 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 scale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 550.0f ,45.0f } * wScale,
+		SimpleMath::Vector2{ 550.0f ,positionY } * wScale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,

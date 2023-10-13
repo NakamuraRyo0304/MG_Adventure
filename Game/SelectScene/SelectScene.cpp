@@ -102,7 +102,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	ChangeStageNumber(keyState);
 
 	// UIの更新
-	m_userInterface->Update(elapsedTime, keyState.Right, keyState.Left);
+	m_userInterface->Update(keyState.Right, keyState.Left);
 
 	// エスケープで終了
 	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
@@ -141,6 +141,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	{
 		// コイン数をセットする
 		m_userInterface->SetAllCoins(m_initCoins - static_cast<int>(m_useCoins));
+		m_userInterface->MoveCoins(m_useCoins);
 
 		// 使用料を支払ったら遷移する
 		if (static_cast<int>(m_useCoins) == STAGE_CREATE_PRICE)
