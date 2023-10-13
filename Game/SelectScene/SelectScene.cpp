@@ -116,14 +116,13 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		// ステージ番号が0ならエディタに、それ以外はプレイへ
 		if (m_stageNum == 0)
 		{
-			if (m_allCoins >= STAGE_CREATE_PRICE)
-			{
-				is_selectEdit = true;
-			}
-			else
+			is_selectEdit = m_allCoins >= STAGE_CREATE_PRICE;
+
+			// メッセージ
+			if(m_allCoins < STAGE_CREATE_PRICE)
 			{
 				MessageBox(NULL,
-					TEXT("コインを５枚以上取得していないため、この機能は使用できません。"),
+					TEXT("コインを10枚以上取得していないため、この機能は使用できません。"),
 					TEXT("コイン不足"), MB_OK);
 			}
 		}
