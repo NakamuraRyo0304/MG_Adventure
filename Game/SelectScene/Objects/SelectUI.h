@@ -45,7 +45,7 @@ public:
 	void Update(const float& timer, const bool& rightFlag, const bool& leftFlag);
 
 	// •`‰æˆ—
-	void Render(const int& selectNum);
+	void Render(const int& selectNum , const int& maxNum);
 
 	// I—¹ˆ—
 	void Finalize();

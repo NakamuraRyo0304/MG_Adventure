@@ -611,18 +611,6 @@
     <None Include="Resources\Models\Stage5.cmo">
       <Filter>Resources\Models\Fonts</Filter>
     </None>
-    <None Include="Resources\Models\Stage6.cmo">
-      <Filter>Resources\Models\Fonts</Filter>
-    </None>
-    <None Include="Resources\Models\Stage7.cmo">
-      <Filter>Resources\Models\Fonts</Filter>
-    </None>
-    <None Include="Resources\Models\Stage8.cmo">
-      <Filter>Resources\Models\Fonts</Filter>
-    </None>
-    <None Include="Resources\Models\Stage9.cmo">
-      <Filter>Resources\Models\Fonts</Filter>
-    </None>
     <None Include="Resources\Models\Bird.cmo">
       <Filter>Resources\Models\Player</Filter>
     </None>

@@ -65,7 +65,7 @@ private:
 	const float CAMERA_POS_Y = 30.0f;
 
 	// 最大ステージ数
-	const int MAX_STAGE_NUM = 10;
+	const int MAX_STAGE_NUM = 6;
 
 	// カメラの回転半径
 	const float CAMERA_RADIUS = 4.0f;

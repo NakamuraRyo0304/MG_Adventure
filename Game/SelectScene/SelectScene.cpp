@@ -168,7 +168,7 @@ void SelectScene::Draw()
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
 
 	// UI‚Ì•\Ž¦
-	m_userInterface->Render(m_stageNum);
+	m_userInterface->Render(m_stageNum, MAX_STAGE_NUM - 1);
 
 	// “_–Å‚³‚¹‚é
 	if (m_flashCount > MAX_FLASH * 0.5f) return;

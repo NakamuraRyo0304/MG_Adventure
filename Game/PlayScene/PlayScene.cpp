@@ -304,6 +304,7 @@ void PlayScene::Draw()
 
 	// プレイヤの描画
 	m_player->Render(context, states, view, proj);
+	//m_shadow->Draw(L"head", context, &states);
 
 	// マップの描画
 	m_blocks->Render(context, states, view, proj, m_timer);
@@ -469,6 +470,7 @@ void PlayScene::CreateWindowDependentResources()
 	// 影の作成
 	m_shadow = std::make_unique<Shadow>();
 	m_shadow->CreateShadow(device);
+	//m_shadow->SetModel(L"head", std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo")));
 }
 
 /// <summary>

@@ -50,11 +50,24 @@ void Shadow::CreateShadow(ID3D11Device1* device)
 }
 
 /// <summary>
+/// モデルをセットする
+/// </summary>
+/// <param name="model">モデルのパス</param>
+/// <param name="key">登録キー</param>
+/// <returns>なし</returns>
+void Shadow::SetModel(const wchar_t* key, std::unique_ptr<Model> model)
+{
+	m_shadowModel.emplace(key, std::move(model));
+}
+
+/// <summary>
 /// 描画関数
 /// </summary>
-/// <param name="引数無し"></param>
+/// <param name="key">登録キー</param>
+/// <param name="context">コンテキストポインタ</param>
+/// <param name="states">コモンステートポインタ</param>
 /// <returns>なし</returns>
-void Shadow::Draw(ID3D11DeviceContext1* context, DirectX::CommonStates* states)
+void Shadow::Draw(const wchar_t* key, ID3D11DeviceContext1* context, CommonStates* states)
 {
 	auto vol = [&]()
 	{
@@ -71,5 +84,7 @@ void Shadow::Draw(ID3D11DeviceContext1* context, DirectX::CommonStates* states)
 			   SimpleMath::Plane(0.f, 1.f, 0.f, 0.f)
 	);
 
-	m_shadowModel->Draw(context, *states, m_world, m_view, m_proj, &vol);
+	// 影を描画する
+ 	std::map<const wchar_t*, std::unique_ptr<Model>>::const_iterator it = m_shadowModel.find(key);
+	it->second->Draw(context, *states, m_world, m_view, m_proj, &vol);
 }

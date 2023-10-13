@@ -9,6 +9,8 @@
 #ifndef SHADOW
 #define SHADOW
 
+#include <map>
+
 class Shadow
 {
 private:
@@ -19,8 +21,8 @@ private:
 	// 行列
 	DirectX::SimpleMath::Matrix m_world, m_view, m_proj;
 
-	// 影用モデル
-	std::unique_ptr<Model> m_shadowModel;
+	// モデル
+	std::map <const wchar_t* ,std::unique_ptr<Model>> m_shadowModel;
 
 public:
 	Shadow();
@@ -36,13 +38,10 @@ public:
 	}
 
 	// モデルのセッター
-	void SetModel(std::unique_ptr<Model> model) { m_shadowModel = std::move(model); }
+	void SetModel(const wchar_t* key, std::unique_ptr<Model> model);
 
 	// 描画
-	void Draw(ID3D11DeviceContext1* context, DirectX::CommonStates* states);
-
-	// モデルのゲッター
-	std::unique_ptr<Model>& GetModel() { return m_shadowModel; }
+	void Draw(const wchar_t* key, ID3D11DeviceContext1* context, DirectX::CommonStates* states);
 };
 
 
