@@ -51,6 +51,9 @@ private:
 	// フルスクリーンサイズ
 	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
+	// 最大秒数
+	const int MAX_TIME = 60;
+
 public:
 
 	// コンストラクタ

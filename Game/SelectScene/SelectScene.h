@@ -49,11 +49,10 @@ private:
 	// UI
 	std::unique_ptr<SelectUI> m_userInterface;
 
-private:
-	// 静的定数-------------------------------------------------------------------------------
-
-	// デバッグフラグ(True:エディタでビルド、False:ショップでビルド)
-	static const bool DEBUG_FLAG;
+	// コイン使用演出
+	float m_useCoins;
+	int m_initCoins;
+	bool is_selectEdit;
 
 private:
 	// 定数-----------------------------------------------------------------------------------
@@ -77,6 +76,12 @@ private:
 	const float UP_VALUE = 60.0f;
 	// 見下げ速度
 	const float DOWN_SPEED = 0.7f;
+
+	// ステージ制作価格
+	const int STAGE_CREATE_PRICE = 10;
+
+	// カウントスピード
+	const float COUNT_SPEED = (0.5f / 60.0f);
 
 public:
 
@@ -129,7 +134,7 @@ public:
 	// 未開放ステージセッター
 	void SetNoStageNum(const int& stageNum) { m_noStageNum = stageNum; }
 
-	// 合計コインアクセサ
+	// 合計コインアクセサ(全体コインー使用済みコイン)
 	const int& GetAllCoins() { return m_allCoins; }
 	void SetAllCoins(const int& num);
 };

@@ -157,6 +157,7 @@ void GameMain::Draw()
 /// <returns>なし</returns>
 void GameMain::Finalize()
 {
+	m_nowScene.reset();
 }
 
 /// <summary>
@@ -230,18 +231,6 @@ void GameMain::CreateScene()
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
-		case SCENE::SHOP:		// ショップシーン
-		{
-			m_nowScene = std::make_unique<ShopScene>();
-
-			//-------------------------------------------------------------------------------------//
-			// 合計獲得コイン数を渡す
-			CastSceneType<ShopScene>(m_nowScene)->SetAllCoins(m_allCoins);
-			//-------------------------------------------------------------------------------------//
-
-			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
-			break;
-		}
 		case SCENE::ENDGAME:	// ゲーム終了
 		{
 			WriteSaveData(); // データを書き出し
@@ -276,12 +265,9 @@ void GameMain::DeleteScene()
 
 	switch (m_nextScene)
 	{
-	case SCENE::SELECT:
-		// 前回のシーンがショップなら値を保存する
-		if (m_prevScene == SCENE::SHOP)
-		{
-			m_allCoins = CastSceneType<ShopScene>(m_nowScene)->GetAllCoins();
-		}
+	case SCENE::EDIT:
+		// 制作費用を引いたコインを保持
+		m_allCoins = CastSceneType<SelectScene>(m_nowScene)->GetAllCoins();
 		break;
 	case SCENE::PLAY:
 		// 再読み込みでなければ処理する

@@ -33,17 +33,13 @@ SelectScene::SelectScene()
 	, m_stageNum{1}				// ステージ番号
 	, m_noStageNum{}			// 未開放ステージ番号
 	, m_allCoins{}				// 合計コイン数
+	, m_useCoins{}				// 使用コイン数
+	, m_initCoins{}				// 開始コイン数
 	, m_targetY{}				// カメラのターゲットのY座標
 	, m_mutex{}					// アシンクロック
+	, is_selectEdit{false}		// ステージエディットを選択
 {
 }
-
-//-------------------------------------------------------------------------------------//
-
-// デバッグフラグの初期化(True:エディタ/False:ショップ)
-const bool SelectScene::DEBUG_FLAG = true;
-
-//-------------------------------------------------------------------------------------//
 
 /// <summary>
 /// デストラクタ
@@ -108,26 +104,54 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// UIの更新
 	m_userInterface->Update(elapsedTime, keyState.Right, keyState.Left);
 
+	// エスケープで終了
+	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+
+	// コインの数を保存
+	m_allCoins = m_initCoins - static_cast<int>(m_useCoins);
+
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
-		if (DEBUG_FLAG)
+		// ステージ番号が0ならエディタに、それ以外はプレイへ
+		if (m_stageNum == 0)
 		{
-			// ステージ番号が0ならエディタに、それ以外はプレイへ
-			m_stageNum == 0 ? ChangeScene(SCENE::EDIT) : ChangeScene(SCENE::PLAY);
+			if (m_allCoins >= STAGE_CREATE_PRICE)
+			{
+				is_selectEdit = true;
+			}
+			else
+			{
+				MessageBox(NULL,
+					TEXT("コインを５枚以上取得していないため、この機能は使用できません。"),
+					TEXT("コイン不足"), MB_OK);
+			}
 		}
 		else
 		{
-			// ステージ番号が0ならショップに、それ以外はプレイへ
-			m_stageNum == 0 ? ChangeScene(SCENE::SHOP) : ChangeScene(SCENE::PLAY);
+			ChangeScene(SCENE::PLAY);
 		}
 
 		// 決定音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
 
-	// エスケープで終了
-	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+	// コイン演出
+	if (is_selectEdit)
+	{
+		// コイン数をセットする
+		m_userInterface->SetAllCoins(m_initCoins - static_cast<int>(m_useCoins));
+
+		// 使用料を支払ったら遷移する
+		if (static_cast<int>(m_useCoins) == STAGE_CREATE_PRICE)
+		{
+			ChangeScene(SCENE::EDIT);
+		}
+		else
+		{
+			m_useCoins += COUNT_SPEED;
+		}
+	}
 }
 
 /// <summary>
@@ -252,14 +276,7 @@ void SelectScene::CreateWindowDependentResources()
 			// 0番目はエディタの文字
 			if (i == 0)
 			{
-				if (DEBUG_FLAG)
-				{
-					m_stageModels[0] = ModelFactory::GetCreateModel(device, L"Resources/Models/StageEdit.cmo");
-				}
-				else
-				{
-					m_stageModels[0] = ModelFactory::GetCreateModel(device, L"Resources/Models/Shop.cmo");
-				}
+				m_stageModels[0] = ModelFactory::GetCreateModel(device, L"Resources/Models/StageEdit.cmo");
 			}
 			else
 			{
@@ -289,6 +306,15 @@ void SelectScene::SetSceneValues()
 
 	// コイン数をセット
 	m_userInterface->SetAllCoins(m_allCoins);
+
+	// 使用コイン数をリセット
+	m_useCoins = 0.0f;
+
+	// 開始コイン数を保存
+	m_initCoins = m_allCoins;
+
+	// ステージエディットフラグを初期化
+	is_selectEdit = false;
 }
 
 /// <summary>

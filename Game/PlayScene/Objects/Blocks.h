@@ -87,7 +87,7 @@ public:
 	void Initialize(int stageNum);
 
 	// XV
-	void Update(float elapsedTime);
+	void Update();
 
 	// •`‰æ
 	void Render(ID3D11DeviceContext* context, DirectX::CommonStates& states,

@@ -23,7 +23,6 @@ enum class SCENE : int
     PLAY,
     RESULT,
     EDIT,
-    SHOP,
     ENDGAME,
 };
 

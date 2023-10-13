@@ -185,9 +185,6 @@
     <Filter Include="Scenes\ResultScene\Objects">
       <UniqueIdentifier>{7e95942f-3771-4368-ae2c-891d8bc05143}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scenes\ShopScene">
-      <UniqueIdentifier>{1d496149-41bb-4186-a1b1-7d2a01bcff92}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Models\Fonts">
       <UniqueIdentifier>{6f458962-5566-44f3-8d4b-67fc1e47e5f2}</UniqueIdentifier>
     </Filter>
@@ -319,9 +316,6 @@
     <ClInclude Include="Game\PlayScene\System\PlayCamera.h">
       <Filter>Scenes\PlayScene\System</Filter>
     </ClInclude>
-    <ClInclude Include="Game\ShopScene\ShopScene.h">
-      <Filter>Scenes\ShopScene</Filter>
-    </ClInclude>
     <ClInclude Include="Game\EditScene\System\ClearChecker.h">
       <Filter>Scenes\EditScene\System\ClearChecker</Filter>
     </ClInclude>
@@ -437,9 +431,6 @@
     </ClCompile>
     <ClCompile Include="Game\PlayScene\System\PlayCamera.cpp">
       <Filter>Scenes\PlayScene\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\ShopScene\ShopScene.cpp">
-      <Filter>Scenes\ShopScene</Filter>
     </ClCompile>
     <ClCompile Include="Game\EditScene\System\ClearChecker.cpp">
       <Filter>Scenes\EditScene\System\ClearChecker</Filter>
@@ -638,9 +629,6 @@
     <None Include="Resources\Models\Spacedome.cmo">
       <Filter>Resources\Models\SkyDome</Filter>
     </None>
-    <None Include="Resources\Models\TitleLogo.cmo">
-      <Filter>Resources\Models\TitleScene</Filter>
-    </None>
     <None Include="Resources\Models\TitleStage.cmo">
       <Filter>Resources\Models\TitleScene</Filter>
     </None>
@@ -655,9 +643,6 @@
     </None>
     <None Include="Resources\Models\TitleLogoVer2.cmo">
       <Filter>Resources\Models\TitleScene</Filter>
-    </None>
-    <None Include="Resources\Models\Shop.cmo">
-      <Filter>Resources\Models\Fonts</Filter>
     </None>
     <None Include="Resources\Shaders\PlayerPoint.hlsli">
       <Filter>Resources\Shaders\PlayerPoint</Filter>

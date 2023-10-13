@@ -246,7 +246,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	else
 	{
 		// ブロックの更新
-		m_blocks->Update(elapsedTime);
+		m_blocks->Update();
 
 		// 当たり判定の更新
 		Judgement();

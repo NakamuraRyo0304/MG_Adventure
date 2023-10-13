@@ -125,12 +125,10 @@ void Blocks::Initialize(int stageNum)
 /// <summary>
 /// XVˆ—
 /// </summary>
-/// <param name="elapsedTime">ŠÔ</param>
+/// <param name="ˆø”–³‚µ"></param>
 /// <returns>‚È‚µ</returns>
-void Blocks::Update(float elapsedTime)
+void Blocks::Update()
 {
-	elapsedTime;
-
 	// ‰_‚Íã‰ºˆÚ“®‚·‚é
 	for(int i = 0; i < m_mapObj.size();++i)
 	{

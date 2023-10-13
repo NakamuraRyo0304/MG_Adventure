@@ -90,7 +90,7 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_directionTime < 0.0f)
 	{
 		m_directionTime = 0.0f;
-		m_clearTime = 60 - m_saveTime;
+		m_clearTime = MAX_TIME - m_saveTime;
 	}
 	else
 	{
