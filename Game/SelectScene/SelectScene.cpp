@@ -212,7 +212,10 @@ void SelectScene::Draw()
 void SelectScene::Finalize()
 {
 	// ƒ‚ƒfƒ‹íœ
-	m_blocks[0]->Finalize();
+	for (size_t i = 0; i < MAX_STAGE_NUM; ++i)
+	{
+		m_blocks[i]->Finalize();
+	}
 	m_userInterface->Finalize();
 }
 
