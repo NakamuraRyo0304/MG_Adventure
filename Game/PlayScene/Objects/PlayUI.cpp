@@ -28,6 +28,7 @@ PlayUI::PlayUI(const SimpleMath::Vector2& windowSize)
     , m_tenSecPos{SimpleMath::Vector2::Zero}	// 10秒の座標
 	, m_countDownPos{SimpleMath::Vector2::Zero}	// ３カウントダウンの座標
 	, m_underFontPos{SimpleMath::Vector2::Zero}	// 下の文字ロールの座標
+	, m_sunPos{SimpleMath::Vector2::Zero}		// 太陽の画像の座標
 	, is_effectFlag{false}						// エフェクトの表示フラグ
 	, is_helpFlag{false}						// ヘルプ画面のフラグ
 {
@@ -62,14 +63,17 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	m_system->GetDrawSprite()->MakeSpriteBatch(context);
 
 	// 画像を登録
-	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Death",  L"Resources/Textures/DeathEffect.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"GameStart",L"Resources/Textures/PLAY_HELP/GameStart.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Number",   L"Resources/Textures/Number.dds",			  device);
+	m_system->GetDrawSprite()->AddTextureData(L"Death",    L"Resources/Textures/DeathEffect.dds",		  device);
+	m_system->GetDrawSprite()->AddTextureData(L"Sun",      L"Resources/Textures/PLAY_HELP/sun.dds",		  device);
 
 	// ヘルプ画面
 	m_system->GetDrawSprite()->AddTextureData(L"Help",	   L"Resources/Textures/PLAY_HELP/Help.dds",      device);
 	m_system->GetDrawSprite()->AddTextureData(L"HelpBack", L"Resources/Textures/PLAY_HELP/HelpBack.dds",  device);
 	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp", L"Resources/Textures/PLAY_HELP/OpenHelp.dds",  device);
-	m_system->GetDrawSprite()->AddTextureData(L"GameStart",L"Resources/Textures/PLAY_HELP/GameStart.dds", device);
+
+	// 画面下部に表示されるコメント
 	m_system->GetDrawSprite()->AddTextureData(L"UnderBack",L"Resources/Textures/PLAY_HELP/UnderBack.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"UnderFont",L"Resources/Textures/PLAY_HELP/UnderFont.dds", device);
 
@@ -80,6 +84,7 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	m_countDownPos = { (FULL_SCREEN_SIZE.x / 2 - NUM_SIZE / 2) * scale.x , 80.0f * scale.y };
 	m_oneSecPos = { m_countDownPos.x + static_cast<float>(NUM_SIZE / 2) * scale.x ,m_countDownPos.y };
 	m_tenSecPos = { m_countDownPos.x - static_cast<float>(NUM_SIZE / 2) * scale.x ,m_countDownPos.y };
+	m_sunPos = { (SUN_SIZE.x * scale.x) / 2, SUN_SIZE.y * scale.y };
 
 	// 落下フラグを切る
 	is_effectFlag = false;
@@ -99,7 +104,13 @@ void PlayUI::Update(const float& timelimit)
 	// 比率を計算
 	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
 
-	// 移動処理
+	// 太陽の回転をセット
+	m_system->GetDrawSprite()->CreateRotation(L"Sun", static_cast<float>(MAX_LIMITS - m_gameTimer) * ROT_SPEED);
+
+	// 太陽の移動処理
+	m_sunPos.x += SUN_MOVE_SPEED * scale.x;
+
+	// フォントの移動処理
 	m_underFontPos.x -= UNDER_SPEED * scale.x;
 
 	if (m_underFontPos.x < -FULL_SCREEN_SIZE.x * 2 * scale.x)
@@ -130,6 +141,9 @@ void PlayUI::Render()
 		);
 	}
 
+	// 太陽アイコンの描画
+	RenderSunny(scale);
+
 	// タイマーの描画
 	RenderTimer(scale);
 
@@ -154,11 +168,12 @@ void PlayUI::Render()
 	else
 	{
 		m_system->GetDrawSprite()->DrawTexture(
-			L"OpenHelp",                       // 登録キー
-			SimpleMath::Vector2::Zero,         // 座標
-			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-			scale,                             // 拡大率
-			SimpleMath::Vector2::Zero          // 中心位置
+			L"OpenHelp",
+			SimpleMath::Vector2{ m_windowSize.x - HELP_WIDTH * scale.x, 0.0f },
+			{ 1.0f, 1.0f, 1.0f, 1.0f },
+			scale,
+			SimpleMath::Vector2::Zero,
+			{ 0,0,360,120 }
 		);
 
 		//-------------------------------------------------------------------------------------//
@@ -247,6 +262,23 @@ void PlayUI::RenderTimer(SimpleMath::Vector2 scale)
 		scale,
 		SimpleMath::Vector2::Zero,
 		oneRec
+	);
+}
+
+/// <summary>
+/// 太陽の描画
+/// </summary>
+/// <param name="scale">画像の拡大率</param>
+/// <returns>なし</returns>
+void PlayUI::RenderSunny(SimpleMath::Vector2 scale)
+{
+	m_system->GetDrawSprite()->DrawTexture(
+		L"Sun",
+		m_sunPos,
+		{ 1.0f,1.0f,1.0f,1.0f },
+		scale,
+		SimpleMath::Vector2{ SUN_SIZE / 2},
+		{ 0,0,100,100 }
 	);
 }
 

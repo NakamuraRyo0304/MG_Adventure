@@ -568,6 +568,9 @@
     <Image Include="Resources\Textures\UnderLine.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
     </Image>
+    <Image Include="Resources\Textures\PLAY_HELP\sun.dds">
+      <Filter>Resources\Textures\PLAY_UI</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">

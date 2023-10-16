@@ -18,6 +18,7 @@ DrawSprite::DrawSprite()
 	: m_spriteBatch{}	// スプライトバッチ
 	, m_textures{}		// テクスチャ配列
 	, m_SRV{}			// シェーダーリソースビュー
+	, m_rotate{}		// 画像の回転率
 {
 }
 
@@ -64,6 +65,9 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 			m_SRV[it->first].ReleaseAndGetAddressOf() // 対応するキー番号に登録
 		);
 	}
+
+	// 初期化で０を入れる
+	m_rotate.emplace(key, 0.0f);
 }
 
 /// <summary>
@@ -84,17 +88,34 @@ void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos,
 	// 描画したいキー番号に対応するマップをイテレータに格納
 	std::map<const wchar_t*, const wchar_t*>::const_iterator it = m_textures.find(key);
 
+	// 回転量を格納
+	std::map<const wchar_t*, float>::const_iterator rt = m_rotate.find(key);
+
 	// 画像の描画
 	m_spriteBatch->Draw(
 		m_SRV[it->first].Get(),					// 対応するイテレータの画像を描画
 		pos,									// 表示する位置
 		&rect,								    // 切り取り位置
 		color,									// 描画色
-		0.0f,									// 回転
+		m_rotate[it->first],					// 回転
 		origin,									// 画像の原点
 		rate,									// 拡大率
 		SpriteEffects_None, 0.0f				// 描画レイヤー
 	);
 
 	m_spriteBatch->End();
+}
+
+/// <summary>
+/// 回転量セッター
+/// </summary>
+/// <param name="key">登録キー</param>
+/// <param name="rotate">回転量</param>
+/// <returns>なし</returns>
+void DrawSprite::CreateRotation(const wchar_t* key, const float& rotate)
+{
+	// 回転量を格納
+	std::map<const wchar_t*, float>::iterator rt = m_rotate.find(key);
+
+	rt->second = rotate;
 }

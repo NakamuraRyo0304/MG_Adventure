@@ -35,6 +35,9 @@ private:
 	// 画像を描画する変数
 	std::map<std::wstring, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_SRV;
 
+	// 回転率
+	std::map <const wchar_t*,float> m_rotate;
+
 public:
 	DrawSprite();
 	~DrawSprite();
@@ -49,6 +52,11 @@ public:
 	void DrawTexture(const wchar_t* key, DirectX::SimpleMath::Vector2 pos,
 						DirectX::SimpleMath::Vector4 color, DirectX::SimpleMath::Vector2 rate,
 						DirectX::SimpleMath::Vector2 origin, RECT_U rect = RECT_U());
+
+	// 回転率セッター
+	void CreateRotation(const wchar_t* key, const float& rotate);
+
+	const float GetRotate(const wchar_t* key) { auto it = m_rotate.find(key); return it->second; }
 };
 
 #endif // DRAWSPRITE

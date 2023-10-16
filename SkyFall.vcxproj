@@ -305,6 +305,7 @@
     <Image Include="Resources\Textures\PLAY_HELP\Help.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\HelpBack.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds" />
+    <Image Include="Resources\Textures\PLAY_HELP\sun.dds" />
     <Image Include="Resources\Textures\ResultBack.dds" />
     <Image Include="Resources\Textures\ResultFonts.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
