@@ -125,6 +125,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	{
 		is_helpFlag = !is_helpFlag;
 		m_userInterFace->SetHelpFlag(is_helpFlag);
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
 
 	// ヘルプ表示中は処理しない
@@ -184,6 +185,12 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 		// 空の処理
 		UpdateSky();
+
+		// 時間が半分になったら合図を鳴らす
+		if (static_cast<int>(m_gameTimer / FLAME_RATE) == TIME_LIMIT / 2)
+		{
+			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_EVENINGBELL, false);
+		}
 	}
 
 	// プレイヤの更新

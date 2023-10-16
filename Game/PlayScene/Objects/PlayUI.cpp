@@ -108,7 +108,7 @@ void PlayUI::Update(const float& timelimit)
 	m_system->GetDrawSprite()->CreateRotation(L"Sun", static_cast<float>(MAX_LIMITS - m_gameTimer) * ROT_SPEED);
 
 	// ‘¾—z‚ÌˆÚ“®ˆ—
-	m_sunPos.x += SUN_MOVE_SPEED * scale.x;
+	m_sunPos.x += m_gameTimer != 0 ? SUN_MOVE_SPEED * scale.x : 0.0f;
 
 	// ƒtƒHƒ“ƒg‚ÌˆÚ“®ˆ—
 	m_underFontPos.x -= UNDER_SPEED * scale.x;
