@@ -31,9 +31,6 @@
 // プレイカメラクラス(スタート演出用)
 #include "System/PlayCamera.h"
 
-// 影の表示
-#include "Resources/Shaders/Shadow.h"
-
 #include "PlayScene.h"
 
  /// <summary>
@@ -309,12 +306,11 @@ void PlayScene::Draw()
 		proj = GetSystemManager()->GetCamera()->GetProjection();
 	}
 
-	// プレイヤの描画
-	m_player->Render(context, states, view, proj);
-	//m_shadow->Draw(L"head", context, &states);
-
 	// マップの描画
 	m_blocks->Render(context, states, view, proj, m_timer);
+
+	// プレイヤの描画
+	m_player->Render(context, states, view, proj);
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
@@ -441,27 +437,19 @@ void PlayScene::CreateWindowDependentResources()
 	//-------------------------------------------------------------------------------------//
 	// ブロックの作成
 	m_blocks = std::make_unique<Blocks>();
+	m_blocks->CreateShader(device);
 
-	// 草ブロックの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo")),
-		m_blocks->GRASS
-	);
-	// コインの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo")),
-		m_blocks->COIN
-	);
-	// 雲ブロックの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo")),
-		m_blocks->CLOWD
-	);
-	// 雲リセットブロックの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo")),
-		m_blocks->RECLOWD
-	);
+	// ファクトリーで生成
+	auto grass = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
+	auto coin  = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
+	auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo"));
+	auto reset = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
+
+	// モデルの受け渡し
+	m_blocks->CreateModels(std::move(grass), m_blocks->GRASS);
+	m_blocks->CreateModels(std::move(coin),	 m_blocks->COIN);
+	m_blocks->CreateModels(std::move(cloud), m_blocks->CLOWD);
+	m_blocks->CreateModels(std::move(reset), m_blocks->RECLOWD);
 
 	//-------------------------------------------------------------------------------------//
 	// 位置情報のシェーダーの作成
@@ -472,12 +460,6 @@ void PlayScene::CreateWindowDependentResources()
 	// UIの作成
 	m_userInterFace = std::make_unique<PlayUI>(SimpleMath::Vector2(width, height));
 	m_userInterFace->Create(GetSystemManager(),context, device);
-
-	//-------------------------------------------------------------------------------------//
-	// 影の作成
-	m_shadow = std::make_unique<Shadow>();
-	m_shadow->CreateShadow(device);
-	//m_shadow->SetModel(L"head", std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo")));
 }
 
 /// <summary>
@@ -726,14 +708,10 @@ void PlayScene::MakePlayer(ID3D11Device1* device)
 {
 	//-------------------------------------------------------------------------------------//
 	// パスの格納
-	std::unique_ptr<Model> head =
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo"));
-	std::unique_ptr<Model> body =
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo"));
-	std::unique_ptr<Model> legR =
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
-	std::unique_ptr<Model> legL =
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
+	auto head =	std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo"));
+	auto body =	std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo"));
+	auto legR =	std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
+	auto legL =	std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
 	//-------------------------------------------------------------------------------------//
 
 	// プレイヤーを作成する

@@ -16,6 +16,9 @@
 // ユーザーユーティリティ
 #include "../../../Libraries/UserUtility.h"
 
+// データ読み込み
+#include "Libraries/ReadData.h"
+
 #include "Blocks.h"
 
  /// <summary>
@@ -97,7 +100,7 @@ void Blocks::Initialize(int stageNum)
 			m_cloudState[i].endPosition = SimpleMath::Vector3
 			{
 				m_mapObj[i].position.x,
-				m_mapObj[i].position.y + COMMON_SIZE + CLOWD_SIZE,
+				m_mapObj[i].position.y + COMMON_SIZE + CLOUD_SIZE,
 				m_mapObj[i].position.z
 			};
 		}
@@ -142,7 +145,7 @@ void Blocks::Update()
 				(
 					m_mapObj[i].position.y,
 					m_cloudState[i].endPosition.y,
-					CLOWD_SPEED
+					CLOUD_SPEED
 				);
 			}
 		}
@@ -167,18 +170,24 @@ void Blocks::Update()
 void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 	SimpleMath::Matrix view, SimpleMath::Matrix proj, float timer)
 {
-	// オブジェクトの描画
+	// ワールド座標
+	SimpleMath::Matrix world, rotMat, revScaleMat;
+
+	// ライティング設定
+	std::function<void(IEffect* effect)> lightSetting;
+
+	// 雲以外のオブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		SimpleMath::Matrix world =
-			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+		// 移動行列
+		world =	SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
 		// 回転行列
-		SimpleMath::Matrix rotateY = SimpleMath::Matrix::CreateRotationY(timer);
+		rotMat = SimpleMath::Matrix::CreateRotationY(timer);
 
 		// スケール行列
 		float restrictedTimer = fmodf(timer, 2 * XM_PI);
-		SimpleMath::Matrix cl_scale = SimpleMath::Matrix::CreateScale(sinf(restrictedTimer));
+		revScaleMat = SimpleMath::Matrix::CreateScale(sinf(restrictedTimer));
 
 		// ライトの設定
 		SimpleMath::Vector3 lightDirection(1.0f, -1.0f, -1.0f);
@@ -198,8 +207,9 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		lightDirection = SimpleMath::Vector3::TransformNormal(lightDirection, cameraRotation);
 		SimpleMath::Color lightColor(0.3f, 0.3f, 0.3f, 1.0f);
 
-		auto setLightForModel = [&](IEffect* effect)
+		lightSetting= [&](IEffect* effect)
 		{
+			// ライト
 			auto lights = dynamic_cast<IEffectLights*>(effect);
 			if (lights)
 			{
@@ -237,37 +247,18 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 			}
 		};
 
-
 		// 草ブロック
 		if (m_mapObj[i].id == MAPSTATE::GRASS)
 		{
-			m_grassModel->UpdateEffects(setLightForModel);
+			m_grassModel->UpdateEffects(lightSetting);
 			m_grassModel->Draw(context, states, world, view, proj);
 		}
 
 		// コインブロック
 		if (m_mapObj[i].id == MAPSTATE::COIN)
 		{
-			m_coinModel->UpdateEffects(setLightForModel);
-			m_coinModel->Draw(context, states, rotateY * world, view, proj);
-		}
-
-		// 雲ブロック
-		if (m_mapObj[i].id == MAPSTATE::CLOUD)
-		{
-			if (m_cloudState[i].moveFlag)
-			{
-				// 色を暗く変更
-				ChangeModelColors(m_cloudModel, static_cast<SimpleMath::Vector4>(Colors::DarkGray));
-			}
-			else
-			{
-				// 色をデフォルトに戻す
-				ChangeModelColors(m_cloudModel,static_cast<SimpleMath::Vector4>(Colors::White));
-			}
-
-			m_cloudModel->UpdateEffects(setLightForModel);
-			m_cloudModel->Draw(context, states, rotateY * world, view, proj);
+			m_coinModel->UpdateEffects(lightSetting);
+			m_coinModel->Draw(context, states, rotMat * world, view, proj);
 		}
 
 		// 雲のリセットポイント
@@ -276,12 +267,30 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 			// 反転防止
 			if (sinf(restrictedTimer) < 0.0f)
 			{
-				cl_scale *= SimpleMath::Matrix::CreateScale(1.0f, -1.0f,1.0f);
+				revScaleMat *= SimpleMath::Matrix::CreateScale(1.0f, -1.0f,1.0f);
 			}
 
-			m_resetPtModel->UpdateEffects(setLightForModel);
-			m_resetPtModel->Draw(context, states, cl_scale * rotateY * world, view, proj);
+			m_resetPtModel->UpdateEffects(lightSetting);
+			m_resetPtModel->Draw(context, states, revScaleMat * rotMat * world, view, proj);
 		}
+	}
+
+	// 雲ブロック
+	for (int i = 0; i < m_mapObj.size(); i++)
+	{
+		if (m_mapObj[i].id != MAPSTATE::CLOUD) continue;
+
+		// 移動行列
+		world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+
+		m_cloudModel->UpdateEffects(lightSetting);
+		m_cloudModel->Draw(context, states, rotMat * world, view, proj, false, [&]()
+			{
+				context->OMSetBlendState(states.NonPremultiplied(), nullptr, 0xFFFFFFFF);
+				context->OMSetDepthStencilState(states.DepthDefault(), 0);
+				context->PSSetShader(m_psCloud.Get(), nullptr, 0);
+			}
+		);
 	}
 }
 
@@ -330,6 +339,20 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 }
 
 /// <summary>
+/// シェーダーの作成
+/// </summary>
+/// <param name="device">デバイスポインタ</param>
+/// <returns>なし</returns>
+void Blocks::CreateShader(ID3D11Device1* device)
+{
+	// ピクセルシェーダー
+	std::vector<uint8_t> psCloud = DX::ReadData(L"Resources/Shaders/PS_Cloud.cso");
+	DX::ThrowIfFailed(
+		device->CreatePixelShader(psCloud.data(), psCloud.size(), nullptr,
+			m_psCloud.ReleaseAndGetAddressOf()));
+}
+
+/// <summary>
 /// コイン取得処理
 /// </summary>
 /// <param name="index">当たったコインの番号</param>
@@ -366,12 +389,12 @@ const float& Blocks::GetObjSize(const int& objName)
 	else if (objName == MAPSTATE::CLOUD)
 	{
 		// 雲も小さめサイズ
-		return CLOWD_SIZE;
+		return CLOUD_SIZE;
 	}
 	else if (objName == MAPSTATE::RESET)
 	{
 		// 雲リセットエリアは大きめsサイズ
-		return CLOWD_RESET_SIZE;
+		return CLOUD_RESET_SIZE;
 	}
 	else
 	{
@@ -387,7 +410,6 @@ const float& Blocks::GetObjSize(const int& objName)
 /// <returns>なし</returns>
 void Blocks::RestoreCloudPosition()
 {
-
 	for (auto& i : m_mapObj)
 	{
 		// 雲のみを対象とする
@@ -398,7 +420,7 @@ void Blocks::RestoreCloudPosition()
 			(
 				i.position.y,
 				m_cloudState[i.index].initPosition.y,
-				CLOWD_SPEED * 0.5f
+				CLOUD_SPEED * 0.5f
 			);
 			m_cloudState[i.index].moveFlag = false;
 		}
@@ -435,18 +457,6 @@ std::wstring Blocks::MapSelect(int num)
 		break;
 	case 5:
 		filePath = L"Resources/Maps/Stage5.csv";
-		break;
-	case 6:
-		filePath = L"Resources/Maps/Stage6.csv";
-		break;
-	case 7:
-		filePath = L"Resources/Maps/Stage7.csv";
-		break;
-	case 8:
-		filePath = L"Resources/Maps/Stage8.csv";
-		break;
-	case 9:
-		filePath = L"Resources/Maps/Stage9.csv";
 		break;
 	default:
 		filePath = L"NoStage";

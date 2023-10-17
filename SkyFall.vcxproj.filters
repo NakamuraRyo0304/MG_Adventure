@@ -197,8 +197,8 @@
     <Filter Include="Resources\Shaders\PlayerPoint">
       <UniqueIdentifier>{d416895f-1d94-4e22-9d2b-d353ca6bab40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Shaders\Shadow">
-      <UniqueIdentifier>{785f9eea-314e-44a4-8aee-c496efe0237f}</UniqueIdentifier>
+    <Filter Include="Resources\Shaders\Block">
+      <UniqueIdentifier>{756ccb11-9d61-4425-9da8-fe78771915f9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -319,9 +319,6 @@
     <ClInclude Include="Game\EditScene\System\ClearChecker.h">
       <Filter>Scenes\EditScene\System\ClearChecker</Filter>
     </ClInclude>
-    <ClInclude Include="Resources\Shaders\Shadow.h">
-      <Filter>Resources\Shaders\Shadow</Filter>
-    </ClInclude>
     <ClInclude Include="Libraries\ReadData.h">
       <Filter>Common\HeaderOnly</Filter>
     </ClInclude>
@@ -434,9 +431,6 @@
     </ClCompile>
     <ClCompile Include="Game\EditScene\System\ClearChecker.cpp">
       <Filter>Scenes\EditScene\System\ClearChecker</Filter>
-    </ClCompile>
-    <ClCompile Include="Resources\Shaders\Shadow.cpp">
-      <Filter>Resources\Shaders\Shadow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -669,8 +663,8 @@
     <FxCompile Include="Resources\Shaders\PlayerPointVS.hlsl">
       <Filter>Resources\Shaders\PlayerPoint</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\Shadow.hlsl">
-      <Filter>Resources\Shaders\Shadow</Filter>
+    <FxCompile Include="Resources\Shaders\PS_Cloud.hlsl">
+      <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

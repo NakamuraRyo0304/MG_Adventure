@@ -20,7 +20,6 @@ class PlayUI;
 class PlayCamera;
 class Blocks;
 class ThirdPersonCamera;
-class Shadow;
 class PlayScene final : public IScene
 {
 private:
@@ -93,8 +92,6 @@ private:
 	// スタートカメラ
 	std::unique_ptr<PlayCamera> m_playCamera;
 
-	// 影
-	std::unique_ptr<Shadow> m_shadow;
 private:
 
 	// 制限時間(秒数)

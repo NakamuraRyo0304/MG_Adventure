@@ -46,6 +46,9 @@ private:
 	// 当たったかどうかの判定
 	bool is_hitCoinFlag;
 
+	// ブロックのシェーダー
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_psCloud;
+
 private:
 	// マップサイズ
 	const float COMMON_SIZE = 0.9f;
@@ -54,11 +57,11 @@ private:
 	const float COIN_SIZE = COMMON_SIZE / 3;
 
 	// 雲のサイズ
-	const float CLOWD_SIZE = COMMON_SIZE / 1.7f;
-	const float CLOWD_SPEED = 0.1f;
+	const float CLOUD_SIZE = COMMON_SIZE / 1.7f;
+	const float CLOUD_SPEED = 0.1f;
 
 	// 雲リセットエリアサイズ
-	const float CLOWD_RESET_SIZE = 0.85f;
+	const float CLOUD_RESET_SIZE = 0.85f;
 
 	// 最低高度
 	const float	COMMON_LOW = COMMON_SIZE / 2;
@@ -99,6 +102,8 @@ public:
 	// モデル作成
 	void CreateModels(std::unique_ptr<Model> model, int modelName);
 
+	// シェーダーの作成
+	void CreateShader(ID3D11Device1* device);
 
 public:
 	// コインのカウントアップ
@@ -134,9 +139,6 @@ private:
 
 	// マップセレクト
 	std::wstring MapSelect(int num);
-
-private:
-
 	// モデルの色を変更
 	void ChangeModelColors(std::unique_ptr<Model>& model,DirectX::SimpleMath::Vector4 color);
 };

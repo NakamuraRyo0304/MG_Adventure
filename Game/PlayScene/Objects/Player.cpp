@@ -290,7 +290,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 		}
 	};
 
-	// ƒ‚ƒfƒ‹‚Ì•`‰æ
+
 	// ‰E‘«‚Ì•`‰æ
 	m_rightLeg->UpdateEffects(setLightForModel);
 	m_rightLeg->Draw(context, states, legRWorld, view, proj);

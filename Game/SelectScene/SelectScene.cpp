@@ -332,30 +332,24 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 
 	for (int i = 0; i < MAX_STAGE_NUM; ++i)
 	{
-		//パスの格納---------------------------------------------------------------------------//
-		const wchar_t* grassPath = L"Resources/Models/GrassBlock.cmo";		// 草ブロック      //
-		const wchar_t* coinPath  = L"Resources/Models/Coin.cmo";			// コイン          //
-		const wchar_t* cloudPath = L"Resources/Models/MoveBlock.cmo";		// 雲              //
-		const wchar_t* resetPath = L"Resources/Models/ResetPt.cmo";			// リセットポイント//
-		//-------------------------------------------------------------------------------------//
+		// ファクトリーで生成
+		auto grass = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
+		auto coin  = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
+		auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo"));
+		auto reset = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
 
 		// 作成されていない場合は作成する
 		if (!m_blocks[i])
 		{
 			// ブロックの作成
 			m_blocks[i] = std::make_unique<Blocks>();
+			m_blocks[i]->CreateShader(device);
 
-			// 草ブロックの作成
-			m_blocks[i]->CreateModels(std::move(ModelFactory::GetCreateModel(device, grassPath)), m_blocks[i]->GRASS);
-
-			// コインの作成
-			m_blocks[i]->CreateModels(std::move(ModelFactory::GetCreateModel(device, coinPath)), m_blocks[i]->COIN);
-
-			// 雲ブロックの作成
-			m_blocks[i]->CreateModels(std::move(ModelFactory::GetCreateModel(device, cloudPath)), m_blocks[i]->CLOWD);
-
-			// 雲リセットブロックの作成
-			m_blocks[i]->CreateModels(std::move(ModelFactory::GetCreateModel(device, resetPath)), m_blocks[i]->RECLOWD);
+			// モデルの受け渡し
+			m_blocks[i]->CreateModels(std::move(grass), m_blocks[i]->GRASS);
+			m_blocks[i]->CreateModels(std::move(coin),  m_blocks[i]->COIN);
+			m_blocks[i]->CreateModels(std::move(cloud), m_blocks[i]->CLOWD);
+			m_blocks[i]->CreateModels(std::move(reset), m_blocks[i]->RECLOWD);
 
 			// 初期化処理
 			m_blocks[i]->Initialize(i);
@@ -370,28 +364,22 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 /// <returns>なし</returns>
 void SelectScene::CreateFirstStage(ID3D11Device1* device)
 {
-	//パスの格納---------------------------------------------------------------------------//
-	const wchar_t* grassPath = L"Resources/Models/GrassBlock.cmo";		// 草ブロック      //
-	const wchar_t* coinPath  = L"Resources/Models/Coin.cmo";			// コイン          //
-	const wchar_t* cloudPath = L"Resources/Models/MoveBlock.cmo";		// 雲              //
-	const wchar_t* resetPath = L"Resources/Models/ResetPt.cmo";			// リセットポイント//
-	//-------------------------------------------------------------------------------------//
+	// ファクトリーで生成
+	auto grass = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
+	auto coin  = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
+	auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo"));
+	auto reset = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
 
 	// ブロックの作成
 	m_blocks[m_stageNum] = std::make_unique<Blocks>();
+	m_blocks[m_stageNum]->CreateShader(device);
 
-	// 草ブロックの作成
-	m_blocks[m_stageNum]->CreateModels(std::move(ModelFactory::GetCreateModel(device, grassPath)),
-																				m_blocks[m_stageNum]->GRASS);
-	// コインの作成
-	m_blocks[m_stageNum]->CreateModels(std::move(ModelFactory::GetCreateModel(device, coinPath)),
-																				m_blocks[m_stageNum]->COIN);
-	// 雲ブロックの作成
-	m_blocks[m_stageNum]->CreateModels(std::move(ModelFactory::GetCreateModel(device, cloudPath)),
-																				m_blocks[m_stageNum]->CLOWD);
-	// 雲リセットブロックの作成
-	m_blocks[m_stageNum]->CreateModels(std::move(ModelFactory::GetCreateModel(device, resetPath)),
-																				m_blocks[m_stageNum]->RECLOWD);
+	// モデルの受け渡し
+	m_blocks[m_stageNum]->CreateModels(std::move(grass), m_blocks[m_stageNum]->GRASS);
+	m_blocks[m_stageNum]->CreateModels(std::move(coin),  m_blocks[m_stageNum]->COIN);
+	m_blocks[m_stageNum]->CreateModels(std::move(cloud), m_blocks[m_stageNum]->CLOWD);
+	m_blocks[m_stageNum]->CreateModels(std::move(reset), m_blocks[m_stageNum]->RECLOWD);
+
 	// 初期化処理
 	m_blocks[m_stageNum]->Initialize(m_stageNum);
 }
