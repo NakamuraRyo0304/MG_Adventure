@@ -63,19 +63,19 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	m_system->GetDrawSprite()->MakeSpriteBatch(context);
 
 	// 画像を登録
-	m_system->GetDrawSprite()->AddTextureData(L"GameStart",L"Resources/Textures/PLAY_HELP/GameStart.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Number",   L"Resources/Textures/Number.dds",			  device);
-	m_system->GetDrawSprite()->AddTextureData(L"Death",    L"Resources/Textures/DeathEffect.dds",		  device);
-	m_system->GetDrawSprite()->AddTextureData(L"Sun",      L"Resources/Textures/PLAY_HELP/sun.dds",		  device);
+	m_system->GetDrawSprite()->AddTextureData(L"GameStart", L"Resources/Textures/PLAY_COMMON/GameStart.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Death", L"Resources/Textures/DeathEffect.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Sun", L"Resources/Textures/PLAY_COMMON/sun.dds", device);
 
 	// ヘルプ画面
-	m_system->GetDrawSprite()->AddTextureData(L"Help",	   L"Resources/Textures/PLAY_HELP/Help.dds",      device);
-	m_system->GetDrawSprite()->AddTextureData(L"HelpBack", L"Resources/Textures/PLAY_HELP/HelpBack.dds",  device);
-	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp", L"Resources/Textures/PLAY_HELP/OpenHelp.dds",  device);
+	m_system->GetDrawSprite()->AddTextureData(L"Help", L"Resources/Textures/PLAY_HELP/Help.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"HelpBack", L"Resources/Textures/PLAY_HELP/HelpBack.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp", L"Resources/Textures/PLAY_HELP/OpenHelp.dds", device);
 
 	// 画面下部に表示されるコメント
-	m_system->GetDrawSprite()->AddTextureData(L"UnderBack",L"Resources/Textures/PLAY_HELP/UnderBack.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"UnderFont",L"Resources/Textures/PLAY_HELP/UnderFont.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"UnderBack", L"Resources/Textures/PLAY_HELP/UnderBack.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"UnderFont", L"Resources/Textures/PLAY_HELP/UnderFont.dds", device);
 
 	// 比率を計算
 	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
@@ -147,7 +147,8 @@ void PlayUI::Render()
 	// タイマーの描画
 	RenderTimer(scale);
 
-	// ヘルプフラグ(操作説明)
+	//-------------------------------------------------------------------------------------//
+	// ヘルプ中の表示
 	if (is_helpFlag)
 	{
 		m_system->GetDrawSprite()->DrawTexture(
@@ -165,6 +166,8 @@ void PlayUI::Render()
 			SimpleMath::Vector2::Zero          // 中心位置
 		);
 	}
+	//-------------------------------------------------------------------------------------//
+	// 通常の表示
 	else
 	{
 		m_system->GetDrawSprite()->DrawTexture(
@@ -176,7 +179,6 @@ void PlayUI::Render()
 			{ 0,0,360,120 }
 		);
 
-		//-------------------------------------------------------------------------------------//
 		// 画面下のフォント
 		m_system->GetDrawSprite()->DrawTexture(
 			L"UnderBack",
@@ -191,6 +193,7 @@ void PlayUI::Render()
 			{ 1.0f, 1.0f, 1.0f, 1.0f },
 			scale,
 			SimpleMath::Vector2::Zero,
+			// 画像のサイズ
 			{ 0,0,static_cast<LONG>(FULL_SCREEN_SIZE.x * 2),static_cast<LONG>(FULL_SCREEN_SIZE.y) }
 		);
 	}

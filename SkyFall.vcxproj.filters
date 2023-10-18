@@ -200,6 +200,9 @@
     <Filter Include="Resources\Shaders\Block">
       <UniqueIdentifier>{756ccb11-9d61-4425-9da8-fe78771915f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Textures\PLAY_UI\PLAY_COMMON">
+      <UniqueIdentifier>{9530efe2-d942-47d2-af27-161e4f484d7e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -562,8 +565,11 @@
     <Image Include="Resources\Textures\UnderLine.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
     </Image>
-    <Image Include="Resources\Textures\PLAY_HELP\sun.dds">
-      <Filter>Resources\Textures\PLAY_UI</Filter>
+    <Image Include="Resources\Textures\PLAY_COMMON\sun.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_COMMON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_COMMON\GameStart.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_COMMON</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -644,9 +650,6 @@
     <None Include="Resources\Shaders\PlayerPoint.hlsli">
       <Filter>Resources\Shaders\PlayerPoint</Filter>
     </None>
-    <None Include="Resources\Shaders\FadeHeader.hlsli">
-      <Filter>Resources\Shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -668,12 +671,6 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\PS_Cloud.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PS_Fade.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\VS_Fade.hlsl">
-      <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

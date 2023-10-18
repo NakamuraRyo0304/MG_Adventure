@@ -13,6 +13,7 @@ class SystemManager;
 class PlayUI
 {
 private:
+
 	// シェアポインタ
 	std::shared_ptr<SystemManager> m_system;
 
@@ -21,10 +22,15 @@ private:
 
 	// タイマーの座標(1の位)
 	DirectX::SimpleMath::Vector2 m_oneSecPos;
+
 	// タイマーの座標(10の位)
 	DirectX::SimpleMath::Vector2 m_tenSecPos;
+
 	// タイマーの座標(最初のカウントダウン)
 	DirectX::SimpleMath::Vector2 m_countDownPos;
+
+	// 画面下の説明文の座標
+	DirectX::SimpleMath::Vector2 m_underFontPos;
 
 	// 太陽の位置
 	DirectX::SimpleMath::Vector2 m_sunPos;
@@ -37,9 +43,6 @@ private:
 
 	// 操作説明表示フラグ
 	bool is_helpFlag;
-
-	// 画面下の説明文の座標
-	DirectX::SimpleMath::Vector2 m_underFontPos;
 
 
 private:

@@ -33,6 +33,8 @@ private:
 	// フェードの数値0-255
 	float m_fadeNum;
 
+private:
+
 	// 最大値/最小値
 	const float MAX_NUM = 255.0f;
 	const float MIN_NUM = 0.0f;
