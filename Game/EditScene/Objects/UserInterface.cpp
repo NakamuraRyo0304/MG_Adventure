@@ -78,20 +78,20 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",   L"Resources/Textures/EditToolBar.dds", device);
 
 	// ブロックアイコン
-	m_system->GetDrawSprite()->AddTextureData(L"Grass",     L"Resources/Textures/BLOCK/GrassIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Cloud",     L"Resources/Textures/BLOCK/ClowdIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Coin",      L"Resources/Textures/BLOCK/CoinIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"ReCloud",   L"Resources/Textures/BLOCK/ReClowdIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Player",    L"Resources/Textures/BLOCK/PlayerIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Erase",     L"Resources/Textures/BLOCK/DeleteIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Grass",  L"Resources/Textures/BLOCK/GrassIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Cloud",  L"Resources/Textures/BLOCK/CloudIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Coin",   L"Resources/Textures/BLOCK/CoinIcon.dds",  device);
+	m_system->GetDrawSprite()->AddTextureData(L"Reset",  L"Resources/Textures/BLOCK/ResetIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Player", L"Resources/Textures/BLOCK/PlayerIcon.dds",device);
+	m_system->GetDrawSprite()->AddTextureData(L"Delete", L"Resources/Textures/BLOCK/DeleteIcon.dds",device);
 
 	// IDを格納
 	m_texName[MAPSTATE::GRASS]   = L"Grass";
 	m_texName[MAPSTATE::CLOUD]   = L"Cloud";
 	m_texName[MAPSTATE::COIN]    = L"Coin";
-	m_texName[MAPSTATE::RESET] = L"ReCloud";
+	m_texName[MAPSTATE::RESET]   = L"Reset";
 	m_texName[MAPSTATE::PLAYER]  = L"Player";
-	m_texName[MAPSTATE::NONE]       = L"Erase";
+	m_texName[MAPSTATE::NONE]    = L"Delete";
 
 	// 比率を計算
 	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
@@ -330,21 +330,21 @@ void UserInterface::DrawIcon(const SimpleMath::Vector2& imageScale)
 		if (is_boxState[idx])
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				m_texName[idx],							// 登録キー
-				m_imagePos[idx],						// 座標
-				SimpleMath::Vector4::One,				// 色
-				IMAGE_RATE * imageScale,				// 拡大率
-				SimpleMath::Vector2{ IMAGE_CENTER }		// 中心位置
+				m_texName[idx],
+				SimpleMath::Vector2{ m_imagePos[idx].x,m_imagePos[idx].y + IMAGE_RATE},
+				SimpleMath::Vector4::One,
+				IMAGE_RATE * imageScale,
+				SimpleMath::Vector2{ IMAGE_CENTER }
 			);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				m_texName[idx],							// 登録キー
-				m_imagePos[idx],						// 座標
-				{ 1.0f,1.0f,1.0f,HALF },				// 色
-				(HALF + m_boxHover[idx]) * imageScale,	// 拡大率
-				SimpleMath::Vector2{ IMAGE_CENTER }		// 中心位置
+				m_texName[idx],
+				m_imagePos[idx],
+				{ 1.0f,1.0f,1.0f,HALF },
+				(HALF + m_boxHover[idx]) * imageScale,
+				SimpleMath::Vector2{ IMAGE_CENTER }
 			);
 		}
 	}

@@ -460,16 +460,10 @@
     <Image Include="Resources\Textures\FONT\COINS.dds">
       <Filter>Resources\Textures\FONT</Filter>
     </Image>
-    <Image Include="Resources\Textures\BLOCK\ClowdIcon.dds">
-      <Filter>Resources\Textures\BLOCK</Filter>
-    </Image>
     <Image Include="Resources\Textures\BLOCK\CoinIcon.dds">
       <Filter>Resources\Textures\BLOCK</Filter>
     </Image>
     <Image Include="Resources\Textures\BLOCK\GrassIcon.dds">
-      <Filter>Resources\Textures\BLOCK</Filter>
-    </Image>
-    <Image Include="Resources\Textures\BLOCK\ReClowdIcon.dds">
       <Filter>Resources\Textures\BLOCK</Filter>
     </Image>
     <Image Include="Resources\Textures\BLOCK\PlayerIcon.dds">
@@ -570,6 +564,12 @@
     </Image>
     <Image Include="Resources\Textures\PLAY_COMMON\GameStart.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_COMMON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\BLOCK\ResetIcon.dds">
+      <Filter>Resources\Textures\BLOCK</Filter>
+    </Image>
+    <Image Include="Resources\Textures\BLOCK\CloudIcon.dds">
+      <Filter>Resources\Textures\BLOCK</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

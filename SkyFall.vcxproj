@@ -278,12 +278,12 @@
   <ItemGroup>
     <Image Include="Resources\Textures\ADHESION\Adhesion1.dds" />
     <Image Include="Resources\Textures\BackSelect.dds" />
-    <Image Include="Resources\Textures\BLOCK\ClowdIcon.dds" />
+    <Image Include="Resources\Textures\BLOCK\CloudIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\CoinIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\GrassIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\PlayerIcon.dds" />
-    <Image Include="Resources\Textures\BLOCK\ReClowdIcon.dds" />
+    <Image Include="Resources\Textures\BLOCK\ResetIcon.dds" />
     <Image Include="Resources\Textures\Camera.dds" />
     <Image Include="Resources\Textures\CameraMove.dds" />
     <Image Include="Resources\Textures\Clock.dds" />
