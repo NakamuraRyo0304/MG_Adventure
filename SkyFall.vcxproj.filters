@@ -673,4 +673,9 @@
       <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="..\GrassBlock.fbx">
+      <Filter>Resources\Models\MapObject</Filter>
+    </MeshContentTask>
+  </ItemGroup>
 </Project>
