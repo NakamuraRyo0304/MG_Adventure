@@ -223,8 +223,7 @@ void EditScene::Draw()
 	}
 
 	// スカイドームの描画
-	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * 0.1f);
-	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
+	m_skyDomeModel->Draw(context, states, SimpleMath::Matrix::Identity, view, proj);
 
 	// 画像の描画
 	m_userInterface->Render();
@@ -352,7 +351,7 @@ void EditScene::CreateWindowDependentResources()
 	// スカイドームモデルを作成する
 	m_skyDomeModel = ModelFactory::GetCreateModel(
 		device,
-		L"Resources/Models/Spacedome.cmo"
+		L"Resources/Models/CheckDome.cmo"
 	);
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{

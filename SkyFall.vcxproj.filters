@@ -200,6 +200,9 @@
     <Filter Include="Scenes\PlayScene\System">
       <UniqueIdentifier>{aab73a85-14ec-48b6-9c65-8b55d8270078}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\Haze">
+      <UniqueIdentifier>{94ac17f6-8b1c-440d-a911-c36fde1ce2bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -319,6 +322,9 @@
     <ClInclude Include="Libraries\ReadData.h">
       <Filter>Common\HeaderOnly</Filter>
     </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\Haze.h">
+      <Filter>Scenes\PlayScene\Objects\Haze</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -425,6 +431,9 @@
     </ClCompile>
     <ClCompile Include="Game\EditScene\System\ClearChecker.cpp">
       <Filter>Scenes\EditScene\System\ClearChecker</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\Objects\Haze.cpp">
+      <Filter>Scenes\PlayScene\Objects\Haze</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -620,9 +629,6 @@
     <None Include="Resources\Models\ShineSky.cmo">
       <Filter>Resources\Models\SkyDome</Filter>
     </None>
-    <None Include="Resources\Models\Spacedome.cmo">
-      <Filter>Resources\Models\SkyDome</Filter>
-    </None>
     <None Include="Resources\Models\TitleStage.cmo">
       <Filter>Resources\Models\TitleScene</Filter>
     </None>
@@ -640,6 +646,9 @@
     </None>
     <None Include="Resources\Shaders\PlayerPoint.hlsli">
       <Filter>Resources\Shaders\PlayerPoint</Filter>
+    </None>
+    <None Include="Resources\Models\CheckDome.cmo">
+      <Filter>Resources\Models\SkyDome</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -663,10 +672,5 @@
     <FxCompile Include="Resources\Shaders\PS_Cloud.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ImageContentTask Include="Resources\Textures\ADHESION\Adhesion.png">
-      <Filter>Resources\Textures\ADHESION</Filter>
-    </ImageContentTask>
   </ItemGroup>
 </Project>

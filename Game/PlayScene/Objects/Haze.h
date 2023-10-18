@@ -1,0 +1,24 @@
+/*
+ *	@File	Haze.h
+ *	@Brief	âÊñ ÇÃé¸ÇËÇÃÇ‡Ç‚Ç‡Ç‚ÅB
+ *	@Date	2023-10-19
+ *  @Author NakamuraRyo
+ */
+
+#pragma once
+#ifndef HAZE
+#define HAZE
+
+class Haze
+{
+private:
+
+public:
+
+	Haze();
+	~Haze();
+
+
+};
+
+#endif // HAZE

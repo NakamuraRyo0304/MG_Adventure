@@ -195,6 +195,7 @@
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
     <ClInclude Include="Game\PlayScene\Objects\Blocks.h" />
+    <ClInclude Include="Game\PlayScene\Objects\Haze.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h" />
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Blocks.cpp" />
+    <ClCompile Include="Game\PlayScene\Objects\Haze.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayerBill.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayUI.cpp" />
@@ -275,9 +277,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\ADHESION\Adhesion.dds" />
-    <ImageContentTask Include="Resources\Textures\ADHESION\Adhesion.png">
-      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Textures\ADHESION\%(Filename).dds</ContentOutput>
-    </ImageContentTask>
     <Image Include="Resources\Textures\BackSelect.dds" />
     <Image Include="Resources\Textures\BLOCK\CloudIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\CoinIcon.dds" />
@@ -329,6 +328,7 @@
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />
     <None Include="Resources\Models\Bird.cmo" />
     <None Include="Resources\Models\Body.cmo" />
+    <None Include="Resources\Models\CheckDome.cmo" />
     <None Include="Resources\Models\Coin.cmo" />
     <None Include="Resources\Models\Eraser.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
@@ -338,7 +338,6 @@
     <None Include="Resources\Models\MoveBlock.cmo" />
     <None Include="Resources\Models\ResetPt.cmo" />
     <None Include="Resources\Models\ShineSky.cmo" />
-    <None Include="Resources\Models\Spacedome.cmo" />
     <None Include="Resources\Models\Stage1.cmo" />
     <None Include="Resources\Models\Stage2.cmo" />
     <None Include="Resources\Models\Stage3.cmo" />
