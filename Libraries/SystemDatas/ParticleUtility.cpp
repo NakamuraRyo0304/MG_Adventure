@@ -2,7 +2,7 @@
  *	@File	ParticleUtility.cpp
  *	@Brief	パーティクルユーティリティクラス。// namespaceは利便性考慮で削除
  *	@Date	2023-07-07
- *  @Author ItoTakayuki
+ *  @Author T.Ito
  */
 
 #include "pch.h"

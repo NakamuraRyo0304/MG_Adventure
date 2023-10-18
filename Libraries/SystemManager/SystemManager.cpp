@@ -89,7 +89,7 @@ SystemManager::GetStateTrack()
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>文字描画クラスのユニークポインタ</returns>
-const std::unique_ptr<DrawString>&
+const std::unique_ptr<Debug::DrawString>&
 SystemManager::GetString()
 {
 	if (!m_drawString)
@@ -119,7 +119,7 @@ SystemManager::GetMouseTrack()
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>ドローフロアのユニークポインタ</returns>
-const std::unique_ptr<GridFloor>&
+const std::unique_ptr<Debug::GridFloor>&
 SystemManager::GetGridFloor()
 {
 	if (!m_gridFloor)
@@ -222,7 +222,7 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 		= std::make_unique<Keyboard::KeyboardStateTracker>();
 
 	// 文字の描画
-	m_drawString = std::make_unique<DrawString>();
+	m_drawString = std::make_unique<Debug::DrawString>();
 
 	// カメラの初期化
 	m_camera = std::make_unique<Camera>();
@@ -232,7 +232,7 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 		= std::make_unique<Mouse::ButtonStateTracker>();
 
 	// グリッドフロア 30 x 30
-	m_gridFloor = std::make_unique<GridFloor>(device, context, 30, 30);
+	m_gridFloor = std::make_unique<Debug::GridFloor>(device, context, 30, 30);
 
 	// レイを飛ばす
 	m_rayCast = std::make_unique<RayCast>();

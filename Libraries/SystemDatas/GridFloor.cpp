@@ -11,7 +11,7 @@
 //-------------------------------------------------------------------
 // コンストラクタ
 //-------------------------------------------------------------------
-GridFloor::GridFloor(ID3D11Device1* device, ID3D11DeviceContext1* context, const int divsX, const int divsY)
+Debug::GridFloor::GridFloor(ID3D11Device1* device, ID3D11DeviceContext1* context, const int divsX, const int divsY)
 	: mDivsX(divsX)
 	, mDivsY(divsY)
 {
@@ -40,14 +40,14 @@ GridFloor::GridFloor(ID3D11Device1* device, ID3D11DeviceContext1* context, const
 //-------------------------------------------------------------------
 // デストラクタ
 //-------------------------------------------------------------------
-GridFloor::~GridFloor()
+Debug::GridFloor::~GridFloor()
 {
 }
 
 //-------------------------------------------------------------------
 // 描画
 //-------------------------------------------------------------------
-void GridFloor::Draw(ID3D11DeviceContext1* context, CommonStates* states, const SimpleMath::Matrix view, const SimpleMath::Matrix proj, const GXMVECTOR color)
+void Debug::GridFloor::Draw(ID3D11DeviceContext1* context, CommonStates* states, const SimpleMath::Matrix view, const SimpleMath::Matrix proj, const GXMVECTOR color)
 {
 	SimpleMath::Matrix world = SimpleMath::Matrix::Identity;
 

@@ -18,7 +18,7 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-DrawString::DrawString()
+Debug::DrawString::DrawString()
 	: m_fontColor{Colors::Black}
 {
 }
@@ -28,7 +28,7 @@ DrawString::DrawString()
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-DrawString::~DrawString()
+Debug::DrawString::~DrawString()
 {
 }
 
@@ -38,7 +38,7 @@ DrawString::~DrawString()
 /// <param name="device">ID3D11Device1ポインタ</param>
 /// <param name="context">ID3D11DeviceContext1ポインタ</param>
 /// <returns>なし</returns>
-void DrawString::CreateString(ID3D11Device1* device, ID3D11DeviceContext1* context)
+void Debug::DrawString::CreateString(ID3D11Device1* device, ID3D11DeviceContext1* context)
 {
 	// デバッグ表示
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);
@@ -52,9 +52,9 @@ void DrawString::CreateString(ID3D11Device1* device, ID3D11DeviceContext1* conte
 /// <param name="pos">描画したい座標</param>
 /// <param name="str">描画したい文字列</param>
 /// <returns>なし</returns>
-void DrawString::DrawFormatString(CommonStates* common,
-								  SimpleMath::Vector2 pos, const wchar_t* str)
-	                              noexcept(false)
+void Debug::DrawString::DrawFormatString(CommonStates* common,
+										 SimpleMath::Vector2 pos, const wchar_t* str)
+										 noexcept(false)
 {
 	m_spriteBatch->Begin(SpriteSortMode_Deferred,
 		common->NonPremultiplied());
@@ -68,7 +68,7 @@ void DrawString::DrawFormatString(CommonStates* common,
 /// </summary>
 /// <param name="font_color">変更したい色</param>
 /// <returns>なし</returns>
-void DrawString::ChangeFontColor(XMVECTORF32 font_color)
+void Debug::DrawString::ChangeFontColor(XMVECTORF32 font_color)
 {
 	m_fontColor = font_color;
 }

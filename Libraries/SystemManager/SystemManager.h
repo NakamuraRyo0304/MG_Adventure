@@ -33,9 +33,9 @@ private:
 	// マウス
 	std::unique_ptr<DirectX::Mouse::ButtonStateTracker>			m_mouseStateTracker;
 	// 文字描画
-	std::unique_ptr<DrawString>                                 m_drawString;
+	std::unique_ptr<Debug::DrawString>                          m_drawString;
 	// グリッド床
-	std::unique_ptr<GridFloor>                                  m_gridFloor;
+	std::unique_ptr<Debug::GridFloor>                           m_gridFloor;
 	// レイキャスト
 	std::unique_ptr<RayCast>									m_rayCast;
 	// ドロースプライト
@@ -63,13 +63,13 @@ public: // ゲッター、セッター、ファクトリー
 	const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& GetStateTrack();
 
 	// ドローストリングの取得
-	const std::unique_ptr<DrawString>& GetString();
+	const std::unique_ptr<Debug::DrawString>& GetString();
 
 	// マウストラッカーの取得
 	const std::unique_ptr<DirectX::Mouse::ButtonStateTracker>& GetMouseTrack();
 
 	// グリッドフロアの取得
-	const std::unique_ptr<GridFloor>& GetGridFloor();
+	const std::unique_ptr<Debug::GridFloor>& GetGridFloor();
 
 	// レイキャストの取得
 	const std::unique_ptr<RayCast>& GetRayCast();
