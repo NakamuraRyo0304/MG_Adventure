@@ -102,9 +102,11 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_cameraTexPos     = { 356 * span , 80 * span};
 	m_backTexPos	   = { m_windowSize.x - (244 * span)  ,80 * span};
 	m_toolButtonTexPos = { m_windowSize.x - (96 * span)  ,80 * span};
+
+	// 設置ブロックアイコン
 	for (int i = 0; i < MAPSTATE::LENGTH; i++)
 	{
-		m_imagePos[i] = { 528 * span + (192 * span * i) , 80 * span};
+		m_imagePos[i] = { 545 * span + (192 * span * i) , 80 * span};
 		is_boxState[i] = false;
 		m_boxHover[i] = 0.0f;
 	}

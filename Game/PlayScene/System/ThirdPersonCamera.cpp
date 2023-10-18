@@ -27,7 +27,7 @@ ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
 
 	m_system->GetDrawSprite()->MakeSpriteBatch(context);
 
-	m_system->GetDrawSprite()->AddTextureData(L"Adhesion1", L"Resources/Textures/ADHESION/Adhesion1.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Adhesion", L"Resources/Textures/ADHESION/Adhesion.dds", device);
 }
 
 /// <summary>
@@ -45,9 +45,10 @@ ThirdPersonCamera::~ThirdPersonCamera()
 /// <param name="pos">基準点</param>
 /// <param name="rotate">回転量</param>
 /// <param name="distance">基準点からの距離</param>
+/// <param name="timer">タイマー</param>
 /// <returns>なし</returns>
 void ThirdPersonCamera::UpdateFollow(const SimpleMath::Vector3& pos, const SimpleMath::Quaternion& rotate,
-	const SimpleMath::Vector3& distance)
+	const SimpleMath::Vector3& distance, const float& timer)
 {
 	// カメラの目線の方向をプレイヤーの回転に合わせて計算
 	SimpleMath::Vector3 forward =
@@ -65,7 +66,7 @@ void ThirdPersonCamera::UpdateFollow(const SimpleMath::Vector3& pos, const Simpl
 
 	//-------------------------------------------------------------------------------------//
 	// 画像用変数更新
-	m_adhesionTimer = m_adhesionTimer <= 0.0f ? CHANGE_SPAN : m_adhesionTimer - 0.1f;
+	m_adhesionTimer = timer;
 }
 
 /// <summary>
@@ -80,9 +81,9 @@ void ThirdPersonCamera::DrawAdhesion()
 								  m_system->GetDeviceResources()->GetOutputSize().bottom / FULL_SCREEN_SIZE.y };
 
 	m_system->GetDrawSprite()->DrawTexture(
-		L"Adhesion1",
+		L"Adhesion",
 		SimpleMath::Vector2::Zero,
-		{ 1.0f, 1.0f, 1.0f, m_adhesionTimer / CHANGE_SPAN },
+		{ 1.0f, 1.0f, 1.0f, 0.5f },
 		scale,
 		SimpleMath::Vector2::Zero
 	);

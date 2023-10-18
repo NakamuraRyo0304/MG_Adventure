@@ -33,7 +33,8 @@ public:
 	~ThirdPersonCamera();
 
 	// ’Ç]ˆ—
-	void UpdateFollow(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Quaternion& rotate ,const DirectX::SimpleMath::Vector3& distance);
+	void UpdateFollow(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Quaternion& rotate ,
+		const DirectX::SimpleMath::Vector3& distance, const float& timer);
 
 	// ƒrƒ…[s—ñ‚Ìæ“¾
 	const DirectX::SimpleMath::Matrix& GetFollowView() { return m_followView; }

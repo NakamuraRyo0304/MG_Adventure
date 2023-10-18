@@ -8,7 +8,9 @@
 #include "pch.h"
 
 #include "Libraries/SystemDatas/ParticleUtility.h"
-#include "Libraries/SystemDatas/LoadFile.h"
+
+// ファイル読み込み
+#include "Libraries/ReadData.h"
 
 #include "PlayerBill.h"
 
@@ -56,7 +58,7 @@ void PlayerBill::LoadTexture(const wchar_t* path)
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> tex;
 
 	// ファイル読み込み
-	CreateWICTextureFromFile(
+	CreateDDSTextureFromFile(
 		device,
 		path,
 		nullptr,
@@ -80,7 +82,7 @@ void PlayerBill::Create(DX::DeviceResources* pDR)
 	CreateShader();
 
 	// 画像の読み込み（読み込み失敗でnullptr)
-	LoadTexture(L"Resources/Textures/PlayerPoint.png");
+	LoadTexture(L"Resources/Textures/PlayerPoint.dds");
 
 	// プリミティブバッチの作成
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());
@@ -128,10 +130,10 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 	for (auto& li : m_particleUtility)
 	{
 		// 頂点情報の初期化
-		VertexPositionColorTexture vPCT;										// 宣言
-		vPCT.position = XMFLOAT3(li.GetPosition());								// 座標
-		vPCT.color = XMFLOAT4(li.GetNowColor());								// 色
-		vPCT.textureCoordinate = XMFLOAT2(li.GetNowScale().x, 0.0f);			// 画像
+		VertexPositionColorTexture vPCT;								// 宣言
+		vPCT.position = XMFLOAT3(li.GetPosition());						// 座標
+		vPCT.color = XMFLOAT4(li.GetNowColor());						// 色
+		vPCT.textureCoordinate = XMFLOAT2(li.GetNowScale().x, 0.0f);	// 画像
 
 		m_vertice = vPCT;
 	}
@@ -201,44 +203,64 @@ void PlayerBill::CreateShader()
 	auto device = m_pDR->GetD3DDevice();
 
 	// シェーダーファイルの読み込み
+
 	// バーテックスシェーダー
-	LoadFile VSData = std::move(LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointVS.cso"));
+	std::vector<uint8_t> VSData = DX::ReadData(L"Resources/Shaders/PlayerPointVS.cso");
+	DX::ThrowIfFailed(
+		device->CreateVertexShader(VSData.data(), VSData.size(), nullptr,
+			m_verShader.ReleaseAndGetAddressOf())
+	);
 	// ジオメトリシェーダー
-	LoadFile GSData = std::move(LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointGS.cso"));
+	std::vector<uint8_t> GSData = DX::ReadData(L"Resources/Shaders/PlayerPointGS.cso");
+	DX::ThrowIfFailed(
+		device->CreateGeometryShader(GSData.data(), GSData.size(), nullptr,
+			m_geoShader.ReleaseAndGetAddressOf())
+	);
+
 	// ピクセルシェーダー
-	LoadFile PSData = std::move(LoadFile::LoadBinaryFile(L"Resources/Shaders/PlayerPointPS.cso"));
+	std::vector<uint8_t> PSData = DX::ReadData(L"Resources/Shaders/PlayerPointPS.cso");
+	DX::ThrowIfFailed(device->CreatePixelShader(PSData.data(), PSData.size(), nullptr,
+		m_pixShader.ReleaseAndGetAddressOf())
+	);
 
 	// インプットレイアウトの作成
-	device->CreateInputLayout(
-		&INPUT_LAYOUT[0],
-		static_cast<UINT>(INPUT_LAYOUT.size()),
-		VSData.GetData(),
-		VSData.GetSize(),
-		m_inputLayout.GetAddressOf()
+	DX::ThrowIfFailed(
+		device->CreateInputLayout(
+			&INPUT_LAYOUT[0],
+			static_cast<UINT>(INPUT_LAYOUT.size()),
+			VSData.data(),
+			VSData.size(),
+			m_inputLayout.GetAddressOf())
 	);
 
 	// バーテックスシェーダーの作成
-	device->CreateVertexShader(
-		VSData.GetData(),
-		VSData.GetSize(),
-		nullptr,
-		m_verShader.ReleaseAndGetAddressOf()
+	DX::ThrowIfFailed(
+		device->CreateVertexShader(
+			VSData.data(),
+			VSData.size(),
+			nullptr,
+			m_verShader.ReleaseAndGetAddressOf()
+		)
 	);
 
 	// ジオメトリシェーダーの作成
-	device->CreateGeometryShader(
-		GSData.GetData(),
-		GSData.GetSize(),
-		nullptr,
-		m_geoShader.ReleaseAndGetAddressOf()
+	DX::ThrowIfFailed(
+		device->CreateGeometryShader(
+			GSData.data(),
+			GSData.size(),
+			nullptr,
+			m_geoShader.ReleaseAndGetAddressOf()
+		)
 	);
 
 	// ピクセルシェーダーの作成
-	device->CreatePixelShader(
-		PSData.GetData(),
-		PSData.GetSize(),
-		nullptr,
-		m_pixShader.ReleaseAndGetAddressOf()
+	DX::ThrowIfFailed(
+		device->CreatePixelShader(
+			PSData.data(),
+			PSData.size(),
+			nullptr,
+			m_pixShader.ReleaseAndGetAddressOf()
+		)
 	);
 
 	// コンスタントバッファ作成
@@ -253,15 +275,18 @@ void PlayerBill::CreateShader()
 void PlayerBill::CreateConstBuffer(ID3D11Device1*& device)
 {
 	// コンスタントバッファ定義
-	D3D11_BUFFER_DESC buffer;
+	D3D11_BUFFER_DESC buffer = {};
 
 	// 中身を空にする
 	ZeroMemory(&buffer, sizeof(buffer));
 
+	// 読み書きのモードをデフォルトにする
 	buffer.Usage = D3D11_USAGE_DEFAULT;
 
 	// シェーダーで使うデータ構造体のサイズを格納
 	buffer.ByteWidth = sizeof(ConstBuffer);
+
+	// バッファーを定数バッファーとして紐づける
 	buffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	buffer.CPUAccessFlags = NULL;

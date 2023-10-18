@@ -215,7 +215,6 @@
     <ClInclude Include="Libraries\SystemDatas\DrawString.h" />
     <ClInclude Include="Libraries\SystemDatas\Fade.h" />
     <ClInclude Include="Libraries\SystemDatas\GridFloor.h" />
-    <ClInclude Include="Libraries\SystemDatas\LoadFile.h" />
     <ClInclude Include="Libraries\SystemDatas\MapLoad.h" />
     <ClInclude Include="Libraries\SystemDatas\MouseCursor.h" />
     <ClInclude Include="Libraries\SystemDatas\ParticleUtility.h" />
@@ -256,7 +255,6 @@
     <ClCompile Include="Libraries\SystemDatas\DrawString.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Fade.cpp" />
     <ClCompile Include="Libraries\SystemDatas\GridFloor.cpp" />
-    <ClCompile Include="Libraries\SystemDatas\LoadFile.cpp" />
     <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp" />
     <ClCompile Include="Libraries\SystemDatas\MouseCursor.cpp" />
     <ClCompile Include="Libraries\SystemDatas\ParticleUtility.cpp" />
@@ -276,7 +274,10 @@
     <ResourceCompile Include="Resources\Icon\Icon.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Textures\ADHESION\Adhesion1.dds" />
+    <Image Include="Resources\Textures\ADHESION\Adhesion.dds" />
+    <ImageContentTask Include="Resources\Textures\ADHESION\Adhesion.png">
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Textures\ADHESION\%(Filename).dds</ContentOutput>
+    </ImageContentTask>
     <Image Include="Resources\Textures\BackSelect.dds" />
     <Image Include="Resources\Textures\BLOCK\CloudIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\CoinIcon.dds" />
@@ -299,7 +300,7 @@
     <Image Include="Resources\Textures\MouseCursor.dds" />
     <Image Include="Resources\Textures\Number.dds" />
     <Image Include="Resources\Textures\OpenFile.dds" />
-    <Image Include="Resources\Textures\PlayerPoint.png" />
+    <Image Include="Resources\Textures\PlayerPoint.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\GameStart.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\sun.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\Help.dds" />

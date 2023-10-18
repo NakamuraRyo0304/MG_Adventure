@@ -134,7 +134,8 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		m_thirdCamera->UpdateFollow(
 			m_player->GetPosition(),				// ターゲット座標
 			m_player->GetNeckRotate(),				// 回転量
-			SimpleMath::Vector3(0.0f, 2.5f, 6.0f)	// ターゲットからの距離
+			SimpleMath::Vector3(0.0f, 2.5f, 6.0f),	// ターゲットからの距離
+			m_timer									// タイマー
 		);
 	}
 	else // 見下ろしカメラ
@@ -344,6 +345,7 @@ void PlayScene::Draw()
 		);
 		m_playerBill->Render(m_player->GetPosition(), m_timer, view, proj);
 	}
+	// 回りの靄
 	else
 	{
 		m_thirdCamera->DrawAdhesion();
