@@ -46,27 +46,6 @@ PlayerBill::~PlayerBill()
 }
 
 /// <summary>
-/// 画像読み込み
-/// </summary>
-/// <param name="path">画像パス</param>
-/// <returns>なし</returns>
-void PlayerBill::LoadTexture(const wchar_t* path)
-{
-	// デバイス
-	auto device = m_pDR->GetD3DDevice();
-	// シェーダーリソースビュー
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> tex;
-
-	// ファイル読み込み
-	CreateDDSTextureFromFile(
-		device,
-		path,
-		nullptr,
-		m_texture.ReleaseAndGetAddressOf()
-	);
-}
-
-/// <summary>
 /// リソースの作成
 /// </summary>
 /// <param name="pDR">デバイスリソースポインタ</param>
@@ -93,6 +72,156 @@ void PlayerBill::Create(DX::DeviceResources* pDR)
 	// 座標の初期化
 	m_defaultPos = SimpleMath::Vector3{ 0.0f,0.0f,0.0f };
 }
+
+/// <summary>
+/// 画像読み込み
+/// </summary>
+/// <param name="path">画像パス</param>
+/// <returns>なし</returns>
+void PlayerBill::LoadTexture(const wchar_t* path)
+{
+	// デバイス
+	auto device = m_pDR->GetD3DDevice();
+	// シェーダーリソースビュー
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> tex;
+
+	// ファイル読み込み
+	CreateDDSTextureFromFile(
+		device,
+		path,
+		nullptr,
+		m_texture.ReleaseAndGetAddressOf()
+	);
+}
+
+/// <summary>
+/// シェーダーの作成
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void PlayerBill::CreateShader()
+{
+	// デバイス
+	auto device = m_pDR->GetD3DDevice();
+
+	//-------------------------------------------------------------------------------------//
+	// シェーダーファイルの読み込み
+
+	// バーテックスシェーダー
+	std::vector<uint8_t> VSData = DX::ReadData(L"Resources/Shaders/PlayerPointVS.cso");
+	DX::ThrowIfFailed(
+		device->CreateVertexShader(VSData.data(), VSData.size(), nullptr,
+			m_verShader.ReleaseAndGetAddressOf())
+	);
+	// ジオメトリシェーダー
+	std::vector<uint8_t> GSData = DX::ReadData(L"Resources/Shaders/PlayerPointGS.cso");
+	DX::ThrowIfFailed(
+		device->CreateGeometryShader(GSData.data(), GSData.size(), nullptr,
+			m_geoShader.ReleaseAndGetAddressOf())
+	);
+	// ピクセルシェーダー
+	std::vector<uint8_t> PSData = DX::ReadData(L"Resources/Shaders/PlayerPointPS.cso");
+	DX::ThrowIfFailed(device->CreatePixelShader(PSData.data(), PSData.size(), nullptr,
+		m_pixShader.ReleaseAndGetAddressOf())
+	);
+
+	//-------------------------------------------------------------------------------------//
+	// シェーダーの作成
+
+	// インプットレイアウト
+	DX::ThrowIfFailed(
+		device->CreateInputLayout(
+			&INPUT_LAYOUT[0],
+			static_cast<UINT>(INPUT_LAYOUT.size()),
+			VSData.data(),
+			VSData.size(),
+			m_inputLayout.GetAddressOf())
+	);
+
+	// バーテックスシェーダー
+	DX::ThrowIfFailed(
+		device->CreateVertexShader(
+			VSData.data(),
+			VSData.size(),
+			nullptr,
+			m_verShader.ReleaseAndGetAddressOf()
+		)
+	);
+
+	// ジオメトリシェーダー
+	DX::ThrowIfFailed(
+		device->CreateGeometryShader(
+			GSData.data(),
+			GSData.size(),
+			nullptr,
+			m_geoShader.ReleaseAndGetAddressOf()
+		)
+	);
+
+	// ピクセルシェーダー
+	DX::ThrowIfFailed(
+		device->CreatePixelShader(
+			PSData.data(),
+			PSData.size(),
+			nullptr,
+			m_pixShader.ReleaseAndGetAddressOf()
+		)
+	);
+
+	// コンスタントバッファ作成
+	CreateConstBuffer(device);
+}
+
+/// <summary>
+/// コンスタントバッファ作成
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void PlayerBill::CreateConstBuffer(ID3D11Device1*& device)
+{
+	// コンスタントバッファ定義
+	D3D11_BUFFER_DESC buffer = {};
+
+	// 中身を空にする
+	ZeroMemory(&buffer, sizeof(buffer));
+
+	// 読み書きのモードをデフォルトにする
+	buffer.Usage = D3D11_USAGE_DEFAULT;
+
+	// シェーダーで使うデータ構造体のサイズを格納
+	buffer.ByteWidth = sizeof(ConstBuffer);
+
+	// バッファーを定数バッファーとして紐づける
+	buffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	buffer.CPUAccessFlags = NULL;
+
+	// 作成したバッファを格納
+	device->CreateBuffer(&buffer, nullptr, &m_constBuffer);
+}
+
+/// <summary>
+/// ビルボード作成関数
+/// </summary>
+/// <param name="target">カメラターゲット（注視点）</param>
+/// <param name="eye">カメラアイ（カメラ座標）</param>
+/// <param name="up">上向きベクトル（基本はYのみ１のベクトル）</param>
+/// <returns>なし</returns>
+void PlayerBill::CreateBillboard(SimpleMath::Vector3 target, SimpleMath::Vector3 eye, SimpleMath::Vector3 up)
+{
+	m_world = SimpleMath::Matrix::CreateBillboard(SimpleMath::Vector3::Zero, eye - target, up);
+
+	SimpleMath::Matrix rot = SimpleMath::Matrix::Identity;
+	rot._11 = -1;
+	rot._33 = -1;
+
+	m_cameraPosition = eye;
+	m_cameraTarget = target;
+
+	// ビルボードのテクスチャを回転
+	m_world = rot * m_world;
+}
+
 
 /// <summary>
 /// 描画
@@ -125,7 +254,8 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 		{
 			// カメラ正面の距離でソート
 			return cameraDir.Dot(lhs.GetPosition() - m_cameraPosition) > cameraDir.Dot(rhs.GetPosition() - m_cameraPosition);
-		});
+		}
+	);
 
 	for (auto& li : m_particleUtility)
 	{
@@ -190,129 +320,4 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->GSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
-}
-
-/// <summary>
-/// シェーダーの作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void PlayerBill::CreateShader()
-{
-	// デバイス
-	auto device = m_pDR->GetD3DDevice();
-
-	// シェーダーファイルの読み込み
-
-	// バーテックスシェーダー
-	std::vector<uint8_t> VSData = DX::ReadData(L"Resources/Shaders/PlayerPointVS.cso");
-	DX::ThrowIfFailed(
-		device->CreateVertexShader(VSData.data(), VSData.size(), nullptr,
-			m_verShader.ReleaseAndGetAddressOf())
-	);
-	// ジオメトリシェーダー
-	std::vector<uint8_t> GSData = DX::ReadData(L"Resources/Shaders/PlayerPointGS.cso");
-	DX::ThrowIfFailed(
-		device->CreateGeometryShader(GSData.data(), GSData.size(), nullptr,
-			m_geoShader.ReleaseAndGetAddressOf())
-	);
-
-	// ピクセルシェーダー
-	std::vector<uint8_t> PSData = DX::ReadData(L"Resources/Shaders/PlayerPointPS.cso");
-	DX::ThrowIfFailed(device->CreatePixelShader(PSData.data(), PSData.size(), nullptr,
-		m_pixShader.ReleaseAndGetAddressOf())
-	);
-
-	// インプットレイアウトの作成
-	DX::ThrowIfFailed(
-		device->CreateInputLayout(
-			&INPUT_LAYOUT[0],
-			static_cast<UINT>(INPUT_LAYOUT.size()),
-			VSData.data(),
-			VSData.size(),
-			m_inputLayout.GetAddressOf())
-	);
-
-	// バーテックスシェーダーの作成
-	DX::ThrowIfFailed(
-		device->CreateVertexShader(
-			VSData.data(),
-			VSData.size(),
-			nullptr,
-			m_verShader.ReleaseAndGetAddressOf()
-		)
-	);
-
-	// ジオメトリシェーダーの作成
-	DX::ThrowIfFailed(
-		device->CreateGeometryShader(
-			GSData.data(),
-			GSData.size(),
-			nullptr,
-			m_geoShader.ReleaseAndGetAddressOf()
-		)
-	);
-
-	// ピクセルシェーダーの作成
-	DX::ThrowIfFailed(
-		device->CreatePixelShader(
-			PSData.data(),
-			PSData.size(),
-			nullptr,
-			m_pixShader.ReleaseAndGetAddressOf()
-		)
-	);
-
-	// コンスタントバッファ作成
-	CreateConstBuffer(device);
-}
-
-/// <summary>
-/// コンスタントバッファ作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void PlayerBill::CreateConstBuffer(ID3D11Device1*& device)
-{
-	// コンスタントバッファ定義
-	D3D11_BUFFER_DESC buffer = {};
-
-	// 中身を空にする
-	ZeroMemory(&buffer, sizeof(buffer));
-
-	// 読み書きのモードをデフォルトにする
-	buffer.Usage = D3D11_USAGE_DEFAULT;
-
-	// シェーダーで使うデータ構造体のサイズを格納
-	buffer.ByteWidth = sizeof(ConstBuffer);
-
-	// バッファーを定数バッファーとして紐づける
-	buffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-
-	buffer.CPUAccessFlags = NULL;
-
-	// 作成したバッファを格納
-	device->CreateBuffer(&buffer, nullptr, &m_constBuffer);
-}
-
-/// <summary>
-/// ビルボード作成関数
-/// </summary>
-/// <param name="target">カメラターゲット（注視点）</param>
-/// <param name="eye">カメラアイ（カメラ座標）</param>
-/// <param name="up">上向きベクトル（基本はYのみ１のベクトル）</param>
-/// <returns>なし</returns>
-void PlayerBill::CreateBillboard(SimpleMath::Vector3 target, SimpleMath::Vector3 eye, SimpleMath::Vector3 up)
-{
-	m_world = SimpleMath::Matrix::CreateBillboard(SimpleMath::Vector3::Zero, eye - target, up);
-
-	SimpleMath::Matrix rot = SimpleMath::Matrix::Identity;
-	rot._11 = -1;
-	rot._33 = -1;
-
-	m_cameraPosition = eye;
-	m_cameraTarget = target;
-
-	// ビルボードのテクスチャを回転
-	m_world = rot * m_world;
 }

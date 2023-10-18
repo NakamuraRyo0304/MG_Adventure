@@ -73,20 +73,20 @@ public:
 	PlayerBill();
 	~PlayerBill();
 
-	// 画像読み込み
-	void LoadTexture(const wchar_t* path);
-
 	// リソースの作成
 	void Create(DX::DeviceResources* pDR);
 
-	// 描画
-	void Render(DirectX::SimpleMath::Vector3 playerPos, float timer, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	// 画像読み込み
+	void LoadTexture(const wchar_t* path);
 
 	// ビルボード作成
 	void CreateBillboard(DirectX::SimpleMath::Vector3 target,DirectX::SimpleMath::Vector3 eye,DirectX::SimpleMath::Vector3 up);
 
 	// 表示座標設定
 	void SetVertexMovePos(DirectX::SimpleMath::Vector3 movePos) { m_defaultPos = movePos; }
+
+	// 描画
+	void Render(DirectX::SimpleMath::Vector3 playerPos, float timer, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 
 private:
 
