@@ -644,6 +644,9 @@
     <None Include="Resources\Shaders\PlayerPoint.hlsli">
       <Filter>Resources\Shaders\PlayerPoint</Filter>
     </None>
+    <None Include="Resources\Shaders\FadeHeader.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -665,6 +668,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\PS_Cloud.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PS_Fade.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\VS_Fade.hlsl">
+      <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
