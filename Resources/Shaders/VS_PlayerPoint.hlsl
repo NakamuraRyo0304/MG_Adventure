@@ -1,5 +1,5 @@
 /*
- *	@File	PlayerPointVS.hlsl
+ *	@File	VS_PlayerPoint.hlsl
  *	@Brief	プレイヤーポイントバーテックスシェーダー。
  *	@Date	2023-07-07
  *  @Author NakamuraRyo

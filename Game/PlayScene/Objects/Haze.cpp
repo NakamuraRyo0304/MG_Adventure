@@ -15,6 +15,8 @@
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
 Haze::Haze()
+	: m_pDR{ nullptr }		// デバイスリソース
+	, m_timer{ 0.0f }		// タイマー
 {
 }
 
@@ -26,3 +28,16 @@ Haze::Haze()
 Haze::~Haze()
 {
 }
+
+/// <summary>
+/// シェーダーの作成
+/// </summary>
+/// <param name="pDR">デバイスリソースのポインタ</param>
+/// <returns>なし</returns>
+void Haze::CreateShader(DX::DeviceResources* pDR)
+{
+	m_pDR = pDR;
+
+
+}
+

@@ -1,5 +1,5 @@
 /*
- *	@File	PlayerPointPS.hlsl
+ *	@File	PS_PlayerPoint.hlsl
  *	@Brief	プレイヤーポイントピクセルシェーダー。
  *	@Date	2023-07-07
  *  @Author NakamuraRyo

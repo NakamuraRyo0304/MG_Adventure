@@ -12,9 +12,12 @@
 #define THIRDPERSONCAMERA
 
 class SystemManager;
+class Haze;
 class ThirdPersonCamera final : public Camera
 {
 private:
+
+	// 追従用ビュー行列
 	DirectX::SimpleMath::Matrix m_followView;
 
 	// 画像更新用変数
@@ -24,10 +27,14 @@ private:
 
 private:
 	// フルスクリーンサイズ
-	DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
+	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
 	// 画像用にシステムを貰う
 	std::shared_ptr<SystemManager> m_system;
+
+	// 靄へのポインタ
+	std::unique_ptr<Haze> m_haze;
+
 public:
 	ThirdPersonCamera(std::shared_ptr<SystemManager> system,ID3D11DeviceContext1* context, ID3D11Device1* device);
 	~ThirdPersonCamera();

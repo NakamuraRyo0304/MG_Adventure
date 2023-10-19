@@ -1,5 +1,5 @@
 /*
- *	@File	PlayerPointGS.hlsl
+ *	@File	GS_PlayerPoint.hlsl
  *	@Brief	プレイヤーポイントジオメトリシェーダー。
  *	@Date	2023-07-07
  *  @Author NakamuraRyo

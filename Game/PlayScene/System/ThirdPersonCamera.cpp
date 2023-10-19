@@ -9,6 +9,9 @@
 
 #include "Libraries/SystemManager/SystemManager.h"
 
+// Ë…
+#include "../Objects/Haze.h"
+
 #include "ThirdPersonCamera.h"
 
 /// <summary>
@@ -28,6 +31,10 @@ ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
 	m_system->GetDrawSprite()->MakeSpriteBatch(context);
 
 	m_system->GetDrawSprite()->AddTextureData(L"Adhesion", L"Resources/Textures/ADHESION/Adhesion.dds", device);
+
+	// Ë…ÇÃçÏê¨
+	m_haze = std::make_unique<Haze>();
+
 }
 
 /// <summary>

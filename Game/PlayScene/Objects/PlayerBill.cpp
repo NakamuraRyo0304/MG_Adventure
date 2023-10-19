@@ -108,21 +108,21 @@ void PlayerBill::CreateShader()
 	// シェーダーファイルの読み込み
 
 	// バーテックスシェーダー
-	std::vector<uint8_t> VSData = DX::ReadData(L"Resources/Shaders/PlayerPointVS.cso");
+	std::vector<uint8_t> VSData = DX::ReadData(L"Resources/Shaders/VS_PlayerPoint.cso");
 	DX::ThrowIfFailed(
 		device->CreateVertexShader(VSData.data(), VSData.size(), nullptr,
 			m_verShader.ReleaseAndGetAddressOf())
 	);
 	// ジオメトリシェーダー
-	std::vector<uint8_t> GSData = DX::ReadData(L"Resources/Shaders/PlayerPointGS.cso");
+	std::vector<uint8_t> GSData = DX::ReadData(L"Resources/Shaders/GS_PlayerPoint.cso");
 	DX::ThrowIfFailed(
 		device->CreateGeometryShader(GSData.data(), GSData.size(), nullptr,
 			m_geoShader.ReleaseAndGetAddressOf())
 	);
 	// ピクセルシェーダー
-	std::vector<uint8_t> PSData = DX::ReadData(L"Resources/Shaders/PlayerPointPS.cso");
+	std::vector<uint8_t> PSData = DX::ReadData(L"Resources/Shaders/PS_PlayerPoint.cso");
 	DX::ThrowIfFailed(device->CreatePixelShader(PSData.data(), PSData.size(), nullptr,
-		m_pixShader.ReleaseAndGetAddressOf())
+			m_pixShader.ReleaseAndGetAddressOf())
 	);
 
 	//-------------------------------------------------------------------------------------//

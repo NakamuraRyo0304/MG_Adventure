@@ -203,6 +203,12 @@
     <Filter Include="Scenes\PlayScene\Objects\Haze">
       <UniqueIdentifier>{94ac17f6-8b1c-440d-a911-c36fde1ce2bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\HeaderOnly\nlohmann">
+      <UniqueIdentifier>{f6e17631-845c-466d-9d63-47554c2b0f66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Haze">
+      <UniqueIdentifier>{4a2ada26-8879-49a9-970c-7161d739fcb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -324,6 +330,9 @@
     </ClInclude>
     <ClInclude Include="Game\PlayScene\Objects\Haze.h">
       <Filter>Scenes\PlayScene\Objects\Haze</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\nlohmann\json.hpp">
+      <Filter>Common\HeaderOnly\nlohmann</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -660,22 +669,17 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\PlayerPointGS.hlsl">
+    <FxCompile Include="Resources\Shaders\GS_PlayerPoint.hlsl">
       <Filter>Resources\Shaders\PlayerPoint</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\PlayerPointPS.hlsl">
+    <FxCompile Include="Resources\Shaders\PS_PlayerPoint.hlsl">
       <Filter>Resources\Shaders\PlayerPoint</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\PlayerPointVS.hlsl">
+    <FxCompile Include="Resources\Shaders\VS_PlayerPoint.hlsl">
       <Filter>Resources\Shaders\PlayerPoint</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\PS_Cloud.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="..\GrassBlock.fbx">
-      <Filter>Resources\Models\MapObject</Filter>
-    </MeshContentTask>
   </ItemGroup>
 </Project>

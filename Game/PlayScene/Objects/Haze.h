@@ -13,12 +13,22 @@ class Haze
 {
 private:
 
+	// デバイスリソース
+	DX::DeviceResources* m_pDR;
+
+	// タイマー
+	float m_timer;
+
 public:
 
 	Haze();
 	~Haze();
 
+	// シェーダーの作成
+	void CreateShader(DX::DeviceResources* pDR);
 
+	// タイマーのセット
+	void SetTimer(const float& timer) { m_timer = timer; };
 };
 
 #endif // HAZE
