@@ -49,7 +49,7 @@ public:
 		static const int CLOUD	= 2;	// 雲のブロック
 		static const int COIN	= 3;	// コインのブロック
 		static const int RESET	= 4;	// 雲の位置のリセットブロック
-		static const int PLAYER	= 5;	// プレイヤ
+		static const int PLAYER	= 5;	// プレイヤー
 		static const int LENGTH = 6;	// ブロックステータスの長さ
 	};
 

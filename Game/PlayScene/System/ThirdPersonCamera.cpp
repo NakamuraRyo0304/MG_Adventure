@@ -34,6 +34,7 @@ ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
 
 	// �ɂ̍쐬
 	m_haze = std::make_unique<Haze>();
+	m_haze->CreateShader(m_system->GetDeviceResources()->GetInstance());
 
 }
 
