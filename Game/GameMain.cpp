@@ -9,16 +9,23 @@
 
 #include "GameMain.h"
 
- // ファイルの保存に使用
-#include<sstream>
-#include<fstream>
-#include<regex>
+// Jsonファイルの入出力に使用
+#include "Libraries/Nlohmann/json.hpp"
+//------------------------------------------------------------------------//
+// Jsonファイルのダウンロード先						                      //
+//																		  //
+// nlohmann/jsonを使用													  //
+// https://github.com/nlohmann/json										  //
+//------------------------------------------------------------------------//
+
+// ファイル入出力に使用
+#include <fstream>
 
 // フェードオブジェクト
-#include "../Libraries/SystemDatas/Fade.h"
+#include "Libraries/SystemDatas/Fade.h"
 
 // ユーザーユーティリティ
-#include "../Libraries/UserUtility.h"
+#include "Libraries/UserUtility.h"
 
 // TODO: シーン２：シーンのインクルード
 #include "Game/TitleScene/TitleScene.h"
@@ -342,35 +349,22 @@ void GameMain::CreateWindowDependentResources(const int& screenWidth, const int&
 /// <returns>なし</returns>
 void GameMain::LoadSaveData()
 {
-	// 未開放ステージ数と獲得コイン数の取得
-	std::ifstream coinIfs(L"Resources/SaveData.txt");
+	using Json = nlohmann::json;
 
-	std::string line;
+	// JSONデータをファイルに読み込む
+	std::ifstream _file("Datas/Progress.json", std::ios::in);
 
-	// データがなくなるまで格納
-	for (; std::getline(coinIfs, line); )
+	if (_file.is_open())
 	{
-		if (!coinIfs) return;
+		Json _input;
+		_file >> _input;
 
-		// カンマを空白に変更
-		std::string tmp = std::regex_replace(line, std::regex(","), " ");
+		// データを格納する
+		m_allCoins = _input["CoinNum"];
+		m_closeNum = _input["SafeStage"];
 
-		// 空白で分割する
-		std::istringstream iss(tmp);
-
-		if (!(iss >> m_closeNum))
-		{
-			coinIfs.close();
-			return;
-		}
-
-		if (!(iss >> m_allCoins))
-		{
-			coinIfs.close();
-			return;
-		}
+		_file.close();
 	}
-	coinIfs.close();
 }
 
 /// <summary>
@@ -380,19 +374,24 @@ void GameMain::LoadSaveData()
 /// <returns>なし</returns>
 void GameMain::WriteSaveData()
 {
-	// 未開放ステージ数と獲得コイン数の書き出し
-	std::ofstream coinOfs(L"Resources/SaveData.txt");
+	using Json = nlohmann::json;
+	const int JSON_INDENT = 4;	// インデント
 
-	// ファイルがなければ処理しない
-	if (coinOfs)
+	// JSONデータをファイルに書き込む
+	std::ofstream _file("Datas/Progress.json", std::ios::out);
+
+	if (_file.is_open())
 	{
-		// ファイルを出力する
-		std::ostringstream coinOss;
+		Json _output;
 
-		coinOss << m_closeNum << "," << m_allCoins << ",";
-		coinOfs << coinOss.str();
+		// データをセット
+		_output["CoinNum"] = m_allCoins;
+		_output["SafeStage"] = m_closeNum;
 
-		coinOfs.close();
+		// インデントを揃えて書き出し
+		_file << _output.dump(JSON_INDENT);
+
+		_file.close();
 	}
 }
 

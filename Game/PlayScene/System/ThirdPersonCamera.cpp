@@ -23,18 +23,20 @@
 /// <returns>なし</returns>
 ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
 	ID3D11DeviceContext1* context, ID3D11Device1* device)
-	: m_adhesionTimer{ CHANGE_SPAN }
+	: m_system{ system }
+	, m_adhesionTimer{ CHANGE_SPAN }
 	, is_changeFlag{false}
 {
-	m_system = system;
+	// ドロースプライト
+	auto& sp = m_system->GetDrawSprite();
 
-	m_system->GetDrawSprite()->MakeSpriteBatch(context);
+	sp->MakeSpriteBatch(context);
 
-	m_system->GetDrawSprite()->AddTextureData(L"Adhesion", L"Resources/Textures/ADHESION/Adhesion.dds", device);
+	sp->AddTextureData(L"Adhesion", L"Resources/Textures/ADHESION/Adhesion.dds", device);
 
 	// 靄の作成
 	m_haze = std::make_unique<Haze>();
-	m_haze->CreateShader(m_system->GetDeviceResources()->GetInstance());
+	m_haze->CreateShader(m_system->GetDeviceResources());
 
 }
 
@@ -84,9 +86,12 @@ void ThirdPersonCamera::UpdateFollow(const SimpleMath::Vector3& pos, const Simpl
 /// <returns>なし</returns>
 void ThirdPersonCamera::DrawAdhesion()
 {
+	// デバイスリソース
+	auto pDR = m_system->GetDeviceResources();
+
 	// 画面サイズの比率
-	SimpleMath::Vector2 scale = { m_system->GetDeviceResources()->GetOutputSize().right  / FULL_SCREEN_SIZE.x ,
-								  m_system->GetDeviceResources()->GetOutputSize().bottom / FULL_SCREEN_SIZE.y };
+	SimpleMath::Vector2 scale = { pDR->GetOutputSize().right  / FULL_SCREEN_SIZE.x ,
+								  pDR->GetOutputSize().bottom / FULL_SCREEN_SIZE.y };
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Adhesion",

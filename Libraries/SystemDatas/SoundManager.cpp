@@ -114,6 +114,11 @@ void SoundManager::SetVolume(const float& volume, const XACT_WAVEBANK_SKBX& WAVE
 void SoundManager::FadeVolume(const float& speed)
 {
 	m_masterVolume = m_masterVolume + speed * (0 - m_masterVolume);
+
+	for (auto& i : m_soundEffectInstances)
+	{
+		i->SetVolume(m_masterVolume);
+	}
 }
 
 /// <summary>

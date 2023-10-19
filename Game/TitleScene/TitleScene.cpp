@@ -85,6 +85,9 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
 
+	// エスケープで終了
+	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+
 	// 起動時のロゴの動き
 	m_logoMoveY = UserUtility::Lerp(m_logoMoveY, END_MOVE_POS, 0.1f);
 
@@ -128,8 +131,6 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	// UIの更新
 	m_titleUI->Update(is_menuFlag);
 
-	// エスケープで終了
-	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
 }
 
 /// <summary>
