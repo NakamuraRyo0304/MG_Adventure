@@ -38,6 +38,10 @@ void Haze::CreateShader(DX::DeviceResources* pDR)
 {
 	m_pDR = pDR;
 
+	auto context = m_pDR->GetD3DDeviceContext();
+	auto device = m_pDR->GetD3DDevice();
+
+
 
 }
 

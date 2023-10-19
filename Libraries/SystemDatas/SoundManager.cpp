@@ -28,6 +28,11 @@ SoundManager::SoundManager()
 
 	// ÉäÉ\Å[ÉXÇÃçÏê¨
 	Create();
+
+	for (auto& i : m_volumes)
+	{
+		i = 1.0f;
+	}
 }
 
 /// <summary>
@@ -49,6 +54,9 @@ void SoundManager::PlaySound(const XACT_WAVEBANK_SKBX& WAVEBANKXACT_WAVEBANK_SKB
 {
 	m_soundEffectInstances[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME]->Stop();
 	m_soundEffectInstances[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME]->Play(playType);
+
+	// Ç»ÇÁÇµÇΩÇÁå≥Ç…ñﬂÇ∑
+	m_volumes[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME] = 1.0f;
 }
 
 /// <summary>
@@ -94,6 +102,8 @@ void SoundManager::SetMasterVolume(const float& volume)
 void SoundManager::SetVolume(const float& volume, const XACT_WAVEBANK_SKBX& WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME)
 {
 	m_volumes[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME] = volume;
+	m_soundEffectInstances[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME]->SetVolume(
+		m_volumes[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME]);
 }
 
 /// <summary>

@@ -442,6 +442,11 @@ void EditScene::EditMap()
 		// クリックでブロック設置
 		if (obj.hit &&  mouse.leftButton)
 		{
+			// 既に同じオブジェクトなら処理しない
+			if (obj.id == m_nowState) continue;
+
+			// オブジェクトをセット
+			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SETBOX, false);
 			obj.id = m_nowState;
 		}
 	}

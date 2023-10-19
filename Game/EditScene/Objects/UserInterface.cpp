@@ -398,6 +398,11 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 
 		if (mouseState.leftButton)
 		{
+			// クリック音
+			auto& se = m_system->GetSoundManager();
+			se->SetVolume(se->GetVolume(XACT_WAVEBANK_SKBX_SE_ICONTAP) / 2, XACT_WAVEBANK_SKBX_SE_ICONTAP);
+			se->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+
 			// 有効フラグを格納
 			is_boxState[i] = iconFlags[i];
 
