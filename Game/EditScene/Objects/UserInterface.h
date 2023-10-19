@@ -40,6 +40,7 @@ private:
 	int m_nowState;
 
 	// ƒtƒ‰ƒO
+	bool is_anyHitFlag;
 	bool is_saveFlag;
 	bool is_openFlag;
 	bool is_cameraFlag;

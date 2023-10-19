@@ -9,7 +9,7 @@
 【実装すること】
 
 ・フェードを雲から抜ける演出にする
-	Fade,(新規作成：PS_CloudFade)
+	Fade,(新規作成：PS_Fade)
 
 ・３人称視点の周りの靄
 	Haze,ThirdPersonCamera(ピクセルシェーダー作成)

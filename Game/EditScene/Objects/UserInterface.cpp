@@ -29,6 +29,7 @@ UserInterface::UserInterface(const SimpleMath::Vector2& windowSize)
 	, m_backTexPos{}				// 戻るアイコンの座標
 	, m_openTexPos{}				// ファイルアイコンの座標
 	, m_boxHover{}					// ホバー時のサイズ
+	, is_anyHitFlag{ false }		// ホバーフラグ
 	, is_boxState{ false }			// 画像フラグ
 	, is_saveFlag{ false }			// 保存フラグ
 	, is_openFlag{ false }			// 開くフラグ
@@ -117,6 +118,9 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 
 	// ツールバーを表示
 	is_toolFlag = true;
+
+	// ホバーフラグをリセット
+	is_anyHitFlag = false;
 }
 
 /// <summary>
@@ -378,11 +382,21 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 		m_boxHover[i] = iconFlags[i] == true ? 0.1f : 0.0f;
 	}
 
+	// どれか一つ当たっていたら
+	is_anyHitFlag = (iconFlags[MAPSTATE::GRASS]  ||
+					 iconFlags[MAPSTATE::COIN]   ||
+					 iconFlags[MAPSTATE::CLOUD]  ||
+					 iconFlags[MAPSTATE::RESET]  ||
+					 iconFlags[MAPSTATE::PLAYER] ||
+					 iconFlags[MAPSTATE::NONE]);
 
 	// マウスがクリックされた場合に、現在のステータスを更新する
-	if (mouseState.leftButton)
+	for (int i = 0; i < MAPSTATE::LENGTH; ++i)
 	{
-		for (int i = 0; i < MAPSTATE::LENGTH; ++i)
+		// 当たっていなければ処理しない
+		if (is_anyHitFlag == false) return;
+
+		if (mouseState.leftButton)
 		{
 			// 有効フラグを格納
 			is_boxState[i] = iconFlags[i];

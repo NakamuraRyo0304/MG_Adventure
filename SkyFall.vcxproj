@@ -209,7 +209,6 @@
     <ClInclude Include="Game\TitleScene\Objects\TitleUI.h" />
     <ClInclude Include="Game\TitleScene\TitleScene.h" />
     <ClInclude Include="Libraries\Factories\ModelFactory.h" />
-    <ClInclude Include="Libraries\nlohmann\json.hpp" />
     <ClInclude Include="Libraries\ReadData.h" />
     <ClInclude Include="Libraries\SystemDatas\Collider.h" />
     <ClInclude Include="Libraries\SystemDatas\Camera.h" />
