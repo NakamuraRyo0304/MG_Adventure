@@ -36,10 +36,10 @@ Fade::~Fade()
 /// <summary>
 /// 初期化
 /// </summary>
-/// <param name="context">ID3D11DeviceContext1ポインタ</param>
 /// <param name="device">ID3D11Device1ポインタ</param>
+/// <param name="context">ID3D11DeviceContext1ポインタ</param>
 /// <returns>なし</returns>
-void Fade::Initialize(ID3D11DeviceContext1* context, ID3D11Device1* device)
+void Fade::Initialize(ID3D11Device1* device, ID3D11DeviceContext1* context)
 {
 	// スプライトバッチの初期化
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);

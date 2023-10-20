@@ -44,7 +44,7 @@ public:
 	~Fade();
 
 	// ‰Šú‰»ˆ—
-	void Initialize(ID3D11DeviceContext1* context,ID3D11Device1* device);
+	void Initialize(ID3D11Device1* device, ID3D11DeviceContext1* context);
 
 	// XVˆ—
 	void Update();
