@@ -28,11 +28,11 @@ ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
 	, is_changeFlag{false}
 {
 	// ドロースプライト
-	auto& sp = m_system->GetDrawSprite();
+	auto& _sp = m_system->GetDrawSprite();
 
-	sp->MakeSpriteBatch(context);
+	_sp->MakeSpriteBatch(context);
 
-	sp->AddTextureData(L"Adhesion", L"Resources/Textures/ADHESION/Adhesion.dds", device);
+	_sp->AddTextureData(L"Adhesion", L"Resources/Textures/ADHESION/Adhesion.dds", device);
 
 	// 靄の作成
 	m_haze = std::make_unique<Haze>();
@@ -61,18 +61,18 @@ void ThirdPersonCamera::UpdateFollow(const SimpleMath::Vector3& pos, const Simpl
 	const SimpleMath::Vector3& distance, const float& timer)
 {
 	// カメラの目線の方向をプレイヤーの回転に合わせて計算
-	SimpleMath::Vector3 forward =
+	SimpleMath::Vector3 _forward =
 		SimpleMath::Vector3::Transform(SimpleMath::Vector3::UnitZ, rotate);
 
-	SimpleMath::Vector3 newPos = { pos.x,pos.y - 0.5f,pos.z };
+	SimpleMath::Vector3 _newPos = { pos.x,pos.y - 0.5f,pos.z };
 
 	// カメラの位置と目線を計算
-	SimpleMath::Vector3 eye =
-		newPos + SimpleMath::Vector3::Transform(distance, rotate);
-	SimpleMath::Vector3 target = eye - forward;
+	SimpleMath::Vector3 _eye =
+		_newPos + SimpleMath::Vector3::Transform(distance, rotate);
+	SimpleMath::Vector3 _target = _eye - _forward;
 
 	// ビュー行列
-	m_followView = SimpleMath::Matrix::CreateLookAt(eye, target, SimpleMath::Vector3::Up);
+	m_followView = SimpleMath::Matrix::CreateLookAt(_eye, _target, SimpleMath::Vector3::Up);
 
 	//-------------------------------------------------------------------------------------//
 	// 画像用変数更新
@@ -87,17 +87,17 @@ void ThirdPersonCamera::UpdateFollow(const SimpleMath::Vector3& pos, const Simpl
 void ThirdPersonCamera::DrawAdhesion()
 {
 	// デバイスリソース
-	auto pDR = m_system->GetDeviceResources();
+	auto _pDR = m_system->GetDeviceResources();
 
 	// 画面サイズの比率
-	SimpleMath::Vector2 scale = { pDR->GetOutputSize().right  / FULL_SCREEN_SIZE.x ,
-								  pDR->GetOutputSize().bottom / FULL_SCREEN_SIZE.y };
+	SimpleMath::Vector2 _scale = { _pDR->GetOutputSize().right  / FULL_SCREEN_SIZE.x ,
+								   _pDR->GetOutputSize().bottom / FULL_SCREEN_SIZE.y };
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Adhesion",
 		SimpleMath::Vector2::Zero,
 		{ 1.0f, 1.0f, 1.0f, 0.5f },
-		scale,
+		_scale,
 		SimpleMath::Vector2::Zero
 	);
 

@@ -36,6 +36,7 @@ Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body, std::un
 	, m_rightLeg{ std::move(right) }// 右足のモデル
 	, m_leftLeg{ std::move(left) }	// 左足のモデル
 	, m_position{}					// ポジション
+	, m_headMove{0.0f}				// 頭の動き
 	, m_footMove{0.0f}				// 足の動き
 	, m_neckQuaternion{}			// 首の回転行列
 	, m_neckRotate{}				// 首の回転量
@@ -81,8 +82,6 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 	m_thirdRotate = SimpleMath::Quaternion::Identity;
 	is_lookFlag = false;
 
-	// プレイヤーのモデルを作成する
-	CreateModel();
 }
 
 /// <summary>
@@ -150,15 +149,15 @@ void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
 	// 前後移動
 	if (keyState.W)
 	{
-		SimpleMath::Vector3 vec(0.0f, 0.0f, m_parameter.accelerate);
-		vec = SimpleMath::Vector3::Transform(vec, m_parameter.rotate);
-		m_parameter.velocity -= vec;
+		SimpleMath::Vector3 _newVec(0.0f, 0.0f, m_parameter.accelerate);
+		_newVec = SimpleMath::Vector3::Transform(_newVec, m_parameter.rotate);
+		m_parameter.velocity -= _newVec;
 	}
 	else if (keyState.S)
 	{
-		SimpleMath::Vector3 vec(0.0f, 0.0f, m_parameter.accelerate / 2);
-		vec = SimpleMath::Vector3::Transform(vec, m_parameter.rotate);
-		m_parameter.velocity += vec;
+		SimpleMath::Vector3 _newVec(0.0f, 0.0f, m_parameter.accelerate / 2);
+		_newVec = SimpleMath::Vector3::Transform(_newVec, m_parameter.rotate);
+		m_parameter.velocity += _newVec;
 	}
 
 	// 脚の動き
@@ -170,6 +169,9 @@ void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
 	{
 		m_footMove = 0.0f;
 	}
+
+	// 頭も動かす
+	m_headMove = m_footMove;
 
 	// 移動量の計算
 	m_position += m_parameter.velocity;
@@ -196,13 +198,13 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	// ワールド行列
-	SimpleMath::Matrix world, headWorld, legRWorld, legLWorld;
+	SimpleMath::Matrix _commonMat, _headMat, _legRMat, _legLMat;
 
 	// 回転行列
-	SimpleMath::Matrix rotate = SimpleMath::Matrix::CreateFromQuaternion(m_parameter.rotate);
+	SimpleMath::Matrix _rotate = SimpleMath::Matrix::CreateFromQuaternion(m_parameter.rotate);
 
 	// プレイヤーの移動行列
-	SimpleMath::Matrix trans =
+	SimpleMath::Matrix _trans =
 		SimpleMath::Matrix::CreateTranslation(
 			m_position.x,
 			m_position.y + OFFSET_Y,
@@ -210,108 +212,108 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 		);
 
 	// 右脚の動き
-	SimpleMath::Matrix rightTrans =
+	SimpleMath::Matrix _rightTrans =
 		SimpleMath::Matrix::CreateTranslation(
 			0.0f,
 			0.0f,
-			sinf(m_footMove) * 0.1f
+			sinf(m_footMove) * FOOT_SPEED
 		);
 
 	// 左脚の動き
-	SimpleMath::Matrix leftTrans =
+	SimpleMath::Matrix _leftTrans =
 		SimpleMath::Matrix::CreateTranslation(
 			0.0f,
 			0.0f,
-			-sinf(m_footMove) * 0.1f
+			-sinf(m_footMove) * FOOT_SPEED
 		);
 
 	// 頭部の動き
-	SimpleMath::Matrix headTrans =
+	SimpleMath::Matrix _headTrans =
 		SimpleMath::Matrix::CreateTranslation(
 			0.0f,
 			0.0f,
-			sinf(m_footMove * 0.25f) * 0.05f
+			sinf(m_headMove * HEAD_SPEED) * 0.05f
 		);
 
 	// 行列計算
-	world = rotate * trans;
+	_commonMat = _rotate * _trans;
 
 	// 移動してから回転させる
-	legRWorld = rightTrans * rotate * trans;
-	legLWorld = leftTrans  * rotate * trans;
+	_legRMat = _rightTrans * _rotate * _trans;
+	_legLMat = _leftTrans  * _rotate * _trans;
 
 	// 頭は前後に動く
 	if (!is_lookFlag)
 	{
-		headWorld = headTrans * rotate * trans;
+		_headMat = _headTrans * _rotate * _trans;
 	}
 	else
 	{
-		headWorld = SimpleMath::Matrix::CreateFromQuaternion(m_neckQuaternion) * headTrans * rotate * trans;
+		_headMat = SimpleMath::Matrix::CreateFromQuaternion(m_neckQuaternion) * _headTrans * _rotate * _trans;
 	}
 
 	// ライトの設定
-	SimpleMath::Vector3 lightDirection(1.0f, -1.0f, -1.0f);
+	SimpleMath::Vector3 _lightDir(1.0f, -1.0f, -1.0f);
 
 	// ビュー行列からカメラの回転を取得
-	SimpleMath::Matrix cameraRotation;
+	SimpleMath::Matrix _cameraRot;
 
 	// ビュー行列を逆変換
-	cameraRotation = view.Invert();
+	_cameraRot = view.Invert();
 
 	// 移動量をなくす
-	cameraRotation._41 = 0.0f;
-	cameraRotation._42 = 0.0f;
-	cameraRotation._43 = 0.0f;
+	_cameraRot._41 = 0.0f;
+	_cameraRot._42 = 0.0f;
+	_cameraRot._43 = 0.0f;
 
 	// ライトの方向をカメラの回転に逆向きにする
-	lightDirection = SimpleMath::Vector3::TransformNormal(lightDirection, cameraRotation);
-	SimpleMath::Color lightColor(0.3f, 0.3f, 0.3f, 1.0f);
+	_lightDir = SimpleMath::Vector3::TransformNormal(_lightDir, _cameraRot);
+	SimpleMath::Color _lightColor(0.3f, 0.3f, 0.3f, 1.0f);
 
-	auto setLightForModel = [&](IEffect* effect)
+	auto _lightingEffects = [&](IEffect* effect)
 	{
-		auto lights = dynamic_cast<IEffectLights*>(effect);
-		if (lights)
+		auto _lights = dynamic_cast<IEffectLights*>(effect);
+		if (_lights)
 		{
 			// ライトオン
-			lights->SetLightEnabled(0, true);
-			lights->SetLightEnabled(1, true);
-			lights->SetLightEnabled(2, true);
+			_lights->SetLightEnabled(0, true);
+			_lights->SetLightEnabled(1, true);
+			_lights->SetLightEnabled(2, true);
 
 			// ライトの方向を設定
-			lights->SetLightDirection(0, lightDirection);
-			lights->SetLightDirection(1, lightDirection);
-			lights->SetLightDirection(2, lightDirection);
+			_lights->SetLightDirection(0, _lightDir);
+			_lights->SetLightDirection(1, _lightDir);
+			_lights->SetLightDirection(2, _lightDir);
 
 			// ライトの色を暗めのグレーに設定
-			lights->SetLightDiffuseColor(0, lightColor);
-			lights->SetLightDiffuseColor(1, lightColor);
-			lights->SetLightDiffuseColor(2, lightColor);
+			_lights->SetLightDiffuseColor(0, _lightColor);
+			_lights->SetLightDiffuseColor(1, _lightColor);
+			_lights->SetLightDiffuseColor(2, _lightColor);
 		}
-		auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-		if (basicEffect)
+		auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
+		if (_basicEffect)
 		{
 			// アンビエントライトカラーの設定
-			basicEffect->SetAmbientLightColor(SimpleMath::Color(0.2f, 0.2f, 0.2f));
+			_basicEffect->SetAmbientLightColor(SimpleMath::Color(0.2f, 0.2f, 0.2f));
 		}
 	};
 
 
 	// 右足の描画
-	m_rightLeg->UpdateEffects(setLightForModel);
-	m_rightLeg->Draw(context, states, legRWorld, view, proj);
+	m_rightLeg->UpdateEffects(_lightingEffects);
+	m_rightLeg->Draw(context, states, _legRMat, view, proj);
 
 	// 左足の描画
-	m_leftLeg->UpdateEffects(setLightForModel);
-	m_leftLeg->Draw(context, states, legLWorld, view, proj);
+	m_leftLeg->UpdateEffects(_lightingEffects);
+	m_leftLeg->Draw(context, states, _legLMat, view, proj);
 
 	// 頭部の描画
-	m_head->UpdateEffects(setLightForModel);
-	m_head->Draw(context, states, headWorld, view, proj);
+	m_head->UpdateEffects(_lightingEffects);
+	m_head->Draw(context, states, _headMat, view, proj);
 
 	// 身体の描画
-	m_body->UpdateEffects(setLightForModel);
-	m_body->Draw(context, states, world, view, proj);
+	m_body->UpdateEffects(_lightingEffects);
+	m_body->Draw(context, states, _commonMat, view, proj);
 }
 
 /// <summary>
@@ -346,26 +348,6 @@ void Player::UpdateGravity()
 	{
 		is_deathFlag = true;
 	}
-}
-
-/// <summary>
-/// モデルを変更する
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void Player::CreateModel()
-{
-	auto device = m_system->GetDeviceResources()->GetD3DDevice();
-
-	// パスの格納
-	m_head =
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo"));
-	m_body =
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo"));
-	m_rightLeg =
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
-	m_leftLeg =
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
 }
 
 /// <summary>

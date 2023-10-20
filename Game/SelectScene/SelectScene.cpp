@@ -335,7 +335,7 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 		// ファクトリーで生成
 		auto grass = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
 		auto coin  = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
-		auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo"));
+		auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
 		auto reset = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
 
 		// 作成されていない場合は作成する
@@ -367,7 +367,7 @@ void SelectScene::CreateFirstStage(ID3D11Device1* device)
 	// ファクトリーで生成
 	auto grass = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
 	auto coin  = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
-	auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo"));
+	auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
 	auto reset = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
 
 	// ブロックの作成

@@ -63,26 +63,26 @@ Camera::~Camera()
 void Camera::Update()
 {
 	// キーボードのインスタンス取得
-	auto kbState = Keyboard::Get().GetState();
+	auto _kbState = Keyboard::Get().GetState();
 	// マウスのインスタンス取得
-	auto msState = Mouse::Get().GetState();
+	auto _msState = Mouse::Get().GetState();
 
 	// マウスの左クリック＆ドラッグでカメラ座標を更新する
-	if (msState.leftButton)
+	if (_msState.leftButton)
 	{
 		// 視点移動しなければ処理しない
 		if (!is_eagleMode)	return;
 
 		// マウスのドラッグによるカメラ移動
-		DraggedDistance(msState.x, msState.y);
+		DraggedDistance(_msState.x, _msState.y);
 	}
 
 	// マウスの座標を前回の値として保存
-	m_prevMouse.x = static_cast<float>(msState.x); // X座標を保存
-	m_prevMouse.y = static_cast<float>(msState.y); // Y座標を保存
+	m_prevMouse.x = static_cast<float>(_msState.x); // X座標を保存
+	m_prevMouse.y = static_cast<float>(_msState.y); // Y座標を保存
 
 	// 拡縮処理
-	RollWheelToRate(msState);
+	RollWheelToRate(_msState);
 
 	// ビュー行列の算出
 	CalculateViewMatrix();
@@ -91,16 +91,16 @@ void Camera::Update()
 	if (!is_allowMode) return;
 
 	// 移動量
-	SimpleMath::Vector2 moveVal = SimpleMath::Vector2::Zero;
+	SimpleMath::Vector2 _moveVal = SimpleMath::Vector2::Zero;
 
 	// 移動量を設定
-	if (kbState.Right) { moveVal.y =  ALLOW_SPEED; }
-	if (kbState.Left)  { moveVal.y = -ALLOW_SPEED; }
-	if (kbState.Up)    { moveVal.x =  ALLOW_SPEED; }
-	if (kbState.Down)  { moveVal.x = -ALLOW_SPEED; }
+	if (_kbState.Right) { _moveVal.y =  ALLOW_SPEED; }
+	if (_kbState.Left)  { _moveVal.y = -ALLOW_SPEED; }
+	if (_kbState.Up)    { _moveVal.x =  ALLOW_SPEED; }
+	if (_kbState.Down)  { _moveVal.x = -ALLOW_SPEED; }
 
 	// 角度変更
-	m_angle += moveVal;
+	m_angle += _moveVal;
 }
 
 /// <summary>
@@ -113,18 +113,18 @@ void Camera::DraggedDistance(int x, int y)
 {
 	// マウスポインタの前回からの変位
 	// DEFAULT_CAMERA_SPEEDを乗算してドラッグの移動量を調整する
-	float dx = static_cast<float>(x - m_prevMouse.x) * DEFAULT_CAMERA_SPEED;
-	float dy = static_cast<float>(y - m_prevMouse.y) * DEFAULT_CAMERA_SPEED;
+	float _dx = static_cast<float>(x - m_prevMouse.x) * DEFAULT_CAMERA_SPEED;
+	float _dy = static_cast<float>(y - m_prevMouse.y) * DEFAULT_CAMERA_SPEED;
 
-	if (dx != 0.0f || dy != 0.0f)
+	if (_dx != 0.0f || _dy != 0.0f)
 	{
 		// マウスポインタの変位を元に、Ｘ軸Ｙ軸の回転角を求める
-		float angleX = dy * XM_PI / 180.0f;
-		float angleY = dx * XM_PI / 180.0f;
+		float _angleX = _dy * XM_PI / 180.0f;
+		float _angleY = _dx * XM_PI / 180.0f;
 
 		// 角度の更新
-		m_angle.x += angleX;
-		m_angle.y += angleY;
+		m_angle.x += _angleX;
+		m_angle.y += _angleY;
 	}
 
 	// カメラの角度をクランプ
@@ -141,22 +141,22 @@ void Camera::DraggedDistance(int x, int y)
 /// <returns>なし</returns>
 void Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
 {
-	int counta = 0;
-	counta++;
+	int _counta = 0;
+	_counta++;
 
-	float d = (rand() % 10) * 0.01f * tremor;
+	float _d = (rand() % 10) * 0.01f * tremor;
 
-	SimpleMath::Vector3 sav = (*pos);
+	SimpleMath::Vector3 _sav = (*pos);
 
-	if (counta > duration)
+	if (_counta > duration)
 	{
-		(*pos) = sav;
+		(*pos) = _sav;
 	}
 	else
 	{
-		(*pos).x += d * (rand() % 3 - 1);
-		(*pos).y += d * (rand() % 3 - 1);
-		(*pos).z += d * (rand() % 3 - 1);
+		(*pos).x += _d * (rand() % 3 - 1);
+		(*pos).y += _d * (rand() % 3 - 1);
+		(*pos).z += _d * (rand() % 3 - 1);
 	}
 }
 
@@ -175,31 +175,31 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height, fl
 	m_screenHeight = static_cast<int>(height);
 
 	// 画角
-	float fieldOfView = XMConvertToRadians(angle);
+	float _fieldOfView = XMConvertToRadians(angle);
 
 	// 画面縦横比
-	float aspectRatio = width / height;
+	float _aspectRatio = width / height;
 
 	// カメラから一番近い投影面
-	float nearPlane = NEAR_PLANE;
+	float _nearPlane = NEAR_PLANE;
 
 	// カメラから一番遠い投影面
-	float farPlane = FAR_PLANE;
+	float _farPlane = FAR_PLANE;
 
 	// カメラのレンズの作成
-	SimpleMath::Matrix projection =
+	SimpleMath::Matrix _projection =
 		SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-			fieldOfView,
-			aspectRatio,
-			nearPlane,
-			farPlane
+			_fieldOfView,
+			_aspectRatio,
+			_nearPlane,
+			_farPlane
 		);
 
 	// カメラ画角
 	m_angle.x = angle;
 
 	// プロジェクション行列を返却
-	return m_projection = projection;
+	return m_projection = _projection;
 }
 
 /// <summary>
@@ -210,28 +210,28 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height, fl
 void Camera::CalculateViewMatrix()
 {
 	// ビュー行列を算出する
-	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_angle.y);
-	SimpleMath::Matrix rotX = SimpleMath::Matrix::CreateRotationX(m_angle.x);
+	SimpleMath::Matrix _rotY = SimpleMath::Matrix::CreateRotationY(m_angle.y);
+	SimpleMath::Matrix _rotX = SimpleMath::Matrix::CreateRotationX(m_angle.x);
 
 	// 回転量を計算
-	SimpleMath::Matrix rt = rotY * rotX;
-	m_rotateMatrix = rt;
+	SimpleMath::Matrix _rt = _rotY * _rotX;
+	m_rotateMatrix = _rt;
 
 	// ポジション
-	SimpleMath::Vector3    eye(0.0f, 0.1f, 1.0f);
+	SimpleMath::Vector3    _eye(0.0f, 0.1f, 1.0f);
 
 	// カメラの傾き（目線の角度)
-	SimpleMath::Vector3     up(0.0f, 1.0f, 0.0f);
-	SimpleMath::Vector3 target(0.0f, 0.0f, 0.0f);
+	SimpleMath::Vector3     _up(0.0f, 1.0f, 0.0f);
+	SimpleMath::Vector3 _target(0.0f, 0.0f, 0.0f);
 
-	eye = SimpleMath::Vector3::Transform(eye, rt.Invert());
-	eye *= (DEFAULT_CAMERA_DISTANCE - static_cast<float>(m_scrollWheelValue / 100));
-	up  = SimpleMath::Vector3::Transform(up,  rt.Invert());
+	_eye = SimpleMath::Vector3::Transform(_eye, _rt.Invert());
+	_eye *= (DEFAULT_CAMERA_DISTANCE - static_cast<float>(m_scrollWheelValue / 100));
+	_up  = SimpleMath::Vector3::Transform(_up,  _rt.Invert());
 
 	// デフォルトの初期位置
-	m_position = eye;
-	m_target = target;
-	m_view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
+	m_position = _eye;
+	m_target = _target;
+	m_view = SimpleMath::Matrix::CreateLookAt(_eye, _target, _up);
 
 	// 上下回転のみ制限
 	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLE_X_MIN, ANGLE_X_MAX);
@@ -245,39 +245,39 @@ void Camera::CalculateViewMatrix()
 void Camera::RollWheelToRate(Mouse::State state)
 {
 	// マウスホイールのスクロール値の差分を計算
-	int scrollDelta = state.scrollWheelValue - m_prevScrollWheelValue;
+	int _scrollDelta = state.scrollWheelValue - m_prevScrollWheelValue;
 
 	// カメラモードの時の処理
 	if (is_eagleMode)
 	{
 		// スクロール値を一時変数に保存
-		int newScrollValue = m_scrollWheelValue + scrollDelta;
+		int _newScrollValue = m_scrollWheelValue + _scrollDelta;
 
 		// スクロール値が上限・下限を超えないように制限
-		newScrollValue = UserUtility::Clamp(newScrollValue, MIN_SCROLL_VALUE, MAX_SCROLL_VALUE);
+		_newScrollValue = UserUtility::Clamp(_newScrollValue, MIN_SCROLL_VALUE, MAX_SCROLL_VALUE);
 
 		// スクロール値が上限・下限に達していない場合にのみ反映する
-		if (newScrollValue != MAX_SCROLL_VALUE && newScrollValue != MIN_SCROLL_VALUE)
+		if (_newScrollValue != MAX_SCROLL_VALUE && _newScrollValue != MIN_SCROLL_VALUE)
 		{
-			m_scrollWheelValue = newScrollValue;
+			m_scrollWheelValue = _newScrollValue;
 		}
 		else
 		{
 			// 上限・下限に達した場合はスクロール値をそのままにする
-			scrollDelta = 0;
+			_scrollDelta = 0;
 		}
 
 		// マウスホイールの前回のTrueの値を保持
 		m_tempScrollValue = m_scrollWheelValue;
 
 		// スクロールがクランプされている間に回された分を戻す
-		if (m_scrollWheelValue == MAX_SCROLL_VALUE && scrollDelta > 0)
+		if (m_scrollWheelValue == MAX_SCROLL_VALUE && _scrollDelta > 0)
 		{
-			m_scrollWheelValue -= scrollDelta;
+			m_scrollWheelValue -= _scrollDelta;
 		}
-		else if (m_scrollWheelValue == MIN_SCROLL_VALUE && scrollDelta < 0)
+		else if (m_scrollWheelValue == MIN_SCROLL_VALUE && _scrollDelta < 0)
 		{
-			m_scrollWheelValue -= scrollDelta;
+			m_scrollWheelValue -= _scrollDelta;
 		}
 	}
 	// 非カメラモードの時の処理

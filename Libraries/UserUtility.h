@@ -51,10 +51,10 @@ namespace UserUtility
 	template<typename T>
 	inline bool CheckPointInCircle(DirectX::SimpleMath::Vector2 center, T radius, DirectX::SimpleMath::Vector2 value)
 	{
-		T distance = static_cast<T>(std::sqrt(std::pow(value.x - center.x, 2) +
+		T _distance = static_cast<T>(std::sqrt(std::pow(value.x - center.x, 2) +
 			std::pow(value.y - center.y, 2)));
 
-		return distance <= radius;
+		return _distance <= radius;
 	}
 
 	/// <summary>
@@ -67,10 +67,10 @@ namespace UserUtility
 	template<typename T>
 	inline bool CheckPointInSphere(DirectX::SimpleMath::Vector3 center, T radius, DirectX::SimpleMath::Vector3 value)
 	{
-		T distance = static_cast<T>(std::sqrt(std::pow(value.x - center.x, 2) +
+		T _distance = static_cast<T>(std::sqrt(std::pow(value.x - center.x, 2) +
 								    std::pow(value.y - center.y, 2) +
 								    std::pow(value.z - center.z, 2)));
-		return distance <= radius;
+		return _distance <= radius;
 	}
 
 

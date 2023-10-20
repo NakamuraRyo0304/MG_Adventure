@@ -35,6 +35,9 @@ private:
 	// セレクトから受け取ったコイン数
 	int m_coinNum;
 
+	// 頭の動きに使う変数
+	float m_headMove;
+
 	// 脚の動きに使う変数
 	float m_footMove;
 
@@ -68,6 +71,8 @@ private:
 	// 移動速度
 	const float THIRD_SPEED = 0.015f;
 	const float NORMAL_SPEED = 0.01f;
+	const float FOOT_SPEED = 0.1f;
+	const float HEAD_SPEED = 0.25f;
 	// 回転速度
 	const float ROT_SPEED = 0.05f;
 	const float NECK_ROT_SPEED = 0.30f;
@@ -104,10 +109,6 @@ private:
 
 	// 重力処理
 	void UpdateGravity();
-
-	// モデルを作成する
-	void CreateModel();
-
 
 public:
 

@@ -158,36 +158,33 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 void EditScene::Draw()
 {
 	// 描画関連
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
-	auto& states = *GetSystemManager()->GetCommonStates();
+	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto& _states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	SimpleMath::Matrix world, view, proj;
-
-	// ワールド行列
-	world = SimpleMath::Matrix::Identity;
+	SimpleMath::Matrix _cursorMat, _view, _projection;
 
 	// ビュー行列
-	view = GetSystemManager()->GetCamera()->GetView();
+	_view = GetSystemManager()->GetCamera()->GetView();
 
 	// プロジェクション行列
-	proj = GetSystemManager()->GetCamera()->GetProjection();
+	_projection = GetSystemManager()->GetCamera()->GetProjection();
 
 	// レイの設定
-	GetSystemManager()->GetRayCast()->SetMatrix(view, proj);
+	GetSystemManager()->GetRayCast()->SetMatrix(_view, _projection);
 
 	// 行列計算
-	SimpleMath::Matrix scale = SimpleMath::Matrix::CreateScale(COMMON_SIZE / 2);
-	SimpleMath::Matrix rotY  = SimpleMath::Matrix::CreateRotationY(m_timer);
-	SimpleMath::Matrix trans = SimpleMath::Matrix::CreateTranslation(m_cursorPos);
+	SimpleMath::Matrix _scale	 = SimpleMath::Matrix::CreateScale(COMMON_SIZE / 2);
+	SimpleMath::Matrix _rotateY  = SimpleMath::Matrix::CreateRotationY(m_timer);
+	SimpleMath::Matrix _trans	 = SimpleMath::Matrix::CreateTranslation(m_cursorPos);
 
 	// サイズ　×　回転　×　移動
-	world *= scale *  rotY * trans;
+	_cursorMat *= _scale *  _rotateY * _trans;
 
 	// オブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		SimpleMath::Matrix boxMat =
+		SimpleMath::Matrix _boxMat =
 			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
 		// 押し戻し処理を無効化
@@ -203,26 +200,26 @@ void EditScene::Draw()
 
 		if (m_mapObj[i].hit) // 選択中のマスにオブジェクトを描画
 		{
-			SwitchDraw(m_nowState, context, &states, boxMat, view, proj);
+			SwitchDraw(m_nowState, _context, _states, _boxMat, _view, _projection);
 		}
 		else				 // 該当オブジェクトの描画
 		{
-			SwitchDraw(m_mapObj[i].id, context, &states, boxMat, view, proj);
+			SwitchDraw(m_mapObj[i].id, _context, _states, _boxMat, _view, _projection);
 		}
 	}
 
 	// マウス位置に描画
 	if (m_nowState == MAPSTATE::NONE) // 削除時以外は通常の描画
 	{
-		m_noneModel->Draw(context, states, world, view, proj);
+		m_noneModel->Draw(_context, _states, _cursorMat, _view, _projection);
 	}
 	else
 	{
-		SwitchDraw(m_nowState, context, &states, world, view, proj);
+		SwitchDraw(m_nowState, _context, _states, _cursorMat, _view, _projection);
 	}
 
 	// スカイドームの描画
-	m_skyDomeModel->Draw(context, states, SimpleMath::Matrix::Identity, view, proj);
+	m_skyDomeModel->Draw(_context, _states, SimpleMath::Matrix::Identity, _view, _projection);
 
 	// 画像の描画
 	m_userInterface->Render();
@@ -241,28 +238,28 @@ void EditScene::Draw()
 /// <param name="view">ビュー行列</param>
 /// <param name="proj">射影行列</param>
 /// <returns>なし</returns>
-void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	CommonStates* states,
+void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	CommonStates& states,
 	SimpleMath::Matrix world, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	// 行列計算
-	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_timer);
+	SimpleMath::Matrix _rotateY = SimpleMath::Matrix::CreateRotationY(m_timer);
 
 	switch (objNum)
 	{
 	case MAPSTATE::GRASS:	// 草
-		m_grassModel->Draw(context, *states, world, view, proj);
+		m_grassModel->Draw(context, states, world, view, proj);
 		break;
 	case MAPSTATE::COIN:	// コイン
-		m_coinModel->Draw(context, *states, rotY * world, view, proj);
+		m_coinModel->Draw(context, states, _rotateY * world, view, proj);
 		break;
 	case MAPSTATE::CLOUD:	// 雲
-		m_cloudModel->Draw(context, *states, world, view, proj);
+		m_cloudModel->Draw(context, states, world, view, proj);
 		break;
 	case MAPSTATE::RESET:	// 雲リセット
-		m_resetPtModel->Draw(context, *states, world, view, proj);
+		m_resetPtModel->Draw(context, states, world, view, proj);
 		break;
 	case MAPSTATE::PLAYER:	// プレイヤー
-		m_playerModel->Draw(context, *states, rotY * world, view, proj);
+		m_playerModel->Draw(context, states, _rotateY * world, view, proj);
 		break;
 	default:
 		break;
@@ -297,84 +294,84 @@ void EditScene::Finalize()
 void EditScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
-	auto device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto _device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
+	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
-	GetSystemManager()->CreateUnique(device, context);
+	GetSystemManager()->CreateUnique(_device, _context);
 
 	// 画面サイズの格納
-	float width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
+	float _width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
+	float _height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// UIの初期化
-	m_userInterface = std::make_unique<UserInterface>(SimpleMath::Vector2(width, height));
+	m_userInterface = std::make_unique<UserInterface>(SimpleMath::Vector2(_width, _height));
 	m_system = GetSystemManager();
-	m_userInterface->Initialize(m_system, context, device);
+	m_userInterface->Initialize(m_system, _context, _device);
 
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
+	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, CAMERA_ANGLE);
 
 	// 文字の設定
-	GetSystemManager()->GetString()->CreateString(device, context);
+	GetSystemManager()->GetString()->CreateString(_device, _context);
 
 	// レイが及ぶ範囲を設定
-	GetSystemManager()->GetRayCast()->SetScreenSize(width, height);
+	GetSystemManager()->GetRayCast()->SetScreenSize(_width, _height);
 
 	// モデルを作成する
 	m_grassModel = ModelFactory::GetCreateModel(		// 草ブロック
-		device,
+		_device,
 		L"Resources/Models/GrassBlock.cmo"
 	);
 	m_coinModel = ModelFactory::GetCreateModel(			// コインブロック
-		device,
+		_device,
 		L"Resources/Models/Coin.cmo"
 	);
 	m_cloudModel = ModelFactory::GetCreateModel(		// 雲ブロック
-		device,
+		_device,
 		L"Resources/Models/Cloud.cmo"
 	);
 	m_resetPtModel = ModelFactory::GetCreateModel(		// リセットブロック
-		device,
+		_device,
 		L"Resources/Models/ResetPt.cmo"
 	);
 	m_playerModel = ModelFactory::GetCreateModel(		// プレイヤブロック
-		device,
+		_device,
 		L"Resources/Models/Bird.cmo"
 	);
 	m_noneModel = ModelFactory::GetCreateModel(			// 消しゴムブロック
-		device,
+		_device,
 		L"Resources/Models/Eraser.cmo"
 	);
 
 	// スカイドームモデルを作成する
 	m_skyDomeModel = ModelFactory::GetCreateModel(
-		device,
+		_device,
 		L"Resources/Models/CheckDome.cmo"
 	);
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
-			auto lights = dynamic_cast<IEffectLights*>(effect);
-			if (lights)
+			auto _lights = dynamic_cast<IEffectLights*>(effect);
+			if (_lights)
 			{
 				// ライトの数分回す
 				for (int i = 0; i < 3; ++i)
 				{
-					lights->SetLightEnabled(i, false);
+					_lights->SetLightEnabled(i, false);
 				}
 			}
 			// 自己発光する
-			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (basicEffect)
+			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (_basicEffect)
 			{
-				basicEffect->SetEmissiveColor(Colors::White);
+				_basicEffect->SetEmissiveColor(Colors::White);
 			}
 		}
 	);
 
 	// マウスカーソルの作成
-	m_mouseCursor = std::make_unique<MouseCursor>(context);
-	m_mouseCursor->Initialize(L"Resources/Textures/MouseCursor.dds", device);
+	m_mouseCursor = std::make_unique<MouseCursor>(_context);
+	m_mouseCursor->Initialize(L"Resources/Textures/MouseCursor.dds", _device);
 
 	// クリアチェッカーの作成
 	m_checker = std::make_unique<ClearChecker>();
@@ -404,7 +401,7 @@ void EditScene::SetSceneValues()
 /// <returns>なし</returns>
 void EditScene::EditMap()
 {
-	auto mouse = Mouse::Get().GetState();
+	auto _mouse = Mouse::Get().GetState();
 
 	// カメラモードは処理しない
 	if (m_userInterface->GetCameraFlag()) return;
@@ -416,7 +413,7 @@ void EditScene::EditMap()
 	// マウスカーソルで移動
 	m_cursorPos.y = UserUtility::Lerp(
 		m_cursorPos.y,															// 開始地点
-		static_cast<float>(mouse.scrollWheelValue / WHEEL_SPAWN) + COMMON_LOW,	// 終了地点
+		static_cast<float>(_mouse.scrollWheelValue / WHEEL_SPAWN) + COMMON_LOW,	// 終了地点
 		CURSOR_MOVE_SPEED														// 速度
 	);
 
@@ -439,7 +436,7 @@ void EditScene::EditMap()
 		obj.hit = is_boxCol.IsHitBoxFlag();
 
 		// クリックでブロック設置
-		if (obj.hit &&  mouse.leftButton)
+		if (obj.hit &&  _mouse.leftButton)
 		{
 			// 既に同じオブジェクトなら処理しない
 			if (obj.id == m_nowState) continue;
@@ -472,11 +469,11 @@ void EditScene::OffsetPosition(std::vector<Object>* object, const int& mode)
 	// 書き込み
 	if (mode == WRITE)
 	{
-		for (auto& i : *object)
+		for (auto& obj : *object)
 		{
-			i.position.x += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
-			i.position.y -= static_cast<float>(COMMON_LOW);
-			i.position.z += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
+			obj.position.x += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
+			obj.position.y -= static_cast<float>(COMMON_LOW);
+			obj.position.z += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
 		}
 	}
 }

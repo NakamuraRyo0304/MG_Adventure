@@ -203,7 +203,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		// 落下させる
 		m_fallValue -= FALL_SPEED;
 
-		for (auto& obj : m_blocks->GetMapData())
+		for (auto& i : m_blocks->GetMapData())
 		{
 			// エフェクトをオフ
 			m_userInterFace->SetEffectFlag(false);
@@ -212,16 +212,16 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 			GetSystemManager()->GetCamera()->ShakeObject(
 				SHAKE_DURATION,							// 振動時間
 				SHAKE_TREMOR * 2.5f,					// 振動範囲
-				&m_blocks->GetBlockPosition(obj.index)	// 振動オブジェクト
+				&m_blocks->GetBlockPosition(i.index)	// 振動オブジェクト
 			);
 
 			// 座標のセット
 			m_blocks->SetBlockPosition(
 				SimpleMath::Vector3(
-				obj.position.x,							// X軸
-				obj.position.y + m_fallValue,			// Y軸
-				obj.position.z),						// Z軸
-				obj.index								// 配列番号
+				i.position.x,							// X軸
+				i.position.y + m_fallValue,			// Y軸
+				i.position.z),						// Z軸
+				i.index								// 配列番号
 			);
 		}
 	}
@@ -229,7 +229,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	else if (m_player->GetPosition().y < DURATION_FLOOR_LINE / 1.5f)
 	{
 		// オブジェクトの振動
-		for (auto& obj : m_blocks->GetMapData())
+		for (auto& i : m_blocks->GetMapData())
 		{
 			// エフェクトをオン
 			if (static_cast<int>(m_player->GetPosition().y) % 2 == 0)
@@ -243,7 +243,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 			GetSystemManager()->GetCamera()->ShakeObject(
 				1.0f,									// 振動時間
 				SHAKE_TREMOR,							// 振動範囲
-				&m_blocks->GetBlockPosition(obj.index)	// 振動オブジェクト
+				&m_blocks->GetBlockPosition(i.index)	// 振動オブジェクト
 			);
 		}
 	}
@@ -257,9 +257,9 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		Judgement();
 
 		// 衝突したオブジェクトごとに押し戻し処理を行う
-		for (auto& obj : m_hitObjects)
+		for (auto& i : m_hitObjects)
 		{
-			ApplyPushBack(obj);
+			ApplyPushBack(i);
 		}
 	}
 
@@ -517,26 +517,26 @@ void PlayScene::Judgement()
 	m_hitObjects.clear();
 
 	// 当たり判定を取る
-	for (auto& obj : m_blocks->GetMapData())
+	for (auto& i : m_blocks->GetMapData())
 	{
 		// プレイヤの半径1.5fの範囲になければ処理しない
 		// 引数（基準点、検索範囲、検索点）
 		if (UserUtility::CheckPointInSphere(
-			m_player->GetPosition(),JUDGE_AREA,	obj.position))
+			m_player->GetPosition(),JUDGE_AREA,	i.position))
 		{
 			// 判定を取る
 			is_boxCol.PushBox(
 				m_player->GetPosition(),								// プレイヤ座標
-				obj.position,											// コイン座標
+				i.position,												// コイン座標
 				SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-				SimpleMath::Vector3{ m_blocks->GetObjSize(obj.id) }		// ブロックサイズ
+				SimpleMath::Vector3{ m_blocks->GetObjSize(i.id) }		// ブロックサイズ
 			);
 
 			// 当たっていたら処理する
 			if (is_boxCol.IsHitBoxFlag())
 			{
 				// 衝突したオブジェクトをリストに追加
-				m_hitObjects.push_back(obj);
+				m_hitObjects.push_back(i);
 			}
 		}
 	}
@@ -613,18 +613,18 @@ void PlayScene::ApplyPushBack(Object& obj)
 	//-------------------------------------------------------------------------------------//
 
 	// 直前のプレイヤのポジションを保存
-	SimpleMath::Vector3 playerPos = m_player->GetPosition();
+	SimpleMath::Vector3 _playerPos = m_player->GetPosition();
 
 	// 当たり判定を取って押し戻す
 	is_boxCol.PushBox(
-		&playerPos,												// プレイヤ座標
+		&_playerPos,											// プレイヤ座標
 		obj.position,											// ブロック座標
 		SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
 		SimpleMath::Vector3{ m_blocks->GetObjSize(obj.id)}		// ブロックサイズ
 	);
 
 	// 変更後のプレイヤのポジションを反映
-	m_player->SetPosition(playerPos);
+	m_player->SetPosition(_playerPos);
 
 	// ブロックの上に当たっていたら重力を初期化
 	if (is_boxCol.GetHitFace() == Collider::BoxCollider::HIT_FACE::UP)
@@ -676,7 +676,7 @@ bool PlayScene::StartTimer()
 /// <returns>なし</returns>
 void PlayScene::MoveStart()
 {
-	Camera cam = *GetSystemManager()->GetCamera();
+	auto& _cam = GetSystemManager()->GetCamera();
 
 	//-------------------//
 	// 現在位置
@@ -688,14 +688,14 @@ void PlayScene::MoveStart()
 	m_playCamera->SetPosition(
 		UserUtility::Lerp(
 			m_playCamera->GetPosition(),
-			cam.GetPosition(),
+			_cam->GetPosition(),
 			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
 		)
 	);
 	m_playCamera->SetTarget(
 		UserUtility::Lerp(
 			m_playCamera->GetTarget(),
-			cam.GetTarget(),
+			_cam->GetTarget(),
 			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
 		)
 	);
@@ -710,18 +710,18 @@ void PlayScene::MakePlayer(ID3D11Device1* device)
 {
 	//-------------------------------------------------------------------------------------//
 	// パスの格納
-	auto head =	std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo"));
-	auto body =	std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo"));
-	auto legR =	std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
-	auto legL =	std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
+	auto _head = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo"));
+	auto _body = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo"));
+	auto _legR = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
+	auto _legL = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
 	//-------------------------------------------------------------------------------------//
 
 	// プレイヤーを作成する
 	m_player = std::make_unique<Player>(
-		std::move(head),			// 頭のモデル
-		std::move(body),			// 身体のモデル
-		std::move(legR),			// 右足のモデル
-		std::move(legL)				// 左足のモデル
+		std::move(_head),			// 頭のモデル
+		std::move(_body),			// 身体のモデル
+		std::move(_legR),			// 右足のモデル
+		std::move(_legL)				// 左足のモデル
 	);
 }
 

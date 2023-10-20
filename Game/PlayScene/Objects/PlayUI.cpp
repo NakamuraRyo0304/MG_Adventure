@@ -78,13 +78,13 @@ void PlayUI::Create(std::shared_ptr<SystemManager> system ,
 	m_system->GetDrawSprite()->AddTextureData(L"UnderFont", L"Resources/Textures/PLAY_HELP/UnderFont.dds", device);
 
 	// 比率を計算
-	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// スプライトの位置を計算
-	m_countDownPos = { (FULL_SCREEN_SIZE.x / 2 - NUM_SIZE / 2) * scale.x , 80.0f * scale.y };
-	m_oneSecPos = { m_countDownPos.x + static_cast<float>(NUM_SIZE / 2) * scale.x ,m_countDownPos.y };
-	m_tenSecPos = { m_countDownPos.x - static_cast<float>(NUM_SIZE / 2) * scale.x ,m_countDownPos.y };
-	m_sunPos = { (SUN_SIZE.x * scale.x) / 2, SUN_SIZE.y * scale.y };
+	m_countDownPos = { (FULL_SCREEN_SIZE.x / 2 - NUM_SIZE / 2) * _scale.x , 80.0f * _scale.y };
+	m_oneSecPos = { m_countDownPos.x + static_cast<float>(NUM_SIZE / 2) * _scale.x ,m_countDownPos.y };
+	m_tenSecPos = { m_countDownPos.x - static_cast<float>(NUM_SIZE / 2) * _scale.x ,m_countDownPos.y };
+	m_sunPos = { (SUN_SIZE.x * _scale.x) / 2, SUN_SIZE.y * _scale.y };
 
 	// 落下フラグを切る
 	is_effectFlag = false;
@@ -102,18 +102,18 @@ void PlayUI::Update(const float& timelimit)
 	m_gameTimer = static_cast<int>(timelimit);
 
 	// 比率を計算
-	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// 太陽の回転をセット
 	m_system->GetDrawSprite()->CreateRotation(L"Sun", static_cast<float>(MAX_LIMITS - m_gameTimer) * ROT_SPEED);
 
 	// 太陽の移動処理
-	m_sunPos.x += m_gameTimer != 0 ? SUN_MOVE_SPEED * scale.x : 0.0f;
+	m_sunPos.x += m_gameTimer != 0 ? SUN_MOVE_SPEED * _scale.x : 0.0f;
 
 	// フォントの移動処理
-	m_underFontPos.x -= UNDER_SPEED * scale.x;
+	m_underFontPos.x -= UNDER_SPEED * _scale.x;
 
-	if (m_underFontPos.x < -FULL_SCREEN_SIZE.x * 2 * scale.x)
+	if (m_underFontPos.x < -FULL_SCREEN_SIZE.x * 2 * _scale.x)
 	{
 		m_underFontPos.x = FULL_SCREEN_SIZE.x;
 	}
@@ -127,7 +127,7 @@ void PlayUI::Update(const float& timelimit)
 void PlayUI::Render()
 {
     // 比率を計算
-	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// 落下エフェクト
 	if (is_effectFlag)
@@ -136,16 +136,16 @@ void PlayUI::Render()
 			L"Death",                          // 登録キー
 			SimpleMath::Vector2::Zero,         // 座標
 			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-			scale,                             // 拡大率
+			_scale,                             // 拡大率
 			SimpleMath::Vector2::Zero          // 中心位置
 		);
 	}
 
 	// 太陽アイコンの描画
-	RenderSunny(scale);
+	RenderSunny(_scale);
 
 	// タイマーの描画
-	RenderTimer(scale);
+	RenderTimer(_scale);
 
 	//-------------------------------------------------------------------------------------//
 	// ヘルプ中の表示
@@ -155,14 +155,14 @@ void PlayUI::Render()
 			L"HelpBack",                       // 登録キー
 			SimpleMath::Vector2::Zero,         // 座標
 			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-			scale,                             // 拡大率
+			_scale,                             // 拡大率
 			SimpleMath::Vector2::Zero          // 中心位置
 		);
 		m_system->GetDrawSprite()->DrawTexture(
 			L"Help",                           // 登録キー
 			SimpleMath::Vector2::Zero,         // 座標
 			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-			scale,                             // 拡大率
+			_scale,                             // 拡大率
 			SimpleMath::Vector2::Zero          // 中心位置
 		);
 	}
@@ -172,9 +172,9 @@ void PlayUI::Render()
 	{
 		m_system->GetDrawSprite()->DrawTexture(
 			L"OpenHelp",
-			SimpleMath::Vector2{ m_windowSize.x - HELP_WIDTH * scale.x, 0.0f },
+			SimpleMath::Vector2{ m_windowSize.x - HELP_WIDTH * _scale.x, 0.0f },
 			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			scale,
+			_scale,
 			SimpleMath::Vector2::Zero,
 			{ 0,0,360,120 }
 		);
@@ -184,14 +184,14 @@ void PlayUI::Render()
 			L"UnderBack",
 			SimpleMath::Vector2::Zero,
 			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			scale,
+			_scale,
 			SimpleMath::Vector2::Zero
 		);
 		m_system->GetDrawSprite()->DrawTexture(
 			L"UnderFont",
 			m_underFontPos,
 			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			scale,
+			_scale,
 			SimpleMath::Vector2::Zero,
 			// 画像のサイズ
 			{ 0,0,static_cast<LONG>(FULL_SCREEN_SIZE.x * 2),static_cast<LONG>(FULL_SCREEN_SIZE.y) }
@@ -207,7 +207,7 @@ void PlayUI::Render()
 void PlayUI::RenderCountDown(const float& countDown)
 {
 	// 比率を計算
-	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	if (static_cast<int>(countDown / 60) == 0)
 	{
@@ -215,22 +215,22 @@ void PlayUI::RenderCountDown(const float& countDown)
 			L"GameStart",                      // 登録キー
 			SimpleMath::Vector2::Zero,         // 座標
 			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-			scale,                             // 拡大率
+			_scale,                             // 拡大率
 			SimpleMath::Vector2::Zero          // 中心位置
 		);
 		return;
 	}
 
-	int num = static_cast<int>(countDown) / 60;
-	RECT_U countRec = { num * NUM_SIZE, 0, num * NUM_SIZE + NUM_SIZE, NUM_SIZE };
+	int _num = static_cast<int>(countDown) / 60;
+	RECT_U _countRec = { _num * NUM_SIZE, 0, _num * NUM_SIZE + NUM_SIZE, NUM_SIZE };
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
 		m_countDownPos,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale,
+		_scale,
 		SimpleMath::Vector2::Zero,
-		countRec
+		_countRec
 	);
 }
 
@@ -241,13 +241,13 @@ void PlayUI::RenderCountDown(const float& countDown)
 /// <returns>なし</returns>
 void PlayUI::RenderTimer(SimpleMath::Vector2 scale)
 {
-	// 1の位に変換
-	int oneSec = m_gameTimer / 60 % 10;
-	int tenSec = m_gameTimer / 60 / 10 % 10;
+	// 一桁に変換
+	int _oneSec = m_gameTimer / 60 % 10;
+	int _tenSec = m_gameTimer / 60 / 10 % 10;
 
 	// 切り取り位置設定
-	RECT_U oneRec = { oneSec * NUM_SIZE, 0, oneSec * NUM_SIZE + NUM_SIZE, NUM_SIZE };
-	RECT_U tenRec = { tenSec * NUM_SIZE, 0, tenSec * NUM_SIZE + NUM_SIZE, NUM_SIZE };
+	RECT_U _oneRec = { _oneSec * NUM_SIZE, 0, _oneSec * NUM_SIZE + NUM_SIZE, NUM_SIZE };
+	RECT_U _tenRec = { _tenSec * NUM_SIZE, 0, _tenSec * NUM_SIZE + NUM_SIZE, NUM_SIZE };
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
@@ -255,7 +255,7 @@ void PlayUI::RenderTimer(SimpleMath::Vector2 scale)
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,
-		tenRec
+		_tenRec
 	);
 
 	m_system->GetDrawSprite()->DrawTexture(
@@ -264,7 +264,7 @@ void PlayUI::RenderTimer(SimpleMath::Vector2 scale)
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
 		scale,
 		SimpleMath::Vector2::Zero,
-		oneRec
+		_oneRec
 	);
 }
 

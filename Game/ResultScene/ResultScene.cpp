@@ -166,24 +166,24 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 void ResultScene::Draw()
 {
 	// 描画関連
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
-	auto& states = *GetSystemManager()->GetCommonStates();
+	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto& _states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	SimpleMath::Matrix  view, proj;
+	SimpleMath::Matrix  _view, _projection;
 
 	// ビュー行列
-	SimpleMath::Vector3    eye(cosf(m_timer), 20.0f + sinf(m_timer) * 2.0f, 10.0f);
-	SimpleMath::Vector3     up(0.0f, 5.0f, 0.0f);
-	SimpleMath::Vector3 target(0.0f, -10.0f, -5.0f);
+	SimpleMath::Vector3    _eye(cosf(m_timer), 20.0f + sinf(m_timer) * 2.0f, 10.0f);
+	SimpleMath::Vector3     _up(0.0f, 5.0f, 0.0f);
+	SimpleMath::Vector3 _target(0.0f, -10.0f, -5.0f);
 
-	view = SimpleMath::Matrix::CreateLookAt(eye, target, up);
+	_view = SimpleMath::Matrix::CreateLookAt(_eye, _target, _up);
 
 	// プロジェクション行列
-	proj = GetSystemManager()->GetCamera()->GetProjection();
+	_projection = GetSystemManager()->GetCamera()->GetProjection();
 
 	// マップの描画
-	m_blocks->Render(context, states, view, proj, m_timer);
+	m_blocks->Render(_context, _states, _view, _projection, m_timer);
 
 	// UIの表示
 	m_userInterface->Render();
@@ -212,50 +212,50 @@ void ResultScene::Finalize()
 void ResultScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
-	auto device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto _device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
+	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
-	GetSystemManager()->CreateUnique(device, context);
-	GetSystemManager()->GetString()->CreateString(device, context);
+	GetSystemManager()->CreateUnique(_device, _context);
+	GetSystemManager()->GetString()->CreateString(_device, _context);
 
 	// 画面サイズの格納
-	float width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
+	float _width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
+	float _height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// ウィンドウサイズを取得
-	m_windowSize = SimpleMath::Vector2{ width,height };
+	m_windowSize = SimpleMath::Vector2{ _width,_height };
 
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(width, height, 45.0f);
+	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, 45.0f);
 
 	// ブロックの作成
 	m_blocks = std::make_unique<Blocks>();
 
 	// 草ブロックの作成
 	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo")),
+		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/GrassBlock.cmo")),
 		m_blocks->GRASS
 	);
 	// コインの作成
 	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo")),
+		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/Coin.cmo")),
 		m_blocks->COIN
 	);
 	// 雲ブロックの作成
 	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo")),
+		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo")),
 		m_blocks->CLOWD
 	);
 	// 雲リセットブロックの作成
 	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo")),
+		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo")),
 		m_blocks->RECLOWD
 	);
 
 	// UIの作成
-	m_userInterface = std::make_unique<ResultUI>(GetSystemManager(), context, device);
-	m_userInterface->Initialize(SimpleMath::Vector2{ width, height });
+	m_userInterface = std::make_unique<ResultUI>(GetSystemManager(), _context, _device);
+	m_userInterface->Initialize(SimpleMath::Vector2{ _width, _height });
 
 }
 

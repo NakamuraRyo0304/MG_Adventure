@@ -98,11 +98,11 @@ bool ClearChecker::RunCheck()
 			if (i.id != MAPSTATE::COIN || j.id != MAPSTATE::COIN) continue;
 
 			// ‹——£‚ðŒvŽZ‚µ‚ÄÅ‘å‚ð‰z‚¦‚½‚ç“ü‚ê‘Ö‚¦‚é
-			 float check = SimpleMath::Vector3::Distance(i.position, j.position);
+			 float _check = SimpleMath::Vector3::Distance(i.position, j.position);
 
-			if (check > m_coinLength)
+			if (_check > m_coinLength)
 			{
-				m_coinLength = check;
+				m_coinLength = _check;
 			}
 		}
 	}

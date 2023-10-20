@@ -141,50 +141,51 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 void TitleScene::Draw()
 {
 	// 描画関連
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
-	auto& states = *GetSystemManager()->GetCommonStates();
+	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto& _states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	SimpleMath::Matrix logoMat, stageMat, skyMat, view, proj;
+	SimpleMath::Matrix _logoMat, _stageMat, _skyMat, _view, _projection;
 
 	//-------------------------------------------------------------------------------------//
 
 	// 移動、回転行列
-	SimpleMath::Matrix logoTrans, logoRot,				// ロゴ
-		stageTrans, stageRotX, stageRotY, stageScale,	// ステージ
-		skyTrans, skyRotX;								// スカイドーム
+	SimpleMath::Matrix
+		_logoTrans, _logoRot,								// ロゴ
+		_stageTrans, _stageRotX, _stageRotY, _stageScale,	// ステージ
+		_skyTrans, _skyRotX;								// スカイドーム
 
 	// ワールド行列
-	logoMat = stageMat = skyMat = SimpleMath::Matrix::Identity;
+	_logoMat = _stageMat = _skyMat = SimpleMath::Matrix::Identity;
 
 	//-------------------------------------------------------------------------------------//
 
 	// 回転行列
-	logoRot = SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
-	stageRotX = SimpleMath::Matrix::CreateRotationX(0.3f);
-	stageRotY = SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f + m_accelerate);
-	skyRotX = SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
+	_logoRot = SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
+	_stageRotX = SimpleMath::Matrix::CreateRotationX(0.3f);
+	_stageRotY = SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f + m_accelerate);
+	_skyRotX = SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
 
 	//-------------------------------------------------------------------------------------//
 
 	// 移動行列
-	logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_logoMoveY, cosf(m_timer) * 0.5f);
-	stageTrans = SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
-	skyTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_cameraMoveY, 0.0f);
+	_logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_logoMoveY, cosf(m_timer) * 0.5f);
+	_stageTrans = SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
+	_skyTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_cameraMoveY, 0.0f);
 
 	//-------------------------------------------------------------------------------------//
 
 	// スケール行列
-	stageScale = SimpleMath::Matrix::CreateScale(1.2f);
+	_stageScale = SimpleMath::Matrix::CreateScale(1.2f);
 
 	//-------------------------------------------------------------------------------------//
 
 	// ロゴ
-	logoMat *= logoRot * logoTrans;
+	_logoMat *= _logoRot * _logoTrans;
 	// ステージ
-	stageMat *= stageScale * stageRotY * stageRotX * stageTrans;
+	_stageMat *= _stageScale * _stageRotY * _stageRotX * _stageTrans;
 	// スカイドーム
-	skyMat *= skyRotX;
+	_skyMat *= _skyRotX;
 
 	//-------------------------------------------------------------------------------------//
 
@@ -192,47 +193,47 @@ void TitleScene::Draw()
 	if (is_startFlag)
 	{
 		// スカイドームの回転と移動
-		skyMat *= skyRotX;
-		skyMat *= skyTrans;
+		_skyMat *= _skyRotX;
+		_skyMat *= _skyTrans;
 
 		// ロゴも一緒に動く
-		m_logoMoveScale *= 1.05f;
-		logoMat *= SimpleMath::Matrix::CreateScale(m_logoMoveScale);
+		m_logoMoveScale *= LOGO_CHANGE_SCALE;
+		_logoMat *= SimpleMath::Matrix::CreateScale(m_logoMoveScale);
 	}
 
 	// ビュー行列
 	SimpleMath::Vector3 eye(0.0f, 0.1f + m_cameraMoveY, 8.0f);
-	view = SimpleMath::Matrix::CreateLookAt(eye, SimpleMath::Vector3::Zero, SimpleMath::Vector3::Up);
+	_view = SimpleMath::Matrix::CreateLookAt(eye, SimpleMath::Vector3::Zero, SimpleMath::Vector3::Up);
 
 	// プロジェクション行列
-	proj = GetSystemManager()->GetCamera()->GetProjection();
+	_projection = GetSystemManager()->GetCamera()->GetProjection();
 
 	// ライトの設定
-	SimpleMath::Vector3	 lightDirection(-1.0f, 1.0f, 1.0f);
-	SimpleMath::Color	 lightColor(0.3f, 0.3f, 0.3f, 1.0f);
+	SimpleMath::Vector3	 _lightDir(-1.0f, 1.0f, 1.0f);
+	SimpleMath::Color	 _lightColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 	// アマチュアモデル設定
 	m_miniatureModel->UpdateEffects([&](IEffect* effect)
 		{
-			auto lights = dynamic_cast<IEffectLights*>(effect);
-			if (lights)
+			auto _lights = dynamic_cast<IEffectLights*>(effect);
+			if (_lights)
 			{
 				for (int i = 0; i < 3; ++i)
 				{
 					// ライトの使用を設定
-					lights->SetLightEnabled(i, true);
+					_lights->SetLightEnabled(i, true);
 
 					// ライトの方向を設定
-					lights->SetLightDirection(i, lightDirection);
+					_lights->SetLightDirection(i, _lightDir);
 
 					// ライトの色を設定
-					lights->SetLightDiffuseColor(i, lightColor);
+					_lights->SetLightDiffuseColor(i, _lightColor);
 				}
 			}
 		});
-	m_miniatureModel->Draw(context, states, stageMat, view, proj);	// ステージ
-	m_titleLogoModel->Draw(context, states, logoMat, view, proj);	// ロゴ
-	m_skyDomeModel->Draw(context, states, skyMat, view, proj);  	// スカイドーム
+	m_miniatureModel->Draw(_context, _states, _stageMat, _view, _projection);	// ステージ
+	m_titleLogoModel->Draw(_context, _states, _logoMat, _view, _projection);	// ロゴ
+	m_skyDomeModel->Draw(_context, _states, _skyMat, _view, _projection);  		// スカイドーム
 
 	// UIの描画
 	static_cast<int>(m_logoMoveY) == static_cast<int>(END_MOVE_POS) ? m_titleUI->Render() : void();
@@ -262,72 +263,72 @@ void TitleScene::Finalize()
 void TitleScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
-	auto device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto _device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
+	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
-	GetSystemManager()->CreateUnique(device, context);
-	GetSystemManager()->GetString()->CreateString(device, context);
+	GetSystemManager()->CreateUnique(_device, _context);
+	GetSystemManager()->GetString()->CreateString(_device, _context);
 
 	// 画面サイズの格納
-	float width  =
+	float _width  =
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height =
+	float _height =
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(width, height, 45.0f);
+	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, 45.0f);
 
 	// モデルの作成---------------------------------------------------------------------------------
 
 	// タイトルロゴ
-	m_titleLogoModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleLogoVer2.cmo");
+	m_titleLogoModel = ModelFactory::GetCreateModel(_device, L"Resources/Models/TitleLogoVer2.cmo");
 	m_titleLogoModel->UpdateEffects([](IEffect* effect)
 		{
 			// ライティング
-			auto lights = dynamic_cast<IEffectLights*>(effect);
-			if (lights)
+			auto _lights = dynamic_cast<IEffectLights*>(effect);
+			if (_lights)
 			{
 				// ライトの指定
-				lights->SetLightEnabled(0, true);
-				lights->SetLightEnabled(1, true);
-				lights->SetLightEnabled(2, false);
+				_lights->SetLightEnabled(0, true);
+				_lights->SetLightEnabled(1, true);
+				_lights->SetLightEnabled(2, false);
 
 				// ライトの方向を設定
-				SimpleMath::Vector3 lightDirection = -SimpleMath::Vector3::UnitZ;
-				lights->SetLightDirection(0, lightDirection);
-				lights->SetLightDirection(1, lightDirection);
+				SimpleMath::Vector3 _lightDir = -SimpleMath::Vector3::UnitZ;
+				_lights->SetLightDirection(0, _lightDir);
+				_lights->SetLightDirection(1, _lightDir);
 			}
 		}
 	);
 
 	// ステージモデル
-	m_miniatureModel = ModelFactory::GetCreateModel(device, L"Resources/Models/TitleStage.cmo");
+	m_miniatureModel = ModelFactory::GetCreateModel(_device, L"Resources/Models/TitleStage.cmo");
 
 	// スカイドーム
-	m_skyDomeModel = ModelFactory::GetCreateModel(device, L"Resources/Models/ShineSky.cmo");
+	m_skyDomeModel = ModelFactory::GetCreateModel(_device, L"Resources/Models/ShineSky.cmo");
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
 			// ライティング
-			auto lights = dynamic_cast<IEffectLights*>(effect);
-			if (lights)
+			auto _lights = dynamic_cast<IEffectLights*>(effect);
+			if (_lights)
 			{
-				lights->SetLightEnabled(0, false);
-				lights->SetLightEnabled(1, true);
-				lights->SetLightEnabled(2, false);
+				_lights->SetLightEnabled(0, false);
+				_lights->SetLightEnabled(1, true);
+				_lights->SetLightEnabled(2, false);
 			}
 			// 自己発光する
-			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (basicEffect)
+			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (_basicEffect)
 			{
-				basicEffect->SetEmissiveColor(Colors::White);
+				_basicEffect->SetEmissiveColor(Colors::White);
 			}
 		}
 	);
 
 	// UIの初期化
-	m_titleUI = std::make_unique<TitleUI>(SimpleMath::Vector2{ width, height });
-	m_titleUI->Create(GetSystemManager(), context, device);
+	m_titleUI = std::make_unique<TitleUI>(SimpleMath::Vector2{ _width, _height });
+	m_titleUI->Create(GetSystemManager(), _context, _device);
 }
 
 /// <summary>

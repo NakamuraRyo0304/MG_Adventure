@@ -55,7 +55,7 @@ void PlayerBill::Create(DX::DeviceResources* pDR)
 	m_pDR = pDR;
 
 	// デバイスの取得
-	auto device = pDR->GetD3DDevice();
+	auto _device = pDR->GetD3DDevice();
 
 	// シェーダーの作成
 	CreateShader();
@@ -67,7 +67,7 @@ void PlayerBill::Create(DX::DeviceResources* pDR)
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());
 
 	// コモンステートの作成
-	m_common = std::make_unique<CommonStates>(device);
+	m_common = std::make_unique<CommonStates>(_device);
 
 	// 座標の初期化
 	m_defaultPos = SimpleMath::Vector3{ 0.0f,0.0f,0.0f };
@@ -81,13 +81,13 @@ void PlayerBill::Create(DX::DeviceResources* pDR)
 void PlayerBill::LoadTexture(const wchar_t* path)
 {
 	// デバイス
-	auto device = m_pDR->GetD3DDevice();
+	auto _device = m_pDR->GetD3DDevice();
 	// シェーダーリソースビュー
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> tex;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _tex;
 
 	// ファイル読み込み
 	CreateDDSTextureFromFile(
-		device,
+		_device,
 		path,
 		nullptr,
 		m_texture.ReleaseAndGetAddressOf()
@@ -102,26 +102,26 @@ void PlayerBill::LoadTexture(const wchar_t* path)
 void PlayerBill::CreateShader()
 {
 	// デバイス
-	auto device = m_pDR->GetD3DDevice();
+	auto _device = m_pDR->GetD3DDevice();
 
 	//-------------------------------------------------------------------------------------//
 	// シェーダーファイルの読み込み
 
 	// バーテックスシェーダー
-	std::vector<uint8_t> VSData = DX::ReadData(L"Resources/Shaders/VS_PlayerPoint.cso");
+	std::vector<uint8_t> _VSData = DX::ReadData(L"Resources/Shaders/VS_PlayerPoint.cso");
 	DX::ThrowIfFailed(
-		device->CreateVertexShader(VSData.data(), VSData.size(), nullptr,
+		_device->CreateVertexShader(_VSData.data(), _VSData.size(), nullptr,
 			m_verShader.ReleaseAndGetAddressOf())
 	);
 	// ジオメトリシェーダー
-	std::vector<uint8_t> GSData = DX::ReadData(L"Resources/Shaders/GS_PlayerPoint.cso");
+	std::vector<uint8_t> _GSData = DX::ReadData(L"Resources/Shaders/GS_PlayerPoint.cso");
 	DX::ThrowIfFailed(
-		device->CreateGeometryShader(GSData.data(), GSData.size(), nullptr,
+		_device->CreateGeometryShader(_GSData.data(), _GSData.size(), nullptr,
 			m_geoShader.ReleaseAndGetAddressOf())
 	);
 	// ピクセルシェーダー
-	std::vector<uint8_t> PSData = DX::ReadData(L"Resources/Shaders/PS_PlayerPoint.cso");
-	DX::ThrowIfFailed(device->CreatePixelShader(PSData.data(), PSData.size(), nullptr,
+	std::vector<uint8_t> _PSData = DX::ReadData(L"Resources/Shaders/PS_PlayerPoint.cso");
+	DX::ThrowIfFailed(_device->CreatePixelShader(_PSData.data(), _PSData.size(), nullptr,
 			m_pixShader.ReleaseAndGetAddressOf())
 	);
 
@@ -130,19 +130,19 @@ void PlayerBill::CreateShader()
 
 	// インプットレイアウト
 	DX::ThrowIfFailed(
-		device->CreateInputLayout(
+		_device->CreateInputLayout(
 			&INPUT_LAYOUT[0],
 			static_cast<UINT>(INPUT_LAYOUT.size()),
-			VSData.data(),
-			VSData.size(),
+			_VSData.data(),
+			_VSData.size(),
 			m_inputLayout.GetAddressOf())
 	);
 
 	// バーテックスシェーダー
 	DX::ThrowIfFailed(
-		device->CreateVertexShader(
-			VSData.data(),
-			VSData.size(),
+		_device->CreateVertexShader(
+			_VSData.data(),
+			_VSData.size(),
 			nullptr,
 			m_verShader.ReleaseAndGetAddressOf()
 		)
@@ -150,9 +150,9 @@ void PlayerBill::CreateShader()
 
 	// ジオメトリシェーダー
 	DX::ThrowIfFailed(
-		device->CreateGeometryShader(
-			GSData.data(),
-			GSData.size(),
+		_device->CreateGeometryShader(
+			_GSData.data(),
+			_GSData.size(),
 			nullptr,
 			m_geoShader.ReleaseAndGetAddressOf()
 		)
@@ -160,16 +160,16 @@ void PlayerBill::CreateShader()
 
 	// ピクセルシェーダー
 	DX::ThrowIfFailed(
-		device->CreatePixelShader(
-			PSData.data(),
-			PSData.size(),
+		_device->CreatePixelShader(
+			_PSData.data(),
+			_PSData.size(),
 			nullptr,
 			m_pixShader.ReleaseAndGetAddressOf()
 		)
 	);
 
 	// コンスタントバッファ作成
-	CreateConstBuffer(device);
+	CreateConstBuffer(_device);
 }
 
 /// <summary>
@@ -180,24 +180,24 @@ void PlayerBill::CreateShader()
 void PlayerBill::CreateConstBuffer(ID3D11Device1*& device)
 {
 	// コンスタントバッファ定義
-	D3D11_BUFFER_DESC buffer = {};
+	D3D11_BUFFER_DESC _buffer = {};
 
 	// 中身を空にする
-	ZeroMemory(&buffer, sizeof(buffer));
+	ZeroMemory(&_buffer, sizeof(_buffer));
 
 	// 読み書きのモードをデフォルトにする
-	buffer.Usage = D3D11_USAGE_DEFAULT;
+	_buffer.Usage = D3D11_USAGE_DEFAULT;
 
 	// シェーダーで使うデータ構造体のサイズを格納
-	buffer.ByteWidth = sizeof(ConstBuffer);
+	_buffer.ByteWidth = sizeof(ConstBuffer);
 
 	// バッファーを定数バッファーとして紐づける
-	buffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	_buffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
-	buffer.CPUAccessFlags = NULL;
+	_buffer.CPUAccessFlags = NULL;
 
 	// 作成したバッファを格納
-	device->CreateBuffer(&buffer, nullptr, &m_constBuffer);
+	device->CreateBuffer(&_buffer, nullptr, &m_constBuffer);
 }
 
 /// <summary>
@@ -211,15 +211,16 @@ void PlayerBill::CreateBillboard(SimpleMath::Vector3 target, SimpleMath::Vector3
 {
 	m_world = SimpleMath::Matrix::CreateBillboard(SimpleMath::Vector3::Zero, eye - target, up);
 
-	SimpleMath::Matrix rot = SimpleMath::Matrix::Identity;
-	rot._11 = -1;
-	rot._33 = -1;
+	// 回転を止めて常に正面に向ける
+	SimpleMath::Matrix _rot = SimpleMath::Matrix::Identity;
+	_rot._11 = -1;
+	_rot._33 = -1;
 
 	m_cameraPosition = eye;
 	m_cameraTarget = target;
 
 	// ビルボードのテクスチャを回転
-	m_world = rot * m_world;
+	m_world = _rot * m_world;
 }
 
 
@@ -233,91 +234,91 @@ void PlayerBill::CreateBillboard(SimpleMath::Vector3 target, SimpleMath::Vector3
 /// <returns>なし</returns>
 void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-	auto context = m_pDR->GetD3DDeviceContext();
+	auto _context = m_pDR->GetD3DDeviceContext();
 
 	// 頂点情報
-	VertexPositionColorTexture vertex = VertexPositionColorTexture(
+	VertexPositionColorTexture _vertex = VertexPositionColorTexture(
 		m_defaultPos,					// 座標
 		SimpleMath::Vector4::One,		// 色情報
 		SimpleMath::Vector2::Zero		// テクスチャ座標
 	);
 
 	// ビルボード位置を更新
-	vertex.position = SimpleMath::Vector3(playerPos.x, playerPos.y + (2.0f + sinf(timer) * 0.2f), playerPos.z);
+	_vertex.position = SimpleMath::Vector3(playerPos.x, playerPos.y + (2.0f + sinf(timer) * 0.2f), playerPos.z);
 
 	// 頂点情報(板ポリゴンの４頂点の座標情報）
-	SimpleMath::Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
-	cameraDir.Normalize();
+	SimpleMath::Vector3 _cameraDir = m_cameraTarget - m_cameraPosition;
+	_cameraDir.Normalize();
 
 	m_particleUtility.sort(
 		[&](ParticleUtility lhs, ParticleUtility  rhs)
 		{
 			// カメラ正面の距離でソート
-			return cameraDir.Dot(lhs.GetPosition() - m_cameraPosition) > cameraDir.Dot(rhs.GetPosition() - m_cameraPosition);
+			return _cameraDir.Dot(lhs.GetPosition() - m_cameraPosition) > _cameraDir.Dot(rhs.GetPosition() - m_cameraPosition);
 		}
 	);
 
-	for (auto& li : m_particleUtility)
+	for (auto& i : m_particleUtility)
 	{
 		// 頂点情報の初期化
-		VertexPositionColorTexture vPCT;								// 宣言
-		vPCT.position = XMFLOAT3(li.GetPosition());						// 座標
-		vPCT.color = XMFLOAT4(li.GetNowColor());						// 色
-		vPCT.textureCoordinate = XMFLOAT2(li.GetNowScale().x, 0.0f);	// 画像
+		VertexPositionColorTexture _vPCT = {};							// 宣言
+		_vPCT.position = XMFLOAT3(i.GetPosition());						// 座標
+		_vPCT.color = XMFLOAT4(i.GetNowColor());						// 色
+		_vPCT.textureCoordinate = XMFLOAT2(i.GetNowScale().x, 0.0f);	// 画像
 
-		m_vertice = vPCT;
+		m_vertice = _vPCT;
 	}
 
-	// シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	ConstBuffer cbuff;
-	cbuff.matView = view.Transpose();
-	cbuff.matProj = proj.Transpose();
-	cbuff.matWorld = m_world.Transpose();
-	cbuff.Diffuse = SimpleMath::Vector4::One;
+	// シェーダーにコンスタントバッファを渡す
+	ConstBuffer _buffer;
+	_buffer.matView = view.Transpose();
+	_buffer.matProj = proj.Transpose();
+	_buffer.matWorld = m_world.Transpose();
+	_buffer.Diffuse = SimpleMath::Vector4::One;
 
 	// 受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_constBuffer.Get(), 0, NULL, &cbuff, 0, 0);
+	_context->UpdateSubresource(m_constBuffer.Get(), 0, NULL, &_buffer, 0, 0);
 
 	//シェーダーにバッファを渡す
-	ID3D11Buffer* cb[1] = { m_constBuffer.Get() };
-	context->VSSetConstantBuffers(0, 1, cb);
-	context->GSSetConstantBuffers(0, 1, cb);
-	context->PSSetConstantBuffers(0, 1, cb);
+	ID3D11Buffer* _cbuffer[1] = { m_constBuffer.Get() };
+	_context->VSSetConstantBuffers(0, 1, _cbuffer);
+	_context->GSSetConstantBuffers(0, 1, _cbuffer);
+	_context->PSSetConstantBuffers(0, 1, _cbuffer);
 
 	// 画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { m_common->LinearWrap() };
-	context->PSSetSamplers(0, 1, sampler);
+	_context->PSSetSamplers(0, 1, sampler);
 
 	// 半透明描画指定
-	ID3D11BlendState* blendstate = m_common->NonPremultiplied();
+	ID3D11BlendState* _blendState = m_common->NonPremultiplied();
 
 	// 透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
+	_context->OMSetBlendState(_blendState, nullptr, 0xFFFFFFFF);
 
 	// ブロックの奥でもビルボードを貫通させる
-	context->OMSetDepthStencilState(m_common->DepthNone(), 0);
+	_context->OMSetDepthStencilState(m_common->DepthNone(), 0);
 
 	// カリングは左周り
-	context->RSSetState(m_common->CullNone());
+	_context->RSSetState(m_common->CullNone());
 
 	// シェーダをセットする
-	context->VSSetShader(m_verShader.Get(), nullptr, 0);
-	context->GSSetShader(m_geoShader.Get(), nullptr, 0);
-	context->PSSetShader(m_pixShader.Get(), nullptr, 0);
+	_context->VSSetShader(m_verShader.Get(), nullptr, 0);
+	_context->GSSetShader(m_geoShader.Get(), nullptr, 0);
+	_context->PSSetShader(m_pixShader.Get(), nullptr, 0);
 
 	//ピクセルシェーダにテクスチャを登録する
-	context->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
+	_context->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
 
 	//インプットレイアウトの登録
-	context->IASetInputLayout(m_inputLayout.Get());
+	_context->IASetInputLayout(m_inputLayout.Get());
 
 	// 板ポリゴンを描画
 	m_batch->Begin();
-	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex, 1);
+	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &_vertex, 1);
 	m_batch->End();
 
 	//シェーダの解放
-	context->VSSetShader(nullptr, nullptr, 0);
-	context->GSSetShader(nullptr, nullptr, 0);
-	context->PSSetShader(nullptr, nullptr, 0);
+	_context->VSSetShader(nullptr, nullptr, 0);
+	_context->GSSetShader(nullptr, nullptr, 0);
+	_context->PSSetShader(nullptr, nullptr, 0);
 }

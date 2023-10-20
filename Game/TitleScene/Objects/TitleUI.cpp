@@ -66,7 +66,7 @@ void TitleUI::Create(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1
 	m_sFontRate = SimpleMath::Vector2{ DEFAULT_FONT_RATE };
 	m_eFontRate = SimpleMath::Vector2{ DEFAULT_FONT_RATE };
 	m_sLineRate = SimpleMath::Vector2{ DEFAULT_FONT_RATE };
-	m_eLineRate = SimpleMath::Vector2{ 0.0f,1.0f };
+	m_eLineRate = SimpleMath::Vector2{ DEFAULT_FONT_RATE };
 }
 
 /// <summary>
@@ -114,39 +114,39 @@ void TitleUI::Update(const bool& selectFlag)
 void TitleUI::Render()
 {
 	// 画面比率
-	SimpleMath::Vector2 posRate = m_windowSize / FULL_SCREEN_SIZE * 0.5f;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE * 0.5f;
 
-	// スタートの文字--------------------------------(画面比率の変更を考慮した座標に設定)
+	// スタートの文字--------------------------------------------------------------------
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Start",
-		SimpleMath::Vector2{ 2048.0f,1792.0f } * posRate,
+		SimpleMath::Vector2{ 2048.0f,1792.0f } * _scale,
 		m_startColor,
-		posRate * m_sFontRate,
+		_scale * m_sFontRate,
 		SimpleMath::Vector2::Zero
 	);
 	// イグジットの文字------------------------------------------------------------------
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Exit",
-		SimpleMath::Vector2{ 2816.0f,1792.0f } * posRate,
+		SimpleMath::Vector2{ 2816.0f,1792.0f } * _scale,
 		m_exitColor,
-		posRate * m_eFontRate,
+		_scale * m_eFontRate,
 		SimpleMath::Vector2::Zero
 	);
 
 	// アンダーライン--------------------------------------------------------------------
 	m_system->GetDrawSprite()->DrawTexture(
 		L"UnderLine",
-		SimpleMath::Vector2{ 2048.0f,1792.0f } * posRate,
+		SimpleMath::Vector2{ 2048.0f,1792.0f } * _scale,
 		SimpleMath::Vector4::One,
-		m_sLineRate * posRate,
+		m_sLineRate * _scale,
 		SimpleMath::Vector2::Zero,
 		{ 0,0,768,256 }
 	);
 	m_system->GetDrawSprite()->DrawTexture(
 		L"UnderLine",
-		SimpleMath::Vector2{ 2816.0f,1792.0f } * posRate,
+		SimpleMath::Vector2{ 2816.0f,1792.0f } * _scale,
 		SimpleMath::Vector4::One,
-		m_eLineRate * posRate,
+		m_eLineRate * _scale,
 		SimpleMath::Vector2::Zero,
 		{ 0,0,768,256 }
 	);

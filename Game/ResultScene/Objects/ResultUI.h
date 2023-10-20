@@ -98,7 +98,7 @@ public:
 	void Finalize();
 
 private:
-	void DrawNumber(DirectX::SimpleMath::Vector2 scale);
+	void DrawNumber(DirectX::SimpleMath::Vector2 texScale);
 
 	// Še‘I‘ğ€–Ú‚Ì•ÏX
 	void CaseRetry();

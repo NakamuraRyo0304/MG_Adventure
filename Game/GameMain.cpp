@@ -98,15 +98,15 @@ void GameMain::Update(const DX::StepTimer& timer)
 	m_fade->Update();
 
 	// 時間を更新する
-	float time = static_cast<float>(timer.GetTotalSeconds());
+	float _time = static_cast<float>(timer.GetTotalSeconds());
 
 	// キー入力情報を取得する
-	auto kb = Keyboard::Get().GetState();
-	m_keyboardStateTracker->Update(kb);
+	auto _kb = Keyboard::Get().GetState();
+	m_keyboardStateTracker->Update(_kb);
 
 	// マウス入力情報を取得する
-	auto ms = Mouse::Get().GetState();
-	m_mouseStateTracker->Update(ms);
+	auto _ms = Mouse::Get().GetState();
+	m_mouseStateTracker->Update(_ms);
 
 	// 次のシーンが設定されていたらシーン切り替え
 	if (m_nextScene != SCENE::NONE && m_fade->GetEndFlag())
@@ -122,7 +122,7 @@ void GameMain::Update(const DX::StepTimer& timer)
 	if (m_nowScene != nullptr)
 	{
 		// シーンの更新処理
-		m_nowScene->Update(time, kb, ms);
+		m_nowScene->Update(_time, _kb, _ms);
 
 		// フェードの値をセット
 		m_nowScene->SetFadeValue(m_fade->GetFadeNum());
@@ -320,9 +320,9 @@ void GameMain::DeleteScene()
 /// <returns>なし</returns>
 void GameMain::CreateWindowDependentResources(const int& screenWidth, const int& screenHeight)
 {
-	DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();
-	ID3D11Device1* device = pDR->GetD3DDevice();
-	ID3D11DeviceContext1* context = pDR->GetD3DDeviceContext();
+	DX::DeviceResources* _pDR = DX::DeviceResources::GetInstance();
+	ID3D11Device1* _device = _pDR->GetD3DDevice();
+	ID3D11DeviceContext1* _context = _pDR->GetD3DDeviceContext();
 
 	// スクリーンサイズの設定
 	m_screenWidth = screenWidth;
@@ -335,11 +335,11 @@ void GameMain::CreateWindowDependentResources(const int& screenWidth, const int&
 	// マウス関連
 	m_mouse = std::make_unique<Mouse>();
 	m_mouseStateTracker = std::make_unique<Mouse::ButtonStateTracker>();
-	m_mouse->SetWindow(pDR->GetHwnd());
+	m_mouse->SetWindow(_pDR->GetHwnd());
 
 	// フェードオブジェクトの初期化
 	m_fade = std::make_unique<Fade>(DEFAULT_FADE_SPEED);
-	m_fade->Initialize(device, context);
+	m_fade->Initialize(_device, _context);
 }
 
 /// <summary>
@@ -360,8 +360,8 @@ void GameMain::LoadSaveData()
 		_file >> _input;
 
 		// データを格納する
-		m_allCoins   = _input["CoinNum"];
-		m_safeStages = _input["SafeStage"];
+		m_allCoins   = _input["CoinNum"];	// 所有コイン数
+		m_safeStages = _input["SafeStage"];	//未開放ステージ数
 
 		_file.close();
 	}
@@ -375,7 +375,7 @@ void GameMain::LoadSaveData()
 void GameMain::WriteSaveData()
 {
 	using Json = nlohmann::json;
-	const int JSON_INDENT = 4;	// インデント
+	const int _JSON_INDENT = 4;	// インデント
 
 	// JSONデータをファイルに書き込む
 	std::ofstream _file("Datas/Progress.json", std::ios::out);
@@ -387,12 +387,12 @@ void GameMain::WriteSaveData()
 		// データをセット
 		_output =
 		{
-			{"CoinNum" , m_allCoins},
-			{"SafeStage",m_safeStages}
+			 {"CoinNum", m_allCoins},		// 所有コイン数
+			 {"SafeStage",m_safeStages}		//未開放ステージ数
 		};
 
 		// インデントを揃えて書き出し
-		_file << _output.dump(JSON_INDENT);
+		_file << _output.dump(_JSON_INDENT);
 
 		_file.close();
 	}

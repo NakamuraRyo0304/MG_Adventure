@@ -139,6 +139,4 @@ private:
 
 	// マップセレクト
 	std::wstring MapSelect(int num);
-	// モデルの色を変更
-	void ChangeModelColors(std::unique_ptr<Model>& model,DirectX::SimpleMath::Vector4 color);
 };

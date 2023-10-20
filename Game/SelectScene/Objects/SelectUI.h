@@ -67,7 +67,7 @@ public:
 	void Finalize();
 
 private:
-	void DrawNumber(DirectX::SimpleMath::Vector2 scale);
+	void DrawNumber(DirectX::SimpleMath::Vector2 texScale);
 
 public:
 	// コイン数セッター

@@ -69,36 +69,36 @@ SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 	int width, int height, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
 	// 各行列の逆行列を算出
-	XMMATRIX revView, revProj, viewport, revViewport = XMMATRIX::XMMATRIX();
+	XMMATRIX _revView, _revProj, _vPort, _revVPort = XMMATRIX::XMMATRIX();
 
 	// 逆行列に変換
-	revView = XMMatrixInverse(nullptr, view);
-	revProj = XMMatrixInverse(nullptr, proj);
+	_revView = XMMatrixInverse(nullptr, view);
+	_revProj = XMMatrixInverse(nullptr, proj);
 
 	// ビューポートを初期化
-	viewport = XMMatrixIdentity();
+	_vPort = XMMatrixIdentity();
 
-	XMFLOAT4X4 matrix = XMFLOAT4X4::XMFLOAT4X4();
+	XMFLOAT4X4 _mat = XMFLOAT4X4::XMFLOAT4X4();
 
 	// スケールとオフセットを変換
-	matrix._11 =   width / 2.0f;
-	matrix._22 = -height / 2.0f;
-	matrix._41 =   width / 2.0f;
-	matrix._42 =  height / 2.0f;
+	_mat._11 =   width / 2.0f;
+	_mat._22 = -height / 2.0f;
+	_mat._41 =   width / 2.0f;
+	_mat._42 =  height / 2.0f;
 
 	// ビューポートに行列変換
-	viewport += XMLoadFloat4x4(&matrix);
+	_vPort += XMLoadFloat4x4(&_mat);
 
 	// ビューポートの逆行列を作成
-	revViewport = XMMatrixInverse(nullptr,viewport);
+	_revVPort = XMMatrixInverse(nullptr,_vPort);
 
 	// 逆変換
-	SimpleMath::Matrix tmp = revViewport * revProj * revView;
+	SimpleMath::Matrix _revTmp = _revVPort * _revProj * _revView;
 
-	SimpleMath::Vector3 value = XMVector3TransformCoord(
-		SimpleMath::Vector3(static_cast<float>(mx), static_cast<float>(my), fz), tmp);
+	SimpleMath::Vector3 _value = XMVector3TransformCoord(
+		SimpleMath::Vector3(static_cast<float>(mx), static_cast<float>(my), fz), _revTmp);
 
-	return value;
+	return _value;
 }
 
 /// <summary>
@@ -110,43 +110,43 @@ SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 SimpleMath::Vector3 RayCast::ShotRay(int mx, int my)
 {
 	// 最近、最遠、レイを定義
-	SimpleMath::Vector3 nearpos;
-	SimpleMath::Vector3 farpos;
-	SimpleMath::Vector3 ray;
+	SimpleMath::Vector3 _nearPos;
+	SimpleMath::Vector3 _farPos;
+	SimpleMath::Vector3 _ray;
 
 	// 最近距離をスクリーンからワールドに変換
-	nearpos = ConvertScreenToWorld(mx, my, 0.0f,
+	_nearPos = ConvertScreenToWorld(mx, my, 0.0f,
 		static_cast<int>(m_screenSize.x),  static_cast<int>(m_screenSize.y),
 		m_view, m_projection);
 
 	// 最遠距離をスクリーンからワールドに変換
-	farpos  = ConvertScreenToWorld(mx, my, 1.0f,
+	_farPos  = ConvertScreenToWorld(mx, my, 1.0f,
 		static_cast<int>(m_screenSize.x),  static_cast<int>(m_screenSize.y),
 		m_view, m_projection);
 
 	// レイの長さを求めて正規化する
-	ray = farpos - nearpos;
-	ray.Normalize();
+	_ray = _farPos - _nearPos;
+	_ray.Normalize();
 
 	// Y座標打消しの初期化
-	SimpleMath::Vector3 output = SimpleMath::Vector3::Zero;
+	SimpleMath::Vector3 _output = SimpleMath::Vector3::Zero;
 
 	// 床との交差が起きている場合は交点、起きていない場合は遠くの壁との交点を出力
-	if (ray.y <= 0)
+	if (_ray.y <= 0)
 	{
 		// 床との交点を求める
-		SimpleMath::Vector3 rDot = XMVector3Dot(     ray, SimpleMath::Vector3(0, 1, 0));
-		SimpleMath::Vector3 nDot = XMVector3Dot(-nearpos, SimpleMath::Vector3(0, 1, 0));
-  		output = nearpos + (nDot / rDot) * ray;
+		SimpleMath::Vector3 _rayDot  = XMVector3Dot(     _ray, SimpleMath::Vector3(0, 1, 0));
+		SimpleMath::Vector3 _nearDot = XMVector3Dot(-_nearPos, SimpleMath::Vector3(0, 1, 0));
+  		_output = _nearPos + (_nearDot / _rayDot) * _ray;
 
-		// Y軸移動なくすために0代入
-		// 本ゲームでは、マウスホイールでY軸移動
-		output.y = 0;
+		// Yで交点XZを見つけて、Y要素を消す
+		_output.y = 0;
 	}
 	else
 	{
-		output = farpos;
+		// 当たっていなければ最遠距離（実質的な無限）を出力
+		_output = _farPos;
 	}
 
-	return output;
+	return _output;
 }

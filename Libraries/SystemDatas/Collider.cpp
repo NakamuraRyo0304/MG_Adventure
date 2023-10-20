@@ -41,55 +41,55 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 	m_hitFace = HIT_FACE::NONE;
 
 	// 中心位置を計算
-	SimpleMath::Vector3 cS1 = sz1 / 2, cS2 = sz2 / 2;
+	SimpleMath::Vector3 _sizeCenter1 = sz1 / 2, _sizeCenter2 = sz2 / 2;
 
 	// 当たり判定を取る
-	if (!(moveObj->x - cS1.x < constObj.x + cS2.x &&
-		  moveObj->x + cS1.x > constObj.x - cS2.x &&
-		  moveObj->z - cS1.z < constObj.z + cS2.z &&
-		  moveObj->z + cS1.z > constObj.z - cS2.z &&
-		  moveObj->y - cS1.y < constObj.y + cS2.y &&
-		  moveObj->y + cS1.y > constObj.y - cS2.y)) return;
+	if (!(moveObj->x - _sizeCenter1.x < constObj.x + _sizeCenter2.x &&
+		  moveObj->x + _sizeCenter1.x > constObj.x - _sizeCenter2.x &&
+		  moveObj->z - _sizeCenter1.z < constObj.z + _sizeCenter2.z &&
+		  moveObj->z + _sizeCenter1.z > constObj.z - _sizeCenter2.z &&
+		  moveObj->y - _sizeCenter1.y < constObj.y + _sizeCenter2.y &&
+		  moveObj->y + _sizeCenter1.y > constObj.y - _sizeCenter2.y)) return;
 
 	// 当っている
 	is_hitFlag = true;
 
 	// 自身の幅と高さを計算
-	float lengthX = (moveObj->x + cS1.x) - (moveObj->x - cS1.x);
-	float lengthY = (moveObj->y + cS1.y) - (moveObj->y - cS1.y);
-	float lengthZ = (moveObj->z + cS1.z) - (moveObj->z - cS1.z);
+	float _lengthX = (moveObj->x + _sizeCenter1.x) - (moveObj->x - _sizeCenter1.x);
+	float _lengthY = (moveObj->y + _sizeCenter1.y) - (moveObj->y - _sizeCenter1.y);
+	float _lengthZ = (moveObj->z + _sizeCenter1.z) - (moveObj->z - _sizeCenter1.z);
 
 	// 各方向のめり込み具合
-	float leftRatio  = ((moveObj->x + cS1.x) - (constObj.x - cS2.x)) / lengthX;
-	float rightRatio = ((constObj.x + cS2.x) - (moveObj->x - cS1.x)) / lengthX;
+	float _leftRatio  = ((moveObj->x + _sizeCenter1.x) - (constObj.x - _sizeCenter2.x)) / _lengthX;
+	float _rightRatio = ((constObj.x + _sizeCenter2.x) - (moveObj->x - _sizeCenter1.x)) / _lengthX;
 
-	float upRatio    = ((moveObj->y + cS1.y) - (constObj.y - cS2.y)) / lengthY;
-	float downRatio  = ((constObj.y + cS2.y) - (moveObj->y - cS1.y)) / lengthY;
+	float _upRatio    = ((moveObj->y + _sizeCenter1.y) - (constObj.y - _sizeCenter2.y)) / _lengthY;
+	float _downRatio  = ((constObj.y + _sizeCenter2.y) - (moveObj->y - _sizeCenter1.y)) / _lengthY;
 
-	float frontRatio = ((moveObj->z + cS1.z) - (constObj.z - cS2.z)) / lengthZ;
-	float backRatio  = ((constObj.z + cS2.z) - (moveObj->z - cS1.z)) / lengthZ;
+	float _frontRatio = ((moveObj->z + _sizeCenter1.z) - (constObj.z - _sizeCenter2.z)) / _lengthZ;
+	float _backRatio  = ((constObj.z + _sizeCenter2.z) - (moveObj->z - _sizeCenter1.z)) / _lengthZ;
 
 	// 最大値を算出
-	float maxRatio = std::max({ leftRatio ,rightRatio ,upRatio ,downRatio ,frontRatio ,backRatio });
+	float _maxRatio = std::max({ _leftRatio ,_rightRatio ,_upRatio ,_downRatio ,_frontRatio ,_backRatio });
 
 	// 当っている位置を格納する
-	m_hitFace = maxRatio == leftRatio  ? HIT_FACE::LEFT  : m_hitFace; // 当った位置：左 or 変化なし
-	m_hitFace = maxRatio == rightRatio ? HIT_FACE::RIGHT : m_hitFace; // 当った位置：右 or 変化なし
-	m_hitFace = maxRatio == upRatio    ? HIT_FACE::UP    : m_hitFace; // 当った位置：上 or 変化なし
-	m_hitFace = maxRatio == downRatio  ? HIT_FACE::DOWN  : m_hitFace; // 当った位置：下 or 変化なし
-	m_hitFace = maxRatio == frontRatio ? HIT_FACE::FRONT : m_hitFace; // 当った位置：前 or 変化なし
-	m_hitFace = maxRatio == backRatio  ? HIT_FACE::BACK  : m_hitFace; // 当った位置：後 or 変化なし
+	m_hitFace = _maxRatio == _leftRatio  ? HIT_FACE::LEFT  : m_hitFace; // 当った位置：左 or 変化なし
+	m_hitFace = _maxRatio == _rightRatio ? HIT_FACE::RIGHT : m_hitFace; // 当った位置：右 or 変化なし
+	m_hitFace = _maxRatio == _upRatio    ? HIT_FACE::UP    : m_hitFace; // 当った位置：上 or 変化なし
+	m_hitFace = _maxRatio == _downRatio  ? HIT_FACE::DOWN  : m_hitFace; // 当った位置：下 or 変化なし
+	m_hitFace = _maxRatio == _frontRatio ? HIT_FACE::FRONT : m_hitFace; // 当った位置：前 or 変化なし
+	m_hitFace = _maxRatio == _backRatio  ? HIT_FACE::BACK  : m_hitFace; // 当った位置：後 or 変化なし
 
 	// 押し戻し処理をしない場合リターン
 	if (!is_pushMode) return;
 
 	// 当っている位置を格納し、押し戻し処理を行う
-	(*moveObj).x = maxRatio == leftRatio  ? constObj.x + (sz1.x + sz2.x) / 2 : (*moveObj).x; // 当った位置：左 or 変化なし
-	(*moveObj).x = maxRatio == rightRatio ? constObj.x - (sz1.x + sz2.x) / 2 : (*moveObj).x; // 当った位置：右 or 変化なし
-	(*moveObj).y = maxRatio == upRatio    ? constObj.y + (sz1.y + sz2.y) / 2 : (*moveObj).y; // 当った位置：上 or 変化なし
-	(*moveObj).y = maxRatio == downRatio  ? constObj.y - (sz1.y + sz2.y) / 2 : (*moveObj).y; // 当った位置：下 or 変化なし
-	(*moveObj).z = maxRatio == frontRatio ? constObj.z + (sz1.z + sz2.z) / 2 : (*moveObj).z; // 当った位置：前 or 変化なし
-	(*moveObj).z = maxRatio == backRatio  ? constObj.z - (sz1.z + sz2.z) / 2 : (*moveObj).z; // 当った位置：後 or 変化なし
+	(*moveObj).x = _maxRatio == _leftRatio  ? constObj.x + (sz1.x + sz2.x) / 2 : (*moveObj).x; // 当った位置：左 or 変化なし
+	(*moveObj).x = _maxRatio == _rightRatio ? constObj.x - (sz1.x + sz2.x) / 2 : (*moveObj).x; // 当った位置：右 or 変化なし
+	(*moveObj).y = _maxRatio == _upRatio    ? constObj.y + (sz1.y + sz2.y) / 2 : (*moveObj).y; // 当った位置：上 or 変化なし
+	(*moveObj).y = _maxRatio == _downRatio  ? constObj.y - (sz1.y + sz2.y) / 2 : (*moveObj).y; // 当った位置：下 or 変化なし
+	(*moveObj).z = _maxRatio == _frontRatio ? constObj.z + (sz1.z + sz2.z) / 2 : (*moveObj).z; // 当った位置：前 or 変化なし
+	(*moveObj).z = _maxRatio == _backRatio  ? constObj.z - (sz1.z + sz2.z) / 2 : (*moveObj).z; // 当った位置：後 or 変化なし
 }
 
 /// <summary>
@@ -146,30 +146,30 @@ void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1,
 	                                      float radius1, float radius2)
 {
 	// 二つの球の距離を計算
-	float distance = SimpleMath::Vector3::Distance(pos1, pos2);
+	float _distance = SimpleMath::Vector3::Distance(pos1, pos2);
 
 	// 二つの球の半径の和を計算
-	float sumOfRadius = radius1 + radius2;
+	float _sumOfRadius = radius1 + radius2;
 
 	// 二つの球の半径の和よりも二点間の距離が短かったら当っている判定にする
-	if (distance <= sumOfRadius)
+	if (_distance <= _sumOfRadius)
 	{
 		// 衝突した球の方向ベクトルを計算
-		SimpleMath::Vector3 collisionDirection = pos2 - pos1;
+		SimpleMath::Vector3 _collisionDirection = pos2 - pos1;
 
 		// 正規化する
-		collisionDirection.Normalize();
+		_collisionDirection.Normalize();
 
 		// 衝突した球の押し戻し距離を計算
-		float pushDistance = sumOfRadius - distance;
+		float _pushDistance = _sumOfRadius - _distance;
 
 		if (is_pushMode)
 		{
 			// 球1を押し戻す
-			pos1 -= collisionDirection * pushDistance / 2;
+			pos1 -= _collisionDirection * _pushDistance / 2;
 
 			// 球2を押し戻す
-			pos2 += collisionDirection * pushDistance / 2;
+			pos2 += _collisionDirection * _pushDistance / 2;
 		}
 
 		is_hitFlag = true;
@@ -206,7 +206,7 @@ bool Collider::AABBCollider::IsHitAABB2D(const SimpleMath::Vector2& pos1,
 	if (pos1.x - sz1.x / 2 < pos2.x + sz2.x / 2 &&
 		pos1.x + sz1.x / 2 > pos2.x - sz2.x / 2 &&
 		pos1.y - sz1.y / 2 < pos2.y + sz2.y / 2 &&
-		pos1.y + sz1.y / 2 > pos2.y - sz2.y / 2)return true;
+		pos1.y + sz1.y / 2 > pos2.y - sz2.y / 2) return true;
 
 	return false;
 }

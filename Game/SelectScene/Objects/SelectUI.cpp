@@ -32,10 +32,10 @@ SelectUI::SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* 
 	m_system->GetDrawSprite()->MakeSpriteBatch(context);
 
 	// 画像の登録
+	m_system->GetDrawSprite()->AddTextureData(L"Number",	 L"Resources/Textures/Number.dds",				   device);
 	m_system->GetDrawSprite()->AddTextureData(L"RightArrow", L"Resources/Textures/SELECT_INFO/RightArrow.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"LeftArrow",  L"Resources/Textures/SELECT_INFO/LeftArrow.dds",  device);
 	m_system->GetDrawSprite()->AddTextureData(L"CenterCoin", L"Resources/Textures/SELECT_INFO/TotalCoins.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Number",	 L"Resources/Textures/Number.dds",				   device);
 }
 
 /// <summary>
@@ -80,21 +80,21 @@ void SelectUI::Update(const bool& rightFlag, const bool& leftFlag)
 void SelectUI::Render(const int& selectNum, const int& maxNum)
 {
 	// 画面比率を計算
-	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
-	SimpleMath::Vector2 coinsScale = m_windowSize / FULL_SCREEN_SIZE / 2;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _coinsScale = m_windowSize / FULL_SCREEN_SIZE / 2;
 
 	//-------------------------------------------------------------------------------------//
 
 	// 総獲得コイン数を表示
 	m_system->GetDrawSprite()->DrawTexture(
 		L"CenterCoin",
-		SimpleMath::Vector2{ 0.0f ,0.0f } * scale,
+		SimpleMath::Vector2{ 0.0f ,0.0f } * _scale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		coinsScale,
+		_coinsScale,
 		SimpleMath::Vector2::Zero
 	);
 
-	DrawNumber(coinsScale);
+	DrawNumber(_coinsScale);
 
 	//-------------------------------------------------------------------------------------//
 
@@ -102,9 +102,9 @@ void SelectUI::Render(const int& selectNum, const int& maxNum)
 	{
 		m_system->GetDrawSprite()->DrawTexture(
 			L"LeftArrow",
-			SimpleMath::Vector2{ 20.0f ,360.0f } * scale,
+			SimpleMath::Vector2{ 20.0f ,360.0f } * _scale,
 			SimpleMath::Color{ 1.0f, 1.0f, 1.0f, m_leftAlpha },
-			scale,
+			_scale,
 			SimpleMath::Vector2::Zero
 		);
 	}
@@ -112,9 +112,9 @@ void SelectUI::Render(const int& selectNum, const int& maxNum)
 	{
 		m_system->GetDrawSprite()->DrawTexture(
 			L"RightArrow",
-			SimpleMath::Vector2{ 1650.0f,360.0f} * scale,
+			SimpleMath::Vector2{ 1650.0f,360.0f} * _scale,
 			SimpleMath::Color{ 1.0f, 1.0f, 1.0f, m_rightAlpha },
-			scale,
+			_scale,
 			SimpleMath::Vector2::Zero
 		);
 	}
@@ -133,45 +133,45 @@ void SelectUI::Finalize()
 /// <summary>
 /// 数字の描画
 /// </summary>
-/// <param name="scale">テクスチャのスケール</param>
+/// <param name="texScale">テクスチャのスケール</param>
 /// <returns>なし</returns>
-void SelectUI::DrawNumber(SimpleMath::Vector2 scale)
+void SelectUI::DrawNumber(SimpleMath::Vector2 texScale)
 {
 	// 画面サイズ
-	SimpleMath::Vector2 wScale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// 切り取り位置設定
-	RECT_U oneRec = { m_oneCoins * NUM_WIDTH, 0,m_oneCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
-	RECT_U tenRec = { m_tenCoins * NUM_WIDTH, 0,m_tenCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
-	RECT_U hanRec = { m_hanCoins * NUM_WIDTH, 0,m_hanCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
+	RECT_U _oneRec = { m_oneCoins * NUM_WIDTH, 0,m_oneCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
+	RECT_U _tenRec = { m_tenCoins * NUM_WIDTH, 0,m_tenCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
+	RECT_U _hanRec = { m_hanCoins * NUM_WIDTH, 0,m_hanCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
 
-	float positionY = 45.0f + sinf(m_moveY * MOVE_SPEED) * MOVE_WIDTH;
+	float _positionY = 45.0f + sinf(m_moveY * MOVE_SPEED) * MOVE_WIDTH;
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 450.0f ,positionY } * wScale,
+		SimpleMath::Vector2{ 450.0f ,_positionY } * _scale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale,
+		texScale,
 		SimpleMath::Vector2::Zero,
-		hanRec
+		_hanRec
 	);
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 500.0f ,positionY } * wScale,
+		SimpleMath::Vector2{ 500.0f ,_positionY } * _scale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale,
+		texScale,
 		SimpleMath::Vector2::Zero,
-		tenRec
+		_tenRec
 	);
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 550.0f ,positionY } * wScale,
+		SimpleMath::Vector2{ 550.0f ,_positionY } * _scale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale,
+		texScale,
 		SimpleMath::Vector2::Zero,
-		oneRec
+		_oneRec
 	);
 
 }

@@ -36,21 +36,21 @@ ModelFactory::~ModelFactory()
 std::unique_ptr<DX11::Model> ModelFactory::GetCreateModel(ID3D11Device1* device, const wchar_t* filename)
 {
 	// モデルの作成(作成時のみの使い捨て)
-	std::unique_ptr<EffectFactory> fx =
+	std::unique_ptr<EffectFactory> _fx =
 		std::make_unique<EffectFactory>(device);
 
 	// ディレクトリの設定 (ここにモデルがあるパスを設定)
-	fx->SetDirectory(L"Resources/Models");
+	_fx->SetDirectory(L"Resources/Models");
 
 	// モデルデータの読み込み
-	std::unique_ptr<DX11::Model> model = Model::CreateFromCMO(
+	std::unique_ptr<DX11::Model> _model = Model::CreateFromCMO(
 		device,
 		filename,
-		*fx
+		*_fx
 	);
 
 	// 作成したモデルを返却
-	return model;
+	return _model;
 }
 
 /// <summary>

@@ -18,11 +18,11 @@ SoundManager::SoundManager()
 	: m_masterVolume{1.0f}		// マスター音量
 	, m_volumes{ 1.0f }			// 個々の音量
 {
-	AUDIO_ENGINE_FLAGS eflags = AudioEngine_Default;
+	AUDIO_ENGINE_FLAGS _eFlags = AudioEngine_Default;
 #ifdef _DEBUG
-	eflags |= AudioEngine_Debug;
+	_eFlags |= AudioEngine_Debug;
 #endif
-	m_audioEngine = std::make_unique<AudioEngine>(eflags);
+	m_audioEngine = std::make_unique<AudioEngine>(_eFlags);
 
 	m_waveBank = std::make_unique<WaveBank>(m_audioEngine.get(), L"Resources/Sounds/skbx.xwb");
 

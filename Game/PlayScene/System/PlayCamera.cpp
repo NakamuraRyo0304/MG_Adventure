@@ -57,15 +57,15 @@ const SimpleMath::Matrix& PlayCamera::CreateView()
 void PlayCamera::CreateProjection()
 {
 	// 画角
-	float fieldOfView = XMConvertToRadians(ANGLE);
+	float _fieldOfView = XMConvertToRadians(ANGLE);
 
 	// 画面縦横比
-	float aspectRatio = m_screenSize.x / m_screenSize.y;
+	float _aspectRatio = m_screenSize.x / m_screenSize.y;
 
 	// カメラのレンズの作成
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		fieldOfView,		// カメラの画角
-		aspectRatio,		// アスペクト比
+		_fieldOfView,		// カメラの画角
+		_aspectRatio,		// アスペクト比
 		NEAR_PLANE,			// 最近距離
 		FAR_PLANE			// 最遠距離
 	);

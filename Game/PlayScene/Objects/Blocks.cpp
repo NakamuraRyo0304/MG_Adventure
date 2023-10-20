@@ -57,13 +57,13 @@ Blocks::~Blocks()
 void Blocks::Initialize(int stageNum)
 {
 	// ファイル名の宣言
-	std::wstring filePath = L"";
+	std::wstring _filePath = L"";
 
 	// ステージセレクト
-	filePath = MapSelect(stageNum);
+	_filePath = MapSelect(stageNum);
 
 	// マップの読み込み
-	m_mapLoad->LoadMap(filePath);
+	m_mapLoad->LoadMap(_filePath);
 
 	// マップの格納
 	m_mapObj = m_mapLoad->GetMapData();
@@ -171,107 +171,115 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 	SimpleMath::Matrix view, SimpleMath::Matrix proj, float timer)
 {
 	// ワールド座標
-	SimpleMath::Matrix world, rotMat, revScaleMat;
+	SimpleMath::Matrix _world, _rotMat, _revScaleMat;
 
 	// ライティング設定
-	std::function<void(IEffect* effect)> lightSetting;
+	std::function<void(IEffect* effect)> _lightSetting;
 
 	// 雲以外のオブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
 		// 移動行列
-		world =	SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
 		// 回転行列
-		rotMat = SimpleMath::Matrix::CreateRotationY(timer);
+		_rotMat = SimpleMath::Matrix::CreateRotationY(timer);
 
 		// スケール行列
-		float restrictedTimer = fmodf(timer, 2 * XM_PI);
-		revScaleMat = SimpleMath::Matrix::CreateScale(sinf(restrictedTimer));
+		float _revScaleTimer = fmodf(timer, 2 * XM_PI);
+		_revScaleMat = SimpleMath::Matrix::CreateScale(sinf(_revScaleTimer));
 
 		// ライトの設定
-		SimpleMath::Vector3 lightDirection(1.0f, -1.0f, -1.0f);
+		SimpleMath::Vector3 _lightDir(1.0f, -1.0f, -1.0f);
 
 		// ビュー行列からカメラの回転を取得
-		SimpleMath::Matrix cameraRotation;
+		SimpleMath::Matrix _cameraRot;
 
 		// ビュー行列を逆変換
-		cameraRotation = view.Invert();
+		_cameraRot = view.Invert();
 
 		// 移動量をなくす
-		cameraRotation._41 = 0.0f;
-		cameraRotation._42 = 0.0f;
-		cameraRotation._43 = 0.0f;
+		_cameraRot._41 = 0.0f;
+		_cameraRot._42 = 0.0f;
+		_cameraRot._43 = 0.0f;
 
 		// ライトの方向をカメラの回転に逆向きにする
-		lightDirection = SimpleMath::Vector3::TransformNormal(lightDirection, cameraRotation);
+		_lightDir = SimpleMath::Vector3::TransformNormal(_lightDir, _cameraRot);
 		SimpleMath::Color lightColor(0.3f, 0.3f, 0.3f, 1.0f);
 
-		lightSetting= [&](IEffect* effect)
+		_lightSetting = [&](IEffect* effect)
 		{
+			// ベーシックエフェクト
+			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (_basicEffect)
+			{
+				// アンビエントライトカラーを設定
+				_basicEffect->SetAmbientLightColor(SimpleMath::Color(0.2f, 0.2f, 0.2f));
+			}
+
 			// ライト
-			auto lights = dynamic_cast<IEffectLights*>(effect);
-			if (lights)
+			auto _lights = dynamic_cast<IEffectLights*>(effect);
+			if (_lights)
 			{
 				// ライトオン
-				lights->SetLightEnabled(0, true);
-				lights->SetLightEnabled(1, true);
-				lights->SetLightEnabled(2, true);
+				_lights->SetLightEnabled(0, true);
+				_lights->SetLightEnabled(1, true);
+				_lights->SetLightEnabled(2, true);
 
 				// ライトの方向を設定
-				lights->SetLightDirection(0, lightDirection);
-				lights->SetLightDirection(1, lightDirection);
-				lights->SetLightDirection(2, lightDirection);
+				_lights->SetLightDirection(0, _lightDir);
+				_lights->SetLightDirection(1, _lightDir);
+				_lights->SetLightDirection(2, _lightDir);
 
 				// ライトの色を暗めのグレーに設定
-				lights->SetLightDiffuseColor(0, lightColor);
-				lights->SetLightDiffuseColor(1, lightColor);
-				lights->SetLightDiffuseColor(2, lightColor);
+				_lights->SetLightDiffuseColor(0, lightColor);
+				_lights->SetLightDiffuseColor(1, lightColor);
+				_lights->SetLightDiffuseColor(2, lightColor);
 			}
 
 			// フォグ
-			auto fog = dynamic_cast<IEffectFog*>(effect);
-			if (fog)
+			auto _fog = dynamic_cast<IEffectFog*>(effect);
+			if (_fog)
 			{
 				// 霧を使うシェーダーに切り替える
-				fog->SetFogEnabled(true);
+				_fog->SetFogEnabled(true);
 
 				// フォグの色を決める
-				fog->SetFogColor(Colors::White);
+				_fog->SetFogColor(Colors::White);
 
 				// スタート
-				fog->SetFogStart(-50.0f);
+				_fog->SetFogStart(-50.0f);
 
 				// エンド
-				fog->SetFogEnd(150.0f);
+				_fog->SetFogEnd(150.0f);
 			}
 		};
 
 		// 草ブロック
 		if (m_mapObj[i].id == MAPSTATE::GRASS)
 		{
-			m_grassModel->UpdateEffects(lightSetting);
-			m_grassModel->Draw(context, states, world, view, proj);
+			m_grassModel->UpdateEffects(_lightSetting);
+			m_grassModel->Draw(context, states, _world, view, proj);
 		}
 
 		// コインブロック
 		if (m_mapObj[i].id == MAPSTATE::COIN)
 		{
-			m_coinModel->UpdateEffects(lightSetting);
-			m_coinModel->Draw(context, states, rotMat * world, view, proj);
+			m_coinModel->UpdateEffects(_lightSetting);
+			m_coinModel->Draw(context, states, _rotMat * _world, view, proj);
 		}
 
 		// 雲のリセットポイント
 		if (m_mapObj[i].id == MAPSTATE::RESET)
 		{
 			// 反転防止
-			if (sinf(restrictedTimer) < 0.0f)
+			if (sinf(_revScaleTimer) < 0.0f)
 			{
-				revScaleMat *= SimpleMath::Matrix::CreateScale(1.0f, -1.0f,1.0f);
+				_revScaleMat *= SimpleMath::Matrix::CreateScale(1.0f, -1.0f,1.0f);
 			}
 
-			m_resetPtModel->UpdateEffects(lightSetting);
-			m_resetPtModel->Draw(context, states, revScaleMat * rotMat * world, view, proj);
+			m_resetPtModel->UpdateEffects(_lightSetting);
+			m_resetPtModel->Draw(context, states, _revScaleMat * _rotMat * _world, view, proj);
 		}
 	}
 
@@ -281,12 +289,12 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		if (m_mapObj[i].id != MAPSTATE::CLOUD) continue;
 
 		// 移動行列
-		world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
-		m_cloudModel->UpdateEffects(lightSetting);
-		m_cloudModel->Draw(context, states, rotMat * world, view, proj, false, [&]()
+		m_cloudModel->UpdateEffects(_lightSetting);
+		m_cloudModel->Draw(context, states, _rotMat * _world, view, proj, false, [&]()
 			{
-				context->OMSetBlendState(states.NonPremultiplied(), nullptr, 0xFFFFFFFF);
+				context->OMSetBlendState(states.NonPremultiplied(), nullptr, 0xffffffff);
 				context->OMSetDepthStencilState(states.DepthDefault(), 0);
 				context->PSSetShader(m_psCloud.Get(), nullptr, 0);
 			}
@@ -346,9 +354,9 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 void Blocks::CreateShader(ID3D11Device1* device)
 {
 	// ピクセルシェーダー
-	std::vector<uint8_t> psCloud = DX::ReadData(L"Resources/Shaders/PS_Cloud.cso");
+	std::vector<uint8_t> _psCloud = DX::ReadData(L"Resources/Shaders/PS_Cloud.cso");
 	DX::ThrowIfFailed(
-		device->CreatePixelShader(psCloud.data(), psCloud.size(), nullptr,
+		device->CreatePixelShader(_psCloud.data(), _psCloud.size(), nullptr,
 			m_psCloud.ReleaseAndGetAddressOf()));
 }
 
@@ -434,56 +442,34 @@ void Blocks::RestoreCloudPosition()
 /// <returns>ファイルパス</returns>
 std::wstring Blocks::MapSelect(int num)
 {
-	std::wstring filePath;
+	std::wstring _filePath;
 
 	// TODO: [ステージ番号]マップ追加はここから！
 	// マップの変更
 	switch (num)
 	{
 	case 0:
-		filePath = L"Resources/Maps/StageEdit.csv";
+		_filePath = L"Resources/Maps/StageEdit.csv";
 		break;
 	case 1:
-		filePath = L"Resources/Maps/Stage1.csv";
+		_filePath = L"Resources/Maps/Stage1.csv";
 		break;
 	case 2:
-		filePath = L"Resources/Maps/Stage2.csv";
+		_filePath = L"Resources/Maps/Stage2.csv";
 		break;
 	case 3:
-		filePath = L"Resources/Maps/Stage3.csv";
+		_filePath = L"Resources/Maps/Stage3.csv";
 		break;
 	case 4:
-		filePath = L"Resources/Maps/Stage4.csv";
+		_filePath = L"Resources/Maps/Stage4.csv";
 		break;
 	case 5:
-		filePath = L"Resources/Maps/Stage5.csv";
+		_filePath = L"Resources/Maps/Stage5.csv";
 		break;
 	default:
-		filePath = L"NoStage";
+		_filePath = L"NoStage";
 		break;
 	}
 
-	return filePath;
-}
-
-/// <summary>
-/// モデルの色を変更
-/// </summary>
-/// <param name="model">モデルデータ</param>
-/// <param name="color">色情報</param>
-/// <returns>なし</returns>
-void Blocks::ChangeModelColors(std::unique_ptr<Model>& model, SimpleMath::Vector4 color)
-{
-	model->UpdateEffects([&](IEffect* effect)
-		{
-			// ベーシックエフェクトを宣言
-			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-
-			if (basicEffect)
-			{
-				// 色を変更する
-				basicEffect->SetDiffuseColor(color);
-			}
-		}
-	);
+	return _filePath;
 }

@@ -55,14 +55,14 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 	// 画像の追加
 	m_textures.emplace(key, path);
 
-	for (std::map<const wchar_t*, const wchar_t*>::const_iterator it = m_textures.begin(); it != m_textures.end(); ++it)
+	for (std::map<const wchar_t*, const wchar_t*>::const_iterator _it = m_textures.begin(); _it != m_textures.end(); ++_it)
 	{
 		// 画像の登録
 		CreateDDSTextureFromFile(
-			device,
-			it->second,	// テクスチャのパス
-			nullptr,
-			m_SRV[it->first].ReleaseAndGetAddressOf() // 対応するキー番号に登録
+			device,										// デバイスポインタ
+			_it->second,								// テクスチャのパス
+			nullptr,									// 特性は識別しない
+			m_SRV[_it->first].ReleaseAndGetAddressOf()	// 対応するキー番号に登録
 		);
 	}
 
@@ -86,18 +86,18 @@ void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos,
 	m_spriteBatch->Begin();
 
 	// 描画したいキー番号に対応するマップをイテレータに格納
-	std::map<const wchar_t*, const wchar_t*>::const_iterator it = m_textures.find(key);
+	std::map<const wchar_t*, const wchar_t*>::const_iterator _it = m_textures.find(key);
 
 	// 回転量を格納
-	std::map<const wchar_t*, float>::const_iterator rt = m_rotate.find(key);
+	std::map<const wchar_t*, float>::const_iterator _rt = m_rotate.find(key);
 
 	// 画像の描画
 	m_spriteBatch->Draw(
-		m_SRV[it->first].Get(),					// 対応するイテレータの画像を描画
+		m_SRV[_it->first].Get(),				// 対応するイテレータの画像を描画
 		pos,									// 表示する位置
 		&rect,								    // 切り取り位置
 		color,									// 描画色
-		m_rotate[it->first],					// 回転
+		m_rotate[_it->first],					// 回転
 		origin,									// 画像の原点
 		rate,									// 拡大率
 		SpriteEffects_None, 0.0f				// 描画レイヤー
@@ -115,7 +115,7 @@ void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos,
 void DrawSprite::CreateRotation(const wchar_t* key, const float& rotate)
 {
 	// 回転量を格納
-	std::map<const wchar_t*, float>::iterator rt = m_rotate.find(key);
+	std::map<const wchar_t*, float>::iterator _rt = m_rotate.find(key);
 
-	rt->second = rotate;
+	_rt->second = rotate;
 }

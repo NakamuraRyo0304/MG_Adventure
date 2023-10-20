@@ -3,6 +3,7 @@
  *	@Brief	デバッグ用グリッド。
  *	@Date	2021-02-09
  *  @Author T.Matsui
+ *  @Editor NakamuraRyo
  */
 
 #pragma once
@@ -17,19 +18,19 @@ namespace Debug
 	class GridFloor
 	{
 		// エフェクト
-		std::unique_ptr<DirectX::BasicEffect> mBasicEffect;
+		std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 
 		// プリミティブバッチ
-		std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> mPrimitiveBatch;
+		std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 
 		// インプットレイアウト
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> mInputLayout;
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 		// 床の一辺のサイズ
 		float mSizeX, mSizeY;
 
 		// 分割数
-		int mDivsX, mDivsY;
+		int m_divsX, m_divsY;
 
 	public:
 		// コンストラクタ

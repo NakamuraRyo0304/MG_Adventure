@@ -38,6 +38,8 @@ private:
 	// ƒƒS‚ÌŠJn‚Ì‰‰o
 	float m_logoMoveY;
 	const float END_MOVE_POS = 1.0f;
+	const float LOGO_CHANGE_SCALE = 1.05f;
+
 private:
 
 	// UI

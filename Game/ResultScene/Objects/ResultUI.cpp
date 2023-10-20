@@ -50,12 +50,12 @@ ResultUI::ResultUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* 
 	m_system->GetDrawSprite()->MakeSpriteBatch(context);
 
 	// 画像を登録
+	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds",      device);
+	m_system->GetDrawSprite()->AddTextureData(L"RFont",  L"Resources/Textures/ResultFonts.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"BLIND",  L"Resources/Textures/ResultBack.dds",  device);
 	m_system->GetDrawSprite()->AddTextureData(L"RETRY",  L"Resources/Textures/FONT/RETRY.dds",  device);
 	m_system->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"TITLE",  L"Resources/Textures/FONT/TITLE.dds",  device);
-	m_system->GetDrawSprite()->AddTextureData(L"RFont",  L"Resources/Textures/ResultFonts.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"BLIND",  L"Resources/Textures/ResultBack.dds",  device);
-	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds",      device);
 }
 
 /// <summary>
@@ -77,13 +77,13 @@ void ResultUI::Initialize(const SimpleMath::Vector2& windowSize)
 {
 	m_windowSize = windowSize;
 
-	SimpleMath::Vector2 rate = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// 文字の座標の初期化
-	float commonY = FULL_SCREEN_SIZE.y - 200.0f;
-	m_retryPos  = SimpleMath::Vector2{ FONT_WIDTH / 2, commonY };
-	m_selectPos = SimpleMath::Vector2{ m_retryPos.x + FONT_WIDTH, commonY };
-	m_titlePos  = SimpleMath::Vector2{ m_selectPos.x + FONT_WIDTH, commonY };
+	float _commonY = FULL_SCREEN_SIZE.y - NUM_SIZE * 2;
+	m_retryPos  = SimpleMath::Vector2{ FONT_WIDTH / 2, _commonY };
+	m_selectPos = SimpleMath::Vector2{ m_retryPos.x + FONT_WIDTH, _commonY };
+	m_titlePos  = SimpleMath::Vector2{ m_selectPos.x + FONT_WIDTH, _commonY };
 }
 
 /// <summary>
@@ -125,7 +125,7 @@ void ResultUI::Update(const float& timer, const int& clearTime)
 void ResultUI::Render()
 {
 	// 画面比率を計算
-	SimpleMath::Vector2 scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	//-------------------------------------------------------------------------------------//
 
@@ -134,7 +134,7 @@ void ResultUI::Render()
 		L"BLIND",									// 登録キー
 		SimpleMath::Vector2::Zero,					// 座標
 		{ 1.0f,1.0f,1.0f,0.3f },					// 色
-		1.0f * scale,								// 拡大率
+		1.0f * _scale,								// 拡大率
 		SimpleMath::Vector2::Zero					// 中心位置
 	);
 
@@ -143,7 +143,7 @@ void ResultUI::Render()
 		L"RFont",
 		SimpleMath::Vector2::Zero,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		DEFAULT_RATE * scale,
+		DEFAULT_RATE * _scale,
 		SimpleMath::Vector2::Zero
 	);
 
@@ -153,23 +153,23 @@ void ResultUI::Render()
 	// シーン選択文字(リトライ、セレクト、タイトル)
 	m_system->GetDrawSprite()->DrawTexture(
 		L"RETRY",
-		m_retryPos * scale,
+		m_retryPos * _scale,
 		{ 1.0f, 1.0f, 1.0f, m_retryAlpha },
-		IMAGE_RATE * scale * m_retryScale,
+		IMAGE_RATE * _scale * m_retryScale,
 		SimpleMath::Vector2::Zero
 	);
 	m_system->GetDrawSprite()->DrawTexture(
 		L"SELECT",
-		m_selectPos * scale,
+		m_selectPos * _scale,
 		{ 1.0f, 1.0f, 1.0f, m_selectAlpha },
-		IMAGE_RATE * scale * m_selectScale,
+		IMAGE_RATE * _scale * m_selectScale,
 		SimpleMath::Vector2::Zero
 	);
 	m_system->GetDrawSprite()->DrawTexture(
 		L"TITLE",
-		m_titlePos * scale,
+		m_titlePos * _scale,
 		{ 1.0f, 1.0f, 1.0f, m_titleAlpha },
-		IMAGE_RATE * scale * m_titleScale,
+		IMAGE_RATE * _scale * m_titleScale,
 		SimpleMath::Vector2::Zero
 	);
 }
@@ -187,59 +187,59 @@ void ResultUI::Finalize()
 /// <summary>
 /// 数字の描画
 /// </summary>
-/// <param name="scale">テクスチャのスケール</param>
+/// <param name="texScale">テクスチャのスケール</param>
 /// <returns>なし</returns>
-void ResultUI::DrawNumber(SimpleMath::Vector2 scale)
+void ResultUI::DrawNumber(SimpleMath::Vector2 texScale)
 {
 	// 画面サイズ比率
-	SimpleMath::Vector2 wScale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	//-------------------------------------------------------------------------------------//
 	// クリア時間
 	// 切り取り位置設定
-	RECT_U oneRec = { m_oneTime * 100, 0,m_oneTime * 100 + 100, 100 };
-	RECT_U tenRec = { m_tenTime * 100, 0,m_tenTime * 100 + 100, 100 };
+	RECT_U _oneRec = { m_oneTime * 100, 0,m_oneTime * 100 + 100, 100 };
+	RECT_U _tenRec = { m_tenTime * 100, 0,m_tenTime * 100 + 100, 100 };
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 1000.0f ,290.0f } * wScale,
+		SimpleMath::Vector2{ 1000.0f ,290.0f } * _scale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale * wScale,
+		texScale * _scale,
 		SimpleMath::Vector2::Zero,
-		oneRec
+		_oneRec
 	);
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 860.0f ,290.0f } * wScale,
+		SimpleMath::Vector2{ 860.0f ,290.0f } * _scale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale * wScale,
+		texScale * _scale,
 		SimpleMath::Vector2::Zero,
-		tenRec
+		_tenRec
 	);
 
 	//-------------------------------------------------------------------------------------//
 	// コインの数
 	// 切り取り位置設定
-	oneRec = { m_oneCoins * 100, 0,m_oneCoins * 100 + 100, 100 };
-	tenRec = { m_tenCoins * 100, 0,m_tenCoins * 100 + 100, 100 };
+	_oneRec = { m_oneCoins * 100, 0,m_oneCoins * 100 + 100, 100 };
+	_tenRec = { m_tenCoins * 100, 0,m_tenCoins * 100 + 100, 100 };
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 1000.0f ,700.0f } * wScale,
+		SimpleMath::Vector2{ 1000.0f ,700.0f } * _scale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale * wScale,
+		texScale * _scale,
 		SimpleMath::Vector2::Zero,
-		oneRec
+		_oneRec
 	);
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 860.0f ,700.0f } * wScale,
+		SimpleMath::Vector2{ 860.0f ,700.0f } * _scale,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale * wScale,
+		texScale * _scale,
 		SimpleMath::Vector2::Zero,
-		tenRec
+		_tenRec
 	);
 }
 

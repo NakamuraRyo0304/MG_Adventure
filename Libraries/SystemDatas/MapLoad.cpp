@@ -66,43 +66,43 @@ bool MapLoad::LoadMap(std::wstring filename)
 	}
 
 	// ファイルを開く
-	std::ifstream ifs(m_filename);
+	std::ifstream _ifs(m_filename);
 
-	if (!ifs) return false;
+	if (!_ifs) return false;
 
-	std::string line;
+	std::string _line;
 
 	// データがなくなるまで格納
-	for (; std::getline(ifs, line); )
+	for (; std::getline(_ifs, _line); )
 	{
 		// カンマを空白に変更
-		std::string tmp = std::regex_replace(line, std::regex(","), " ");
+		std::string _tmpDatas = std::regex_replace(_line, std::regex(","), " ");
 
 		// 空白で分割する
-		std::istringstream iss(tmp);
+		std::istringstream _iss(_tmpDatas);
 
-		Object obj;
+		Object _obj;
 
 		// マップステータスID
-		if (!(iss >> obj.id))
+		if (!(_iss >> _obj.id))
 		{
-			ifs.close();
+			_ifs.close();
 			m_mapData.clear();
 		}
 
 		// 座標情報
-		if (!(iss >> obj.position.x) || !(iss >> obj.position.y) || !(iss >> obj.position.z))
+		if (!(_iss >> _obj.position.x) || !(_iss >> _obj.position.y) || !(_iss >> _obj.position.z))
 		{
-			ifs.close();
+			_ifs.close();
 			m_mapData.clear();
 		}
 
 		// 読み込んだデータを格納する
-		m_mapData.push_back(obj);
+		m_mapData.push_back(_obj);
 	}
 
 	// 開いたファイルを閉じる
-	ifs.close();
+	_ifs.close();
 
 	return true;
 }

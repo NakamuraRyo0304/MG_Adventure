@@ -95,19 +95,19 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_texName[MAPSTATE::NONE]    = L"Delete";
 
 	// 比率を計算
-	float span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
+	float _span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
 
 	// 座標情報
-	m_openTexPos	   = {  80 * span , 80 * span};
-	m_saveTexPos       = { 218 * span , 80 * span};
-	m_cameraTexPos     = { 356 * span , 80 * span};
-	m_backTexPos	   = { m_windowSize.x - (244 * span)  ,80 * span};
-	m_toolButtonTexPos = { m_windowSize.x - (96 * span)  ,80 * span};
+	m_openTexPos	   = {  80 * _span , 80 * _span};
+	m_saveTexPos       = { 218 * _span , 80 * _span};
+	m_cameraTexPos     = { 356 * _span , 80 * _span};
+	m_backTexPos	   = { m_windowSize.x - (244 * _span)  ,80 * _span};
+	m_toolButtonTexPos = { m_windowSize.x - (96 * _span)  ,80 * _span};
 
 	// 設置ブロックアイコン
 	for (int i = 0; i < MAPSTATE::LENGTH; i++)
 	{
-		m_imagePos[i] = { 545 * span + (192 * span * i) , 80 * span};
+		m_imagePos[i] = { 545 * _span + (192 * _span * i) , 80 * _span};
 		is_boxState[i] = false;
 		m_boxHover[i] = 0.0f;
 	}
@@ -131,14 +131,14 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 void UserInterface::Update(Mouse::State& mouseState)
 {
 	// ツールバー表示切り替えアイコンをクリック
-	bool tool = m_imageHitter.IsHitAABB2D(
+	bool _tool = m_imageHitter.IsHitAABB2D(
 		{ (float)mouseState.x,(float)mouseState.y },		 // マウスの位置
 		{ m_toolButtonTexPos.x,m_toolButtonTexPos.y },	 	 // 画像の位置
 		SimpleMath::Vector2{ 5.0f }, 						 // サイズ
 		SimpleMath::Vector2{ 80.0f });						 // サイズ
 
 	// ツールを表示するフラグを切り替え
-	if (tool && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (_tool && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_toolFlag = !is_toolFlag;
 	}
@@ -150,14 +150,14 @@ void UserInterface::Update(Mouse::State& mouseState)
 	ChangeState(mouseState);
 
 	// セレクトに戻るボタンをクリック
-	bool back = m_imageHitter.IsHitAABB2D(
+	bool _back = m_imageHitter.IsHitAABB2D(
 		{ (float)mouseState.x,(float)mouseState.y },		 // マウスの位置
 		{ m_backTexPos.x,m_backTexPos.y },	 				 // 画像の位置
 		SimpleMath::Vector2{ 5.0f }, 						 // サイズ
 		SimpleMath::Vector2{ 80.0f });						 // サイズ
 
 	// ツールを表示するフラグを切り替え
-	if (back && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (_back && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_backFlag = true;
 	}
@@ -177,14 +177,14 @@ void UserInterface::Update(Mouse::State& mouseState)
 		SimpleMath::Vector2{ 100.0f });				// サイズ
 
 	// カメラアイコンをクリック
-	bool camera = m_imageHitter.IsHitAABB2D(
+	bool _camera = m_imageHitter.IsHitAABB2D(
 		{ (float)mouseState.x,(float)mouseState.y }, // マウスの位置
 		{ m_cameraTexPos.x,m_cameraTexPos.y },	 	 // 画像の位置
 		SimpleMath::Vector2{ 5.0f }, 				 // サイズ
 		SimpleMath::Vector2{ 100.0f });				 // サイズ
 
 	// カメラ移動モード切り替え
-	if (camera && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (_camera && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_cameraFlag = !is_cameraFlag;
 		m_system->GetCamera()->SetEagleMode(is_cameraFlag);
@@ -199,7 +199,7 @@ void UserInterface::Update(Mouse::State& mouseState)
 void UserInterface::Render()
 {
 	// 画像の拡大率をウィンドウをもとに計算
-	SimpleMath::Vector2 imageScale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _imageScale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// ツールフラグがTrueならツールバーを表示する
 	if (is_toolFlag)
@@ -207,9 +207,9 @@ void UserInterface::Render()
 		// ツールバー
 		m_system->GetDrawSprite()->DrawTexture(
 			L"ToolBar",
-			SimpleMath::Vector2::Zero,			// 座標
-			{ 1.0f,1.0f,1.0f,0.7f },			// 色
-			imageScale,							// 拡大率
+			SimpleMath::Vector2::Zero,				// 座標
+			{ 1.0f,1.0f,1.0f,0.7f },				// 色
+			_imageScale,							// 拡大率
 			SimpleMath::Vector2::Zero
 		);
 
@@ -220,7 +220,7 @@ void UserInterface::Render()
 				L"Open",							// 登録キー
 				m_openTexPos,						// 座標
 				{ 1.0f,1.0f,1.0f,1.0f },			// 色
-				IMAGE_RATE * imageScale,			// 拡大率
+				IMAGE_RATE * _imageScale,			// 拡大率
 				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 			);
 		}
@@ -230,7 +230,7 @@ void UserInterface::Render()
 				L"Open",							// 登録キー
 				m_openTexPos,						// 座標
 				{ 1.0f,1.0f,1.0f,0.2f },			// 色
-				0.5f * imageScale,					// 拡大率
+				0.5f * _imageScale,					// 拡大率
 				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 			);
 		}
@@ -242,7 +242,7 @@ void UserInterface::Render()
 				L"Save",							// 登録キー
 				m_saveTexPos,						// 座標
 				{ 1.0f,1.0f,1.0f,1.0f },			// 色
-				IMAGE_RATE * imageScale,			// 拡大率
+				IMAGE_RATE * _imageScale,			// 拡大率
 				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 			);
 		}
@@ -252,7 +252,7 @@ void UserInterface::Render()
 				L"Save",							// 登録キー
 				m_saveTexPos,						// 座標
 				{ 1.0f,1.0f,1.0f,0.2f },			// 色
-				0.5f * imageScale,					// 拡大率
+				0.5f * _imageScale,					// 拡大率
 				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 			);
 		}
@@ -264,7 +264,7 @@ void UserInterface::Render()
 				L"CameraMove",						// 登録キー
 				m_cameraTexPos,						// 座標
 				{ 1.0f,1.0f,1.0f,1.0f },			// 色
-				IMAGE_RATE * imageScale,			// 拡大率
+				IMAGE_RATE * _imageScale,			// 拡大率
 				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 			);
 		}
@@ -274,43 +274,43 @@ void UserInterface::Render()
 				L"Camera",							// 登録キー
 				m_cameraTexPos,						// 座標
 				{ 1.0f,1.0f,1.0f,0.3f },			// 色
-				IMAGE_RATE * imageScale * 0.9f,		// 拡大率
+				IMAGE_RATE * _imageScale * 0.9f,	// 拡大率
 				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 			);
 		}
 
 		// セレクトに戻るボタン
 		m_system->GetDrawSprite()->DrawTexture(
-				L"BackSelect",
-				m_backTexPos,
-				{ 1.0f,1.0f,1.0f,1.0f },
-				IMAGE_RATE * imageScale,
-				{ IMAGE_CENTER,IMAGE_CENTER }
+				L"BackSelect",						// 登録キー
+				m_backTexPos,						// 座標
+				{ 1.0f,1.0f,1.0f,1.0f },			// 色
+				IMAGE_RATE * _imageScale,			// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
 			);
 
 		// ブロックのアイコン
-		DrawIcon(imageScale);
+		DrawIcon(_imageScale);
 	}
 
 	// ツールバーボタン表示
 	if (is_toolFlag)
 	{
 		m_system->GetDrawSprite()->DrawTexture(
-			L"ToolOn",							// 登録キー
-			m_toolButtonTexPos,					// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+			L"ToolOn",								// 登録キー
+			m_toolButtonTexPos,						// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },				// 色
+			IMAGE_RATE * _imageScale,				// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }			// 中心位置
 		);
 	}
 	else
 	{
 		m_system->GetDrawSprite()->DrawTexture(
-			L"ToolOff",							// 登録キー
-			m_toolButtonTexPos,					// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },			// 色
-			IMAGE_RATE * imageScale,			// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+			L"ToolOff",								// 登録キー
+			m_toolButtonTexPos,						// 座標
+			{ 1.0f,1.0f,1.0f,1.0f },				// 色
+			IMAGE_RATE * _imageScale,				// 拡大率
+			{ IMAGE_CENTER,IMAGE_CENTER }			// 中心位置
 		);
 	}
 }
@@ -331,13 +331,13 @@ void UserInterface::Finalize()
 /// <returns>なし</returns>
 void UserInterface::DrawIcon(const SimpleMath::Vector2& imageScale)
 {
-	for (int idx = 0; idx < MAPSTATE::LENGTH; ++idx)
+	for (int i = 0; i < MAPSTATE::LENGTH; ++i)
 	{
-		if (is_boxState[idx])
+		if (is_boxState[i])
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				m_texName[idx],
-				SimpleMath::Vector2{ m_imagePos[idx].x,m_imagePos[idx].y + IMAGE_RATE},
+				m_texName[i],
+				SimpleMath::Vector2{ m_imagePos[i].x,m_imagePos[i].y + IMAGE_RATE},
 				SimpleMath::Vector4::One,
 				IMAGE_RATE * imageScale,
 				SimpleMath::Vector2{ IMAGE_CENTER }
@@ -346,10 +346,10 @@ void UserInterface::DrawIcon(const SimpleMath::Vector2& imageScale)
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				m_texName[idx],
-				m_imagePos[idx],
+				m_texName[i],
+				m_imagePos[i],
 				{ 1.0f,1.0f,1.0f,HALF },
-				(HALF + m_boxHover[idx]) * imageScale,
+				(HALF + m_boxHover[i]) * imageScale,
 				SimpleMath::Vector2{ IMAGE_CENTER }
 			);
 		}
@@ -367,28 +367,28 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 	if (mouseState.y > 170.0f * (m_windowSize.y / FULL_SCREEN_SIZE.y)) return;
 
 	// アイコンごとの初期値
-	bool iconFlags[MAPSTATE::LENGTH] = { false };
+	bool _iconFlags[MAPSTATE::LENGTH] = { false };
 
 	// 各アイコンをクリックしたかどうかを判定し、フラグを立てる
 	for (int i = 0; i < MAPSTATE::LENGTH; ++i)
 	{
-		iconFlags[i] = m_imageHitter.IsHitAABB2D(
+		_iconFlags[i] = m_imageHitter.IsHitAABB2D(
 			{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
 			m_imagePos[i],                              // 画像の位置
 			SimpleMath::Vector2{ 5.0f },                // 最小サイズ
 			SimpleMath::Vector2{ 100.0f });             // 最大サイズ
 
 		// 当たっていたらサイズを大きくする(ホバー)
-		m_boxHover[i] = iconFlags[i] == true ? 0.1f : 0.0f;
+		m_boxHover[i] = _iconFlags[i] == true ? 0.1f : 0.0f;
 	}
 
 	// どれか一つ当たっていたら
-	is_anyHitFlag = (iconFlags[MAPSTATE::GRASS]  ||
-					 iconFlags[MAPSTATE::COIN]   ||
-					 iconFlags[MAPSTATE::CLOUD]  ||
-					 iconFlags[MAPSTATE::RESET]  ||
-					 iconFlags[MAPSTATE::PLAYER] ||
-					 iconFlags[MAPSTATE::NONE]);
+	is_anyHitFlag = (_iconFlags[MAPSTATE::GRASS]  ||
+					 _iconFlags[MAPSTATE::COIN]   ||
+					 _iconFlags[MAPSTATE::CLOUD]  ||
+					 _iconFlags[MAPSTATE::RESET]  ||
+					 _iconFlags[MAPSTATE::PLAYER] ||
+					 _iconFlags[MAPSTATE::NONE]);
 
 	// マウスがクリックされた場合に、現在のステータスを更新する
 	for (int i = 0; i < MAPSTATE::LENGTH; ++i)
@@ -399,14 +399,14 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 		if (mouseState.leftButton)
 		{
 			// クリック音
-			auto& se = m_system->GetSoundManager();
-			se->SetVolume(se->GetVolume(XACT_WAVEBANK_SKBX_SE_ICONTAP) / 2, XACT_WAVEBANK_SKBX_SE_ICONTAP);
-			se->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+			auto& _sound = m_system->GetSoundManager();
+			_sound->SetVolume(_sound->GetVolume(XACT_WAVEBANK_SKBX_SE_ICONTAP) / 2, XACT_WAVEBANK_SKBX_SE_ICONTAP);
+			_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 
 			// 有効フラグを格納
-			is_boxState[i] = iconFlags[i];
+			is_boxState[i] = _iconFlags[i];
 
-			if (iconFlags[i])
+			if (_iconFlags[i])
 			{
 				switch (i)
 				{
