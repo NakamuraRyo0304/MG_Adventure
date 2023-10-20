@@ -330,6 +330,7 @@
     <None Include="Resources\Models\Bird.cmo" />
     <None Include="Resources\Models\Body.cmo" />
     <None Include="Resources\Models\CheckDome.cmo" />
+    <None Include="Resources\Models\Cloud.cmo" />
     <None Include="Resources\Models\Coin.cmo" />
     <None Include="Resources\Models\Eraser.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
@@ -379,6 +380,9 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="..\Cloud.fbx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

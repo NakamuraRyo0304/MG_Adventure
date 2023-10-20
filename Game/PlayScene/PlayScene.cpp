@@ -444,7 +444,7 @@ void PlayScene::CreateWindowDependentResources()
 	// ファクトリーで生成
 	auto grass = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
 	auto coin  = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
-	auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/MoveBlock.cmo"));
+	auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
 	auto reset = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
 
 	// モデルの受け渡し
@@ -581,7 +581,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	if (obj.id == MAPSTATE::CLOUD)
 	{
 		// プレイヤーが下にいたら押し戻ししない
-		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(obj.id))
+		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(MAPSTATE::CLOUD))
 		{
 			is_boxCol.SetPushMode(false);
 			return;

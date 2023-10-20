@@ -333,7 +333,7 @@ void EditScene::CreateWindowDependentResources()
 	);
 	m_cloudModel = ModelFactory::GetCreateModel(		// 雲ブロック
 		device,
-		L"Resources/Models/MoveBlock.cmo"
+		L"Resources/Models/Cloud.cmo"
 	);
 	m_resetPtModel = ModelFactory::GetCreateModel(		// リセットブロック
 		device,

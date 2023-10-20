@@ -659,6 +659,9 @@
     <None Include="Resources\Models\CheckDome.cmo">
       <Filter>Resources\Models\SkyDome</Filter>
     </None>
+    <None Include="Resources\Models\Cloud.cmo">
+      <Filter>Resources\Models\MapObject</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -681,5 +684,10 @@
     <FxCompile Include="Resources\Shaders\PS_Cloud.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="..\Cloud.fbx">
+      <Filter>Resources\Models\MapObject</Filter>
+    </MeshContentTask>
   </ItemGroup>
 </Project>
