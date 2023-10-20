@@ -81,8 +81,8 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 	m_thirdRotate = SimpleMath::Quaternion::Identity;
 	is_lookFlag = false;
 
-	// プレイヤーの色を変更する
-	ChangeModel();
+	// プレイヤーのモデルを作成する
+	CreateModel();
 }
 
 /// <summary>
@@ -288,6 +288,12 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 			lights->SetLightDiffuseColor(1, lightColor);
 			lights->SetLightDiffuseColor(2, lightColor);
 		}
+		auto basicEffect = dynamic_cast<BasicEffect*>(effect);
+		if (basicEffect)
+		{
+			// アンビエントライトカラーの設定
+			basicEffect->SetAmbientLightColor(SimpleMath::Color(0.2f, 0.2f, 0.2f));
+		}
 	};
 
 
@@ -347,29 +353,19 @@ void Player::UpdateGravity()
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void Player::ChangeModel()
+void Player::CreateModel()
 {
 	auto device = m_system->GetDeviceResources()->GetD3DDevice();
 
-	// 100未満は処理しない
-	// ホワイトレグホンのまま（白色の鶏）
-	if (m_coinNum < CHANGE_SKIN_100) return;
-
-	// モデル追加予定
-	if (m_coinNum >= CHANGE_SKIN_100)
-	{
-		// パスの格納
-		m_head =
-			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo"));
-		m_body =
-			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo"));
-		m_rightLeg =
-			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
-		m_leftLeg =
-			std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
-
-		return;
-	}
+	// パスの格納
+	m_head =
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo"));
+	m_body =
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo"));
+	m_rightLeg =
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
+	m_leftLeg =
+		std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
 }
 
 /// <summary>

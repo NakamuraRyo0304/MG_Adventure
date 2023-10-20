@@ -105,8 +105,8 @@ private:
 	// 重力処理
 	void UpdateGravity();
 
-	// モデルを変更する
-	void ChangeModel();
+	// モデルを作成する
+	void CreateModel();
 
 
 public:
