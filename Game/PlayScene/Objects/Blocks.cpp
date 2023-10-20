@@ -449,22 +449,22 @@ std::wstring Blocks::MapSelect(int num)
 	switch (num)
 	{
 	case 0:
-		_filePath = L"Resources/Maps/StageEdit.csv";
+		_filePath = L"Datas/Maps/StageEdit.csv";
 		break;
 	case 1:
-		_filePath = L"Resources/Maps/Stage1.csv";
+		_filePath = L"Datas/Maps/Stage1.csv";
 		break;
 	case 2:
-		_filePath = L"Resources/Maps/Stage2.csv";
+		_filePath = L"Datas/Maps/Stage2.csv";
 		break;
 	case 3:
-		_filePath = L"Resources/Maps/Stage3.csv";
+		_filePath = L"Datas/Maps/Stage3.csv";
 		break;
 	case 4:
-		_filePath = L"Resources/Maps/Stage4.csv";
+		_filePath = L"Datas/Maps/Stage4.csv";
 		break;
 	case 5:
-		_filePath = L"Resources/Maps/Stage5.csv";
+		_filePath = L"Datas/Maps/Stage5.csv";
 		break;
 	default:
 		_filePath = L"NoStage";

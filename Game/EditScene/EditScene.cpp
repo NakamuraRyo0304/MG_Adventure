@@ -388,7 +388,7 @@ void EditScene::SetSceneValues()
 	m_nowState = MAPSTATE::GRASS;
 
 	// マップ読み込み//初回読み込み
-	LoadMap(L"Resources/Maps/StageEdit.csv");
+	LoadMap(L"Datas/Maps/StageEdit.csv");
 
 	// クリアチェッカーに配列を渡す
 	m_checker->SetMap(m_mapObj);
@@ -421,29 +421,29 @@ void EditScene::EditMap()
 	m_cursorPos.y = UserUtility::Clamp(m_cursorPos.y, CURSOR_MIN, CURSOR_MAX);
 
 	// マップとの当たり判定
-	for (auto& obj : m_mapObj)
+	for (auto& i : m_mapObj)
 	{
 		// 押し戻し処理を無効化
 		is_boxCol.SetPushMode(false);
 
 		// 当たり判定を取る
-		is_boxCol.PushBox(&m_cursorPos, obj.position,
+		is_boxCol.PushBox(&m_cursorPos, i.position,
 			SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			SimpleMath::Vector3{ COMMON_SIZE }
 		);
 
 		// 瞬間の当たり判定を取得
-		obj.hit = is_boxCol.IsHitBoxFlag();
+		i.hit = is_boxCol.IsHitBoxFlag();
 
 		// クリックでブロック設置
-		if (obj.hit &&  _mouse.leftButton)
+		if (i.hit &&  _mouse.leftButton)
 		{
 			// 既に同じオブジェクトなら処理しない
-			if (obj.id == m_nowState) continue;
+			if (i.id == m_nowState) continue;
 
 			// オブジェクトをセット
 			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SETBOX, false);
-			obj.id = m_nowState;
+			i.id = m_nowState;
 		}
 	}
 }
@@ -459,21 +459,21 @@ void EditScene::OffsetPosition(std::vector<Object>* object, const int& mode)
 	// 読み込み
 	if (mode == READ)
 	{
-		for (auto& obj : *object)
+		for (auto& i : *object)
 		{
-			obj.position.x -= static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
-			obj.position.y += static_cast<float>(COMMON_LOW);
-			obj.position.z -= static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
+			i.position.x -= static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
+			i.position.y += static_cast<float>(COMMON_LOW);
+			i.position.z -= static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
 		}
 	}
 	// 書き込み
 	if (mode == WRITE)
 	{
-		for (auto& obj : *object)
+		for (auto& i : *object)
 		{
-			obj.position.x += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
-			obj.position.y -= static_cast<float>(COMMON_LOW);
-			obj.position.z += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
+			i.position.x += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
+			i.position.y -= static_cast<float>(COMMON_LOW);
+			i.position.z += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
 		}
 	}
 }
@@ -507,7 +507,7 @@ void EditScene::SaveFile()
 {
 	// ファイル書き出し
 	OffsetPosition(&m_mapObj,WRITE);	// 書き出し用に座標補正
-	m_mapLoader.WriteMap(m_mapObj);			// ファイルの書き出し
+	m_mapLoader.WriteMap(m_mapObj);		// ファイルの書き出し
 	OffsetPosition(&m_mapObj,READ);		// 読み込み用に座標補正
 }
 
