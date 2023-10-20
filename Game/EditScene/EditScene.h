@@ -41,7 +41,7 @@ private:
 	std::vector<Object> m_mapObj;
 
 	// ƒ}ƒbƒv
-	MapLoad m_map;
+	MapLoad m_mapLoader;
 
 	// “–‚½‚è”»’è
 	Collider::BoxCollider is_boxCol;

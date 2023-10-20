@@ -27,7 +27,7 @@ EditScene::EditScene()
 	: IScene()									// 基底クラスの初期化
 	, m_timer{ 0.0f }							// タイマー
 	, m_system{}								// システムデータ
-	, m_map{}									// マップ
+	, m_mapLoader{}								// マップローダー
 	, m_mapObj{0}								// 格納配列
 	, m_nowState{}								// 現在のブロックの種類
 	, m_grassModel{ nullptr }					// モデル＿草
@@ -121,12 +121,11 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_userInterface->GetOpenFlag() &&
 		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
-		auto temp = m_map.GetMapData();
-		if (!m_map.LoadMap(L""))
+		if (!m_mapLoader.LoadMap(L""))
 		{
 			return;
 		}
-		m_mapObj = m_map.GetMapData();			// 読み込み
+		m_mapObj = m_mapLoader.GetMapData();	// 読み込み
 		OffsetPosition(&m_mapObj,READ);			// 座標補正
 	}
 
@@ -465,9 +464,9 @@ void EditScene::OffsetPosition(std::vector<Object>* object, const int& mode)
 	{
 		for (auto& obj : *object)
 		{
-			obj.position.x -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+			obj.position.x -= static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
 			obj.position.y += static_cast<float>(COMMON_LOW);
-			obj.position.z -= static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+			obj.position.z -= static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
 		}
 	}
 	// 書き込み
@@ -475,9 +474,9 @@ void EditScene::OffsetPosition(std::vector<Object>* object, const int& mode)
 	{
 		for (auto& i : *object)
 		{
-			i.position.x += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+			i.position.x += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
 			i.position.y -= static_cast<float>(COMMON_LOW);
-			i.position.z += static_cast<float>(m_map.MAP_COLUMN) / 2 * COMMON_SIZE;
+			i.position.z += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
 		}
 	}
 }
@@ -490,13 +489,13 @@ void EditScene::OffsetPosition(std::vector<Object>* object, const int& mode)
 void EditScene::LoadMap(std::wstring filename)
 {
 	// マップの読み込み
-	m_map.LoadMap(filename);
+	m_mapLoader.LoadMap(filename);
 
 	// パスが取得できなければ新しく平面のマップを作成する
-	m_filePath = m_map.GetFilePath();
+	m_filePath = m_mapLoader.GetFilePath();
 
 	// マップを格納する
-	m_mapObj = m_map.GetMapData();
+	m_mapObj = m_mapLoader.GetMapData();
 
 	// 座標補正
 	OffsetPosition(&m_mapObj,READ);
@@ -511,7 +510,7 @@ void EditScene::SaveFile()
 {
 	// ファイル書き出し
 	OffsetPosition(&m_mapObj,WRITE);	// 書き出し用に座標補正
-	m_map.WriteMap(m_mapObj);			// ファイルの書き出し
+	m_mapLoader.WriteMap(m_mapObj);			// ファイルの書き出し
 	OffsetPosition(&m_mapObj,READ);		// 読み込み用に座標補正
 }
 

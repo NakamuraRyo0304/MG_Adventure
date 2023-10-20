@@ -50,7 +50,7 @@ GameMain::GameMain()
 	, m_screenHeight{}					// スクリーンサイズ(縦)
 	//以下はセーブデータ対応------------------------------------------------------------------------//
 	, is_saveOnce{false}				// セーブ済みか確認するフラグ
-	, m_closeNum{}						// 未開放ステージ
+	, m_safeStages{}						// 未開放ステージ
 	, m_allCoins{}						// 累計コイン枚数
 {
 }
@@ -196,7 +196,7 @@ void GameMain::CreateScene()
 
 			// ステージ番号、未開放ステージ番号、合計コイン数を渡す
 			CastSceneType<SelectScene>(m_nowScene)->SetStageNum(m_num);
-			CastSceneType<SelectScene>(m_nowScene)->SetNoStageNum(m_closeNum);
+			CastSceneType<SelectScene>(m_nowScene)->SetSafeStages(m_safeStages);
 			CastSceneType<SelectScene>(m_nowScene)->SetAllCoins(m_allCoins);
 			//-------------------------------------------------------------------------------------//
 
@@ -356,12 +356,12 @@ void GameMain::LoadSaveData()
 
 	if (_file.is_open())
 	{
-		Json _input;
+		Json _input = {};
 		_file >> _input;
 
 		// データを格納する
-		m_allCoins = _input["CoinNum"];
-		m_closeNum = _input["SafeStage"];
+		m_allCoins   = _input["CoinNum"];
+		m_safeStages = _input["SafeStage"];
 
 		_file.close();
 	}
@@ -382,11 +382,14 @@ void GameMain::WriteSaveData()
 
 	if (_file.is_open())
 	{
-		Json _output;
+		Json _output = {};
 
 		// データをセット
-		_output["CoinNum"] = m_allCoins;
-		_output["SafeStage"] = m_closeNum;
+		_output =
+		{
+			{"CoinNum" , m_allCoins},
+			{"SafeStage",m_safeStages}
+		};
 
 		// インデントを揃えて書き出し
 		_file << _output.dump(JSON_INDENT);
@@ -408,7 +411,7 @@ void GameMain::OpenNewStage()
 	if (CastSceneType<PlayScene>(m_nowScene)->GetCoinNum() == CastSceneType<PlayScene>(m_nowScene)->GetMaxCoinCount())
 	{
 		// 全て解放していたら処理しない
-		m_closeNum -= m_closeNum > 0 ? 1 : 0;
+		m_safeStages -= m_safeStages > 0 ? 1 : 0;
 	}
 
 	// コイン数を加算

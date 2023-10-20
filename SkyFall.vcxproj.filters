@@ -629,9 +629,6 @@
     <None Include="Resources\Models\GrassBlock.cmo">
       <Filter>Resources\Models\MapObject</Filter>
     </None>
-    <None Include="Resources\Models\MoveBlock.cmo">
-      <Filter>Resources\Models\MapObject</Filter>
-    </None>
     <None Include="Resources\Models\ResetPt.cmo">
       <Filter>Resources\Models\MapObject</Filter>
     </None>
@@ -684,10 +681,5 @@
     <FxCompile Include="Resources\Shaders\PS_Cloud.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="..\Cloud.fbx">
-      <Filter>Resources\Models\MapObject</Filter>
-    </MeshContentTask>
   </ItemGroup>
 </Project>

@@ -31,7 +31,7 @@ SelectScene::SelectScene()
 	, m_timer{}					// タイマー
 	, m_flashCount{}			// 点滅のカウンタ
 	, m_stageNum{1}				// ステージ番号
-	, m_noStageNum{}			// 未開放ステージ番号
+	, m_safeStages{}			// 未開放ステージ番号
 	, m_allCoins{}				// 合計コイン数
 	, m_useCoins{}				// 使用コイン数
 	, m_initCoins{}				// 開始コイン数
@@ -274,7 +274,7 @@ void SelectScene::CreateWindowDependentResources()
 
 	// ステージ番号のモデルの作成
 	{
-		for (int i = 0; i < MAX_STAGE_NUM - m_noStageNum; ++i)
+		for (int i = 0; i < MAX_STAGE_NUM - m_safeStages; ++i)
 		{
 			// 0番目はエディタの文字
 			if (i == 0)
@@ -397,7 +397,7 @@ void SelectScene::ChangeStageNumber(Keyboard::State keyState)
 	if (keyState.Right || keyState.D)
 	{
 		// ステージ番号が最大なら処理しない
-		if (m_stageNum == MAX_STAGE_NUM - 1 - m_noStageNum) return;
+		if (m_stageNum == MAX_STAGE_NUM - 1 - m_safeStages) return;
 
 		// 選択音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);

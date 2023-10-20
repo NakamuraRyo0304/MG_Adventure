@@ -30,7 +30,7 @@ private:
 	// ステージ番号
 	int m_stageNum;
 	// 未開放ステージ数
-	int m_noStageNum;
+	int m_safeStages;
 
 	// 合計コイン数
 	int m_allCoins;
@@ -132,7 +132,7 @@ public:
 	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
 
 	// 未開放ステージセッター
-	void SetNoStageNum(const int& stageNum) { m_noStageNum = stageNum; }
+	void SetSafeStages(const int& stageNum) { m_safeStages = stageNum; }
 
 	// 合計コインアクセサ(全体コインー使用済みコイン)
 	const int& GetAllCoins() { return m_allCoins; }

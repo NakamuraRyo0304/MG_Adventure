@@ -20,7 +20,7 @@
 	(左右で操作説明、ブロックの説明※１：リトライ等２：操作説明等)
 
 ・スコアランキングを作成
-	SelectScene(ハイスコアを.HiScore.txtに読み書き)
+	SelectScene(ハイスコアを.HiScore.jsonに読み書き)
 
 ・プレイヤー瞬きさせる
 	Player（WinkHead.fbxを作成する）
