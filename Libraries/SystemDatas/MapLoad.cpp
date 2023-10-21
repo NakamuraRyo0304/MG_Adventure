@@ -98,11 +98,7 @@ bool MapLoad::LoadMap(std::wstring filename)
 		}
 
 		// 座標情報
-		if (_obj.id == BOXSTATE::NONE)
-		{
-			_obj.position = SimpleMath::Vector3::Zero;
-		}
-		else if (!(_iss >> _obj.position.x) || !(_iss >> _obj.position.y) || !(_iss >> _obj.position.z))
+		if (!(_iss >> _obj.position.x) || !(_iss >> _obj.position.y) || !(_iss >> _obj.position.z))
 		{
 			_ifs.close();
 			m_mapData.clear();
@@ -143,14 +139,8 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 		std::ostringstream _oss;
 
 		// ID,X,Y,X,改行
-		if (_obj.id == BOXSTATE::NONE)
-		{
-			_oss << BOXSTATE::NONE << ",\n";
-		}
-		else
-		{
-			_oss << _obj.id << "," << _obj.position.x << "," << _obj.position.y << "," << _obj.position.z << ",\n";
-		}
+		_oss << _obj.id << "," << _obj.position.x << "," << _obj.position.y << "," << _obj.position.z << ",\n";
+
 		// １ブロックの情報を出力
 		_ofs << _oss.str();
 	}
