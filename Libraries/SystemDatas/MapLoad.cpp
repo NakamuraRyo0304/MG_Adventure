@@ -81,6 +81,13 @@ bool MapLoad::LoadMap(std::wstring filename)
 		// 空白で分割する
 		std::istringstream _iss(_tmpDatas);
 
+		// ヘッダーの場合スキップ
+		if (_line.find("マップＩＤ") != std::string::npos ||
+			_line.find("0:なし") != std::string::npos)
+		{
+			continue;
+		}
+
 		Object _obj;
 
 		// マップステータスID
@@ -118,23 +125,27 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 	SaveMapPath(m_filename);
 
 	// ファイル出力変数を定義
-	std::ofstream ofs(m_filename);
+	std::ofstream _ofs(m_filename);
 
 	// ファイルがなければ処理しない
-	if (!ofs)return;
+	if (!_ofs) return;
+
+	// ヘッダー
+	_ofs << "マップＩＤ" << ",Ｘ" << ",Ｙ" << ",Ｚ" << ",\n";
+	_ofs << "0:なし,1:草,2:雲,3:コイン,4:重力,5:プレイヤー,\n";
 
 	for (auto& _obj : obj)
 	{
-		std::ostringstream oss;
+		std::ostringstream _oss;
 
 		// ID,X,Y,X,改行
-		oss << _obj.id << "," << _obj.position.x << "," << _obj.position.y << "," << _obj.position.z << ",\n";
+		_oss << _obj.id << "," << _obj.position.x << "," << _obj.position.y << "," << _obj.position.z << ",\n";
 
 		// １ブロックの情報を出力
-		ofs << oss.str();
+		_ofs << _oss.str();
 	}
 
-	ofs.close();
+	_ofs.close();
 }
 
 /// <summary>
@@ -155,73 +166,73 @@ void MapLoad::ReleaseMemory()
 bool MapLoad::SaveMapPath(std::wstring& filePath)
 {
 	// 例外エラー用変数
-	HRESULT hr;
+	HRESULT _hr;
 
 	// ファイル保存ダイアログ用のインターフェースを作成
-	IFileSaveDialog* pFileDialog = nullptr;
-	hr = CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileDialog));
+	IFileSaveDialog* _dialog = nullptr;
+	_hr = CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&_dialog));
 
 	// インスタンスの作成に失敗した場合はfalseを返して終了
-	if (FAILED(hr))
+	if (FAILED(_hr))
 	{
 		return false;
 	}
 
 	// 拡張子フィルタを設定する
-	COMDLG_FILTERSPEC fileTypes[] =
+	COMDLG_FILTERSPEC _fileTypes[] =
 	{
 		{ L"CSV(カンマ区切り)"	, L"*.csv" },			// カンマ区切りファイル
 		{ L"テキスト ファイル"	, L"*.txt" }			// テキストファイル
 	};
 
 	// フィルタの数、フィルタの配列を設定する
-	hr = pFileDialog->SetFileTypes(2, fileTypes);
+	_hr = _dialog->SetFileTypes(2, _fileTypes);
 
 	// ウィンドウハンドルを指定してダイアログを表示
-	hr = pFileDialog->Show(m_hWnd);
+	_hr = _dialog->Show(m_hWnd);
 
 	// ウィンドウダイアログが開けた場合はパスの取得
-	if (SUCCEEDED(hr))
+	if (SUCCEEDED(_hr))
 	{
 		// 選択されたファイルパスを取得
-		IShellItem* pShell;
-		hr = pFileDialog->GetResult(&pShell);
+		IShellItem* _shell;
+		_hr = _dialog->GetResult(&_shell);
 
 		// パスが取得出来たら以下処理を実行
-		if (SUCCEEDED(hr))
+		if (SUCCEEDED(_hr))
 		{
-			wchar_t* tmpFilePath;
-			hr = pShell->GetDisplayName(SIGDN_FILESYSPATH, &tmpFilePath);
+			wchar_t* _tmpPath;
+			_hr = _shell->GetDisplayName(SIGDN_FILESYSPATH, &_tmpPath);
 
-			if (SUCCEEDED(hr))
+			if (SUCCEEDED(_hr))
 			{
 				// 選択されたファイルパスをfilePathに格納
-				filePath = tmpFilePath;
+				filePath = _tmpPath;
 
 				// 選択されたフィルタのインデックスを取得
-				unsigned int filterIndex;
-				hr = pFileDialog->GetFileTypeIndex(&filterIndex);
+				unsigned int _filterIdx;
+				_hr = _dialog->GetFileTypeIndex(&_filterIdx);
 
 				// 一番最後に現在のファイルパスを格納
-				std::wstring extension = L".csv";					// デフォルトはCSV
+				std::wstring _extension = L".csv";					// デフォルトはCSV
 
 				// 条件によって変更する
-				if (filterIndex == 1) extension = L".csv";			// CSVカンマ区切り
-				if (filterIndex == 2) extension = L".txt";			// txtファイル
+				if (_filterIdx == 1) _extension = L".csv";			// CSVカンマ区切り
+				if (_filterIdx == 2) _extension = L".txt";			// txtファイル
 
-				filePath = AutoAddExtension(filePath, extension);
+				filePath = AutoAddExtension(filePath, _extension);
 
 				m_filename = filePath;
 
 				// 正常終了
 				return true;
 			}
-			pShell->Release();
+			_shell->Release();
 		}
 	}
 
 	// pFileDialogの解放
-	pFileDialog->Release();
+	_dialog->Release();
 
 	// ダイアログが閉じられた場合やエラーが発生した場合はデータを削除
 	filePath.clear();
@@ -241,75 +252,75 @@ bool MapLoad::SaveMapPath(std::wstring& filePath)
 bool MapLoad::LoadMapPath()
 {
 	// 例外エラー用変数
-	HRESULT hr;
+	HRESULT _hr;
 
 	// ファイル保存ダイアログ用のインターフェースを作成
-	IFileOpenDialog* pFileDialog = nullptr;
-	hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileDialog));
+	IFileOpenDialog* _dialog = nullptr;
+	_hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&_dialog));
 
 	// インスタンスの作成に失敗した場合はfalseを返して終了
-	if (FAILED(hr))
+	if (FAILED(_hr))
 	{
 		return false;
 	}
 
 	// 拡張子フィルタを設定する
-	COMDLG_FILTERSPEC fileTypes[] =
+	COMDLG_FILTERSPEC _fileTypes[] =
 	{
 		{ L"CSV(カンマ区切り)"	, L"*.csv" },			// カンマ区切りファイル
 		{ L"テキスト ファイル"	, L"*.txt" }			// テキストファイル
 	};
 
 	// 引数：フィルタの数、フィルタの配列
-	hr = pFileDialog->SetFileTypes(2, fileTypes);
+	_hr = _dialog->SetFileTypes(2, _fileTypes);
 
 	// ウィンドウハンドルを指定してダイアログを表示
-	hr = pFileDialog->Show(m_hWnd); // m_hWndはウィンドウハンドル
+	_hr = _dialog->Show(m_hWnd); // m_hWndはウィンドウハンドル
 
 	// ウィンドウダイアログが開けた場合はパスの取得処理へ
-	if (SUCCEEDED(hr))
+	if (SUCCEEDED(_hr))
 	{
 		// 選択されたファイルパスを取得
-		IShellItem* pShell;
-		hr = pFileDialog->GetResult(&pShell);
+		IShellItem* _shell;
+		_hr = _dialog->GetResult(&_shell);
 
 		// パスが取得出来たら以下処理を実行
-		if (SUCCEEDED(hr))
+		if (SUCCEEDED(_hr))
 		{
-			wchar_t* tmpFilePath;
-			hr = pShell->GetDisplayName(SIGDN_FILESYSPATH, &tmpFilePath);
+			wchar_t* _tmpPath;
+			_hr = _shell->GetDisplayName(SIGDN_FILESYSPATH, &_tmpPath);
 
-			if (SUCCEEDED(hr))
+			if (SUCCEEDED(_hr))
 			{
 				// 選択されたファイルパスをfilePathに格納
-				m_filename = tmpFilePath;
+				m_filename = _tmpPath;
 
 				// メモリの解放
-				CoTaskMemFree(tmpFilePath);
+				CoTaskMemFree(_tmpPath);
 
 				// pItemの解放
-				pShell->Release();
+				_shell->Release();
 
 				// pFileDialogの解放
-				pFileDialog->Release();
+				_dialog->Release();
 
 				// 選択されたフィルタのインデックスを取得
-				unsigned int filterIndex;
-				hr = pFileDialog->GetFileTypeIndex(&filterIndex);
+				unsigned int filterIdx;
+				_hr = _dialog->GetFileTypeIndex(&filterIdx);
 
 				// 一番最後に現在のファイルパスを格納
-				std::wstring extension = L".csv";					// デフォルトはCSV
+				std::wstring _extension = L".csv";					// デフォルトはCSV
 
 				// 条件によって変更する
-				if (filterIndex == 1) extension = L".csv";			// CSVカンマ区切り
-				if (filterIndex == 2) extension = L".txt";			// txtファイル
+				if (filterIdx == 1) _extension = L".csv";			// CSVカンマ区切り
+				if (filterIdx == 2) _extension = L".txt";			// txtファイル
 
-				m_filename = AutoAddExtension(m_filename, extension);
+				m_filename = AutoAddExtension(m_filename, _extension);
 
 				// 正常終了
 				return true;
 			}
-			pShell->Release();
+			_shell->Release();
 		}
 		else
 		{
@@ -318,7 +329,7 @@ bool MapLoad::LoadMapPath()
 	}
 
 	// pFileDialogの解放
-	pFileDialog->Release();
+	_dialog->Release();
 
 	// ダイアログが閉じられた場合やエラーが発生した場合はデータを削除
 	m_filename.clear();
@@ -339,17 +350,17 @@ bool MapLoad::LoadMapPath()
 std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::wstring& extension)
 {
 	// 元ファイル名を格納する
-	std::wstring result = filePath;
+	std::wstring _output = filePath;
 
 	// 文字列"."を見つける
-	std::wstring::size_type extPos = filePath.rfind(L".");
+	std::wstring::size_type _extPos = filePath.rfind(L".");
 
 	// ドットが見つかった位置が対象文字列の最後尾or何もついていない場合追加する
-	if (extPos == std::wstring::npos || extPos < filePath.rfind(L"\\"))
+	if (_extPos == std::wstring::npos || _extPos < filePath.rfind(L"\\"))
 	{
-		result += extension;
+		_output += extension;
 	}
-	return result;
+	return _output;
 }
 
 /// <summary>
@@ -359,38 +370,38 @@ std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::
 /// <returns>なし</returns>
 void MapLoad::CreateNewMap()
 {
-	std::vector<Object> obj;
+	std::vector<Object> _obj;
 
 	// 最大マスのサイズにする
-	const int initialNumber = MAP_COLUMN;
+	const int _initialNumber = MAP_COLUMN;
 
-	for (int x = 0; x < initialNumber; ++x)
+	for (int x = 0; x < _initialNumber; ++x)
 	{
 		for (int y = 0; y < MAP_HEIGHT; ++y)
 		{
-			for (int z = 0; z < initialNumber; ++z)
+			for (int z = 0; z < _initialNumber; ++z)
 			{
-				Object newObj;
+				Object _tmpObj;
 
 				if (y == 0)
 				{
-					newObj.id = BOXSTATE::GRASS;
+					_tmpObj.id = BOXSTATE::GRASS;
 				}
 				else
 				{
-					newObj.id = BOXSTATE::NONE;
+					_tmpObj.id = BOXSTATE::NONE;
 				}
-				newObj.position.x = static_cast<float>(x);
-				newObj.position.y = static_cast<float>(y);
-				newObj.position.z = static_cast<float>(z);
+				_tmpObj.position.x = static_cast<float>(x);
+				_tmpObj.position.y = static_cast<float>(y);
+				_tmpObj.position.z = static_cast<float>(z);
 
-				obj.push_back(newObj);
+				_obj.push_back(_tmpObj);
 			}
 		}
 	}
 
 	// 作ったデータを格納
-	m_mapData = obj;
+	m_mapData = _obj;
 
-	obj.clear();
+	_obj.clear();
 }

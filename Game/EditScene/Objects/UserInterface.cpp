@@ -90,7 +90,7 @@ void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
 	m_texName[MAPSTATE::GRASS]   = L"Grass";
 	m_texName[MAPSTATE::CLOUD]   = L"Cloud";
 	m_texName[MAPSTATE::COIN]    = L"Coin";
-	m_texName[MAPSTATE::RESET]   = L"Reset";
+	m_texName[MAPSTATE::GRAVITY]   = L"Reset";
 	m_texName[MAPSTATE::PLAYER]  = L"Player";
 	m_texName[MAPSTATE::NONE]    = L"Delete";
 
@@ -386,7 +386,7 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 	is_anyHitFlag = (_iconFlags[MAPSTATE::GRASS]  ||
 					 _iconFlags[MAPSTATE::COIN]   ||
 					 _iconFlags[MAPSTATE::CLOUD]  ||
-					 _iconFlags[MAPSTATE::RESET]  ||
+					 _iconFlags[MAPSTATE::GRAVITY]  ||
 					 _iconFlags[MAPSTATE::PLAYER] ||
 					 _iconFlags[MAPSTATE::NONE]);
 
@@ -419,14 +419,14 @@ void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
 				case MAPSTATE::CLOUD:
 					m_nowState = MAPSTATE::CLOUD;		// 雲
 					break;
-				case MAPSTATE::RESET:
-					m_nowState = MAPSTATE::RESET;		// リセットポイント
+				case MAPSTATE::GRAVITY:
+					m_nowState = MAPSTATE::GRAVITY;		// リセットポイント
 					break;
 				case MAPSTATE::PLAYER:
 					m_nowState = MAPSTATE::PLAYER;		// プレイヤー
 					break;
 				case MAPSTATE::NONE:
-					m_nowState = MAPSTATE::NONE;		// 空気
+					m_nowState = MAPSTATE::NONE;		// なし
 					break;
 				default:
 					break;

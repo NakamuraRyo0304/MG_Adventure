@@ -61,7 +61,7 @@ private:
 	const float CLOUD_SPEED = 0.1f;
 
 	// 雲リセットエリアサイズ
-	const float CLOUD_RESET_SIZE = 0.85f;
+	const float GRAVITY_SIZE = 0.85f;
 
 	// 最低高度
 	const float	COMMON_LOW = COMMON_SIZE / 2;
@@ -72,11 +72,11 @@ private:
 	std::unique_ptr<DirectX::Model> m_grassModel;
 	std::unique_ptr<DirectX::Model> m_coinModel;
 	std::unique_ptr<DirectX::Model> m_cloudModel;
-	std::unique_ptr<DirectX::Model> m_resetPtModel;
+	std::unique_ptr<DirectX::Model> m_gravityModel;
 
 public:
 	// ブロックの種類
-	enum { GRASS, COIN, CLOWD, RECLOWD, LENGTH };
+	enum { GRASS, COIN, CLOWD, GRAVITY, LENGTH };
 
 public:
 
@@ -130,7 +130,7 @@ public:
 	const float& GetObjSize(const int& objName);
 
 	// 雲を元の場所に戻す処理
-	void RestoreCloudPosition();
+	void CallGravity();
 
 	// 雲の判定アクセサ
 	void SetCloudHitFlag(const int& index, bool flag) { m_cloudState[index].moveFlag = flag; }

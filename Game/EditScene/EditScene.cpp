@@ -34,7 +34,7 @@ EditScene::EditScene()
 	, m_noneModel{ nullptr }					// モデル＿消しゴム
 	, m_coinModel{ nullptr }					// モデル＿コイン
 	, m_cloudModel{ nullptr }					// モデル＿雲
-	, m_resetPtModel{ nullptr }					// モデル＿リセットポイント
+	, m_gravityModel{ nullptr }					// モデル＿重力
 	, m_skyDomeModel{ nullptr }					// モデル＿スカイドーム
 	, m_cursorPos{ SimpleMath::Vector3::Zero }	// カーソルの位置
 	, is_boxCol{}								// 立方体当たり判定
@@ -255,8 +255,8 @@ void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	Comm
 	case MAPSTATE::CLOUD:	// 雲
 		m_cloudModel->Draw(context, states, world, view, proj);
 		break;
-	case MAPSTATE::RESET:	// 雲リセット
-		m_resetPtModel->Draw(context, states, world, view, proj);
+	case MAPSTATE::GRAVITY:	// 重力
+		m_gravityModel->Draw(context, states, world, view, proj);
 		break;
 	case MAPSTATE::PLAYER:	// プレイヤー
 		m_playerModel->Draw(context, states, _rotateY * world, view, proj);
@@ -280,7 +280,7 @@ void EditScene::Finalize()
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_cloudModel);
-	ModelFactory::DeleteModel(m_resetPtModel);
+	ModelFactory::DeleteModel(m_gravityModel);
 	ModelFactory::DeleteModel(m_playerModel);
 	ModelFactory::DeleteModel(m_skyDomeModel);
 	ModelFactory::DeleteModel(m_noneModel);
@@ -331,7 +331,7 @@ void EditScene::CreateWindowDependentResources()
 		_device,
 		L"Resources/Models/Cloud.cmo"
 	);
-	m_resetPtModel = ModelFactory::GetCreateModel(		// リセットブロック
+	m_gravityModel = ModelFactory::GetCreateModel(		// 重力ブロック
 		_device,
 		L"Resources/Models/ResetPt.cmo"
 	);

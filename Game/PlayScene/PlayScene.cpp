@@ -442,16 +442,16 @@ void PlayScene::CreateWindowDependentResources()
 	m_blocks->CreateShader(device);
 
 	// ファクトリーで生成
-	auto grass = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
-	auto coin  = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
-	auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
-	auto reset = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
+	auto grass	 = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
+	auto coin	 = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
+	auto cloud	 = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
+	auto gravity = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
 
 	// モデルの受け渡し
-	m_blocks->CreateModels(std::move(grass), m_blocks->GRASS);
-	m_blocks->CreateModels(std::move(coin),	 m_blocks->COIN);
-	m_blocks->CreateModels(std::move(cloud), m_blocks->CLOWD);
-	m_blocks->CreateModels(std::move(reset), m_blocks->RECLOWD);
+	m_blocks->CreateModels(std::move(grass),    m_blocks->GRASS);
+	m_blocks->CreateModels(std::move(coin),     m_blocks->COIN);
+	m_blocks->CreateModels(std::move(cloud),    m_blocks->CLOWD);
+	m_blocks->CreateModels(std::move(gravity),  m_blocks->GRAVITY);
 
 	//-------------------------------------------------------------------------------------//
 	// 位置情報のシェーダーの作成
@@ -519,7 +519,7 @@ void PlayScene::Judgement()
 	// 当たり判定を取る
 	for (auto& i : m_blocks->GetMapData())
 	{
-		// マップステータスがNoneの時は飛ばす
+		// マップステータスがなしの時は飛ばす
 		if (i.id == MAPSTATE::NONE) continue;
 
 		// プレイヤの半径1.5fの範囲になければ処理しない
@@ -552,7 +552,7 @@ void PlayScene::Judgement()
 /// <returns>なし</returns>
 void PlayScene::ApplyPushBack(Object& obj)
 {
-	// 当っているオブジェが空気の場合は処理しない
+	// 当っているオブジェがなしの場合は処理しない
 	if (obj.id == MAPSTATE::NONE)
 	{
 		is_boxCol.SetPushMode(false);
@@ -606,11 +606,11 @@ void PlayScene::ApplyPushBack(Object& obj)
 		m_prevIndex.pop_front();
 	}
 
-	// リセット処理
-	if (obj.id == MAPSTATE::RESET)
+	// 重力処理
+	if (obj.id == MAPSTATE::GRAVITY)
 	{
 		is_boxCol.SetPushMode(false);
-		m_blocks->RestoreCloudPosition();
+		m_blocks->CallGravity();
 	}
 
 	//-------------------------------------------------------------------------------------//

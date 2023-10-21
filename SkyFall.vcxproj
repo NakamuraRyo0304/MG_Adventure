@@ -324,6 +324,13 @@
     <Manifest Include="settings.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Datas\Maps\Stage1.csv" />
+    <None Include="Datas\Maps\Stage2.csv" />
+    <None Include="Datas\Maps\Stage3.csv" />
+    <None Include="Datas\Maps\Stage4.csv" />
+    <None Include="Datas\Maps\Stage5.csv" />
+    <None Include="Datas\Maps\StageEdit.csv" />
+    <None Include="Datas\Progress.json" />
     <None Include="packages.config" />
     <None Include="Resources\Fonts\myfile.spritefont" />
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />

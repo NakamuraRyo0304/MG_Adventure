@@ -33,6 +33,7 @@ Blocks::Blocks()
 	, m_grassModel{ nullptr }					// 草ブロックのモデル
 	, m_coinModel{ nullptr }					// コインブロックのモデル
 	, m_cloudModel{ nullptr }					// 雲ブロックのモデル
+	, m_gravityModel{ nullptr }					// 重力ブロックのモデル
 	, is_collectedFlag{ false }					// コイン回収済み判定フラグ
 	, is_hitCoinFlag{ false }					// 判定フラグ
 {
@@ -117,7 +118,7 @@ void Blocks::Initialize(int stageNum)
 				m_mapObj[i].position.z
 			};
 
-			// 代入後に該当マスを空気に変える(判定除去)
+			// 代入後に該当マスをなしに変える(判定除去)
 			m_mapObj[i].id = MAPSTATE::NONE;
 		}
 	}
@@ -182,6 +183,8 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 	// 雲以外のオブジェクトの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
+		if (m_mapObj[i].id == MAPSTATE::NONE) continue;
+
 		// 移動行列
 		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
@@ -272,8 +275,8 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 			m_coinModel->Draw(context, states, _rotMat * _world, view, proj);
 		}
 
-		// 雲のリセットポイント
-		if (m_mapObj[i].id == MAPSTATE::RESET)
+		// 重力ブロック
+		if (m_mapObj[i].id == MAPSTATE::GRAVITY)
 		{
 			// 反転防止
 			if (sinf(_revScaleTimer) < 0.0f)
@@ -281,8 +284,8 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 				_revScaleMat *= SimpleMath::Matrix::CreateScale(1.0f, -1.0f,1.0f);
 			}
 
-			m_resetPtModel->UpdateEffects(_lightSetting);
-			m_resetPtModel->Draw(context, states, _revScaleMat * _rotMat * _world, view, proj);
+			m_gravityModel->UpdateEffects(_lightSetting);
+			m_gravityModel->Draw(context, states, _revScaleMat * _rotMat * _world, view, proj);
 		}
 	}
 
@@ -319,7 +322,7 @@ void Blocks::Finalize()
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_cloudModel);
-	ModelFactory::DeleteModel(m_resetPtModel);
+	ModelFactory::DeleteModel(m_gravityModel);
 }
 
 /// <summary>
@@ -341,8 +344,8 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 	case CLOWD:									// 雲ブロック
 		m_cloudModel = std::move(model);
 		break;
-	case RECLOWD:								// 雲リセット
-		m_resetPtModel = std::move(model);
+	case GRAVITY:								// 重力ブロック
+		m_gravityModel = std::move(model);
 		break;
 	default:
 		break;
@@ -402,10 +405,10 @@ const float& Blocks::GetObjSize(const int& objName)
 		// 雲も小さめサイズ
 		return CLOUD_SIZE;
 	}
-	else if (objName == MAPSTATE::RESET)
+	else if (objName == MAPSTATE::GRAVITY)
 	{
-		// 雲リセットエリアは大きめsサイズ
-		return CLOUD_RESET_SIZE;
+		// 重力は少し大きめサイズ
+		return GRAVITY_SIZE;
 	}
 	else
 	{
@@ -419,7 +422,7 @@ const float& Blocks::GetObjSize(const int& objName)
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void Blocks::RestoreCloudPosition()
+void Blocks::CallGravity()
 {
 	for (auto& i : m_mapObj)
 	{

@@ -333,10 +333,10 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 	for (int i = 0; i < MAX_STAGE_NUM; ++i)
 	{
 		// ファクトリーで生成
-		auto grass = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
-		auto coin  = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
-		auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
-		auto reset = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
+		auto grass   = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
+		auto coin    = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
+		auto cloud   = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
+		auto gravity = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
 
 		// 作成されていない場合は作成する
 		if (!m_blocks[i])
@@ -346,10 +346,10 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 			m_blocks[i]->CreateShader(device);
 
 			// モデルの受け渡し
-			m_blocks[i]->CreateModels(std::move(grass), m_blocks[i]->GRASS);
-			m_blocks[i]->CreateModels(std::move(coin),  m_blocks[i]->COIN);
-			m_blocks[i]->CreateModels(std::move(cloud), m_blocks[i]->CLOWD);
-			m_blocks[i]->CreateModels(std::move(reset), m_blocks[i]->RECLOWD);
+			m_blocks[i]->CreateModels(std::move(grass),   m_blocks[i]->GRASS);
+			m_blocks[i]->CreateModels(std::move(coin),    m_blocks[i]->COIN);
+			m_blocks[i]->CreateModels(std::move(cloud),   m_blocks[i]->CLOWD);
+			m_blocks[i]->CreateModels(std::move(gravity), m_blocks[i]->GRAVITY);
 
 			// 初期化処理
 			m_blocks[i]->Initialize(i);
@@ -365,20 +365,20 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 void SelectScene::CreateFirstStage(ID3D11Device1* device)
 {
 	// ファクトリーで生成
-	auto grass = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
-	auto coin  = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
-	auto cloud = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
-	auto reset = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
+	auto grass   = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
+	auto coin    = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
+	auto cloud   = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
+	auto gravity = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
 
 	// ブロックの作成
 	m_blocks[m_stageNum] = std::make_unique<Blocks>();
 	m_blocks[m_stageNum]->CreateShader(device);
 
 	// モデルの受け渡し
-	m_blocks[m_stageNum]->CreateModels(std::move(grass), m_blocks[m_stageNum]->GRASS);
-	m_blocks[m_stageNum]->CreateModels(std::move(coin),  m_blocks[m_stageNum]->COIN);
-	m_blocks[m_stageNum]->CreateModels(std::move(cloud), m_blocks[m_stageNum]->CLOWD);
-	m_blocks[m_stageNum]->CreateModels(std::move(reset), m_blocks[m_stageNum]->RECLOWD);
+	m_blocks[m_stageNum]->CreateModels(std::move(grass),   m_blocks[m_stageNum]->GRASS);
+	m_blocks[m_stageNum]->CreateModels(std::move(coin),    m_blocks[m_stageNum]->COIN);
+	m_blocks[m_stageNum]->CreateModels(std::move(cloud),   m_blocks[m_stageNum]->CLOWD);
+	m_blocks[m_stageNum]->CreateModels(std::move(gravity), m_blocks[m_stageNum]->GRAVITY);
 
 	// 初期化処理
 	m_blocks[m_stageNum]->Initialize(m_stageNum);

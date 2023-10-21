@@ -209,6 +209,9 @@
     <Filter Include="Nlohmann">
       <UniqueIdentifier>{718f7214-f6de-43ad-b4ae-2b0537acd86e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Datas">
+      <UniqueIdentifier>{f3bad4f2-1533-4662-844d-d95032de6ff6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -658,6 +661,27 @@
     </None>
     <None Include="Resources\Models\Cloud.cmo">
       <Filter>Resources\Models\MapObject</Filter>
+    </None>
+    <None Include="Datas\Progress.json">
+      <Filter>Datas</Filter>
+    </None>
+    <None Include="Datas\Maps\Stage1.csv">
+      <Filter>Datas</Filter>
+    </None>
+    <None Include="Datas\Maps\Stage2.csv">
+      <Filter>Datas</Filter>
+    </None>
+    <None Include="Datas\Maps\Stage3.csv">
+      <Filter>Datas</Filter>
+    </None>
+    <None Include="Datas\Maps\Stage4.csv">
+      <Filter>Datas</Filter>
+    </None>
+    <None Include="Datas\Maps\Stage5.csv">
+      <Filter>Datas</Filter>
+    </None>
+    <None Include="Datas\Maps\StageEdit.csv">
+      <Filter>Datas</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

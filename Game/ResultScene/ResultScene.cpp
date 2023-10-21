@@ -247,10 +247,10 @@ void ResultScene::CreateWindowDependentResources()
 		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo")),
 		m_blocks->CLOWD
 	);
-	// 雲リセットブロックの作成
+	// 重力ブロックの作成
 	m_blocks->CreateModels(
 		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo")),
-		m_blocks->RECLOWD
+		m_blocks->GRAVITY
 	);
 
 	// UIの作成
