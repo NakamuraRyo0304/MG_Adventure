@@ -90,15 +90,11 @@ bool MapLoad::LoadMap(std::wstring filename)
 
 		Object _obj;
 
-		// マップステータスID
-		if (!(_iss >> _obj.id))
-		{
-			_ifs.close();
-			m_mapData.clear();
-		}
-
-		// 座標情報
-		if (!(_iss >> _obj.position.x) || !(_iss >> _obj.position.y) || !(_iss >> _obj.position.z))
+		// マップ情報 ＆ 座標情報
+		if (!(_iss >> _obj.id) ||			// マップID
+			!(_iss >> _obj.position.x) ||	// 座標X
+			!(_iss >> _obj.position.y) ||	// 座標Y
+			!(_iss >> _obj.position.z))		// 座標Z
 		{
 			_ifs.close();
 			m_mapData.clear();
