@@ -519,6 +519,9 @@ void PlayScene::Judgement()
 	// 当たり判定を取る
 	for (auto& i : m_blocks->GetMapData())
 	{
+		// マップステータスがNoneの時は飛ばす
+		if (i.id == MAPSTATE::NONE) continue;
+
 		// プレイヤの半径1.5fの範囲になければ処理しない
 		// 引数（基準点、検索範囲、検索点）
 		if (UserUtility::CheckPointInSphere(

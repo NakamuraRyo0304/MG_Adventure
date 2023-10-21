@@ -123,11 +123,14 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 	// ファイルがなければ処理しない
 	if (!ofs)return;
 
-	// ファイルを出力する
-	for (const auto& o : obj)
+	for (auto& _obj : obj)
 	{
 		std::ostringstream oss;
-		oss << o.id << "," << o.position.x << "," << o.position.y << "," << o.position.z << ",\n";
+
+		// ID,X,Y,X,改行
+		oss << _obj.id << "," << _obj.position.x << "," << _obj.position.y << "," << _obj.position.z << ",\n";
+
+		// １ブロックの情報を出力
 		ofs << oss.str();
 	}
 

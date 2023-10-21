@@ -77,6 +77,9 @@ void Blocks::Initialize(int stageNum)
 		// インデックス番号の格納
 		m_mapObj[i].index = i;
 
+		// ブロックがないときは処理しない
+		if (m_mapObj[i].id == MAPSTATE::NONE) continue;
+
 		// マップの座標設定
 		m_mapObj[i].position.x -= static_cast<float>(m_mapLoad->MAP_COLUMN) / 2 * COMMON_SIZE;
 		m_mapObj[i].position.y += static_cast<float>(COMMON_LOW);
