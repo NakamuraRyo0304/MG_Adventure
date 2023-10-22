@@ -190,7 +190,7 @@
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\EditScene\EditScene.h" />
-    <ClInclude Include="Game\EditScene\Objects\UserInterface.h" />
+    <ClInclude Include="Game\EditScene\Objects\EditUI.h" />
     <ClInclude Include="Game\EditScene\System\ClearChecker.h" />
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
@@ -233,7 +233,7 @@
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\EditScene\EditScene.cpp" />
-    <ClCompile Include="Game\EditScene\Objects\UserInterface.cpp" />
+    <ClCompile Include="Game\EditScene\Objects\EditUI.cpp" />
     <ClCompile Include="Game\EditScene\System\ClearChecker.cpp" />
     <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />

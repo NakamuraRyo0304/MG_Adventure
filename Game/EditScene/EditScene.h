@@ -20,7 +20,7 @@
 using MAPSTATE = MapLoad::BOXSTATE;
 
 class ClearChecker;
-class UserInterface;
+class EditUI;
 class MouseCursor;
 class EditScene final : public IScene
 {
@@ -47,7 +47,7 @@ private:
 	Collider::BoxCollider is_boxCol;
 
 	// UI
-	std::unique_ptr<UserInterface> m_userInterface;
+	std::unique_ptr<EditUI> m_userInterface;
 
 	// 現在のブロックステータス
 	int m_nowState;

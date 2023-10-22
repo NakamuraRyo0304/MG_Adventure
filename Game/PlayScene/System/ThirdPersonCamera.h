@@ -12,7 +12,6 @@
 #define THIRDPERSONCAMERA
 
 class SystemManager;
-class Haze;
 class ThirdPersonCamera final : public Camera
 {
 private:
@@ -31,9 +30,6 @@ private:
 
 	// 画像用にシステムを貰う
 	std::shared_ptr<SystemManager> m_system;
-
-	// 靄へのポインタ
-	std::unique_ptr<Haze> m_haze;
 
 public:
 	ThirdPersonCamera(std::shared_ptr<SystemManager> system,ID3D11DeviceContext1* context, ID3D11Device1* device);

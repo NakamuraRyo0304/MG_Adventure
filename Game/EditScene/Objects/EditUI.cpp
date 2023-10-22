@@ -1,5 +1,5 @@
 /*
- *	@File	UserInterface.cpp
+ *	@File	EditUI.cpp
  *	@Brief	UIの表示。
  *	@Date	2023-06-17
  *  @Author NakamuraRyo
@@ -12,14 +12,14 @@
 // ユーザーユーティリティ
 #include "Libraries/UserUtility.h"
 
-#include "UserInterface.h"
+#include "EditUI.h"
 
  /// <summary>
  /// コンストラクタ
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-UserInterface::UserInterface(const SimpleMath::Vector2& windowSize)
+EditUI::EditUI(const SimpleMath::Vector2& windowSize)
 	: m_system{}					// システムマネージャ
 	, m_windowSize{windowSize}		// 画面サイズ
 	, m_nowState{}					// 最新のステート
@@ -44,7 +44,7 @@ UserInterface::UserInterface(const SimpleMath::Vector2& windowSize)
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-UserInterface::~UserInterface()
+EditUI::~EditUI()
 {
 	Finalize();
 }
@@ -55,7 +55,7 @@ UserInterface::~UserInterface()
 /// <param name="shareSystem">システムデータ</param>
 /// <param name="device">ID3D11Device1ポインタ</param>
 /// <returns>なし</returns>
-void UserInterface::Initialize(const std::shared_ptr<SystemManager>& shareSystem, ID3D11Device1* device)
+void EditUI::Initialize(const std::shared_ptr<SystemManager>& shareSystem, ID3D11Device1* device)
 {
 	// ポインタの共有
 	m_system = shareSystem;
@@ -145,7 +145,7 @@ void UserInterface::Initialize(const std::shared_ptr<SystemManager>& shareSystem
 /// </summary>
 /// <param name="mouseState">マウス</param>
 /// <returns>なし</returns>
-void UserInterface::Update(Mouse::State& mouseState)
+void EditUI::Update(Mouse::State& mouseState)
 {
 	// ツールバー表示切り替えアイコンをクリック
 	bool _tool = m_imageHitter.IsHitAABB2D(
@@ -213,7 +213,7 @@ void UserInterface::Update(Mouse::State& mouseState)
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void UserInterface::Render()
+void EditUI::Render()
 {
 	// 画像の拡大率をウィンドウをもとに計算
 	SimpleMath::Vector2 _imageScale = m_windowSize / FULL_SCREEN_SIZE;
@@ -337,7 +337,7 @@ void UserInterface::Render()
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void UserInterface::Finalize()
+void EditUI::Finalize()
 {
 }
 
@@ -346,7 +346,7 @@ void UserInterface::Finalize()
 /// </summary>
 /// <param name="imageScale">拡大率</param>
 /// <returns>なし</returns>
-void UserInterface::DrawIcon(const SimpleMath::Vector2& imageScale)
+void EditUI::DrawIcon(const SimpleMath::Vector2& imageScale)
 {
 	for (int i = 0; i < MAPSTATE::LENGTH; ++i)
 	{
@@ -378,7 +378,7 @@ void UserInterface::DrawIcon(const SimpleMath::Vector2& imageScale)
 /// </summary>
 /// <param name="mouseState">マウス</param>
 /// <returns>なし</returns>
-void UserInterface::ChangeState(DirectX::Mouse::State& mouseState)
+void EditUI::ChangeState(DirectX::Mouse::State& mouseState)
 {
 	// マウスがUIエリア以外なら処理しない
 	if (mouseState.y > 170.0f * (m_windowSize.y / FULL_SCREEN_SIZE.y)) return;

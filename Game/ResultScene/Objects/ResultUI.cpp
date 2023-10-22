@@ -120,9 +120,9 @@ void ResultUI::Update(const float& timer, const int& clearTime)
 /// <summary>
 /// 描画処理
 /// </summary>
-/// <param name = "引数無し"></param>
+/// <param name = "fadeValue">フェードの値</param>
 /// <returns>なし</returns>
-void ResultUI::Render()
+void ResultUI::Render(const float& fadeValue)
 {
 	// 画面比率を計算
 	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
@@ -132,6 +132,9 @@ void ResultUI::Render()
 
 	// 数字を描画
 	DrawNumber(DRAW_NUM_SIZE, _rate);
+
+	// フェード中は処理しない
+	if (fadeValue >= 0.7f) return;
 
 	// シーン選択文字(リトライ、セレクト、タイトル)
 	DrawFonts(_rate);

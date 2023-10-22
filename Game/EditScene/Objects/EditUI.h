@@ -1,13 +1,13 @@
 /*
- *	@File	UserInterface.h
+ *	@File	EditUI.h
  *	@Brief	UIÇÃï\é¶ÅB
  *	@Date	2023-06-17
  *  @Author NakamuraRyo
  */
 
 #pragma once
-#ifndef USERINTERFACE
-#define USERINTERFACE
+#ifndef EDITUI
+#define EDITUI
 
 #include "Libraries/SystemDatas/MapLoad.h"
 #include "Libraries/SystemDatas/Collider.h"
@@ -16,7 +16,7 @@
 using MAPSTATE = MapLoad::BOXSTATE;
 
 class SystemManager;
-class UserInterface
+class EditUI
 {
 private:
 
@@ -66,8 +66,8 @@ private:
 
 public:
 
-	UserInterface(const DirectX::SimpleMath::Vector2& windowSize);
-	~UserInterface();
+	EditUI(const DirectX::SimpleMath::Vector2& windowSize);
+	~EditUI();
 
 	void Initialize(const std::shared_ptr<SystemManager>& shareSystem,ID3D11Device1* device);
 	void Update(DirectX::Mouse::State& mouseState);
@@ -100,4 +100,4 @@ public:
 	const int& GetNowState() { return m_nowState; }
 };
 
-#endif // USERINTERFACE
+#endif // EDITUI

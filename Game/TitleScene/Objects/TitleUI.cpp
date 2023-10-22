@@ -109,12 +109,19 @@ void TitleUI::Update(const bool& selectFlag)
 /// <summary>
 /// 描画処理
 /// </summary>
-/// <param name="引数無し"></param>
+/// <param name="fadeValue">フェードの値</param>
+/// <param name="endAnim"アニメーションの処理判定</param>
 /// <returns>なし</returns>
-void TitleUI::Render()
+void TitleUI::Render(const float& fadeValue, const bool& endAnim)
 {
 	// 画面比率
 	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE * 0.5f;
+
+	// フェード中は処理しない
+	if (fadeValue >= 0.7f) return;
+
+	// アニメーション中は処理しない
+	if (!endAnim) return;
 
 	// スタートの文字--------------------------------------------------------------------
 	m_system->GetDrawSprite()->DrawTexture(

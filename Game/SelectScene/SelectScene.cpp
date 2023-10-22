@@ -205,7 +205,7 @@ void SelectScene::Draw()
 	}
 
 	// UI‚Ì•`‰æ
-	m_userInterface->Render(m_stageNum, MAX_STAGE_NUM - 1);
+	m_userInterface->Render(GetFadeValue(), m_stageNum, MAX_STAGE_NUM - 1);
 }
 
 /// <summary>

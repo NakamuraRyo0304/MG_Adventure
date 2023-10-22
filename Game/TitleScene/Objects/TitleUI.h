@@ -50,7 +50,7 @@ public:
 	void Update(const bool& selectFlag);
 
 	// •`‰æˆ—
-	void Render();
+	void Render(const float& fadeValue, const bool& endAnim);
 
 	// I—¹ˆ—
 	void Finalize();

@@ -95,7 +95,7 @@ public:
 	void Update(const float& timer,const int& clearTime);
 
 	// •`‰æˆ—
-	void Render();
+	void Render(const float& fadeValue);
 
 	// I—¹ˆ—
 	void Finalize();

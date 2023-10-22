@@ -9,9 +9,6 @@
 
 #include "Libraries/SystemManager/SystemManager.h"
 
-// 靄
-#include "../Objects/Haze.h"
-
 #include "ThirdPersonCamera.h"
 
 /// <summary>
@@ -25,6 +22,7 @@ ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
 	ID3D11DeviceContext1* context, ID3D11Device1* device)
 	: m_system{ system }
 	, m_adhesionTimer{ CHANGE_SPAN }
+	, m_followView{}
 	, is_changeFlag{false}
 {
 	// ドロースプライト
@@ -33,11 +31,6 @@ ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
 	_sp->MakeSpriteBatch(context);
 
 	_sp->AddTextureData(L"Adhesion", L"Resources/Textures/ADHESION/Adhesion.dds", device);
-
-	// 靄の作成
-	m_haze = std::make_unique<Haze>();
-	m_haze->CreateShader(m_system->GetDeviceResources());
-
 }
 
 /// <summary>

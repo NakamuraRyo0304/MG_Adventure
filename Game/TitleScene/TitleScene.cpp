@@ -239,7 +239,7 @@ void TitleScene::Draw()
 	m_skyDomeModel->Draw(_context, _states, _skyMat, _view, _projection);  		// スカイドーム
 
 	// UIの描画
-	static_cast<int>(m_logoMoveY) == static_cast<int>(END_MOVE_POS) ? m_titleUI->Render() : void();
+	m_titleUI->Render(GetFadeValue(), static_cast<int>(m_logoMoveY) == static_cast<int>(END_MOVE_POS));
 }
 
 /// <summary>

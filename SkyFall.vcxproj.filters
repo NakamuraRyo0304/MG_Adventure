@@ -80,9 +80,6 @@
     <Filter Include="Scenes\EditScene\Objects">
       <UniqueIdentifier>{0b6acfe5-f1a3-4424-873c-3f20290cf034}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scenes\EditScene\Objects\UserInterface">
-      <UniqueIdentifier>{1ac4315d-6ab2-417c-9d03-6a3aee9cdf73}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common\Fade">
       <UniqueIdentifier>{7c91f0be-f5e3-4cf5-b110-ada0c1ed334d}</UniqueIdentifier>
     </Filter>
@@ -212,6 +209,9 @@
     <Filter Include="Datas">
       <UniqueIdentifier>{f3bad4f2-1533-4662-844d-d95032de6ff6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\EditScene\Objects\EditUI">
+      <UniqueIdentifier>{1ac4315d-6ab2-417c-9d03-6a3aee9cdf73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -283,8 +283,8 @@
     <ClInclude Include="Game\PlayScene\Objects\Player.h">
       <Filter>Scenes\PlayScene\Objects\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Game\EditScene\Objects\UserInterface.h">
-      <Filter>Scenes\EditScene\Objects\UserInterface</Filter>
+    <ClInclude Include="Game\EditScene\Objects\EditUI.h">
+      <Filter>Scenes\EditScene\Objects\EditUI</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\Fade.h">
       <Filter>Common\Fade</Filter>
@@ -402,8 +402,8 @@
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp">
       <Filter>Scenes\PlayScene\Objects\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Game\EditScene\Objects\UserInterface.cpp">
-      <Filter>Scenes\EditScene\Objects\UserInterface</Filter>
+    <ClCompile Include="Game\EditScene\Objects\EditUI.cpp">
+      <Filter>Scenes\EditScene\Objects\EditUI</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\Fade.cpp">
       <Filter>Common\Fade</Filter>

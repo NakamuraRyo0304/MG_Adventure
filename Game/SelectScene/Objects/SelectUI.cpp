@@ -81,10 +81,11 @@ void SelectUI::Update(const float& timer, const bool& rightFlag, const bool& lef
 /// <summary>
 /// 描画処理
 /// </summary>
+/// <param name="fadeValue">フェードの値</param>
 /// <param name="selectNum">選択中のステージ番号</param>
 /// <param name="maxNum">最大のステージ番号</param>
 /// <returns>なし</returns>
-void SelectUI::Render(const int& selectNum, const int& maxNum)
+void SelectUI::Render(const float& fadeValue, const int& selectNum, const int& maxNum)
 {
 	// 画面比率を計算
 	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
@@ -107,6 +108,9 @@ void SelectUI::Render(const int& selectNum, const int& maxNum)
 
 	// 矢印を描画
 	DrawArrow(_rate, selectNum, maxNum);
+
+	// フェード中は処理しない
+	if (fadeValue >= 0.7f) return;
 
 	// プッシュ画像を表示
 	m_system->GetDrawSprite()->DrawTexture(

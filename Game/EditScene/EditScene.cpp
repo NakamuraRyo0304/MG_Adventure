@@ -8,7 +8,7 @@
 #include "pch.h"
 
 // UI
-#include "Objects/UserInterface.h"
+#include "Objects/EditUI.h"
 
 // マウスカーソル
 #include "../../Libraries/SystemDatas/MouseCursor.h"
@@ -308,7 +308,7 @@ void EditScene::CreateWindowDependentResources()
 	float _height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// UIの初期化
-	m_userInterface = std::make_unique<UserInterface>(SimpleMath::Vector2(_width, _height));
+	m_userInterface = std::make_unique<EditUI>(SimpleMath::Vector2(_width, _height));
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
 	m_userInterface->Initialize(GetSystemManager(), _device);
 

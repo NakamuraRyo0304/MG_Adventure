@@ -183,7 +183,7 @@ void ResultScene::Draw()
 	m_blocks->Render(_context, _states, _view, _projection, m_timer);
 
 	// UI‚Ì•\Ž¦
-	m_userInterface->Render();
+	m_userInterface->Render(GetFadeValue());
 }
 
 
