@@ -36,6 +36,9 @@ private:
 	int m_tenCoins;
 	int m_hanCoins;
 
+	// プッシュスペース点滅用フラグ
+	bool is_pushToFlag;
+
 	// 演出用Y軸上下変数
 	float m_moveY;
 
@@ -50,6 +53,9 @@ private:
 	// 画像幅
 	const int NUM_WIDTH = 100;
 
+	// プッシュ画像のサイズ
+	const DirectX::SimpleMath::Vector2 PUSH_SIZE = SimpleMath::Vector2{ 1280.0f,128.0f };
+
 public:
 	SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device);
 	~SelectUI();
@@ -58,7 +64,7 @@ public:
 	void Initialize(const DirectX::SimpleMath::Vector2& windowSize);
 
 	// 更新処理
-	void Update(const bool& rightFlag, const bool& leftFlag);
+	void Update(const float& timer, const bool& rightFlag, const bool& leftFlag);
 
 	// 描画処理
 	void Render(const int& selectNum , const int& maxNum);
@@ -67,7 +73,15 @@ public:
 	void Finalize();
 
 private:
-	void DrawNumber(DirectX::SimpleMath::Vector2 texScale);
+
+	// 矢印の描画
+	void DrawArrow(DirectX::SimpleMath::Vector2 windowRate, const int& selectNum, const int& maxNum);
+
+	// 数字の描画
+	void DrawNumber(DirectX::SimpleMath::Vector2 windowRate, DirectX::SimpleMath::Vector2 texScale);
+
+	// 選択画面に枠をつける
+	void DrawFrame(DirectX::SimpleMath::Vector2 windowRate);
 
 public:
 	// コイン数セッター

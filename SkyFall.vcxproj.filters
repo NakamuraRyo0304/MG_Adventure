@@ -583,6 +583,12 @@
     <Image Include="Resources\Textures\DeathEffect.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_COMMON</Filter>
     </Image>
+    <Image Include="Resources\Textures\SELECT_INFO\SpaceToStart.dds">
+      <Filter>Resources\Textures\SELECT_INFO</Filter>
+    </Image>
+    <Image Include="Resources\Textures\SELECT_INFO\OutFrame.dds">
+      <Filter>Resources\Textures\SELECT_INFO</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">

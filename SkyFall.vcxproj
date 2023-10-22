@@ -310,7 +310,9 @@
     <Image Include="Resources\Textures\ResultFonts.dds" />
     <Image Include="Resources\Textures\SaveFile.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\LeftArrow.dds" />
+    <Image Include="Resources\Textures\SELECT_INFO\OutFrame.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\RightArrow.dds" />
+    <Image Include="Resources\Textures\SELECT_INFO\SpaceToStart.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\TotalCoins.dds" />
     <Image Include="Resources\Textures\TITLE_BUTTON\Exit.dds" />
     <Image Include="Resources\Textures\TITLE_BUTTON\Start.dds" />

@@ -20,22 +20,26 @@
  /// <param name="device">デバイスポインタ</param>
  /// <returns>なし</returns>
 SelectUI::SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device)
-	: m_rightAlpha{}		// 右矢印の透明度
+	: m_timer{}				// タイマー
+	, m_rightAlpha{}		// 右矢印の透明度
 	, m_leftAlpha{}			// 左矢印の透明度
 	, m_oneCoins{}			//   1の位のコイン数
 	, m_tenCoins{}			//  10の位のコイン数
 	, m_hanCoins{}			// 100の位のコイン数
 	, m_moveY{}				// 上下移動
+	, is_pushToFlag{ false }// スペース画像点滅フラグ
 {
 	m_system = system;
 
 	m_system->GetDrawSprite()->MakeSpriteBatch(context);
 
 	// 画像の登録
-	m_system->GetDrawSprite()->AddTextureData(L"Number",	 L"Resources/Textures/Number.dds",				   device);
-	m_system->GetDrawSprite()->AddTextureData(L"RightArrow", L"Resources/Textures/SELECT_INFO/RightArrow.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"LeftArrow",  L"Resources/Textures/SELECT_INFO/LeftArrow.dds",  device);
-	m_system->GetDrawSprite()->AddTextureData(L"CenterCoin", L"Resources/Textures/SELECT_INFO/TotalCoins.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Number",	   L"Resources/Textures/Number.dds",					 device);
+	m_system->GetDrawSprite()->AddTextureData(L"RightArrow",   L"Resources/Textures/SELECT_INFO/RightArrow.dds",	 device);
+	m_system->GetDrawSprite()->AddTextureData(L"LeftArrow",    L"Resources/Textures/SELECT_INFO/LeftArrow.dds",		 device);
+	m_system->GetDrawSprite()->AddTextureData(L"CenterCoin",   L"Resources/Textures/SELECT_INFO/TotalCoins.dds",	 device);
+	m_system->GetDrawSprite()->AddTextureData(L"PushSpace",    L"Resources/Textures/SELECT_INFO/SpaceToStart.dds",	 device);
+	m_system->GetDrawSprite()->AddTextureData(L"OutsideFrame", L"Resources/Textures/SELECT_INFO/OutFrame.dds",		 device);
 }
 
 /// <summary>
@@ -61,11 +65,14 @@ void SelectUI::Initialize(const SimpleMath::Vector2& windowSize)
 /// <summary>
 /// 更新処理
 /// </summary>
+/// <param name="timer">タイマー</param>
 /// <param name="rightFlag">右キーを押した判定</param>
 /// <param name="leftFlag">左キーを押した判定</param>
 /// <returns>なし</returns>
-void SelectUI::Update(const bool& rightFlag, const bool& leftFlag)
+void SelectUI::Update(const float& timer, const bool& rightFlag, const bool& leftFlag)
 {
+	m_timer = timer;
+
 	// フラグによって透明度を変える
 	m_rightAlpha = !rightFlag ? 0.5f : 1.0f;
 	m_leftAlpha  = !leftFlag  ? 0.5f : 1.0f;
@@ -80,44 +87,35 @@ void SelectUI::Update(const bool& rightFlag, const bool& leftFlag)
 void SelectUI::Render(const int& selectNum, const int& maxNum)
 {
 	// 画面比率を計算
-	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
 	SimpleMath::Vector2 _coinsScale = m_windowSize / FULL_SCREEN_SIZE / 2;
 
-	//-------------------------------------------------------------------------------------//
+	// 外枠フレームを描画
+	DrawFrame(_rate);
 
 	// 総獲得コイン数を表示
 	m_system->GetDrawSprite()->DrawTexture(
 		L"CenterCoin",
-		SimpleMath::Vector2{ 0.0f ,0.0f } * _scale,
+		SimpleMath::Vector2::Zero,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		_coinsScale,
 		SimpleMath::Vector2::Zero
 	);
 
-	DrawNumber(_coinsScale);
+	// 数字を描画
+	DrawNumber(_rate, _coinsScale);
 
-	//-------------------------------------------------------------------------------------//
+	// 矢印を描画
+	DrawArrow(_rate, selectNum, maxNum);
 
-	if (selectNum != 0) // 左矢印を表示
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"LeftArrow",
-			SimpleMath::Vector2{ 20.0f ,360.0f } * _scale,
-			SimpleMath::Color{ 1.0f, 1.0f, 1.0f, m_leftAlpha },
-			_scale,
-			SimpleMath::Vector2::Zero
-		);
-	}
-	if (selectNum != maxNum) // 右矢印を表示
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"RightArrow",
-			SimpleMath::Vector2{ 1650.0f,360.0f} * _scale,
-			SimpleMath::Color{ 1.0f, 1.0f, 1.0f, m_rightAlpha },
-			_scale,
-			SimpleMath::Vector2::Zero
-		);
-	}
+	// プッシュ画像を表示
+	m_system->GetDrawSprite()->DrawTexture(
+		L"PushSpace",
+		SimpleMath::Vector2{ (FULL_SCREEN_SIZE.x - PUSH_SIZE.x) / 2, FULL_SCREEN_SIZE.y - PUSH_SIZE.y } * _rate,
+		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
+		_rate,
+		SimpleMath::Vector2::Zero
+	);
 }
 
 /// <summary>
@@ -131,15 +129,44 @@ void SelectUI::Finalize()
 }
 
 /// <summary>
+/// 矢印を描画する
+/// </summary>
+/// <param name="windowRate">ウィンドウ比率</param>
+/// <param name="selectNum">選択中のステージ番号</param>
+/// <param name="maxNum">ステージ最大数</param>
+/// <returns>なし</returns>
+void SelectUI::DrawArrow(SimpleMath::Vector2 windowRate, const int& selectNum, const int& maxNum)
+{
+	if (selectNum != 0) // 左矢印を表示
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"LeftArrow",
+			SimpleMath::Vector2{ 20.0f ,360.0f } * windowRate,
+			SimpleMath::Color{ 1.0f, 1.0f, 1.0f, m_leftAlpha },
+			windowRate,
+			SimpleMath::Vector2::Zero
+		);
+	}
+	if (selectNum != maxNum) // 右矢印を表示
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"RightArrow",
+			SimpleMath::Vector2{ 1650.0f,360.0f } * windowRate,
+			SimpleMath::Color{ 1.0f, 1.0f, 1.0f, m_rightAlpha },
+			windowRate,
+			SimpleMath::Vector2::Zero
+		);
+	}
+}
+
+/// <summary>
 /// 数字の描画
 /// </summary>
+/// <param name="windowRate">ウィンドウ比率</param>
 /// <param name="texScale">テクスチャのスケール</param>
 /// <returns>なし</returns>
-void SelectUI::DrawNumber(SimpleMath::Vector2 texScale)
+void SelectUI::DrawNumber(SimpleMath::Vector2 windowRate, SimpleMath::Vector2 texScale)
 {
-	// 画面サイズ
-	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
-
 	// 切り取り位置設定
 	RECT_U _oneRec = { m_oneCoins * NUM_WIDTH, 0,m_oneCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
 	RECT_U _tenRec = { m_tenCoins * NUM_WIDTH, 0,m_tenCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
@@ -149,7 +176,7 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 texScale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 450.0f ,_positionY } * _scale,
+		SimpleMath::Vector2{ 450.0f ,_positionY } * windowRate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		texScale,
 		SimpleMath::Vector2::Zero,
@@ -158,7 +185,7 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 texScale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 500.0f ,_positionY } * _scale,
+		SimpleMath::Vector2{ 500.0f ,_positionY } * windowRate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		texScale,
 		SimpleMath::Vector2::Zero,
@@ -167,13 +194,29 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 texScale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 550.0f ,_positionY } * _scale,
+		SimpleMath::Vector2{ 550.0f ,_positionY } * windowRate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		texScale,
 		SimpleMath::Vector2::Zero,
 		_oneRec
 	);
 
+}
+
+/// <summary>
+/// 外枠フレーム
+/// </summary>
+/// <param name="windowRate">ウィンドウ比率</param>
+/// <returns>なし</returns>
+void SelectUI::DrawFrame(SimpleMath::Vector2 windowRate)
+{
+	m_system->GetDrawSprite()->DrawTexture(
+		L"OutsideFrame",
+		SimpleMath::Vector2::Zero,
+		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
+		windowRate,
+		SimpleMath::Vector2::Zero
+	);
 }
 
 /// <summary>

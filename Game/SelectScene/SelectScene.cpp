@@ -102,7 +102,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	ChangeStageNumber(keyState);
 
 	// UIの更新
-	m_userInterface->Update(keyState.Right, keyState.Left);
+	m_userInterface->Update(elapsedTime, keyState.Right, keyState.Left);
 
 	// エスケープで終了
 	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
@@ -114,7 +114,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		// フェード中は処理しない
-		if (static_cast<int>(GetFadeValue()) != 0) return;
+		if (GetFadeValue() >= 0.7f) return;
 
 		// ステージ番号が0ならエディタに、それ以外はプレイへ
 		if (m_stageNum == 0)
@@ -178,8 +178,8 @@ void SelectScene::Draw()
 
 	// ビュー行列
 	SimpleMath::Vector3    eye(CAMERA_RADIUS * sinf(rotValue),		// X:回転(ステージと逆回転)
-						       CAMERA_POS_Y  + verticalValue,		// Y:移動(上下)
-						       CAMERA_RADIUS * cosf(rotValue));		// Z:回転(ステージと逆回転)
+		CAMERA_POS_Y + verticalValue,		// Y:移動(上下)
+		CAMERA_RADIUS * cosf(rotValue));		// Z:回転(ステージと逆回転)
 	SimpleMath::Vector3 target(0.0f, m_targetY, 0.0f);
 
 	view = SimpleMath::Matrix::CreateLookAt(eye, target, SimpleMath::Vector3::Up);
@@ -194,17 +194,18 @@ void SelectScene::Draw()
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
 	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
 
-	// UIの表示
-	m_userInterface->Render(m_stageNum, MAX_STAGE_NUM - 1);
-
 	// 点滅させる
-	if (m_flashCount > MAX_FLASH * 0.5f) return;
+	if (m_flashCount < MAX_FLASH * 0.5f)
+	{
+		// テキストの移動アニメーション
+		SimpleMath::Matrix stageMat = CreateTextMatrix(rotValue);
 
-	// テキストの移動アニメーション
-	SimpleMath::Matrix stageMat = CreateTextMatrix(rotValue);
+		// ステージ番号表示
+		m_stageModels[m_stageNum]->Draw(context, states, stageMat, view, proj);
+	}
 
-	// ステージ番号表示
-	m_stageModels[m_stageNum]->Draw(context, states, stageMat, view, proj);
+	// UIの描画
+	m_userInterface->Render(m_stageNum, MAX_STAGE_NUM - 1);
 }
 
 /// <summary>

@@ -117,7 +117,7 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		// フェード中は処理しない
-		if (static_cast<int>(GetFadeValue()) != 0) return;
+		if (GetFadeValue() >= 0.7f) return;
 
 		is_startFlag = true;
 

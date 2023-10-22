@@ -103,7 +103,7 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	    GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::D))
 	{
 		// フェード中は処理しない
-		if (static_cast<int>(GetFadeValue()) != 0) return;
+		if (GetFadeValue() >= 0.7f) return;
 
 		m_selectingScene++;
 		m_selectingScene = m_selectingScene ==  3 ? RETRY : m_selectingScene;
