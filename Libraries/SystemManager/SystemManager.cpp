@@ -94,7 +94,8 @@ SystemManager::GetString()
 {
 	if (!m_drawString)
 	{
-		throw;
+		m_pDR = DX::DeviceResources::GetInstance();
+		m_drawString = std::make_unique<Debug::DrawString>(m_pDR->GetD3DDevice(), m_pDR->GetD3DDeviceContext());
 	}
 	return m_drawString;
 }
@@ -221,18 +222,12 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 	m_keyboardStateTracker
 		= std::make_unique<Keyboard::KeyboardStateTracker>();
 
-	// 文字の描画
-	m_drawString = std::make_unique<Debug::DrawString>();
-
 	// カメラの初期化
 	m_camera = std::make_unique<Camera>();
 
 	// マウス
 	m_mouseStateTracker
 		= std::make_unique<Mouse::ButtonStateTracker>();
-
-	// グリッドフロア 30 x 30
-	m_gridFloor = std::make_unique<Debug::GridFloor>(device, context, 30, 30);
 
 	// レイを飛ばす
 	m_rayCast = std::make_unique<RayCast>();
@@ -245,4 +240,10 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 
 	// サウンドマネージャ
 	m_soundManager = std::make_unique<SoundManager>();
+
+	// 文字の描画
+	m_drawString = std::make_unique<Debug::DrawString>(device, context);
+
+	// グリッドフロア 30 x 30
+	m_gridFloor = std::make_unique<Debug::GridFloor>(device, context, 50, 50);
 }

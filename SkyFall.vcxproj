@@ -332,7 +332,9 @@
     <None Include="Datas\Maps\StageEdit.csv" />
     <None Include="Datas\Progress.json" />
     <None Include="packages.config" />
-    <None Include="Resources\Fonts\myfile.spritefont" />
+    <Font Include="Resources\Fonts\myfile.spritefont">
+      <FileType>Document</FileType>
+    </Font>
     <None Include="Resources\Fonts\SegoeUI_18.spritefont" />
     <None Include="Resources\Models\Bird.cmo" />
     <None Include="Resources\Models\Body.cmo" />

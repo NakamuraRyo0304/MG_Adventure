@@ -69,7 +69,7 @@ public:
 	UserInterface(const DirectX::SimpleMath::Vector2& windowSize);
 	~UserInterface();
 
-	void Initialize(std::shared_ptr<SystemManager> shareSystem,ID3D11DeviceContext1* context,ID3D11Device1* device);
+	void Initialize(const std::shared_ptr<SystemManager>& shareSystem,ID3D11Device1* device);
 	void Update(DirectX::Mouse::State& mouseState);
 	void Render();
 	void Finalize();

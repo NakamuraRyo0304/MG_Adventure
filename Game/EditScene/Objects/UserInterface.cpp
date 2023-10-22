@@ -53,44 +53,61 @@ UserInterface::~UserInterface()
 /// 初期化処理
 /// </summary>
 /// <param name="shareSystem">システムデータ</param>
-/// <param name="context">ID3D11DeviceContext1ポインタ</param>
 /// <param name="device">ID3D11Device1ポインタ</param>
 /// <returns>なし</returns>
-void UserInterface::Initialize(std::shared_ptr<SystemManager> shareSystem,
-	ID3D11DeviceContext1* context, ID3D11Device1* device)
+void UserInterface::Initialize(const std::shared_ptr<SystemManager>& shareSystem, ID3D11Device1* device)
 {
 	// ポインタの共有
 	m_system = shareSystem;
 
-	// 画像の設定
-	m_system->GetDrawSprite()->MakeSpriteBatch(context);
+	// キー名　：　ファイルパス名
+	m_system->GetDrawSprite()->AddTextureData(L"Save",			// セーブアイコン
+		L"Resources/Textures/SaveFile.dds", device);
 
-	// キー名　：　ファイルパス名　：　デバイス
-	// 操作アイコン
-	m_system->GetDrawSprite()->AddTextureData(L"Save",      L"Resources/Textures/SaveFile.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Open",      L"Resources/Textures/OpenFile.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Camera",    L"Resources/Textures/Camera.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"CameraMove",L"Resources/Textures/CameraMove.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"ToolOn",	L"Resources/Textures/ToolOn.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"ToolOff",	L"Resources/Textures/ToolOff.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"BackSelect",L"Resources/Textures/BackSelect.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Open",			// ファイルアイコン
+		L"Resources/Textures/OpenFile.dds", device);
 
-	// 背景の帯
-	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",   L"Resources/Textures/EditToolBar.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Camera",		// カメラアイコン(未使用時)
+		L"Resources/Textures/Camera.dds", device);
 
-	// ブロックアイコン
-	m_system->GetDrawSprite()->AddTextureData(L"Grass",  L"Resources/Textures/BLOCK/GrassIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Cloud",  L"Resources/Textures/BLOCK/CloudIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Coin",   L"Resources/Textures/BLOCK/CoinIcon.dds",  device);
-	m_system->GetDrawSprite()->AddTextureData(L"Reset",  L"Resources/Textures/BLOCK/ResetIcon.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Player", L"Resources/Textures/BLOCK/PlayerIcon.dds",device);
-	m_system->GetDrawSprite()->AddTextureData(L"Delete", L"Resources/Textures/BLOCK/DeleteIcon.dds",device);
+	m_system->GetDrawSprite()->AddTextureData(L"CameraMove",	// カメラアイコン(使用時)
+		L"Resources/Textures/CameraMove.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"ToolOn",		// ツール使用切り替えアイコン
+		L"Resources/Textures/ToolOn.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"ToolOff",		// ツール使用切り替えアイコン
+		L"Resources/Textures/ToolOff.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"BackSelect",	// セレクトに戻る
+		L"Resources/Textures/BackSelect.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",		// ツールバー
+		L"Resources/Textures/EditToolBar.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"Grass",			// 草ブロックアイコン
+		L"Resources/Textures/BLOCK/GrassIcon.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"Cloud",			// 雲ブロックアイコン
+		L"Resources/Textures/BLOCK/CloudIcon.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"Coin",			// コインブロックアイコン
+		L"Resources/Textures/BLOCK/CoinIcon.dds",  device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"Gravity",		// 重力ブロックアイコン
+		L"Resources/Textures/BLOCK/ResetIcon.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"Player",		// プレイヤーアイコン
+		L"Resources/Textures/BLOCK/PlayerIcon.dds",device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"Delete",		// ブロック削除アイコン
+		L"Resources/Textures/BLOCK/DeleteIcon.dds",device);
 
 	// IDを格納
 	m_texName[MAPSTATE::GRASS]   = L"Grass";
 	m_texName[MAPSTATE::CLOUD]   = L"Cloud";
 	m_texName[MAPSTATE::COIN]    = L"Coin";
-	m_texName[MAPSTATE::GRAVITY]   = L"Reset";
+	m_texName[MAPSTATE::GRAVITY] = L"Gravity";
 	m_texName[MAPSTATE::PLAYER]  = L"Player";
 	m_texName[MAPSTATE::NONE]    = L"Delete";
 

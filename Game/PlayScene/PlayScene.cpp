@@ -281,49 +281,49 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 void PlayScene::Draw()
 {
 	// 描画関連
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
-	auto& states = *GetSystemManager()->GetCommonStates();
+	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto& _states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	SimpleMath::Matrix view, proj;
+	SimpleMath::Matrix _view, _projection;
 
 	// ビュー行列&プロジェクション行列
 	if (StartTimer() == false)
 	{
 		// スタート演出カメラ
-		view = m_playCamera->CreateView();
-		proj = m_playCamera->GetProjection();
+		_view = m_playCamera->CreateView();
+		_projection = m_playCamera->GetProjection();
 	}
 	else if (is_thirdPersonMode)
 	{
 		// リアル視点(三人称)カメラ
-		view = m_thirdCamera->GetFollowView();
-		proj = GetSystemManager()->GetCamera()->GetProjection();
+		_view = m_thirdCamera->GetFollowView();
+		_projection = GetSystemManager()->GetCamera()->GetProjection();
 	}
 	else
 	{
 		// 通常カメラ
-		view = GetSystemManager()->GetCamera()->GetView();
-		proj = GetSystemManager()->GetCamera()->GetProjection();
+		_view = GetSystemManager()->GetCamera()->GetView();
+		_projection = GetSystemManager()->GetCamera()->GetProjection();
 	}
 
 	// マップの描画
-	m_blocks->Render(context, states, view, proj, m_timer);
+	m_blocks->Render(_context, _states, _view, _projection, m_timer);
 
 	// プレイヤの描画
-	m_player->Render(context, states, view, proj);
+	m_player->Render(_context, _states, _view, _projection);
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
-	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
+	m_skyDomeModel->Draw(_context, _states, skyMat, _view, _projection);
 	m_skyDomeModel->UpdateEffects([&](IEffect* effect)
 		{
 			// 色を徐々に暗くする
-			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (basicEffect)
+			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (_basicEffect)
 			{
 				// 徐々に暗くなっていく
-				basicEffect->SetEmissiveColor(
+				_basicEffect->SetEmissiveColor(
 					SimpleMath::Color{
 						m_skyColor.red,		 // 赤
 						m_skyColor.green,	 // 緑
@@ -343,7 +343,7 @@ void PlayScene::Draw()
 			GetSystemManager()->GetCamera()->GetPosition(),	// カメラの座標
 			SimpleMath::Vector3::Up
 		);
-		m_playerBill->Render(m_player->GetPosition(), m_timer, view, proj);
+		m_playerBill->Render(m_player->GetPosition(), m_timer, _view, _projection);
 	}
 	// 回りの靄
 	else
@@ -387,71 +387,71 @@ void PlayScene::Finalize()
 void PlayScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
-	auto device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto _device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
+	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
-	GetSystemManager()->CreateUnique(device, context);
+	GetSystemManager()->CreateUnique(_device, _context);
 
 	// 画面サイズの格納
-	float width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
+	float _width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
+	float _height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// デフォルトカメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
+	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, CAMERA_ANGLE);
 
 	// サードパーソンカメラの作成
-	m_thirdCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager(), context, device);
-	m_thirdCamera->CreateProjection(width, height, CAMERA_ANGLE);
+	m_thirdCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager(), _context, _device);
+	m_thirdCamera->CreateProjection(_width, _height, CAMERA_ANGLE);
 
 	// スタート用カメラの作成
-	m_playCamera = std::make_unique<PlayCamera>(SimpleMath::Vector2(width, height));
+	m_playCamera = std::make_unique<PlayCamera>(SimpleMath::Vector2(_width, _height));
 	m_playCamera->SetPosition(START_CAMERA_POS);
 
 	//-------------------------------------------------------------------------------------//
 	// スカイドームモデルを作成する
 	m_skyDomeModel = ModelFactory::GetCreateModel(
-		device,
+		_device,
 		L"Resources/Models/ShineSky.cmo"
 	);
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
-			auto lights = dynamic_cast<IEffectLights*>(effect);
-			if (lights)
+			auto _lights = dynamic_cast<IEffectLights*>(effect);
+			if (_lights)
 			{
-				lights->SetLightEnabled(0, false);
-				lights->SetLightEnabled(1, false);
-				lights->SetLightEnabled(2, false);
+				_lights->SetLightEnabled(0, false);
+				_lights->SetLightEnabled(1, false);
+				_lights->SetLightEnabled(2, false);
 			}
 			// 自己発光する
-			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (basicEffect)
+			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (_basicEffect)
 			{
-				basicEffect->SetEmissiveColor(Colors::White);
+				_basicEffect->SetEmissiveColor(Colors::White);
 			}
 		}
 	);
 
 	//-------------------------------------------------------------------------------------//
 	// プレイヤーの作成
-	MakePlayer(device);
+	MakePlayer(_device);
 
 	//-------------------------------------------------------------------------------------//
 	// ブロックの作成
 	m_blocks = std::make_unique<Blocks>();
-	m_blocks->CreateShader(device);
+	m_blocks->CreateShader(_device);
 
 	// ファクトリーで生成
-	auto grass	 = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
-	auto coin	 = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
-	auto cloud	 = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
-	auto gravity = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
+	auto _grass	  = std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/GrassBlock.cmo"));
+	auto _coin	  = std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/Coin.cmo"));
+	auto _cloud	  = std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo"));
+	auto _gravity = std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo"));
 
 	// モデルの受け渡し
-	m_blocks->CreateModels(std::move(grass),    m_blocks->GRASS);
-	m_blocks->CreateModels(std::move(coin),     m_blocks->COIN);
-	m_blocks->CreateModels(std::move(cloud),    m_blocks->CLOWD);
-	m_blocks->CreateModels(std::move(gravity),  m_blocks->GRAVITY);
+	m_blocks->CreateModels(std::move(_grass),    m_blocks->GRASS);
+	m_blocks->CreateModels(std::move(_coin),     m_blocks->COIN);
+	m_blocks->CreateModels(std::move(_cloud),    m_blocks->CLOWD);
+	m_blocks->CreateModels(std::move(_gravity),  m_blocks->GRAVITY);
 
 	//-------------------------------------------------------------------------------------//
 	// 位置情報のシェーダーの作成
@@ -460,8 +460,9 @@ void PlayScene::CreateWindowDependentResources()
 
 	//-------------------------------------------------------------------------------------//
 	// UIの作成
-	m_userInterFace = std::make_unique<PlayUI>(SimpleMath::Vector2(width, height));
-	m_userInterFace->Create(GetSystemManager(),context, device);
+	m_userInterFace = std::make_unique<PlayUI>(SimpleMath::Vector2(_width, _height));
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
+	m_userInterFace->Create(GetSystemManager(), _device);
 }
 
 /// <summary>

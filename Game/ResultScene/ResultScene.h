@@ -82,6 +82,9 @@ private:
 	// シーン内の変数初期化関数
 	void SetSceneValues() override;
 
+	// 数値演出
+	bool AnimationValue();
+
 public:
 
 	// クリアタイムセッター

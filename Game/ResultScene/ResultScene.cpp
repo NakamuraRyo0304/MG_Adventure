@@ -83,21 +83,6 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 {
 	m_timer = elapsedTime;
 
-	// 演出時間をカウント
-	m_directionTime--;
-
-	// 演出をする
-	if (m_directionTime < 0.0f)
-	{
-		m_directionTime = 0.0f;
-		m_clearTime = MAX_TIME - m_saveTime;
-	}
-	else
-	{
-		// ランダムな値を入れる
-		m_clearTime = static_cast<float>(rand() % 60 + 1);
-	}
-
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
 
@@ -110,10 +95,16 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
 
+	// 数字のアニメーション
+	AnimationValue();
+
 	// メニューセレクト
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right) ||
 	    GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::D))
 	{
+		// フェード中は処理しない
+		if (static_cast<int>(GetFadeValue()) != 0) return;
+
 		m_selectingScene++;
 		m_selectingScene = m_selectingScene ==  3 ? RETRY : m_selectingScene;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
@@ -121,6 +112,9 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
 			 GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::A))
 	{
+		// フェード中は処理しない
+		if (static_cast<int>(GetFadeValue()) != 0) return;
+
 		m_selectingScene--;
 		m_selectingScene = m_selectingScene == -1 ? TITLE : m_selectingScene;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
@@ -136,6 +130,9 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
+		// フェード中は処理しない
+		if (static_cast<int>(GetFadeValue()) != 0) return;
+
 		switch (m_selectingScene)
 		{
 		case RETRY:
@@ -217,7 +214,6 @@ void ResultScene::CreateWindowDependentResources()
 
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(_device, _context);
-	GetSystemManager()->GetString()->CreateString(_device, _context);
 
 	// 画面サイズの格納
 	float _width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
@@ -274,6 +270,33 @@ void ResultScene::SetSceneValues()
 
 	// マップ読み込み
 	m_blocks->Initialize(m_stageNum);
+}
+
+/// <summary>
+/// 数字のアニメーション
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>終わったらTrue</returns>
+bool ResultScene::AnimationValue()
+{
+	// 演出時間をカウント
+	m_directionTime--;
+
+	// 演出をする
+	if (m_directionTime < 0.0f)
+	{
+		m_directionTime = 0.0f;
+		m_clearTime = MAX_TIME - m_saveTime;
+
+		return true;
+	}
+	else
+	{
+		// ランダムな値を入れる
+		m_clearTime = static_cast<float>(rand() % 60 + 1);
+	}
+
+	return false;
 }
 
 /// <summary>

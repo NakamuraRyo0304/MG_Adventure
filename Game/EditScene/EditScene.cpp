@@ -26,7 +26,6 @@
 EditScene::EditScene()
 	: IScene()									// 基底クラスの初期化
 	, m_timer{ 0.0f }							// タイマー
-	, m_system{}								// システムデータ
 	, m_mapLoader{}								// マップローダー
 	, m_mapObj{0}								// 格納配列
 	, m_nowState{}								// 現在のブロックの種類
@@ -113,6 +112,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		// 要素チェックして保存可能なら実行
 		if (IsCanSave())
 		{
+			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 			SaveFile();
 		}
 	}
@@ -121,6 +121,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_userInterface->GetOpenFlag() &&
 		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 		if (!m_mapLoader.LoadMap(L""))
 		{
 			return;
@@ -133,6 +134,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::LeftShift))
 	{
 		// インターフェースでカメラのフラグを取得
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 		m_userInterface->SetCameraFlag(!m_userInterface->GetCameraFlag());
 		GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
 	}
@@ -146,6 +148,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// ボタンクリックでセレクトに戻る
 	if (m_userInterface->GetBackSelectFlag())
 	{
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 		ChangeScene(SCENE::SELECT);
 	}
 }
@@ -306,14 +309,11 @@ void EditScene::CreateWindowDependentResources()
 
 	// UIの初期化
 	m_userInterface = std::make_unique<UserInterface>(SimpleMath::Vector2(_width, _height));
-	m_system = GetSystemManager();
-	m_userInterface->Initialize(m_system, _context, _device);
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
+	m_userInterface->Initialize(GetSystemManager(), _device);
 
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, CAMERA_ANGLE);
-
-	// 文字の設定
-	GetSystemManager()->GetString()->CreateString(_device, _context);
 
 	// レイが及ぶ範囲を設定
 	GetSystemManager()->GetRayCast()->SetScreenSize(_width, _height);

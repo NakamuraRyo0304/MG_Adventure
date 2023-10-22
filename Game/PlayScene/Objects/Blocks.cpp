@@ -318,7 +318,9 @@ void Blocks::Finalize()
 	// マップの解放
 	m_mapObj.clear();
 
-	// モデルの解放
+	// 最後までリセットされていたらスキップ
+	if (!m_gravityModel) return;
+
 	ModelFactory::DeleteModel(m_grassModel);
 	ModelFactory::DeleteModel(m_coinModel);
 	ModelFactory::DeleteModel(m_cloudModel);

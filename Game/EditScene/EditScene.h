@@ -48,7 +48,6 @@ private:
 
 	// UI
 	std::unique_ptr<UserInterface> m_userInterface;
-	std::shared_ptr<SystemManager> m_system;
 
 	// 現在のブロックステータス
 	int m_nowState;

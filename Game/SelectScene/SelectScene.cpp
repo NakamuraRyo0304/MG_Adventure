@@ -113,6 +113,9 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
+		// フェード中は処理しない
+		if (static_cast<int>(GetFadeValue()) != 0) return;
+
 		// ステージ番号が0ならエディタに、それ以外はプレイへ
 		if (m_stageNum == 0)
 		{
@@ -232,7 +235,6 @@ void SelectScene::CreateWindowDependentResources()
 
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(device, context);
-	GetSystemManager()->GetString()->CreateString(device, context);
 
 	// 画面サイズの格納
 	float width =

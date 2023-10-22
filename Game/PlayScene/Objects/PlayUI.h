@@ -76,7 +76,7 @@ public:
 	~PlayUI();
 
 	// ì¬ˆ—
-	void Create(std::shared_ptr<SystemManager> system ,ID3D11DeviceContext1* context, ID3D11Device1* device);
+	void Create(const std::shared_ptr<SystemManager>& system , ID3D11Device1* device);
 
 	// XVˆ—
 	void Update(const float& timelimit);

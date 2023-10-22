@@ -50,32 +50,40 @@ PlayUI::~PlayUI()
 /// 作成処理
 /// </summary>
 /// <param name="system">システムマネージャ</param>
-/// <param name="context">コンテキストポインタ</param>
 /// <param name="device">デバイスポインタ</param>
 /// <returns>なし</returns>
-void PlayUI::Create(std::shared_ptr<SystemManager> system ,
-	ID3D11DeviceContext1* context, ID3D11Device1* device)
+void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,ID3D11Device1* device)
 {
 	// システム
 	m_system = system;
 
-	// 画像の設定
-	m_system->GetDrawSprite()->MakeSpriteBatch(context);
-
 	// 画像を登録
-	m_system->GetDrawSprite()->AddTextureData(L"GameStart", L"Resources/Textures/PLAY_COMMON/GameStart.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Death", L"Resources/Textures/DeathEffect.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"Sun", L"Resources/Textures/PLAY_COMMON/sun.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Number",			// 数字スプライト
+		L"Resources/Textures/Number.dds", device);
 
-	// ヘルプ画面
-	m_system->GetDrawSprite()->AddTextureData(L"Help", L"Resources/Textures/PLAY_HELP/Help.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"HelpBack", L"Resources/Textures/PLAY_HELP/HelpBack.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp", L"Resources/Textures/PLAY_HELP/OpenHelp.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"GameStart",			// スタート合図
+		L"Resources/Textures/PLAY_COMMON/GameStart.dds", device);
 
-	// 画面下部に表示されるコメント
-	m_system->GetDrawSprite()->AddTextureData(L"UnderBack", L"Resources/Textures/PLAY_HELP/UnderBack.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"UnderFont", L"Resources/Textures/PLAY_HELP/UnderFont.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"Death",				// 死亡エフェクト
+		L"Resources/Textures/PLAY_COMMON/DeathEffect.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"Sun",				// 日没メーター
+		L"Resources/Textures/PLAY_COMMON/sun.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"Help",				// ヘルプ表示
+		L"Resources/Textures/PLAY_HELP/Help.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"HelpBack",			// ヘルプ時の背景暗転
+		L"Resources/Textures/PLAY_HELP/HelpBack.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp",			// ヘルプを開く表示
+		L"Resources/Textures/PLAY_HELP/OpenHelp.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"UnderFont",			// 下のテキスト
+		L"Resources/Textures/PLAY_HELP/UnderFont.dds", device);
+
+	m_system->GetDrawSprite()->AddTextureData(L"UnderBack",			// 下のテキストのライン
+		L"Resources/Textures/PLAY_HELP/UnderBack.dds", device);
 
 	// 比率を計算
 	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;

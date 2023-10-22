@@ -116,6 +116,9 @@ void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
 	// 遷移先を決定する(ゲーム開始 OR ゲーム終了)
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
 	{
+		// フェード中は処理しない
+		if (static_cast<int>(GetFadeValue()) != 0) return;
+
 		is_startFlag = true;
 
 		// 決定音を鳴らす
@@ -268,7 +271,6 @@ void TitleScene::CreateWindowDependentResources()
 
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(_device, _context);
-	GetSystemManager()->GetString()->CreateString(_device, _context);
 
 	// 画面サイズの格納
 	float _width  =
@@ -277,7 +279,7 @@ void TitleScene::CreateWindowDependentResources()
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, 45.0f);
+	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, CAMERA_ANGLE);
 
 	// モデルの作成---------------------------------------------------------------------------------
 

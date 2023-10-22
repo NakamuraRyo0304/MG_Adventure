@@ -125,53 +125,16 @@ void ResultUI::Update(const float& timer, const int& clearTime)
 void ResultUI::Render()
 {
 	// 画面比率を計算
-	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
 
-	//-------------------------------------------------------------------------------------//
-
-	// 画面を薄暗くする
-	m_system->GetDrawSprite()->DrawTexture(
-		L"BLIND",									// 登録キー
-		SimpleMath::Vector2::Zero,					// 座標
-		{ 1.0f,1.0f,1.0f,0.3f },					// 色
-		1.0f * _scale,								// 拡大率
-		SimpleMath::Vector2::Zero					// 中心位置
-	);
-
-	// 後ろの文字
-	m_system->GetDrawSprite()->DrawTexture(
-		L"RFont",
-		SimpleMath::Vector2::Zero,
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		DEFAULT_RATE * _scale,
-		SimpleMath::Vector2::Zero
-	);
+	// レイアウトの描画
+	DrawBack(_rate);
 
 	// 数字を描画
-	DrawNumber(SimpleMath::Vector2::One);
+	DrawNumber(DRAW_NUM_SIZE, _rate);
 
 	// シーン選択文字(リトライ、セレクト、タイトル)
-	m_system->GetDrawSprite()->DrawTexture(
-		L"RETRY",
-		m_retryPos * _scale,
-		{ 1.0f, 1.0f, 1.0f, m_retryAlpha },
-		IMAGE_RATE * _scale * m_retryScale,
-		SimpleMath::Vector2::Zero
-	);
-	m_system->GetDrawSprite()->DrawTexture(
-		L"SELECT",
-		m_selectPos * _scale,
-		{ 1.0f, 1.0f, 1.0f, m_selectAlpha },
-		IMAGE_RATE * _scale * m_selectScale,
-		SimpleMath::Vector2::Zero
-	);
-	m_system->GetDrawSprite()->DrawTexture(
-		L"TITLE",
-		m_titlePos * _scale,
-		{ 1.0f, 1.0f, 1.0f, m_titleAlpha },
-		IMAGE_RATE * _scale * m_titleScale,
-		SimpleMath::Vector2::Zero
-	);
+	DrawFonts(_rate);
 }
 
 /// <summary>
@@ -188,13 +151,10 @@ void ResultUI::Finalize()
 /// 数字の描画
 /// </summary>
 /// <param name="texScale">テクスチャのスケール</param>
+/// <param name="windowRate">画面の拡大率</param>
 /// <returns>なし</returns>
-void ResultUI::DrawNumber(SimpleMath::Vector2 texScale)
+void ResultUI::DrawNumber(SimpleMath::Vector2 texScale, const SimpleMath::Vector2& windowRate)
 {
-	// 画面サイズ比率
-	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
-
-	//-------------------------------------------------------------------------------------//
 	// クリア時間
 	// 切り取り位置設定
 	RECT_U _oneRec = { m_oneTime * 100, 0,m_oneTime * 100 + 100, 100 };
@@ -202,18 +162,18 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 texScale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 1000.0f ,290.0f } * _scale,
+		SimpleMath::Vector2{ 1000.0f ,290.0f } * windowRate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		texScale * _scale,
+		texScale * windowRate,
 		SimpleMath::Vector2::Zero,
 		_oneRec
 	);
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 860.0f ,290.0f } * _scale,
+		SimpleMath::Vector2{ 860.0f ,290.0f } * windowRate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		texScale * _scale,
+		texScale * windowRate,
 		SimpleMath::Vector2::Zero,
 		_tenRec
 	);
@@ -226,20 +186,76 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 texScale)
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 1000.0f ,700.0f } * _scale,
+		SimpleMath::Vector2{ 1000.0f ,700.0f } * windowRate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		texScale * _scale,
+		texScale * windowRate,
 		SimpleMath::Vector2::Zero,
 		_oneRec
 	);
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 860.0f ,700.0f } * _scale,
+		SimpleMath::Vector2{ 860.0f ,700.0f } * windowRate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		texScale * _scale,
+		texScale * windowRate,
 		SimpleMath::Vector2::Zero,
 		_tenRec
+	);
+}
+
+/// <summary>
+/// レイアウトの描画
+/// </summary>
+/// <param name="windowRate">画面の拡大率</param>
+/// <returns>なし</returns>
+void ResultUI::DrawBack(const SimpleMath::Vector2& windowRate)
+{
+	// 画面を薄暗くする
+	m_system->GetDrawSprite()->DrawTexture(
+		L"BLIND",									// 登録キー
+		SimpleMath::Vector2::Zero,					// 座標
+		{ 1.0f,1.0f,1.0f,0.3f },					// 色
+		DEFAULT_RATE * windowRate,					// 拡大率
+		SimpleMath::Vector2::Zero					// 中心位置
+	);
+
+	// 後ろの文字
+	m_system->GetDrawSprite()->DrawTexture(
+		L"RFont",
+		SimpleMath::Vector2::Zero,
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		DEFAULT_RATE * windowRate,
+		SimpleMath::Vector2::Zero
+	);
+}
+
+/// <summary>
+/// 選択文字の描画
+/// </summary>
+/// <param name="windowRate">画面の拡大率</param>
+/// <returns>なし</returns>
+void ResultUI::DrawFonts(const DirectX::SimpleMath::Vector2& windowRate)
+{
+	m_system->GetDrawSprite()->DrawTexture(
+		L"RETRY",
+		m_retryPos * windowRate,
+		{ 1.0f, 1.0f, 1.0f, m_retryAlpha },
+		IMAGE_RATE * windowRate * m_retryScale,
+		SimpleMath::Vector2::Zero
+	);
+	m_system->GetDrawSprite()->DrawTexture(
+		L"SELECT",
+		m_selectPos * windowRate,
+		{ 1.0f, 1.0f, 1.0f, m_selectAlpha },
+		IMAGE_RATE * windowRate * m_selectScale,
+		SimpleMath::Vector2::Zero
+	);
+	m_system->GetDrawSprite()->DrawTexture(
+		L"TITLE",
+		m_titlePos * windowRate,
+		{ 1.0f, 1.0f, 1.0f, m_titleAlpha },
+		IMAGE_RATE * windowRate * m_titleScale,
+		SimpleMath::Vector2::Zero
 	);
 }
 

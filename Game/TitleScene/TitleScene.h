@@ -18,6 +18,9 @@ private:
 	// タイマー
 	float m_timer;
 
+	// カメラアングル
+	const float CAMERA_ANGLE = 45.0f;
+
 	// タイトルロゴモデル
 	std::unique_ptr<DirectX::Model> m_titleLogoModel;
 	// タイトルステージモデル

@@ -520,9 +520,6 @@
     <Image Include="Resources\Textures\Number.dds">
       <Filter>Resources\Textures\Common</Filter>
     </Image>
-    <Image Include="Resources\Textures\DeathEffect.dds">
-      <Filter>Resources\Textures\Common</Filter>
-    </Image>
     <Image Include="Resources\Textures\FadeBlind.dds">
       <Filter>Resources\Textures\Common</Filter>
     </Image>
@@ -583,6 +580,9 @@
     <Image Include="Resources\Textures\PlayerPoint.dds">
       <Filter>Resources\ShaderTextures</Filter>
     </Image>
+    <Image Include="Resources\Textures\DeathEffect.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_COMMON</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -591,9 +591,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
-      <Filter>Assets</Filter>
-    </None>
-    <None Include="Resources\Fonts\myfile.spritefont">
       <Filter>Assets</Filter>
     </None>
     <None Include="Resources\Fonts\SegoeUI_18.spritefont">
@@ -705,5 +702,10 @@
     <FxCompile Include="Resources\Shaders\PS_Cloud.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Resources\Fonts\myfile.spritefont">
+      <Filter>Assets</Filter>
+    </Font>
   </ItemGroup>
 </Project>

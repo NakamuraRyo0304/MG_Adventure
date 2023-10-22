@@ -74,6 +74,9 @@ private:
 	// フォントの選択変更時の動き
 	const float SELECT_CHANGE_FADE = 0.45f;
 
+	// 数字のデフォルトサイズ
+	const DirectX::SimpleMath::Vector2 DRAW_NUM_SIZE = SimpleMath::Vector2{ 1.0f };
+
 
 private:
 	// 画像座標
@@ -98,7 +101,15 @@ public:
 	void Finalize();
 
 private:
-	void DrawNumber(DirectX::SimpleMath::Vector2 texScale);
+
+	// 数字の描画
+	void DrawNumber(DirectX::SimpleMath::Vector2 texScale, const DirectX::SimpleMath::Vector2& windowRate);
+
+	// 背景とレイアウトの描画
+	void DrawBack(const DirectX::SimpleMath::Vector2& windowRate);
+
+	// 選択文字の描画
+	void DrawFonts(const DirectX::SimpleMath::Vector2& windowRate);
 
 	// 各選択項目の変更
 	void CaseRetry();
