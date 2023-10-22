@@ -29,7 +29,7 @@ private:
 	float m_timer;
 
 	// ファイル読み込みモード
-	enum { WRITE, READ };
+	enum MODE { WRITE, READ };
 
 	// カーソル位置
 	std::unique_ptr<MouseCursor> m_mouseCursor;
@@ -121,7 +121,7 @@ public:
 	void EditMap();
 
 	// 座標補正関数
-	void OffsetPosition(std::vector<Object>* obj , const int& mode);
+	void OffsetPosition(std::vector<Object>* obj , const MODE& mode);
 
 	// マップ読み込み
 	void LoadMap(std::wstring filename);

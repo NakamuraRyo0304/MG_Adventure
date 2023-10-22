@@ -343,9 +343,7 @@ void EditScene::CreateWindowDependentResources()
 		_device,
 		L"Resources/Models/Eraser.cmo"
 	);
-
-	// スカイドームモデルを作成する
-	m_skyDomeModel = ModelFactory::GetCreateModel(
+	m_skyDomeModel = ModelFactory::GetCreateModel(		// スカイドーム
 		_device,
 		L"Resources/Models/CheckDome.cmo"
 	);
@@ -454,7 +452,7 @@ void EditScene::EditMap()
 /// <param name="object">マップデータ</param>
 /// <param name="mode">読み書きモード</param>
 /// <returns>なし</returns>
-void EditScene::OffsetPosition(std::vector<Object>* object, const int& mode)
+void EditScene::OffsetPosition(std::vector<Object>* object, const MODE& mode)
 {
 	// 読み込み
 	if (mode == READ)

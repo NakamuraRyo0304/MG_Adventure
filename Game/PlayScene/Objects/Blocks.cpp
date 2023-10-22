@@ -47,7 +47,7 @@ Blocks::Blocks()
 /// <returns>‚È‚µ</returns>
 Blocks::~Blocks()
 {
-	Finalize();
+
 }
 
 /// <summary>
