@@ -595,6 +595,9 @@
     <Image Include="Resources\Textures\SELECT_INFO\OutFrame.dds">
       <Filter>Resources\Textures\SELECT_INFO</Filter>
     </Image>
+    <Image Include="AppIcon.ico">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
@@ -722,10 +725,5 @@
     <Font Include="Resources\Fonts\myfile.spritefont">
       <Filter>Assets</Filter>
     </Font>
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="..\EditSky.fbx">
-      <Filter>Resources\Models\SkyDome</Filter>
-    </MeshContentTask>
   </ItemGroup>
 </Project>
