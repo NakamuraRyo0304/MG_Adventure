@@ -57,6 +57,9 @@ private: //---------------------------------------------------------------------
 	// カメラの座標
 	DirectX::SimpleMath::Vector3 m_position;
 
+	// カメラの加算用座標
+	DirectX::SimpleMath::Vector3 m_addPos;
+
 	// 注視点
 	DirectX::SimpleMath::Vector3 m_target;
 
@@ -97,7 +100,7 @@ public:
 	const DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
 
 	// カメラの座標移動用セッター(指定座標に移動)
-	void SetEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_position = pos;}
+	void SetAddPosition(const DirectX::SimpleMath::Vector3& pos){ m_addPos = pos;}
 
 	// ターゲットを取得する
 	const DirectX::SimpleMath::Vector3& GetTarget() { return m_target; }

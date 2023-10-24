@@ -665,9 +665,6 @@
     <None Include="Resources\Shaders\PlayerPoint.hlsli">
       <Filter>Resources\Shaders\PlayerPoint</Filter>
     </None>
-    <None Include="Resources\Models\CheckDome.cmo">
-      <Filter>Resources\Models\SkyDome</Filter>
-    </None>
     <None Include="Resources\Models\Cloud.cmo">
       <Filter>Resources\Models\MapObject</Filter>
     </None>
@@ -694,6 +691,9 @@
     </None>
     <None Include="Resources\Models\Head_w.cmo">
       <Filter>Resources\Models\Player</Filter>
+    </None>
+    <None Include="Resources\Models\EditSky.cmo">
+      <Filter>Resources\Models\SkyDome</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -722,5 +722,10 @@
     <Font Include="Resources\Fonts\myfile.spritefont">
       <Filter>Assets</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="..\EditSky.fbx">
+      <Filter>Resources\Models\SkyDome</Filter>
+    </MeshContentTask>
   </ItemGroup>
 </Project>

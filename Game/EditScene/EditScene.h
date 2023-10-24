@@ -83,6 +83,9 @@ private:
 
 	// カーソルの移動速度
 	const float CURSOR_MOVE_SPEED = 0.1f;
+
+	// スカイドームの回転量
+	const float SKY_ROTATE_RATE = 0.01f;
 public:
 
 	// コンストラクタ

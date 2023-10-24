@@ -31,6 +31,7 @@ Camera::Camera()
 	, m_screenWidth{}			// 画面の幅
 	, m_angle{}					// 回転角
 	, m_position{}				// カメラの座標
+	, m_addPos{}				// カメラ加算用の座標
 	, m_prevMouse{}				// 過去のマウスの位置
 	, m_scrollWheelValue{}		// マウスホイールの回転量
 	, m_tempScrollValue{}		// マウスホイールの回転量(不動時の蓄積用)
@@ -231,7 +232,7 @@ void Camera::CalculateViewMatrix()
 	// デフォルトの初期位置
 	m_position = _eye;
 	m_target = _target;
-	m_view = SimpleMath::Matrix::CreateLookAt(_eye, _target, _up);
+	m_view = SimpleMath::Matrix::CreateLookAt(_eye + m_addPos, _target + m_addPos, _up);
 
 	// 上下回転のみ制限
 	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLE_X_MIN, ANGLE_X_MAX);

@@ -222,7 +222,8 @@ void EditScene::Draw()
 	}
 
 	// スカイドームの描画
-	m_skyDomeModel->Draw(_context, _states, SimpleMath::Matrix::Identity, _view, _projection);
+	SimpleMath::Matrix _skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROTATE_RATE);
+	m_skyDomeModel->Draw(_context, _states, _skyMat, _view, _projection);
 
 	// 画像の描画
 	m_userInterface->Render();
@@ -345,7 +346,7 @@ void EditScene::CreateWindowDependentResources()
 	);
 	m_skyDomeModel = ModelFactory::GetCreateModel(		// スカイドーム
 		_device,
-		L"Resources/Models/CheckDome.cmo"
+		L"Resources/Models/EditSky.cmo"
 	);
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
@@ -390,6 +391,8 @@ void EditScene::SetSceneValues()
 
 	// クリアチェッカーに配列を渡す
 	m_checker->SetMap(m_mapObj);
+
+	GetSystemManager()->GetCamera()->SetAddPosition(SimpleMath::Vector3{ 0.0f,5.0f,0.0f });
 }
 
 /// <summary>
