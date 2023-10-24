@@ -180,7 +180,7 @@ void ResultScene::Draw()
 	_projection = GetSystemManager()->GetCamera()->GetProjection();
 
 	// マップの描画
-	m_blocks->Render(_context, _states, _view, _projection, m_timer);
+	m_blocks->Render(_context, _states, _view, _projection, m_timer, SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f });
 
 	// UIの表示
 	m_userInterface->Render(GetFadeValue());

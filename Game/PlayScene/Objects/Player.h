@@ -56,13 +56,16 @@ private:
 	DirectX::SimpleMath::Quaternion m_thirdRotate;
 
 	// モデルデータ
-	std::unique_ptr<DirectX::Model> m_head, m_body, m_leftLeg, m_rightLeg;
+	std::unique_ptr<DirectX::Model> m_head, m_body, m_leftLeg, m_rightLeg, m_wink;
 
 	// システム
 	std::shared_ptr<SystemManager> m_system;
 
 	// 死亡判定
 	bool is_deathFlag;
+
+	// ライティング
+	DirectX::SimpleMath::Vector3 m_lighting;
 
 private:
 
@@ -82,14 +85,14 @@ private:
 	const float OFFSET_Y = 0.2f;
 	// 死亡ライン
 	const float DEATH_LINE = -10.0f;
-	// スキンを変えるコインの枚数
-	const int CHANGE_SKIN_100 = 100;
+	// ウインクスパン
+	const float WINK_SPAN = 0.95f;
 
 
 public:
 	// コンストラクタ（頭、身体、右足、左足）
 	Player(std::unique_ptr<DirectX::Model> head,std::unique_ptr<DirectX::Model> body,
-		std::unique_ptr<DirectX::Model> rightLeg, std::unique_ptr<DirectX::Model> leftLeg);
+		std::unique_ptr<DirectX::Model> rightLeg, std::unique_ptr<DirectX::Model> leftLeg, std::unique_ptr<DirectX::Model> wink);
 	~Player();
 
 	// 初期化処理（システムマネージャポインタ）
@@ -100,7 +103,8 @@ public:
 
 	// 描画処理（コンテキスト、ステート、ビュー行列、射影行列）
 	void Render(ID3D11DeviceContext* context, DirectX::CommonStates& states,
-		        DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+		        DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj,
+				const DirectX::SimpleMath::Vector3& lightDir);
 
 	// 終了処理
 	void Finalize();
@@ -111,6 +115,9 @@ private:
 	void UpdateGravity();
 
 public:
+
+	// ライティング設定
+	void InitializeLighting(const DirectX::SimpleMath::Vector3& lightDir) { m_lighting = lightDir; }
 
 	// アクセサ----------------------------------------------------------------------------//
 

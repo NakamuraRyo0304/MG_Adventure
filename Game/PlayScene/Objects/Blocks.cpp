@@ -34,6 +34,7 @@ Blocks::Blocks()
 	, m_coinModel{ nullptr }					// コインブロックのモデル
 	, m_cloudModel{ nullptr }					// 雲ブロックのモデル
 	, m_gravityModel{ nullptr }					// 重力ブロックのモデル
+	, m_lighting{}								// ライティング
 	, is_collectedFlag{ false }					// コイン回収済み判定フラグ
 	, is_hitCoinFlag{ false }					// 判定フラグ
 {
@@ -127,6 +128,9 @@ void Blocks::Initialize(int stageNum)
 	is_collectedFlag = false;
 	// 当たり判定フラグをFalseにする
 	is_hitCoinFlag = false;
+
+	// ライティングのリセット
+	m_lighting = SimpleMath::Vector3::Zero;
 }
 
 /// <summary>
@@ -170,9 +174,10 @@ void Blocks::Update()
 /// <param name="view">ビュー行列</param>
 /// <param name="proj">射影行列</param>
 /// <param name="timer">経過時間</param>
+/// <param name="lightDir">ライティング</param>
 /// <returns>なし</returns>
 void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
-	SimpleMath::Matrix view, SimpleMath::Matrix proj, float timer)
+	SimpleMath::Matrix view, SimpleMath::Matrix proj, float timer, const SimpleMath::Vector3& lightDir)
 {
 	// ワールド座標
 	SimpleMath::Matrix _world, _rotMat, _revScaleMat;
@@ -195,9 +200,6 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		float _revScaleTimer = fmodf(timer, 2 * XM_PI);
 		_revScaleMat = SimpleMath::Matrix::CreateScale(sinf(_revScaleTimer));
 
-		// ライトの設定
-		SimpleMath::Vector3 _lightDir(1.0f, -1.0f, -1.0f);
-
 		// ビュー行列からカメラの回転を取得
 		SimpleMath::Matrix _cameraRot;
 
@@ -210,7 +212,7 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		_cameraRot._43 = 0.0f;
 
 		// ライトの方向をカメラの回転に逆向きにする
-		_lightDir = SimpleMath::Vector3::TransformNormal(_lightDir, _cameraRot);
+		m_lighting = SimpleMath::Vector3::TransformNormal(lightDir, _cameraRot);
 		SimpleMath::Color lightColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 		_lightSetting = [&](IEffect* effect)
@@ -233,9 +235,9 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 				_lights->SetLightEnabled(2, true);
 
 				// ライトの方向を設定
-				_lights->SetLightDirection(0, _lightDir);
-				_lights->SetLightDirection(1, _lightDir);
-				_lights->SetLightDirection(2, _lightDir);
+				_lights->SetLightDirection(0, m_lighting);
+				_lights->SetLightDirection(1, m_lighting);
+				_lights->SetLightDirection(2, m_lighting);
 
 				// ライトの色を暗めのグレーに設定
 				_lights->SetLightDiffuseColor(0, lightColor);

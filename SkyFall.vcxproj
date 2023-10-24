@@ -346,6 +346,7 @@
     <None Include="Resources\Models\Eraser.cmo" />
     <None Include="Resources\Models\GrassBlock.cmo" />
     <None Include="Resources\Models\Head.cmo" />
+    <None Include="Resources\Models\Head_w.cmo" />
     <None Include="Resources\Models\LegL.cmo" />
     <None Include="Resources\Models\LegR.cmo" />
     <None Include="Resources\Models\ResetPt.cmo" />

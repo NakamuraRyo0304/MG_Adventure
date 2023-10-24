@@ -34,6 +34,9 @@ private:
 	// フェードの値
 	float m_fadeValue;
 
+public:
+
+	// 
 private:
 
 	// シーン内の変数の初期化関数
@@ -69,12 +72,24 @@ public:
 	void SetFadeValue(const float& value) { m_fadeValue = value; }
 
 public:
+
+	//-------------------------------------------------------------------------------------//
+	// ゲームシーン内で使用する関数
+	//-------------------------------------------------------------------------------------//
+
+	// システムマネージャをゲット
+	inline const std::shared_ptr<SystemManager>& GetSystemManager() { return m_system; }
+
 	// 遷移先のシーン設定
 	inline void ChangeScene(const SCENE& nextScene)
 	{
 		m_nextScene = nextScene;
 		is_changeFlag = true;
 	}
+
+	//-------------------------------------------------------------------------------------//
+	// GameMainで使用する関数 (通常は使用しない)
+	//-------------------------------------------------------------------------------------//
 
 	// フェード用遷移阻止関数
 	inline void StopNextScene()
@@ -88,9 +103,6 @@ public:
 
 	// 次のシーンをゲット
 	inline const SCENE& GetNextScene() { return m_nextScene; }
-
-	// システムマネージャをゲット
-	inline const std::shared_ptr<SystemManager>& GetSystemManager() { return m_system; }
 
 	// シーンフラグをゲット
 	inline const bool& GetChangeSceneFlag() { return is_changeFlag; }

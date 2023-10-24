@@ -49,11 +49,12 @@ PlayScene::PlayScene()
 	, m_stageNum{1}					// ステージ番号
 	, m_fallValue{0.0f}				// 落下用変数
 	, m_prevIndex{}					// 過去に当たったインデックス番号
-	, m_hitObjects{}				// 当っているオブジェクトの格納
+	, m_hitObj{}					// 当っているオブジェクトの格納
 	, m_lastObj{}					// 最後に当たったオブジェクトを保存
 	, m_skyDomeModel{nullptr}		// スカイドームモデル
+	, m_lighting{}					// ライティング設定
 	, m_skyColor{}					// 空の変化
-	, is_boxCol{}					// 立方体当たり判定
+	, is_hitCol{}					// 立方体当たり判定
 	, is_thirdPersonMode{false}		// サードパーソンモード
 	, is_helpFlag{false}			// ヘルプ表示フラグ
 {
@@ -257,7 +258,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		Judgement();
 
 		// 衝突したオブジェクトごとに押し戻し処理を行う
-		for (auto& i : m_hitObjects)
+		for (auto& i : m_hitObj)
 		{
 			ApplyPushBack(i);
 		}
@@ -307,11 +308,14 @@ void PlayScene::Draw()
 		_projection = GetSystemManager()->GetCamera()->GetProjection();
 	}
 
+	// ライティングの更新
+	InitializeLighting();
+
 	// マップの描画
-	m_blocks->Render(_context, _states, _view, _projection, m_timer);
+	m_blocks->Render(_context, _states, _view, _projection, m_timer, m_lighting);
 
 	// プレイヤの描画
-	m_player->Render(_context, _states, _view, _projection);
+	m_player->Render(_context, _states, _view, _projection, m_lighting);
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
@@ -376,7 +380,7 @@ void PlayScene::Finalize()
 	m_blocks->Finalize();
 
 	// 判定用配列を解放
-	m_hitObjects.clear();
+	m_hitObj.clear();
 }
 
 /// <summary>
@@ -442,10 +446,10 @@ void PlayScene::CreateWindowDependentResources()
 	m_blocks->CreateShader(_device);
 
 	// ファクトリーで生成
-	auto _grass	  = std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/GrassBlock.cmo"));
-	auto _coin	  = std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/Coin.cmo"));
-	auto _cloud	  = std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo"));
-	auto _gravity = std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo"));
+	auto _grass	  = ModelFactory::GetCreateModel(_device, L"Resources/Models/GrassBlock.cmo");
+	auto _coin	  = ModelFactory::GetCreateModel(_device, L"Resources/Models/Coin.cmo");
+	auto _cloud	  = ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo");
+	auto _gravity = ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo");
 
 	// モデルの受け渡し
 	m_blocks->CreateModels(std::move(_grass),    m_blocks->GRASS);
@@ -473,7 +477,7 @@ void PlayScene::CreateWindowDependentResources()
 void PlayScene::SetSceneValues()
 {
 	// 判定の初期化
-	m_hitObjects.clear();
+	m_hitObj.clear();
 
 	// 制限時間の初期化
 	// 時間　×　フレームレート
@@ -505,6 +509,9 @@ void PlayScene::SetSceneValues()
 
 	// プレイヤー座標設定
 	m_player->SetPosition(m_blocks->GetPlayerPosition());
+
+	// ライティング設定
+	m_lighting = -SimpleMath::Vector3::One;
 }
 
 /// <summary>
@@ -515,7 +522,7 @@ void PlayScene::SetSceneValues()
 void PlayScene::Judgement()
 {
 	// 衝突したオブジェクトリストを初期化
-	m_hitObjects.clear();
+	m_hitObj.clear();
 
 	// 当たり判定を取る
 	for (auto& i : m_blocks->GetMapData())
@@ -529,7 +536,7 @@ void PlayScene::Judgement()
 			m_player->GetPosition(),JUDGE_AREA,	i.position))
 		{
 			// 判定を取る
-			is_boxCol.PushBox(
+			is_hitCol.PushBox(
 				m_player->GetPosition(),								// プレイヤ座標
 				i.position,												// コイン座標
 				SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
@@ -537,10 +544,10 @@ void PlayScene::Judgement()
 			);
 
 			// 当たっていたら処理する
-			if (is_boxCol.IsHitBoxFlag())
+			if (is_hitCol.IsHitBoxFlag())
 			{
 				// 衝突したオブジェクトをリストに追加
-				m_hitObjects.push_back(i);
+				m_hitObj.push_back(i);
 			}
 		}
 	}
@@ -556,12 +563,12 @@ void PlayScene::ApplyPushBack(Object& obj)
 	// 当っているオブジェがなしの場合は処理しない
 	if (obj.id == MAPSTATE::NONE)
 	{
-		is_boxCol.SetPushMode(false);
+		is_hitCol.SetPushMode(false);
 		return;
 	}
 	else
 	{
-		is_boxCol.SetPushMode(true);
+		is_hitCol.SetPushMode(true);
 	}
 
 	//-------------------------------------------------------------------------------------//
@@ -570,7 +577,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	if (obj.id == MAPSTATE::COIN)
 	{
 		// 押し戻ししない
-		is_boxCol.SetPushMode(false);
+		is_hitCol.SetPushMode(false);
 
 		// コインカウントアップ
 		m_blocks->CountUpCoin(obj.index);
@@ -587,12 +594,12 @@ void PlayScene::ApplyPushBack(Object& obj)
 		// プレイヤーが下にいたら押し戻ししない
 		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(MAPSTATE::CLOUD))
 		{
-			is_boxCol.SetPushMode(false);
+			is_hitCol.SetPushMode(false);
 			return;
 		}
 
 		// 判定を有効化
-		is_boxCol.SetPushMode(true);
+		is_hitCol.SetPushMode(true);
 
 		// インデックス番号を格納
 		m_prevIndex.push_back(obj.index);
@@ -610,7 +617,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	// 重力処理
 	if (obj.id == MAPSTATE::GRAVITY)
 	{
-		is_boxCol.SetPushMode(false);
+		is_hitCol.SetPushMode(false);
 		m_blocks->CallGravity();
 	}
 
@@ -620,7 +627,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	SimpleMath::Vector3 _playerPos = m_player->GetPosition();
 
 	// 当たり判定を取って押し戻す
-	is_boxCol.PushBox(
+	is_hitCol.PushBox(
 		&_playerPos,											// プレイヤ座標
 		obj.position,											// ブロック座標
 		SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
@@ -631,13 +638,24 @@ void PlayScene::ApplyPushBack(Object& obj)
 	m_player->SetPosition(_playerPos);
 
 	// ブロックの上に当たっていたら重力を初期化
-	if (is_boxCol.GetHitFace() == Collider::BoxCollider::HIT_FACE::UP)
+	if (is_hitCol.GetHitFace() == Collider::BoxCollider::HIT_FACE::UP)
 	{
 		m_player->ResetGravity();
 	}
 
 	// 処理が終わったら要素を破棄
-	m_hitObjects.pop_back();
+	m_hitObj.pop_back();
+}
+
+/// <summary>
+/// ライティングの更新
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void PlayScene::InitializeLighting()
+{
+	m_player->InitializeLighting(m_lighting);
+	m_blocks->InitializeLighting(m_lighting);
 }
 
 /// <summary>
@@ -714,10 +732,11 @@ void PlayScene::MakePlayer(ID3D11Device1* device)
 {
 	//-------------------------------------------------------------------------------------//
 	// パスの格納
-	auto _head = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo"));
-	auto _body = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo"));
-	auto _legR = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo"));
-	auto _legL = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo"));
+	auto _head = ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo");
+	auto _body = ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo");
+	auto _legR = ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo");
+	auto _legL = ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo");
+	auto _wink = ModelFactory::GetCreateModel(device, L"Resources/Models/Head_w.cmo");
 	//-------------------------------------------------------------------------------------//
 
 	// プレイヤーを作成する
@@ -725,7 +744,8 @@ void PlayScene::MakePlayer(ID3D11Device1* device)
 		std::move(_head),			// 頭のモデル
 		std::move(_body),			// 身体のモデル
 		std::move(_legR),			// 右足のモデル
-		std::move(_legL)				// 左足のモデル
+		std::move(_legL),			// 左足のモデル
+		std::move(_wink)			// ウインク差分
 	);
 }
 

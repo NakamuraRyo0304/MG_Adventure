@@ -44,7 +44,7 @@ private:
 	MapLoad m_mapLoader;
 
 	// “–‚½‚è”»’è
-	Collider::BoxCollider is_boxCol;
+	Collider::BoxCollider is_hitCol;
 
 	// UI
 	std::unique_ptr<EditUI> m_userInterface;

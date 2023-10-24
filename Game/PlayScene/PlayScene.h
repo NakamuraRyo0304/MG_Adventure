@@ -51,10 +51,8 @@ private:
 	float m_fallValue;
 
 	// 当たり判定
-	Collider::BoxCollider is_boxCol;
-	std::vector<Object> m_hitObjects;
-
-	// 最後に当たったオブジェクト
+	Collider::BoxCollider is_hitCol;
+	std::vector<Object> m_hitObj;
 	Object m_lastObj;
 
 	// 前回のインデックス
@@ -63,11 +61,14 @@ private:
 	// ヘルプ表示フラグ
 	bool is_helpFlag;
 
+	// サードパーソンモード
+	bool is_thirdPersonMode;
+
 	// 合計コイン数
 	int m_allCoins;
 
-	// サードパーソンモード
-	bool is_thirdPersonMode;
+	// ライティング
+	DirectX::SimpleMath::Vector3 m_lighting;
 
 private:
 
@@ -167,6 +168,9 @@ private:
 
 	// 押し戻し処理
 	void ApplyPushBack(Object& obj);
+
+	// ライティングの設定
+	void InitializeLighting();
 
 	// 空の更新
 	void UpdateSky();

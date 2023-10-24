@@ -36,7 +36,7 @@ EditScene::EditScene()
 	, m_gravityModel{ nullptr }					// モデル＿重力
 	, m_skyDomeModel{ nullptr }					// モデル＿スカイドーム
 	, m_cursorPos{ SimpleMath::Vector3::Zero }	// カーソルの位置
-	, is_boxCol{}								// 立方体当たり判定
+	, is_hitCol{}								// 立方体当たり判定
 {
 	ShowCursor(false);
 }
@@ -191,15 +191,15 @@ void EditScene::Draw()
 			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
 		// 押し戻し処理を無効化
-		is_boxCol.SetPushMode(false);
+		is_hitCol.SetPushMode(false);
 
 		// 当たり判定を取る
-		is_boxCol.PushBox(&m_cursorPos, m_mapObj[i].position,
+		is_hitCol.PushBox(&m_cursorPos, m_mapObj[i].position,
 			SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			SimpleMath::Vector3{ COMMON_SIZE }
 		);
 
-		m_mapObj[i].hit = is_boxCol.IsHitBoxFlag();
+		m_mapObj[i].hit = is_hitCol.IsHitBoxFlag();
 
 		if (m_mapObj[i].hit) // 選択中のマスにオブジェクトを描画
 		{
@@ -422,16 +422,16 @@ void EditScene::EditMap()
 	for (auto& i : m_mapObj)
 	{
 		// 押し戻し処理を無効化
-		is_boxCol.SetPushMode(false);
+		is_hitCol.SetPushMode(false);
 
 		// 当たり判定を取る
-		is_boxCol.PushBox(&m_cursorPos, i.position,
+		is_hitCol.PushBox(&m_cursorPos, i.position,
 			SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			SimpleMath::Vector3{ COMMON_SIZE }
 		);
 
 		// 瞬間の当たり判定を取得
-		i.hit = is_boxCol.IsHitBoxFlag();
+		i.hit = is_hitCol.IsHitBoxFlag();
 
 		// クリックでブロック設置
 		if (i.hit &&  _mouse.leftButton)

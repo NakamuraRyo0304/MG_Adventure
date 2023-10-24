@@ -46,8 +46,11 @@ private:
 	// 当たったかどうかの判定
 	bool is_hitCoinFlag;
 
-	// ブロックのシェーダー
+	// 雲のシェーダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_psCloud;
+
+	// ライティング
+	DirectX::SimpleMath::Vector3 m_lighting;
 
 private:
 	// マップサイズ
@@ -94,7 +97,8 @@ public:
 
 	// 描画
 	void Render(ID3D11DeviceContext* context, DirectX::CommonStates& states,
-		DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, float timer);
+		DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, float timer,
+		const DirectX::SimpleMath::Vector3& lightDir);
 
 	// 終了処理
 	void Finalize();
@@ -102,12 +106,22 @@ public:
 	// モデル作成
 	void CreateModels(std::unique_ptr<Model> model, int modelName);
 
+
+public:
+
 	// シェーダーの作成
 	void CreateShader(ID3D11Device1* device);
 
-public:
 	// コインのカウントアップ
 	void CountUpCoin(int index);
+
+	// 雲を元の場所に戻す処理
+	void CallGravity();
+
+	// ライティングのセッター
+	void InitializeLighting(const DirectX::SimpleMath::Vector3& lightDir) { m_lighting = lightDir; }
+public:
+
 	const int& GetCoinCount() { return m_coinCount; }
 	const int& GetMaxCoinCount() { return m_maxCoins; }
 	const bool& IsCollectedFlag();
@@ -129,8 +143,6 @@ public:
 	// ブロックの大きさゲッター
 	const float& GetObjSize(const int& objName);
 
-	// 雲を元の場所に戻す処理
-	void CallGravity();
 
 	// 雲の判定アクセサ
 	void SetCloudHitFlag(const int& index, bool flag) { m_cloudState[index].moveFlag = flag; }

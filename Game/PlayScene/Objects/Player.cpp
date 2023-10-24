@@ -26,7 +26,8 @@
  /// <param name="right">右足モデルデータ</param>
  /// <param name="left">左足モデルデータ</param>
  /// <returns>なし</returns>
-Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body, std::unique_ptr<Model> right, std::unique_ptr<Model> left)
+Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body,
+			   std::unique_ptr<Model> right, std::unique_ptr<Model> left, std::unique_ptr<Model> wink)
 	: m_timer{0.0f}					// タイマー
 	, m_system{}					// システム
 	, m_parameter{}					// パラメーター
@@ -35,12 +36,14 @@ Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body, std::un
 	, m_body{ std::move(body) }		// 身体のモデル
 	, m_rightLeg{ std::move(right) }// 右足のモデル
 	, m_leftLeg{ std::move(left) }	// 左足のモデル
+	, m_wink{ std::move(wink)}		// ウインク差分
 	, m_position{}					// ポジション
 	, m_headMove{0.0f}				// 頭の動き
 	, m_footMove{0.0f}				// 足の動き
 	, m_neckQuaternion{}			// 首の回転行列
 	, m_neckRotate{}				// 首の回転量
 	, m_thirdRotate{}				// 三人称視点の回転量
+	, m_lighting{}					// ライティング
 	, is_lookFlag{}					// 視点フラグ
 	, is_deathFlag{}				// 死亡フラグ
 {
@@ -82,6 +85,8 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 	m_thirdRotate = SimpleMath::Quaternion::Identity;
 	is_lookFlag = false;
 
+	// ライティングリセット
+	m_lighting = SimpleMath::Vector3::Zero;
 }
 
 /// <summary>
@@ -193,9 +198,10 @@ void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
 /// <param name="states">コモンステート</param>
 /// <param name="view">ビュー行列</param>
 /// <param name="proj">射影行列</param>
+/// <param name="lightDir">ライティング</param>
 /// <returns>なし</returns>
 void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
-	SimpleMath::Matrix view, SimpleMath::Matrix proj)
+	SimpleMath::Matrix view, SimpleMath::Matrix proj,const SimpleMath::Vector3& lightDir)
 {
 	// ワールド行列
 	SimpleMath::Matrix _commonMat, _headMat, _legRMat, _legLMat;
@@ -252,9 +258,6 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 		_headMat = SimpleMath::Matrix::CreateFromQuaternion(m_neckQuaternion) * _headTrans * _rotate * _trans;
 	}
 
-	// ライトの設定
-	SimpleMath::Vector3 _lightDir(1.0f, -1.0f, -1.0f);
-
 	// ビュー行列からカメラの回転を取得
 	SimpleMath::Matrix _cameraRot;
 
@@ -267,7 +270,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	_cameraRot._43 = 0.0f;
 
 	// ライトの方向をカメラの回転に逆向きにする
-	_lightDir = SimpleMath::Vector3::TransformNormal(_lightDir, _cameraRot);
+	m_lighting = SimpleMath::Vector3::TransformNormal(lightDir, _cameraRot);
 	SimpleMath::Color _lightColor(0.3f, 0.3f, 0.3f, 1.0f);
 
 	auto _lightingEffects = [&](IEffect* effect)
@@ -281,9 +284,9 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 			_lights->SetLightEnabled(2, true);
 
 			// ライトの方向を設定
-			_lights->SetLightDirection(0, _lightDir);
-			_lights->SetLightDirection(1, _lightDir);
-			_lights->SetLightDirection(2, _lightDir);
+			_lights->SetLightDirection(0, m_lighting);
+			_lights->SetLightDirection(1, m_lighting);
+			_lights->SetLightDirection(2, m_lighting);
 
 			// ライトの色を暗めのグレーに設定
 			_lights->SetLightDiffuseColor(0, _lightColor);
@@ -308,9 +311,16 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	m_leftLeg->Draw(context, states, _legLMat, view, proj);
 
 	// 頭部の描画
-	m_head->UpdateEffects(_lightingEffects);
-	m_head->Draw(context, states, _headMat, view, proj);
-
+	if (sinf(m_timer) <= WINK_SPAN)
+	{
+		m_head->UpdateEffects(_lightingEffects);
+		m_head->Draw(context, states, _headMat, view, proj);
+	}
+	else
+	{
+		m_wink->UpdateEffects(_lightingEffects);
+		m_wink->Draw(context, states, _headMat, view, proj);
+	}
 	// 身体の描画
 	m_body->UpdateEffects(_lightingEffects);
 	m_body->Draw(context, states, _commonMat, view, proj);

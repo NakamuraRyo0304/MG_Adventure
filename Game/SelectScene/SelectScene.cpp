@@ -178,8 +178,8 @@ void SelectScene::Draw()
 
 	// ビュー行列
 	SimpleMath::Vector3    eye(CAMERA_RADIUS * sinf(rotValue),		// X:回転(ステージと逆回転)
-		CAMERA_POS_Y + verticalValue,		// Y:移動(上下)
-		CAMERA_RADIUS * cosf(rotValue));		// Z:回転(ステージと逆回転)
+		CAMERA_POS_Y + verticalValue,								// Y:移動(上下)
+		CAMERA_RADIUS * cosf(rotValue));							// Z:回転(ステージと逆回転)
 	SimpleMath::Vector3 target(0.0f, m_targetY, 0.0f);
 
 	view = SimpleMath::Matrix::CreateLookAt(eye, target, SimpleMath::Vector3::Up);
@@ -188,7 +188,9 @@ void SelectScene::Draw()
 	proj = GetSystemManager()->GetCamera()->GetProjection();
 
 	// マップの描画
-	m_blocks[m_stageNum] != nullptr ? m_blocks[m_stageNum]->Render(context, states, view, proj, m_timer) : void();
+	m_blocks[m_stageNum] != nullptr ? // 作成済みなら描画する
+		m_blocks[m_stageNum]->Render(context, states, view, proj, m_timer,
+			SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f }) : void();
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
@@ -336,10 +338,10 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 	for (int i = 0; i < MAX_STAGE_NUM; ++i)
 	{
 		// ファクトリーで生成
-		auto grass   = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
-		auto coin    = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
-		auto cloud   = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
-		auto gravity = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
+		auto grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
+		auto coin    = ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo");
+		auto cloud   = ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo");
+		auto gravity = ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo");
 
 		// 作成されていない場合は作成する
 		if (!m_blocks[i])
@@ -368,10 +370,10 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 void SelectScene::CreateFirstStage(ID3D11Device1* device)
 {
 	// ファクトリーで生成
-	auto grass   = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo"));
-	auto coin    = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo"));
-	auto cloud   = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo"));
-	auto gravity = std::move(ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo"));
+	auto grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
+	auto coin    = ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo");
+	auto cloud   = ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo");
+	auto gravity = ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo");
 
 	// ブロックの作成
 	m_blocks[m_stageNum] = std::make_unique<Blocks>();
