@@ -118,16 +118,8 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// エスケープで終了
 	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
 
-	// ヘルプ表示を切り替える
-	if (GetSystemManager()->GetStateTrack()->IsKeyPressed(Keyboard::Enter) && StartTimer())
-	{
-		is_helpFlag = !is_helpFlag;
-		m_userInterFace->SetHelpFlag(is_helpFlag);
-		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
-	}
-
-	// ヘルプ表示中は処理しない
-	if (is_helpFlag) return;
+	// UI表示中は以降処理しない
+	if (UpdateUI()) return;
 
 	// カメラの更新
 	if (is_thirdPersonMode) // 三人称カメラ
@@ -364,6 +356,11 @@ void PlayScene::Draw()
 	{
 		m_userInterFace->RenderCountDown(m_startTimer);
 	}
+
+	GetSystemManager()->GetString()->DrawFormatString(_states, { 0,0 }, Colors::Black, L"Trans:%d",
+		m_userInterFace->GetTransNum());
+	GetSystemManager()->GetString()->DrawFormatString(_states, { 0,20 }, Colors::Black, L"Page:%d",
+		m_userInterFace->GetPage());
 }
 
 /// <summary>
@@ -515,6 +512,194 @@ void PlayScene::SetSceneValues()
 }
 
 /// <summary>
+/// ライティングの更新
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void PlayScene::InitializeLighting()
+{
+	m_player->InitializeLighting(m_lighting);
+	m_blocks->InitializeLighting(m_lighting);
+}
+
+/// <summary>
+/// プレイヤーの作成
+/// </summary>
+/// <param name="device">デバイスポインタ</param>
+/// <returns>なし</returns>
+void PlayScene::MakePlayer(ID3D11Device1* device)
+{
+	//-------------------------------------------------------------------------------------//
+	// パスの格納
+	auto _head = ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo");
+	auto _body = ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo");
+	auto _legR = ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo");
+	auto _legL = ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo");
+	auto _wink = ModelFactory::GetCreateModel(device, L"Resources/Models/Head_w.cmo");
+	//-------------------------------------------------------------------------------------//
+
+	// プレイヤーを作成する
+	m_player = std::make_unique<Player>(
+		std::move(_head),			// 頭のモデル
+		std::move(_body),			// 身体のモデル
+		std::move(_legR),			// 右足のモデル
+		std::move(_legL),			// 左足のモデル
+		std::move(_wink)			// ウインク差分
+	);
+}
+
+/// <summary>
+/// スタートのカウントダウン
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>終わっていたらTrueを返す</returns>
+bool PlayScene::StartTimer()
+{
+	m_startTimer -= COUNT_SPEED;
+
+	if (m_startTimer <= 0.0f)
+	{
+		m_startTimer = 0.0f;
+		return true;
+	}
+
+	return false;
+}
+
+/// <summary>
+/// スタート演出
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void PlayScene::MoveStart()
+{
+	auto& _cam = GetSystemManager()->GetCamera();
+
+	//-------------------//
+	// 現在位置
+	// 終点位置
+	// 移動速度
+	//-------------------//
+
+	// カメラ座標の移動
+	m_playCamera->SetPosition(
+		UserUtility::Lerp(
+			m_playCamera->GetPosition(),
+			_cam->GetPosition(),
+			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
+		)
+	);
+	m_playCamera->SetTarget(
+		UserUtility::Lerp(
+			m_playCamera->GetTarget(),
+			_cam->GetTarget(),
+			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
+		)
+	);
+}
+
+/// <summary>
+/// 空の更新
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void PlayScene::UpdateSky()
+{
+	m_skyColor =
+	{
+		m_gameTimer / (TIME_LIMIT * FLAME_RATE), // 赤
+		m_gameTimer / (TIME_LIMIT * FLAME_RATE), // 緑
+		m_gameTimer / (TIME_LIMIT * FLAME_RATE)  // 青
+	};
+}
+
+/// <summary>
+/// UIの更新
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>ヘルプフラグ</returns>
+bool PlayScene::UpdateUI()
+{
+	auto& _key = GetSystemManager()->GetStateTrack();
+	auto& _se = GetSystemManager()->GetSoundManager();
+
+	// ヘルプ表示を切り替える
+	if (_key->IsKeyPressed(Keyboard::Enter) && StartTimer())
+	{
+		is_helpFlag = !is_helpFlag;
+		m_userInterFace->SetHelpFlag(is_helpFlag);
+		_se->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
+	}
+
+	if (is_helpFlag)
+	{
+		// 表示切替
+		m_userInterFace->UpdatePage(
+			(_key->IsKeyPressed(Keyboard::A) || _key->IsKeyPressed(Keyboard::Left)),
+			(_key->IsKeyPressed(Keyboard::D) || _key->IsKeyPressed(Keyboard::Right)));
+
+		// ページをめくる音を鳴らす
+		if (_key->IsKeyPressed(Keyboard::A) || _key->IsKeyPressed(Keyboard::Left) ||
+			_key->IsKeyPressed(Keyboard::D) || _key->IsKeyPressed(Keyboard::Right))
+		{
+			_se->PlaySound(XACT_WAVEBANK_SKBX_SE_NEXTHELP, false);
+		}
+
+		// 遷移ページの場合、UpdateTransitionにUpDownWSを渡す
+		if (m_userInterFace->GetTransitionPage())
+		{
+			// 上下キーで選択
+			m_userInterFace->UpdateTransition(
+				(_key->IsKeyPressed(Keyboard::W) || _key->IsKeyPressed(Keyboard::Up)),
+				(_key->IsKeyPressed(Keyboard::S) || _key->IsKeyPressed(Keyboard::Down)));
+
+			if (_key->IsKeyPressed(Keyboard::W) || _key->IsKeyPressed(Keyboard::Up)||
+				_key->IsKeyPressed(Keyboard::S) || _key->IsKeyPressed(Keyboard::Down))
+			{
+				_se->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
+			}
+
+			// 決定する
+			if (_key->IsKeyPressed(Keyboard::Space))
+			{
+				// シーンの遷移
+				HelpNext();
+				_se->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
+			}
+		}
+	}
+
+	// ヘルプ表示中は他の処理をしない
+	return is_helpFlag;
+}
+
+/// <summary>
+/// ヘルプシーンで選択されたシーンへの遷移
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void PlayScene::HelpNext()
+{
+	switch (m_userInterFace->GetTransNum())
+	{
+	case PlayUI::GO::RETRY:
+		ChangeScene(SCENE::PLAY);
+		break;
+	case PlayUI::GO::SELECT:
+		ChangeScene(SCENE::SELECT);
+		break;
+	case PlayUI::GO::TITLE:
+		ChangeScene(SCENE::TITLE);
+		break;
+	case PlayUI::GO::EXIT:
+		ChangeScene(SCENE::ENDGAME);
+		break;
+	default:
+		break;
+	}
+}
+
+/// <summary>
 /// 当たり判定処理
 /// </summary>
 /// <param name="引数無し"></param>
@@ -645,108 +830,6 @@ void PlayScene::ApplyPushBack(Object& obj)
 
 	// 処理が終わったら要素を破棄
 	m_hitObj.pop_back();
-}
-
-/// <summary>
-/// ライティングの更新
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void PlayScene::InitializeLighting()
-{
-	m_player->InitializeLighting(m_lighting);
-	m_blocks->InitializeLighting(m_lighting);
-}
-
-/// <summary>
-/// 空の更新
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void PlayScene::UpdateSky()
-{
-	m_skyColor =
-	{
-		m_gameTimer / (TIME_LIMIT * FLAME_RATE), // 赤
-		m_gameTimer / (TIME_LIMIT * FLAME_RATE), // 緑
-		m_gameTimer / (TIME_LIMIT * FLAME_RATE)  // 青
-	};
-}
-
-/// <summary>
-/// スタートのカウントダウン
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>終わっていたらTrueを返す</returns>
-bool PlayScene::StartTimer()
-{
-	m_startTimer -= COUNT_SPEED;
-
-	if (m_startTimer <= 0.0f)
-	{
-		m_startTimer = 0.0f;
-		return true;
-	}
-
-	return false;
-}
-
-/// <summary>
-/// スタート演出
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void PlayScene::MoveStart()
-{
-	auto& _cam = GetSystemManager()->GetCamera();
-
-	//-------------------//
-	// 現在位置
-	// 終点位置
-	// 移動速度
-	//-------------------//
-
-	// カメラ座標の移動
-	m_playCamera->SetPosition(
-		UserUtility::Lerp(
-			m_playCamera->GetPosition(),
-			_cam->GetPosition(),
-			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
-		)
-	);
-	m_playCamera->SetTarget(
-		UserUtility::Lerp(
-			m_playCamera->GetTarget(),
-			_cam->GetTarget(),
-			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
-		)
-	);
-}
-
-/// <summary>
-/// プレイヤーの作成
-/// </summary>
-/// <param name="device">デバイスポインタ</param>
-/// <returns>なし</returns>
-void PlayScene::MakePlayer(ID3D11Device1* device)
-{
-	//-------------------------------------------------------------------------------------//
-	// パスの格納
-	auto _head = ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo");
-	auto _body = ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo");
-	auto _legR = ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo");
-	auto _legL = ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo");
-	auto _wink = ModelFactory::GetCreateModel(device, L"Resources/Models/Head_w.cmo");
-	//-------------------------------------------------------------------------------------//
-
-	// プレイヤーを作成する
-	m_player = std::make_unique<Player>(
-		std::move(_head),			// 頭のモデル
-		std::move(_body),			// 身体のモデル
-		std::move(_legR),			// 右足のモデル
-		std::move(_legL),			// 左足のモデル
-		std::move(_wink)			// ウインク差分
-	);
 }
 
 /// <summary>

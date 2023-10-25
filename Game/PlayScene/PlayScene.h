@@ -163,17 +163,11 @@ private:
 
 private:
 
-	// 当たり判定処理
-	void Judgement();
-
-	// 押し戻し処理
-	void ApplyPushBack(Object& obj);
-
 	// ライティングの設定
 	void InitializeLighting();
 
-	// 空の更新
-	void UpdateSky();
+	// プレイヤーの作成
+	void MakePlayer(ID3D11Device1* device);
 
 	// スタートのカウントダウン
 	bool StartTimer();
@@ -181,8 +175,18 @@ private:
 	// スタート演出
 	void MoveStart();
 
-	// プレイヤーの作成
-	void MakePlayer(ID3D11Device1* device);
+	// 空の更新
+	void UpdateSky();
+
+	// UIの更新
+	bool UpdateUI();
+	void HelpNext();
+
+	// 当たり判定処理
+	void Judgement();
+
+	// 押し戻し処理
+	void ApplyPushBack(Object& obj);
 
 public:
 

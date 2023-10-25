@@ -23,6 +23,3 @@
 
 ・スコアランキングを作成
 	SelectScene(ハイスコアをHiScore.jsonに読み書き)
-
-・プレイヤー瞬きさせる
-	Player（WinkHead.fbxを作成する）

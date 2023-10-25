@@ -277,6 +277,7 @@
     <ResourceCompile Include="Resources\Icon\Icon.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ImageContentTask Include="..\資料\リソース一時保存\PNG\SelectArrow.png" />
     <Image Include="AppIcon.ico" />
     <Image Include="Resources\Textures\ADHESION\Adhesion.dds" />
     <Image Include="Resources\Textures\BackSelect.dds" />
@@ -304,6 +305,8 @@
     <Image Include="Resources\Textures\PlayerPoint.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\GameStart.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\sun.dds" />
+    <Image Include="Resources\Textures\PLAY_HELP\BlockInfo.dds" />
+    <Image Include="Resources\Textures\PLAY_HELP\GoScenes.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\Help.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\HelpBack.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds" />
