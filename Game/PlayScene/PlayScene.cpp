@@ -356,11 +356,6 @@ void PlayScene::Draw()
 	{
 		m_userInterFace->RenderCountDown(m_startTimer);
 	}
-
-	GetSystemManager()->GetString()->DrawFormatString(_states, { 0,0 }, Colors::Black, L"Trans:%d",
-		m_userInterFace->GetTransNum());
-	GetSystemManager()->GetString()->DrawFormatString(_states, { 0,20 }, Colors::Black, L"Page:%d",
-		m_userInterFace->GetPage());
 }
 
 /// <summary>

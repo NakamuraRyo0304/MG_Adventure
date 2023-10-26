@@ -732,9 +732,4 @@
       <Filter>Assets</Filter>
     </Font>
   </ItemGroup>
-  <ItemGroup>
-    <ImageContentTask Include="..\資料\リソース一時保存\PNG\SelectArrow.png">
-      <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
-    </ImageContentTask>
-  </ItemGroup>
 </Project>
