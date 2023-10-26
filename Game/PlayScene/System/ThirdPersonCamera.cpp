@@ -21,16 +21,14 @@
 ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
 	ID3D11DeviceContext1* context, ID3D11Device1* device)
 	: m_system{ system }
-	, m_adhesionTimer{ CHANGE_SPAN }
 	, m_followView{}
-	, is_changeFlag{false}
 {
 	// ドロースプライト
 	auto& _sp = m_system->GetDrawSprite();
 
 	_sp->MakeSpriteBatch(context);
 
-	_sp->AddTextureData(L"Adhesion", L"Resources/Textures/ADHESION/Adhesion.dds", device);
+	_sp->AddTextureData(L"Adhesion", L"Resources/Textures/PLAY_COMMON/Adhesion.dds", device);
 }
 
 /// <summary>
@@ -48,10 +46,9 @@ ThirdPersonCamera::~ThirdPersonCamera()
 /// <param name="pos">基準点</param>
 /// <param name="rotate">回転量</param>
 /// <param name="distance">基準点からの距離</param>
-/// <param name="timer">タイマー</param>
 /// <returns>なし</returns>
 void ThirdPersonCamera::UpdateFollow(const SimpleMath::Vector3& pos, const SimpleMath::Quaternion& rotate,
-	const SimpleMath::Vector3& distance, const float& timer)
+	const SimpleMath::Vector3& distance)
 {
 	// カメラの目線の方向をプレイヤーの回転に合わせて計算
 	SimpleMath::Vector3 _forward =
@@ -66,10 +63,6 @@ void ThirdPersonCamera::UpdateFollow(const SimpleMath::Vector3& pos, const Simpl
 
 	// ビュー行列
 	m_followView = SimpleMath::Matrix::CreateLookAt(_eye, _target, SimpleMath::Vector3::Up);
-
-	//-------------------------------------------------------------------------------------//
-	// 画像用変数更新
-	m_adhesionTimer = timer;
 }
 
 /// <summary>

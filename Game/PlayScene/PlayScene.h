@@ -169,6 +169,9 @@ private:
 	// プレイヤーの作成
 	void MakePlayer(ID3D11Device1* device);
 
+	// ブロックの作成
+	void MakeBlocks(ID3D11Device1* device);
+
 	// スタートのカウントダウン
 	bool StartTimer();
 

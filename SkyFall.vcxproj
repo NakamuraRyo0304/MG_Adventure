@@ -195,7 +195,6 @@
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
     <ClInclude Include="Game\PlayScene\Objects\Blocks.h" />
-    <ClInclude Include="Game\PlayScene\Objects\Haze.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h" />
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h" />
@@ -238,7 +237,6 @@
     <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Blocks.cpp" />
-    <ClCompile Include="Game\PlayScene\Objects\Haze.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayerBill.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayUI.cpp" />
@@ -278,19 +276,23 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="AppIcon.ico" />
-    <Image Include="Resources\Textures\ADHESION\Adhesion.dds" />
-    <Image Include="Resources\Textures\BackSelect.dds" />
     <Image Include="Resources\Textures\BLOCK\CloudIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\CoinIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\GrassIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\PlayerIcon.dds" />
     <Image Include="Resources\Textures\BLOCK\ResetIcon.dds" />
-    <Image Include="Resources\Textures\Camera.dds" />
-    <Image Include="Resources\Textures\CameraMove.dds" />
     <Image Include="Resources\Textures\Clock.dds" />
     <Image Include="Resources\Textures\DeathEffect.dds" />
-    <Image Include="Resources\Textures\EditToolBar.dds" />
+    <Image Include="Resources\Textures\EDITS\BackSelect.dds" />
+    <Image Include="Resources\Textures\EDITS\Camera.dds" />
+    <Image Include="Resources\Textures\EDITS\CameraMove.dds" />
+    <Image Include="Resources\Textures\EDITS\EditToolBar.dds" />
+    <Image Include="Resources\Textures\EDITS\MouseCursor.dds" />
+    <Image Include="Resources\Textures\EDITS\OpenFile.dds" />
+    <Image Include="Resources\Textures\EDITS\SaveFile.dds" />
+    <Image Include="Resources\Textures\EDITS\ToolOff.dds" />
+    <Image Include="Resources\Textures\EDITS\ToolOn.dds" />
     <Image Include="Resources\Textures\FadeBlind.dds" />
     <Image Include="Resources\Textures\FONT\CLEAR.dds" />
     <Image Include="Resources\Textures\FONT\COINS.dds" />
@@ -298,10 +300,9 @@
     <Image Include="Resources\Textures\FONT\RETRY.dds" />
     <Image Include="Resources\Textures\FONT\SELECT.dds" />
     <Image Include="Resources\Textures\FONT\TITLE.dds" />
-    <Image Include="Resources\Textures\MouseCursor.dds" />
     <Image Include="Resources\Textures\Number.dds" />
-    <Image Include="Resources\Textures\OpenFile.dds" />
     <Image Include="Resources\Textures\PlayerPoint.dds" />
+    <Image Include="Resources\Textures\PLAY_COMMON\Adhesion.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\GameStart.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\sun.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\BlockInfo.dds" />
@@ -311,7 +312,6 @@
     <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds" />
     <Image Include="Resources\Textures\ResultBack.dds" />
     <Image Include="Resources\Textures\ResultFonts.dds" />
-    <Image Include="Resources\Textures\SaveFile.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\LeftArrow.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\OutFrame.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\RightArrow.dds" />
@@ -320,8 +320,6 @@
     <Image Include="Resources\Textures\TITLE_BUTTON\Exit.dds" />
     <Image Include="Resources\Textures\TITLE_BUTTON\Start.dds" />
     <Image Include="Resources\Textures\TITLE_BUTTON\UnderLine.dds" />
-    <Image Include="Resources\Textures\ToolOff.dds" />
-    <Image Include="Resources\Textures\ToolOn.dds" />
     <Image Include="Resources\Textures\UnderFont.dds" />
     <Image Include="Resources\Textures\UnderLine.dds" />
   </ItemGroup>

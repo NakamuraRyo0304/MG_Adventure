@@ -62,28 +62,28 @@ void EditUI::Initialize(const std::shared_ptr<SystemManager>& shareSystem, ID3D1
 
 	// キー名　：　ファイルパス名
 	m_system->GetDrawSprite()->AddTextureData(L"Save",			// セーブアイコン
-		L"Resources/Textures/SaveFile.dds", device);
+		L"Resources/Textures/EDITS/SaveFile.dds", device);
 
 	m_system->GetDrawSprite()->AddTextureData(L"Open",			// ファイルアイコン
-		L"Resources/Textures/OpenFile.dds", device);
+		L"Resources/Textures/EDITS/OpenFile.dds", device);
 
 	m_system->GetDrawSprite()->AddTextureData(L"Camera",		// カメラアイコン(未使用時)
-		L"Resources/Textures/Camera.dds", device);
+		L"Resources/Textures/EDITS/Camera.dds", device);
 
 	m_system->GetDrawSprite()->AddTextureData(L"CameraMove",	// カメラアイコン(使用時)
-		L"Resources/Textures/CameraMove.dds", device);
+		L"Resources/Textures/EDITS/CameraMove.dds", device);
 
 	m_system->GetDrawSprite()->AddTextureData(L"ToolOn",		// ツール使用切り替えアイコン
-		L"Resources/Textures/ToolOn.dds", device);
+		L"Resources/Textures/EDITS/ToolOn.dds", device);
 
 	m_system->GetDrawSprite()->AddTextureData(L"ToolOff",		// ツール使用切り替えアイコン
-		L"Resources/Textures/ToolOff.dds", device);
+		L"Resources/Textures/EDITS/ToolOff.dds", device);
 
 	m_system->GetDrawSprite()->AddTextureData(L"BackSelect",	// セレクトに戻る
-		L"Resources/Textures/BackSelect.dds", device);
+		L"Resources/Textures/EDITS/BackSelect.dds", device);
 
 	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",		// ツールバー
-		L"Resources/Textures/EditToolBar.dds", device);
+		L"Resources/Textures/EDITS/EditToolBar.dds", device);
 
 	m_system->GetDrawSprite()->AddTextureData(L"Grass",			// 草ブロックアイコン
 		L"Resources/Textures/BLOCK/GrassIcon.dds", device);

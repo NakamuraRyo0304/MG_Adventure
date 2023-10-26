@@ -73,23 +73,25 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 	float _maxRatio = std::max({ _leftRatio ,_rightRatio ,_upRatio ,_downRatio ,_frontRatio ,_backRatio });
 
 	// 当っている位置を格納する
-	m_hitFace = _maxRatio == _leftRatio  ? HIT_FACE::LEFT  : m_hitFace; // 当った位置：左 or 変化なし
-	m_hitFace = _maxRatio == _rightRatio ? HIT_FACE::RIGHT : m_hitFace; // 当った位置：右 or 変化なし
-	m_hitFace = _maxRatio == _upRatio    ? HIT_FACE::UP    : m_hitFace; // 当った位置：上 or 変化なし
-	m_hitFace = _maxRatio == _downRatio  ? HIT_FACE::DOWN  : m_hitFace; // 当った位置：下 or 変化なし
-	m_hitFace = _maxRatio == _frontRatio ? HIT_FACE::FRONT : m_hitFace; // 当った位置：前 or 変化なし
-	m_hitFace = _maxRatio == _backRatio  ? HIT_FACE::BACK  : m_hitFace; // 当った位置：後 or 変化なし
+	// 当った位置: 該当位置 or 変化なし
+	m_hitFace = _maxRatio == _leftRatio  ? HIT_FACE::LEFT  : m_hitFace;
+	m_hitFace = _maxRatio == _rightRatio ? HIT_FACE::RIGHT : m_hitFace;
+	m_hitFace = _maxRatio == _upRatio    ? HIT_FACE::UP    : m_hitFace;
+	m_hitFace = _maxRatio == _downRatio  ? HIT_FACE::DOWN  : m_hitFace;
+	m_hitFace = _maxRatio == _frontRatio ? HIT_FACE::FRONT : m_hitFace;
+	m_hitFace = _maxRatio == _backRatio  ? HIT_FACE::BACK  : m_hitFace;
 
 	// 押し戻し処理をしない場合リターン
 	if (!is_pushMode) return;
 
 	// 当っている位置を格納し、押し戻し処理を行う
-	(*moveObj).x = _maxRatio == _leftRatio  ? constObj.x + (sz1.x + sz2.x) / 2 : (*moveObj).x; // 当った位置：左 or 変化なし
-	(*moveObj).x = _maxRatio == _rightRatio ? constObj.x - (sz1.x + sz2.x) / 2 : (*moveObj).x; // 当った位置：右 or 変化なし
-	(*moveObj).y = _maxRatio == _upRatio    ? constObj.y + (sz1.y + sz2.y) / 2 : (*moveObj).y; // 当った位置：上 or 変化なし
-	(*moveObj).y = _maxRatio == _downRatio  ? constObj.y - (sz1.y + sz2.y) / 2 : (*moveObj).y; // 当った位置：下 or 変化なし
-	(*moveObj).z = _maxRatio == _frontRatio ? constObj.z + (sz1.z + sz2.z) / 2 : (*moveObj).z; // 当った位置：前 or 変化なし
-	(*moveObj).z = _maxRatio == _backRatio  ? constObj.z - (sz1.z + sz2.z) / 2 : (*moveObj).z; // 当った位置：後 or 変化なし
+	// 当った位置: 該当位置 or 変化なし
+	(*moveObj).x = _maxRatio == _leftRatio  ? constObj.x + (sz1.x + sz2.x) / 2 : (*moveObj).x;
+	(*moveObj).x = _maxRatio == _rightRatio ? constObj.x - (sz1.x + sz2.x) / 2 : (*moveObj).x;
+	(*moveObj).y = _maxRatio == _upRatio    ? constObj.y + (sz1.y + sz2.y) / 2 : (*moveObj).y;
+	(*moveObj).y = _maxRatio == _downRatio  ? constObj.y - (sz1.y + sz2.y) / 2 : (*moveObj).y;
+	(*moveObj).z = _maxRatio == _frontRatio ? constObj.z + (sz1.z + sz2.z) / 2 : (*moveObj).z;
+	(*moveObj).z = _maxRatio == _backRatio  ? constObj.z - (sz1.z + sz2.z) / 2 : (*moveObj).z;
 }
 
 /// <summary>

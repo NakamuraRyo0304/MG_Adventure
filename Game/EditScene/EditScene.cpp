@@ -370,7 +370,7 @@ void EditScene::CreateWindowDependentResources()
 
 	// マウスカーソルの作成
 	m_mouseCursor = std::make_unique<MouseCursor>(_context);
-	m_mouseCursor->Initialize(L"Resources/Textures/MouseCursor.dds", _device);
+	m_mouseCursor->Initialize(L"Resources/Textures/EDITS/MouseCursor.dds", _device);
 
 	// クリアチェッカーの作成
 	m_checker = std::make_unique<ClearChecker>();

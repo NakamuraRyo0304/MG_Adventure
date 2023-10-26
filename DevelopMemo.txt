@@ -13,9 +13,6 @@
 ・フェードを雲から抜ける演出にする
 	Fade,(新規作成：PS_Fade)
 
-・３人称視点の周りの靄
-	Haze,ThirdPersonCamera(ピクセルシェーダー作成)
-
 ・ポーズ機能を追加
 	PlayScene,PlayUI
 	(上下でリトライ、セレクト、戻る)

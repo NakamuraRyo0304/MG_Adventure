@@ -127,8 +127,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		m_thirdCamera->UpdateFollow(
 			m_player->GetPosition(),				// ターゲット座標
 			m_player->GetNeckRotate(),				// 回転量
-			SimpleMath::Vector3(0.0f, 2.5f, 6.0f),	// ターゲットからの距離
-			m_timer									// タイマー
+			SimpleMath::Vector3(0.0f, 2.5f, 6.0f)	// ターゲットからの距離
 		);
 	}
 	else // 見下ろしカメラ
@@ -428,33 +427,16 @@ void PlayScene::CreateWindowDependentResources()
 		}
 	);
 
-	//-------------------------------------------------------------------------------------//
 	// プレイヤーの作成
 	MakePlayer(_device);
 
-	//-------------------------------------------------------------------------------------//
 	// ブロックの作成
-	m_blocks = std::make_unique<Blocks>();
-	m_blocks->CreateShader(_device);
+	MakeBlocks(_device);
 
-	// ファクトリーで生成
-	auto _grass	  = ModelFactory::GetCreateModel(_device, L"Resources/Models/GrassBlock.cmo");
-	auto _coin	  = ModelFactory::GetCreateModel(_device, L"Resources/Models/Coin.cmo");
-	auto _cloud	  = ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo");
-	auto _gravity = ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo");
-
-	// モデルの受け渡し
-	m_blocks->CreateModels(std::move(_grass),    m_blocks->GRASS);
-	m_blocks->CreateModels(std::move(_coin),     m_blocks->COIN);
-	m_blocks->CreateModels(std::move(_cloud),    m_blocks->CLOWD);
-	m_blocks->CreateModels(std::move(_gravity),  m_blocks->GRAVITY);
-
-	//-------------------------------------------------------------------------------------//
 	// 位置情報のシェーダーの作成
 	m_playerBill = std::make_unique<PlayerBill>();
 	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
 
-	//-------------------------------------------------------------------------------------//
 	// UIの作成
 	m_userInterFace = std::make_unique<PlayUI>(SimpleMath::Vector2(_width, _height));
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
@@ -524,14 +506,12 @@ void PlayScene::InitializeLighting()
 /// <returns>なし</returns>
 void PlayScene::MakePlayer(ID3D11Device1* device)
 {
-	//-------------------------------------------------------------------------------------//
-	// パスの格納
+	// ファクトリーからモデルをもらう
 	auto _head = ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo");
 	auto _body = ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo");
 	auto _legR = ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo");
 	auto _legL = ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo");
 	auto _wink = ModelFactory::GetCreateModel(device, L"Resources/Models/Head_w.cmo");
-	//-------------------------------------------------------------------------------------//
 
 	// プレイヤーを作成する
 	m_player = std::make_unique<Player>(
@@ -541,6 +521,29 @@ void PlayScene::MakePlayer(ID3D11Device1* device)
 		std::move(_legL),			// 左足のモデル
 		std::move(_wink)			// ウインク差分
 	);
+}
+
+/// <summary>
+/// ブロックの作成
+/// </summary>
+/// <param name="device">デバイスポインタ</param>
+/// <returns>なし</returns>
+void PlayScene::MakeBlocks(ID3D11Device1* device)
+{
+	m_blocks = std::make_unique<Blocks>();
+	m_blocks->CreateShader(device);
+
+	// ファクトリーからモデルをもらう
+	auto _grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
+	auto _coin    = ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo");
+	auto _cloud   = ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo");
+	auto _gravity = ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo");
+
+	// モデルの受け渡し
+	m_blocks->CreateModels(std::move(_grass),   m_blocks->GRASS);
+	m_blocks->CreateModels(std::move(_coin),    m_blocks->COIN);
+	m_blocks->CreateModels(std::move(_cloud),   m_blocks->CLOWD);
+	m_blocks->CreateModels(std::move(_gravity), m_blocks->GRAVITY);
 }
 
 /// <summary>
@@ -710,25 +713,23 @@ void PlayScene::Judgement()
 		// マップステータスがなしの時は飛ばす
 		if (i.id == MAPSTATE::NONE) continue;
 
-		// プレイヤの半径1.5fの範囲になければ処理しない
+		// プレイヤの判定範囲外は処理しない
 		// 引数（基準点、検索範囲、検索点）
-		if (UserUtility::CheckPointInSphere(
-			m_player->GetPosition(),JUDGE_AREA,	i.position))
-		{
-			// 判定を取る
-			is_hitCol.PushBox(
-				m_player->GetPosition(),								// プレイヤ座標
-				i.position,												// コイン座標
-				SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-				SimpleMath::Vector3{ m_blocks->GetObjSize(i.id) }		// ブロックサイズ
-			);
+		if (!UserUtility::CheckPointInSphere(
+			m_player->GetPosition(), JUDGE_AREA, i.position)) continue;
 
-			// 当たっていたら処理する
-			if (is_hitCol.IsHitBoxFlag())
-			{
-				// 衝突したオブジェクトをリストに追加
-				m_hitObj.push_back(i);
-			}
+		// 判定を取る
+		is_hitCol.PushBox(
+			m_player->GetPosition(), i.position,					// プレイヤ、オブジェクトの座標
+			SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
+			SimpleMath::Vector3{ m_blocks->GetObjSize(i.id) }		// ブロックサイズ
+		);
+
+		// 当たっていたら処理する
+		if (is_hitCol.IsHitBoxFlag())
+		{
+			// 衝突したオブジェクトをリストに追加
+			m_hitObj.push_back(i);
 		}
 	}
 }
@@ -743,17 +744,15 @@ void PlayScene::ApplyPushBack(Object& obj)
 	// 当っているオブジェがなしの場合は処理しない
 	if (obj.id == MAPSTATE::NONE)
 	{
-		is_hitCol.SetPushMode(false);
+		// 要素を消して終了
+		m_hitObj.pop_back();
 		return;
 	}
-	else
-	{
-		is_hitCol.SetPushMode(true);
-	}
 
-	//-------------------------------------------------------------------------------------//
+	// デフォルトで判定をつける
+	is_hitCol.SetPushMode(true);
 
-	// コインの処理
+	// コインの獲得処理
 	if (obj.id == MAPSTATE::COIN)
 	{
 		// 押し戻ししない
@@ -766,15 +765,14 @@ void PlayScene::ApplyPushBack(Object& obj)
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_COINGETTER, false);
 	}
 
-	//-------------------------------------------------------------------------------------//
-
-	// 雲の処理
+	// 雲の浮上処理
 	if (obj.id == MAPSTATE::CLOUD)
 	{
 		// プレイヤーが下にいたら押し戻ししない
 		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(MAPSTATE::CLOUD))
 		{
-			is_hitCol.SetPushMode(false);
+			// 要素を消して終了
+			m_hitObj.pop_back();
 			return;
 		}
 
@@ -790,7 +788,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 		// 当たっている判定を出す
 		m_blocks->SetCloudHitFlag(m_prevIndex.front(), true);
 
-		// 入っていたら先頭を削除
+		// 要素を消す
 		m_prevIndex.pop_front();
 	}
 
@@ -802,14 +800,12 @@ void PlayScene::ApplyPushBack(Object& obj)
 	}
 
 	//-------------------------------------------------------------------------------------//
-
 	// 直前のプレイヤのポジションを保存
 	SimpleMath::Vector3 _playerPos = m_player->GetPosition();
 
 	// 当たり判定を取って押し戻す
 	is_hitCol.PushBox(
-		&_playerPos,											// プレイヤ座標
-		obj.position,											// ブロック座標
+		&_playerPos,obj.position,								// プレイヤ、オブジェクトの座標
 		SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
 		SimpleMath::Vector3{ m_blocks->GetObjSize(obj.id)}		// ブロックサイズ
 	);
@@ -817,13 +813,13 @@ void PlayScene::ApplyPushBack(Object& obj)
 	// 変更後のプレイヤのポジションを反映
 	m_player->SetPosition(_playerPos);
 
-	// ブロックの上に当たっていたら重力を初期化
+	// ブロックの上に乗っていたら重力をなくす
 	if (is_hitCol.GetHitFace() == Collider::BoxCollider::HIT_FACE::UP)
 	{
 		m_player->ResetGravity();
 	}
 
-	// 処理が終わったら要素を破棄
+	// 要素を消して終了
 	m_hitObj.pop_back();
 }
 
