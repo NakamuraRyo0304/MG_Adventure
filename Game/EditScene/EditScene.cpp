@@ -130,8 +130,8 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		OffsetPosition(&m_mapObj,READ);			// 座標補正
 	}
 
-	// シフトを押したら、カメラモードを反転する
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::LeftShift))
+	// Zキーを押したら、カメラモードを反転する
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Z))
 	{
 		// インターフェースでカメラのフラグを取得
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
@@ -404,18 +404,15 @@ void EditScene::EditMap()
 {
 	auto _mouse = Mouse::Get().GetState();
 
-	// カメラモードは処理しない
-	if (m_userInterface->GetCameraFlag()) return;
-
 	// 移動処理
 	m_cursorPos.x = GetSystemManager()->GetRayCast()->GetWorldMousePosition().x;
 	m_cursorPos.z = GetSystemManager()->GetRayCast()->GetWorldMousePosition().z;
 
 	// マウスカーソルで移動
 	m_cursorPos.y = UserUtility::Lerp(
-		m_cursorPos.y,															// 開始地点
-		static_cast<float>(_mouse.scrollWheelValue / WHEEL_SPAWN) + COMMON_LOW,	// 終了地点
-		CURSOR_MOVE_SPEED														// 速度
+		m_cursorPos.y,																// 開始地点
+		static_cast<float>((_mouse.scrollWheelValue) / WHEEL_SPAWN) + COMMON_LOW,	// 終了地点
+		CURSOR_MOVE_SPEED															// 速度
 	);
 
 	// 制限をつける

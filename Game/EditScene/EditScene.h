@@ -89,7 +89,7 @@ private:
 
 	// カーソルの最低高度と最高高度
 	const float CURSOR_MIN = -2.0f;
-	const float CURSOR_MAX = static_cast<float>(MapLoad::MAP_HEIGHT);
+	const float CURSOR_MAX = static_cast<float>(MapLoad::MAP_HEIGHT + 0.5f);
 
 	// スカイドームの回転量
 	const float SKY_ROTATE_RATE = 0.01f;

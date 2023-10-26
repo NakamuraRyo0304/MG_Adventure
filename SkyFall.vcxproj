@@ -191,6 +191,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\EditScene\EditScene.h" />
     <ClInclude Include="Game\EditScene\Objects\EditUI.h" />
+    <ClInclude Include="Game\EditScene\System\Caretaker.h" />
     <ClInclude Include="Game\EditScene\System\ClearChecker.h" />
     <ClInclude Include="Game\EditScene\System\MementMap.h" />
     <ClInclude Include="Game\IScene.h" />
@@ -234,6 +235,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\EditScene\EditScene.cpp" />
     <ClCompile Include="Game\EditScene\Objects\EditUI.cpp" />
+    <ClCompile Include="Game\EditScene\System\Caretaker.cpp" />
     <ClCompile Include="Game\EditScene\System\ClearChecker.cpp" />
     <ClCompile Include="Game\EditScene\System\MementMap.cpp" />
     <ClCompile Include="Game\IScene.cpp" />

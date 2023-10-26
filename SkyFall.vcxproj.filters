@@ -212,6 +212,9 @@
     <Filter Include="Scenes\EditScene\System\MementMap">
       <UniqueIdentifier>{25ecdf5c-55bc-4779-bedf-4480f3bd8c1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\EditScene\System\Caretaker">
+      <UniqueIdentifier>{7206b870-4a89-498d-b9cf-a74579219a84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -337,6 +340,9 @@
     <ClInclude Include="Game\EditScene\System\MementMap.h">
       <Filter>Scenes\EditScene\System\MementMap</Filter>
     </ClInclude>
+    <ClInclude Include="Game\EditScene\System\Caretaker.h">
+      <Filter>Scenes\EditScene\System\Caretaker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -446,6 +452,9 @@
     </ClCompile>
     <ClCompile Include="Game\EditScene\System\MementMap.cpp">
       <Filter>Scenes\EditScene\System\MementMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\EditScene\System\Caretaker.cpp">
+      <Filter>Scenes\EditScene\System\Caretaker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
