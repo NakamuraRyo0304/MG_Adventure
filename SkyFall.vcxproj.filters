@@ -191,9 +191,6 @@
     <Filter Include="Scenes\PlayScene\System">
       <UniqueIdentifier>{aab73a85-14ec-48b6-9c65-8b55d8270078}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Shaders\Haze">
-      <UniqueIdentifier>{4a2ada26-8879-49a9-970c-7161d739fcb6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Nlohmann">
       <UniqueIdentifier>{718f7214-f6de-43ad-b4ae-2b0537acd86e}</UniqueIdentifier>
     </Filter>

@@ -28,17 +28,22 @@ private:
 	// タイマー
 	float m_timer;
 
-	// ファイル読み込みモード
-	enum MODE { WRITE, READ };
-
 	// カーソル位置
-	std::unique_ptr<MouseCursor> m_mouseCursor;
 	DirectX::SimpleMath::Vector3 m_cursorPos;
-	const float CURSOR_MIN = -2.0f;
-	const float CURSOR_MAX = static_cast<float>(MapLoad::MAP_HEIGHT);
 
 	// ブロックの配列
 	std::vector<Object> m_mapObj;
+
+	// 現在のブロックステータス
+	int m_nowState;
+
+	// パスの格納
+	std::wstring m_filePath;
+
+	// ファイル読み込みモード
+	enum MODE { WRITE, READ };
+
+private:
 
 	// マップ
 	MapLoad m_mapLoader;
@@ -49,14 +54,12 @@ private:
 	// UI
 	std::unique_ptr<EditUI> m_userInterface;
 
-	// 現在のブロックステータス
-	int m_nowState;
-
-	// パスの格納
-	std::wstring m_filePath;
-
 	// クリアチェッカー
 	std::unique_ptr<ClearChecker> m_checker;
+
+	// マウスカーソル
+	std::unique_ptr<MouseCursor> m_mouseCursor;
+
 
 private:
 	// モデル
@@ -83,6 +86,10 @@ private:
 
 	// カーソルの移動速度
 	const float CURSOR_MOVE_SPEED = 0.1f;
+
+	// カーソルの最低高度と最高高度
+	const float CURSOR_MIN = -2.0f;
+	const float CURSOR_MAX = static_cast<float>(MapLoad::MAP_HEIGHT);
 
 	// スカイドームの回転量
 	const float SKY_ROTATE_RATE = 0.01f;
@@ -118,7 +125,7 @@ private:
 	// シーン内の変数初期化関数
 	void SetSceneValues() override;
 
-public:
+private:
 
 	// マップを編集
 	void EditMap();
