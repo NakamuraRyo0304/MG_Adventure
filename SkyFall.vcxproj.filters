@@ -212,6 +212,9 @@
     <Filter Include="Resources\Textures\EDITS">
       <UniqueIdentifier>{5bbfed9e-5864-4179-9609-ce004e514ba6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\EditScene\System\MementMap">
+      <UniqueIdentifier>{25ecdf5c-55bc-4779-bedf-4480f3bd8c1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -334,6 +337,9 @@
     <ClInclude Include="Game\PlayScene\System\ThirdPersonCamera.h">
       <Filter>Scenes\PlayScene\System\ThirdPersonCamera</Filter>
     </ClInclude>
+    <ClInclude Include="Game\EditScene\System\MementMap.h">
+      <Filter>Scenes\EditScene\System\MementMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -440,6 +446,9 @@
     </ClCompile>
     <ClCompile Include="Game\PlayScene\System\ThirdPersonCamera.cpp">
       <Filter>Scenes\PlayScene\System\ThirdPersonCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\EditScene\System\MementMap.cpp">
+      <Filter>Scenes\EditScene\System\MementMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

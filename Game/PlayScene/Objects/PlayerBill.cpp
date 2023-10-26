@@ -61,7 +61,7 @@ void PlayerBill::Create(DX::DeviceResources* pDR)
 	CreateShader();
 
 	// 画像の読み込み（読み込み失敗でnullptr)
-	LoadTexture(L"Resources/Textures/PlayerPoint.dds");
+	LoadTexture(L"Resources/Textures/PLAY_COMMON/PlayerPoint.dds");
 
 	// プリミティブバッチの作成
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());

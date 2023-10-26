@@ -223,11 +223,11 @@ void EditUI::Render()
 	{
 		// ツールバー
 		m_system->GetDrawSprite()->DrawTexture(
-			L"ToolBar",
+			L"ToolBar",								// 登録キー
 			SimpleMath::Vector2::Zero,				// 座標
 			{ 1.0f,1.0f,1.0f,0.7f },				// 色
 			_imageScale,							// 拡大率
-			SimpleMath::Vector2::Zero
+			SimpleMath::Vector2::Zero				// 中心位置
 		);
 
 		// ファイルアイコン
