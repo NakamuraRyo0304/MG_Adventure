@@ -1,5 +1,5 @@
 /*
- *	@File	MementMap.h
+ *	@File	MementoMap.h
  *	@Brief	マップの過去の情報を保存するクラス。
  *	@Date	2023-10-26
  *  @Author NakamuraRyo
@@ -12,7 +12,7 @@
  // 構造体取得
 #include "Libraries/SystemDatas/MapLoad.h"
 
-class MementMap
+class MementoMap
 {
 private:
 	// 保存
@@ -20,8 +20,8 @@ private:
 
 public:
 
-	MementMap(const std::vector<Object>& state);
-	~MementMap();
+	MementoMap(const std::vector<Object>& state);
+	~MementoMap();
 
 	// ステートゲッター
 	const std::vector<Object>& GetState();

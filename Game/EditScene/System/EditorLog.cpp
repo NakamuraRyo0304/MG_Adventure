@@ -8,7 +8,7 @@
 #include "pch.h"
 
  // メメント
-#include "MementMap.h"
+#include "MementoMap.h"
 
 #include "EditorLog.h"
 
@@ -40,7 +40,7 @@ EditorLog::~EditorLog()
 /// </summary>
 /// <param name="history">変更点</param>
 /// <returns>なし</returns>
-void EditorLog::AddHistory(const MementMap& history)
+void EditorLog::AddHistory(const MementoMap& history)
 {
 	// 変更点をまとめた情報を保存
 	m_histories.push_back(history);
@@ -52,7 +52,7 @@ void EditorLog::AddHistory(const MementMap& history)
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>ひとつ前の状態</returns>
-const MementMap& EditorLog::GetUndo()
+const MementoMap& EditorLog::GetUndo()
 {
 	if (m_currentIndex > 0)
 	{
@@ -66,7 +66,7 @@ const MementMap& EditorLog::GetUndo()
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>前回のUndoの前の状態</returns>
-const MementMap& EditorLog::GetRedo()
+const MementoMap& EditorLog::GetRedo()
 {
 	if (m_currentIndex < m_histories.size() - 1)
 	{

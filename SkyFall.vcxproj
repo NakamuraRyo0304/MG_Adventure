@@ -193,7 +193,7 @@
     <ClInclude Include="Game\EditScene\Objects\EditUI.h" />
     <ClInclude Include="Game\EditScene\System\EditorLog.h" />
     <ClInclude Include="Game\EditScene\System\ClearChecker.h" />
-    <ClInclude Include="Game\EditScene\System\MementMap.h" />
+    <ClInclude Include="Game\EditScene\System\MementoMap.h" />
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
     <ClInclude Include="Game\PlayScene\Objects\Blocks.h" />
@@ -237,7 +237,7 @@
     <ClCompile Include="Game\EditScene\Objects\EditUI.cpp" />
     <ClCompile Include="Game\EditScene\System\EditorLog.cpp" />
     <ClCompile Include="Game\EditScene\System\ClearChecker.cpp" />
-    <ClCompile Include="Game\EditScene\System\MementMap.cpp" />
+    <ClCompile Include="Game\EditScene\System\MementoMap.cpp" />
     <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Blocks.cpp" />

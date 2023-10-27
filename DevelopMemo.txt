@@ -5,19 +5,21 @@
  *  @Author NakamuraRyo
  */
 
+ 『実装済み』
+ 〇ModelFactoryの作成
+ 　　使用したデザインパターン：Factoryパターン
+
+ 〇ステージエディタ・UndoRedoの作成
+ 　　使用したデザインパターン：Mementoパターン
+
 
 【実装すること】
 
-・常時コードのリファクタリング
-
-・フェードを雲から抜ける演出にする
-	Fade,(新規作成：PS_Fade)
+・ステージエディタZXCのキー、マウスのUI表示
+　　EditUI
 
 ・スコアランキングを作成
 	SelectScene(ハイスコアをHiScore.jsonに読み書き)
-
-・エディタのUndo機能追加
-　　Mementoパターンの使用
 
 ・プレイヤークラスの部品分け(class)
 　　Compositeパターン

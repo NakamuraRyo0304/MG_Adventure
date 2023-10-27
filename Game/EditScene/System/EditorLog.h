@@ -12,13 +12,13 @@
  // 構造体取得
 #include "Libraries/SystemDatas/MapLoad.h"
 
-class MementMap;
+class MementoMap;
 class EditorLog
 {
 private:
 
 	// 保存した配列
-	std::vector<MementMap> m_histories;
+	std::vector<MementoMap> m_histories;
 
 	// 現在のインデックス
 	size_t m_currentIndex;
@@ -29,10 +29,10 @@ public:
 	~EditorLog();
 
 	// 状態を蓄積していく関数
-	void AddHistory(const MementMap& history);
+	void AddHistory(const MementoMap& history);
 
-	const MementMap& GetUndo();
-	const MementMap& GetRedo();
+	const MementoMap& GetUndo();
+	const MementoMap& GetRedo();
 };
 
 #endif // EDITORLOG

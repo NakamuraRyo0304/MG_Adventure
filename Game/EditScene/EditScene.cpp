@@ -621,7 +621,7 @@ void EditScene::DoUndoRedo()
 void EditScene::SaveModification()
 {
 	// èÛë‘Çï€ë∂
-	m_history.AddHistory(MementMap(m_mapObj));
+	m_history.AddHistory(MementoMap(m_mapObj));
 }
 
 /// <summary>
@@ -629,7 +629,7 @@ void EditScene::SaveModification()
 /// </summary>
 /// <param name="mement"></param>
 /// <returns>Ç»Çµ</returns>
-void EditScene::RestoreHistory(MementMap mement)
+void EditScene::RestoreHistory(MementoMap mement)
 {
 	m_mapObj = mement.GetState();
 }

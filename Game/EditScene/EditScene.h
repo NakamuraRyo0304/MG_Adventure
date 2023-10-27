@@ -21,7 +21,7 @@
 #include "System/EditorLog.h"
 
 // メメント
-#include "System/MementMap.h"
+#include "System/MementoMap.h"
 
 // エイリアス
 using MAPSTATE = MapLoad::BOXSTATE;
@@ -162,7 +162,7 @@ private:
 	void SaveModification();
 
 	// UndoRedoを適用する
-	void RestoreHistory(MementMap mement);
+	void RestoreHistory(MementoMap mement);
 };
 
 #endif // EDITSCENE

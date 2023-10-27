@@ -1,5 +1,5 @@
 /*
- *	@File	MementMap.cpp
+ *	@File	MementoMap.cpp
  *	@Brief	マップの過去の情報を保存するクラス。
  *	@Date	2023-10-26
  *  @Author NakamuraRyo
@@ -7,14 +7,14 @@
 
 #include "pch.h"
 
-#include "MementMap.h"
+#include "MementoMap.h"
 
  /// <summary>
  /// コンストラクタ
  /// </summary>
  /// <param name="state">変更があったオブジェクト</param>
  /// <returns>なし</returns>
-MementMap::MementMap(const std::vector<Object>& state)
+MementoMap::MementoMap(const std::vector<Object>& state)
 	: m_state{ state }
 {
 }
@@ -24,7 +24,7 @@ MementMap::MementMap(const std::vector<Object>& state)
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>なし</returns>
-MementMap::~MementMap()
+MementoMap::~MementoMap()
 {
 	m_state.clear();
 }
@@ -34,7 +34,7 @@ MementMap::~MementMap()
 /// </summary>
 /// <param name="引数無し"></param>
 /// <returns>前回のステート</returns>
-const std::vector<Object>& MementMap::GetState()
+const std::vector<Object>& MementoMap::GetState()
 {
 	return m_state;
 }
