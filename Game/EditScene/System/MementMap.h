@@ -9,18 +9,22 @@
 #ifndef MEMENTMAP
 #define MEMENTMAP
 
-// 変更内容を持っているクラス
-#include "../EditScene.h"
+ // 構造体取得
+#include "Libraries/SystemDatas/MapLoad.h"
 
 class MementMap
 {
 private:
-
+	// 保存
+	std::vector<Object> m_state;
 
 public:
 
-	MementMap();
+	MementMap(const std::vector<Object>& state);
 	~MementMap();
+
+	// ステートゲッター
+	const std::vector<Object>& GetState();
 };
 
 #endif // MEMENTMAP

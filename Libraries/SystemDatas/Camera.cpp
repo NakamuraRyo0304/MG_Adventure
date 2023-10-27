@@ -35,16 +35,17 @@ Camera::Camera()
 	, m_prevMouse{}				// 過去のマウスの位置
 	, m_scrollWheelValue{}		// マウスホイールの回転量
 	, m_tempScrollValue{}		// マウスホイールの回転量(不動時の蓄積用)
-	, m_prevScrollWheelValue{}	// マウスホイールの回転量(前回の保存用)
 	, m_view{}					// ビュー行列
 	, m_projection{}			// プロジェクション行列
 	, m_rotateMatrix{}			// 回転量
 	, is_allowMode{ false }		// カメラの視点移動フラグ(十字操作)
 	, is_eagleMode{ false }		// カメラの視点移動フラグ(マウス操作)
-	, is_prevEagleMode{ false }	// カメラの視点移動フラグ(前回の保存用)
 {
-	// マウスの回転量をリセット
+	// マウスの情報をリセット
 	Mouse::Get().ResetScrollWheelValue();
+	m_prevMouse.pos = SimpleMath::Vector2::Zero;
+	m_prevMouse.wheel = 0;
+	m_prevMouse.eagle = false;
 }
 
 /// <summary>
@@ -79,8 +80,8 @@ void Camera::Update()
 	}
 
 	// マウスの座標を前回の値として保存
-	m_prevMouse.x = static_cast<float>(_msState.x); // X座標を保存
-	m_prevMouse.y = static_cast<float>(_msState.y); // Y座標を保存
+	m_prevMouse.pos.x = static_cast<float>(_msState.x); // X座標を保存
+	m_prevMouse.pos.y = static_cast<float>(_msState.y); // Y座標を保存
 
 	// 拡縮処理
 	RollWheelToRate(_msState);
@@ -114,8 +115,8 @@ void Camera::DraggedDistance(int x, int y)
 {
 	// マウスポインタの前回からの変位
 	// DEFAULT_CAMERA_SPEEDを乗算してドラッグの移動量を調整する
-	float _dx = static_cast<float>(x - m_prevMouse.x) * DEFAULT_CAMERA_SPEED;
-	float _dy = static_cast<float>(y - m_prevMouse.y) * DEFAULT_CAMERA_SPEED;
+	float _dx = static_cast<float>(x - m_prevMouse.pos.x) * DEFAULT_CAMERA_SPEED;
+	float _dy = static_cast<float>(y - m_prevMouse.pos.y) * DEFAULT_CAMERA_SPEED;
 
 	if (_dx != 0.0f || _dy != 0.0f)
 	{
@@ -246,7 +247,7 @@ void Camera::CalculateViewMatrix()
 void Camera::RollWheelToRate(Mouse::State state)
 {
 	// マウスホイールのスクロール値の差分を計算
-	int _scrollDelta = state.scrollWheelValue - m_prevScrollWheelValue;
+	int _scrollDelta = state.scrollWheelValue - m_prevMouse.wheel;
 
 	// カメラモードの時の処理
 	if (is_eagleMode)
@@ -289,8 +290,8 @@ void Camera::RollWheelToRate(Mouse::State state)
 	}
 
 	// 前回のフラグを更新
-	is_prevEagleMode = is_eagleMode;
+	m_prevMouse.eagle = is_eagleMode;
 
 	// マウスホイールの前回の値を更新(一連の作業が終わってから更新する)
-	m_prevScrollWheelValue = state.scrollWheelValue;
+	m_prevMouse.wheel = state.scrollWheelValue;
 }

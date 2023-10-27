@@ -36,14 +36,14 @@ public:	//----------------------------------------------------------------------
 
 private: //-------------------------------------------------------------------------------------//
 
-	// 前回のマウス座標(X,Y)
-	DirectX::SimpleMath::Vector2 m_prevMouse;
+	struct PrevMouse { DirectX::SimpleMath::Vector2 pos; int wheel; bool eagle; };
+
+	// 前回のマウス情報
+	PrevMouse m_prevMouse;
 	// マウスホイールのスクロール値
 	int m_scrollWheelValue;
 	// 一時的なスクロール値の蓄積用変数
 	int m_tempScrollValue;
-	// 前回のスクロール値の保存変数
-	int m_prevScrollWheelValue;
 	// 回転角
 	DirectX::SimpleMath::Vector2 m_angle;
 
@@ -65,7 +65,6 @@ private: //---------------------------------------------------------------------
 
 	// 視点移動モード
 	bool is_eagleMode;
-	bool is_prevEagleMode;
 	bool is_allowMode;
 
 public:
@@ -100,7 +99,7 @@ public:
 	const DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
 
 	// カメラの座標移動用セッター(指定座標に移動)
-	void SetAddPosition(const DirectX::SimpleMath::Vector3& pos){ m_addPos = pos;}
+	void AddEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_addPos = pos;}
 
 	// ターゲットを取得する
 	const DirectX::SimpleMath::Vector3& GetTarget() { return m_target; }
@@ -109,9 +108,10 @@ public:
 	const DirectX::SimpleMath::Matrix& CreateProjection(float width, float height,float angle = 45.0f);
 	const DirectX::SimpleMath::Matrix& GetProjection() { return m_projection; }
 
-	// カメラ視点移動モード切替
-	void SetEagleMode(const bool& flag) { is_eagleMode = flag; }
-	void SetArrowMode(const bool& flag) { is_allowMode = flag; }
+	// マウスドラッグで視点を回転
+	void SetEagleMode(const bool& flag = true) { is_eagleMode = flag; }
+	// 十字キーで視点を回転
+	void SetArrowMode(const bool& flag = true) { is_allowMode = flag; }
 
 };
 

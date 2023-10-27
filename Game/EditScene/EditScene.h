@@ -14,7 +14,14 @@
  // CSV読み込み
 #include "../../Libraries/SystemDatas/MapLoad.h"
 
+// 当たり判定クラス
 #include "../../Libraries/SystemDatas/Collider.h"
+
+// ログ管理クラス
+#include "System/EditorLog.h"
+
+// メメント
+#include "System/MementMap.h"
 
 // エイリアス
 using MAPSTATE = MapLoad::BOXSTATE;
@@ -60,6 +67,10 @@ private:
 	// マウスカーソル
 	std::unique_ptr<MouseCursor> m_mouseCursor;
 
+private:
+
+	// UndoRedo
+	EditorLog m_history;
 
 private:
 	// モデル
@@ -142,6 +153,16 @@ private:
 	// 要素チェック
 	bool IsCanSave();
 
+private:
+
+	// UndoRedoの実行をする
+	void DoUndoRedo();
+
+	// 変更があればUndoRedo用に一時保存する
+	void SaveModification();
+
+	// UndoRedoを適用する
+	void RestoreHistory(MementMap mement);
 };
 
 #endif // EDITSCENE

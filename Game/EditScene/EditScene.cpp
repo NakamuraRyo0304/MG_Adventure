@@ -7,6 +7,14 @@
 
 #include "pch.h"
 
+ // MementPatternの参考サイト
+ //-------------------------------------------------------------------------------------//
+ // 　REFACTORING・GURU様
+ //   https://refactoring.guru/ja/design-patterns/memento
+ //   shiraberu.tech様
+ //   https://shiraberu.tech/2021/11/19/memento-patten/
+ //-------------------------------------------------------------------------------------//
+
 // UI
 #include "Objects/EditUI.h"
 
@@ -36,6 +44,7 @@ EditScene::EditScene()
 	, m_gravityModel{ nullptr }					// モデル＿重力
 	, m_skyDomeModel{ nullptr }					// モデル＿スカイドーム
 	, m_cursorPos{ SimpleMath::Vector3::Zero }	// カーソルの位置
+	, m_history{}								// ログ管理
 	, is_hitCol{}								// 立方体当たり判定
 {
 	ShowCursor(false);
@@ -104,6 +113,9 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 
 	// 選択しているオブジェクトを格納
 	m_nowState = m_userInterface->GetNowState();
+
+	// 編集の取り消し等処理
+	DoUndoRedo();
 
 	// セーブフラグがたったらファイルを保存
 	if (m_userInterface->GetSaveFlag() &&
@@ -392,7 +404,10 @@ void EditScene::SetSceneValues()
 	// クリアチェッカーに配列を渡す
 	m_checker->SetMap(m_mapObj);
 
-	GetSystemManager()->GetCamera()->SetAddPosition(SimpleMath::Vector3{ 0.0f,5.0f,0.0f });
+	// 読み込んだ後に一時保存する
+	SaveModification();
+
+	GetSystemManager()->GetCamera()->AddEyePosition(SimpleMath::Vector3{ 0.0f,5.0f,0.0f });
 }
 
 /// <summary>
@@ -438,6 +453,9 @@ void EditScene::EditMap()
 		{
 			// 既に同じオブジェクトなら処理しない
 			if (i.id == m_nowState) continue;
+
+			// 一時保存する
+			SaveModification();
 
 			// オブジェクトをセット
 			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SETBOX, false);
@@ -574,4 +592,44 @@ bool EditScene::IsCanSave()
 		// 要件を満たしていなければFalse
 		return false;
 	}
+}
+
+/// <summary>
+/// UndoRedoを実行する
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void EditScene::DoUndoRedo()
+{
+	auto& _key = GetSystemManager()->GetStateTrack();
+
+	if (_key->IsKeyPressed(Keyboard::X))
+	{
+		RestoreHistory(m_history.GetUndo());
+	}
+	if (_key->IsKeyPressed(Keyboard::C))
+	{
+		RestoreHistory(m_history.GetRedo());
+	}
+}
+
+/// <summary>
+/// UndoRedo用に保存する
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void EditScene::SaveModification()
+{
+	// 状態を保存
+	m_history.AddHistory(MementMap(m_mapObj));
+}
+
+/// <summary>
+/// UndoRedoを適用する
+/// </summary>
+/// <param name="mement"></param>
+/// <returns>なし</returns>
+void EditScene::RestoreHistory(MementMap mement)
+{
+	m_mapObj = mement.GetState();
 }

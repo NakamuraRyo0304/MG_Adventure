@@ -14,11 +14,11 @@
 // “–‚½‚è”»’è—p
 #include <deque>
 
+class Blocks;
 class Player;
 class PlayerBill;
 class PlayUI;
 class PlayCamera;
-class Blocks;
 class ThirdPersonCamera;
 class PlayScene final : public IScene
 {
