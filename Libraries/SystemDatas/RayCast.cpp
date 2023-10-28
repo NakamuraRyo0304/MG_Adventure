@@ -24,8 +24,7 @@
  /// <returns>なし</returns>
 RayCast::RayCast()
 	: m_screenSize{}			// スクリーンのサイズ
-	, m_conScreenPos{}			// ワールド座標に変換した値を保存する変数
-	, is_clickFlag{}			// クリック判定
+	, m_convertPosition{}		// ワールド座標に変換した座標
 {
 
 }
@@ -47,11 +46,59 @@ RayCast::~RayCast()
 /// <returns>なし</returns>
 void RayCast::Update(Mouse::State& mouseState)
 {
-	// クリックしてるときはTrueを返す
-	is_clickFlag = mouseState.leftButton;
+	// レイを飛ばして交点を求める
+	m_convertPosition = ShotRay(mouseState.x, mouseState.y);
+}
 
-	// レイを飛ばす処理
-	m_conScreenPos = ShotRay(mouseState.x, mouseState.y);
+
+/// <summary>
+/// レイを飛ばして地面との交点を取る
+/// </summary>
+/// <param name="mx">マウスX</param>
+/// <param name="my">マウスY</param>
+/// <returns>当たった地面との交点</returns>
+SimpleMath::Vector3 RayCast::ShotRay(int mx, int my)
+{
+	// 最近、最遠、レイを定義
+	SimpleMath::Vector3 _nearPos;
+	SimpleMath::Vector3 _farPos;
+	SimpleMath::Vector3 _ray;
+
+	// 最近距離をスクリーンからワールドに変換
+	_nearPos = ConvertScreenToWorld(mx, my, 0.0f,
+		static_cast<int>(m_screenSize.x), static_cast<int>(m_screenSize.y),
+		m_view, m_projection);
+
+	// 最遠距離をスクリーンからワールドに変換
+	_farPos = ConvertScreenToWorld(mx, my, 1.0f,
+		static_cast<int>(m_screenSize.x), static_cast<int>(m_screenSize.y),
+		m_view, m_projection);
+
+	// レイの方向を求める
+	_ray = _farPos - _nearPos;
+	_ray.Normalize();
+
+	// Y座標打消しの初期化
+	SimpleMath::Vector3 _output = SimpleMath::Vector3::Zero;
+
+	// 床との交差が起きている場合は交点、起きていない場合は遠くの壁との交点を出力
+	if (_ray.y <= 0)
+	{
+		// 床との交点を求める
+		SimpleMath::Vector3 _rayDot = XMVector3Dot(_ray, SimpleMath::Vector3(0, 1, 0));
+		SimpleMath::Vector3 _nearDot = XMVector3Dot(-_nearPos, SimpleMath::Vector3(0, 1, 0));
+		_output = _nearPos + (_nearDot / _rayDot) * _ray;
+
+		// Yで交点XZを見つけて、Y要素を消す
+		_output.y = 0;
+	}
+	else
+	{
+		// 当たっていなければ最遠距離（実質的な無限）を出力
+		_output = _farPos;
+	}
+
+	return _output;
 }
 
 /// <summary>
@@ -93,60 +140,10 @@ SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 	_revVPort = XMMatrixInverse(nullptr,_vPort);
 
 	// 逆変換
-	SimpleMath::Matrix _revTmp = _revVPort * _revProj * _revView;
+	XMMATRIX _revTmp = _revVPort * _revProj * _revView;
 
-	SimpleMath::Vector3 _value = XMVector3TransformCoord(
+	XMVECTOR _value = XMVector3TransformCoord(
 		SimpleMath::Vector3(static_cast<float>(mx), static_cast<float>(my), fz), _revTmp);
 
 	return _value;
-}
-
-/// <summary>
-/// レイを飛ばして地面との交点を取る
-/// </summary>
-/// <param name="mx">マウスX</param>
-/// <param name="my">マウスY</param>
-/// <returns>当たった地面との交点</returns>
-SimpleMath::Vector3 RayCast::ShotRay(int mx, int my)
-{
-	// 最近、最遠、レイを定義
-	SimpleMath::Vector3 _nearPos;
-	SimpleMath::Vector3 _farPos;
-	SimpleMath::Vector3 _ray;
-
-	// 最近距離をスクリーンからワールドに変換
-	_nearPos = ConvertScreenToWorld(mx, my, 0.0f,
-		static_cast<int>(m_screenSize.x),  static_cast<int>(m_screenSize.y),
-		m_view, m_projection);
-
-	// 最遠距離をスクリーンからワールドに変換
-	_farPos  = ConvertScreenToWorld(mx, my, 1.0f,
-		static_cast<int>(m_screenSize.x),  static_cast<int>(m_screenSize.y),
-		m_view, m_projection);
-
-	// レイの長さを求めて正規化する
-	_ray = _farPos - _nearPos;
-	_ray.Normalize();
-
-	// Y座標打消しの初期化
-	SimpleMath::Vector3 _output = SimpleMath::Vector3::Zero;
-
-	// 床との交差が起きている場合は交点、起きていない場合は遠くの壁との交点を出力
-	if (_ray.y <= 0)
-	{
-		// 床との交点を求める
-		SimpleMath::Vector3 _rayDot  = XMVector3Dot(     _ray, SimpleMath::Vector3(0, 1, 0));
-		SimpleMath::Vector3 _nearDot = XMVector3Dot(-_nearPos, SimpleMath::Vector3(0, 1, 0));
-  		_output = _nearPos + (_nearDot / _rayDot) * _ray;
-
-		// Yで交点XZを見つけて、Y要素を消す
-		_output.y = 0;
-	}
-	else
-	{
-		// 当たっていなければ最遠距離（実質的な無限）を出力
-		_output = _farPos;
-	}
-
-	return _output;
 }

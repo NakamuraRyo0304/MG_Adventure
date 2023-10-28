@@ -68,7 +68,7 @@ bool MapLoad::LoadMap(std::wstring filename)
 	// ファイルを開く
 	std::ifstream _ifs(m_filename);
 
-	if (!_ifs) return false;
+	if (not _ifs) return false;
 
 	std::string _line;
 
@@ -90,11 +90,11 @@ bool MapLoad::LoadMap(std::wstring filename)
 
 		Object _obj;
 
-		// マップ情報 ＆ 座標情報
-		if (!(_iss >> _obj.id) ||			// マップID
-			!(_iss >> _obj.position.x) ||	// 座標X
-			!(_iss >> _obj.position.y) ||	// 座標Y
-			!(_iss >> _obj.position.z))		// 座標Z
+		// 読み込めなくなったらファイルを閉じる
+		if (not (_iss >> _obj.id) ||			// マップID
+			not (_iss >> _obj.position.x) ||	// 座標X
+			not (_iss >> _obj.position.y) ||	// 座標Y
+			not (_iss >> _obj.position.z))		// 座標Z
 		{
 			_ifs.close();
 			m_mapData.clear();
@@ -124,7 +124,7 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 	std::ofstream _ofs(m_filename);
 
 	// ファイルがなければ処理しない
-	if (!_ofs) return;
+	if (not _ofs) return;
 
 	// ヘッダー
 	_ofs << "マップＩＤ" << ",Ｘ" << ",Ｙ" << ",Ｚ" << ",\n";
@@ -329,9 +329,6 @@ bool MapLoad::LoadMapPath()
 
 	// ダイアログが閉じられた場合やエラーが発生した場合はデータを削除
 	m_filename.clear();
-
-	// 一番最後に現在のファイルパスを格納
-	m_filename = m_filename;
 
 	// 異常終了
 	return false;

@@ -44,12 +44,12 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 	SimpleMath::Vector3 _sizeCenter1 = sz1 / 2, _sizeCenter2 = sz2 / 2;
 
 	// 当たり判定を取る
-	if (!(moveObj->x - _sizeCenter1.x < constObj.x + _sizeCenter2.x &&
-		  moveObj->x + _sizeCenter1.x > constObj.x - _sizeCenter2.x &&
-		  moveObj->z - _sizeCenter1.z < constObj.z + _sizeCenter2.z &&
-		  moveObj->z + _sizeCenter1.z > constObj.z - _sizeCenter2.z &&
-		  moveObj->y - _sizeCenter1.y < constObj.y + _sizeCenter2.y &&
-		  moveObj->y + _sizeCenter1.y > constObj.y - _sizeCenter2.y)) return;
+	if (not (moveObj->x - _sizeCenter1.x < constObj.x + _sizeCenter2.x &&
+			 moveObj->x + _sizeCenter1.x > constObj.x - _sizeCenter2.x &&
+			 moveObj->z - _sizeCenter1.z < constObj.z + _sizeCenter2.z &&
+			 moveObj->z + _sizeCenter1.z > constObj.z - _sizeCenter2.z &&
+			 moveObj->y - _sizeCenter1.y < constObj.y + _sizeCenter2.y &&
+			 moveObj->y + _sizeCenter1.y > constObj.y - _sizeCenter2.y)) return;
 
 	// 当っている
 	is_hitFlag = true;
@@ -82,7 +82,7 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 	m_hitFace = _maxRatio == _backRatio  ? HIT_FACE::BACK  : m_hitFace;
 
 	// 押し戻し処理をしない場合リターン
-	if (!is_pushMode) return;
+	if (not is_pushMode) return;
 
 	// 当っている位置を格納し、押し戻し処理を行う
 	// 当った位置: 該当位置 or 変化なし
@@ -111,12 +111,12 @@ void Collider::BoxCollider::PushBox(const SimpleMath::Vector3& moveObj,
 	is_hitFlag = false;
 
 	// 当たり判定を取る
-	if (!(moveObj.x - sz1.x / 2 < constObj.x + sz2.x / 2 &&
-		  moveObj.x + sz1.x / 2 > constObj.x - sz2.x / 2 &&
-		  moveObj.z - sz1.z / 2 < constObj.z + sz2.z / 2 &&
-		  moveObj.z + sz1.z / 2 > constObj.z - sz2.z / 2 &&
-		  moveObj.y - sz1.y / 2 < constObj.y + sz2.y / 2 &&
-		  moveObj.y + sz1.y / 2 > constObj.y - sz2.y / 2)) return;
+	if (not (moveObj.x - sz1.x / 2 < constObj.x + sz2.x / 2 &&
+		     moveObj.x + sz1.x / 2 > constObj.x - sz2.x / 2 &&
+		     moveObj.z - sz1.z / 2 < constObj.z + sz2.z / 2 &&
+		     moveObj.z + sz1.z / 2 > constObj.z - sz2.z / 2 &&
+		     moveObj.y - sz1.y / 2 < constObj.y + sz2.y / 2 &&
+		     moveObj.y + sz1.y / 2 > constObj.y - sz2.y / 2)) return;
 
 	// 当っている
 	is_hitFlag = true;
@@ -198,7 +198,6 @@ Collider::AABBCollider::AABBCollider()
 /// <param name="sz1">大きさ</param>
 /// <param name="sz2">大きさ</param>
 /// <returns>当たっていたらTrue</returns>
-// 第１、２引数：座標 第３、４引数：サイズ
 bool Collider::AABBCollider::IsHitAABB2D(const SimpleMath::Vector2& pos1,
 										 const SimpleMath::Vector2& pos2,
 										 const SimpleMath::Vector2& sz1,

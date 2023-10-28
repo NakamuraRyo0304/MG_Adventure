@@ -73,7 +73,7 @@ void Camera::Update()
 	if (_msState.leftButton)
 	{
 		// 視点移動しなければ処理しない
-		if (!is_eagleMode)	return;
+		if (not is_eagleMode) return;
 
 		// マウスのドラッグによるカメラ移動
 		DraggedDistance(_msState.x, _msState.y);

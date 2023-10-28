@@ -152,7 +152,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 
 	// カメラモードじゃなければ編集できる
-	if (m_userInterface->GetCameraFlag() == false)
+	if (not m_userInterface->GetCameraFlag())
 	{
 		EditMap();
 	}
