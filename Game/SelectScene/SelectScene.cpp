@@ -102,7 +102,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	ChangeStageNumber(keyState);
 
 	// UIの更新
-	m_userInterface->Update(elapsedTime, keyState.Right, keyState.Left);
+	m_userInterface->Update(elapsedTime, (keyState.D ||keyState.Right), (keyState.A ||keyState.Left));
 
 	// エスケープで終了
 	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
@@ -165,45 +165,45 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 void SelectScene::Draw()
 {
 	// 描画関連
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
-	auto& states = *GetSystemManager()->GetCommonStates();
+	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto& _states = *GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
-	SimpleMath::Matrix view, proj;
+	SimpleMath::Matrix _view, _proj;
 
 	// 回転量を計算
-	float rotValue = m_timer * 0.5f;
+	float _rotValue = m_timer * 0.5f;
 	// 上下移動量を計算
-	float verticalValue = sinf(m_timer * 1.5f) * 1.5f;
+	float _verticalValue = sinf(m_timer * 1.5f) * 1.5f;
 
 	// ビュー行列
-	SimpleMath::Vector3    eye(CAMERA_RADIUS * sinf(rotValue),		// X:回転(ステージと逆回転)
-		CAMERA_POS_Y + verticalValue,								// Y:移動(上下)
-		CAMERA_RADIUS * cosf(rotValue));							// Z:回転(ステージと逆回転)
-	SimpleMath::Vector3 target(0.0f, m_targetY, 0.0f);
+	SimpleMath::Vector3 _eye(CAMERA_RADIUS * sinf(_rotValue),		// X:回転(ステージと逆回転)
+							 CAMERA_POS_Y + _verticalValue,			// Y:移動(上下)
+							 CAMERA_RADIUS * cosf(_rotValue));		// Z:回転(ステージと逆回転)
+	SimpleMath::Vector3 _target(0.0f, m_targetY, 0.0f);
 
-	view = SimpleMath::Matrix::CreateLookAt(eye, target, SimpleMath::Vector3::Up);
+	_view = SimpleMath::Matrix::CreateLookAt(_eye, _target, SimpleMath::Vector3::Up);
 
 	// プロジェクション行列
-	proj = GetSystemManager()->GetCamera()->GetProjection();
+	_proj = GetSystemManager()->GetCamera()->GetProjection();
 
 	// マップの描画
 	m_blocks[m_stageNum] != nullptr ? // 作成済みなら描画する
-		m_blocks[m_stageNum]->Render(context, states, view, proj, m_timer,
+		m_blocks[m_stageNum]->Render(_context, _states, _view, _proj, m_timer,
 			SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f }) : void();
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
-	m_skyDomeModel->Draw(context, states, skyMat, view, proj);
+	m_skyDomeModel->Draw(_context, _states, skyMat, _view, _proj);
 
 	// 点滅させる
 	if (m_flashCount < MAX_FLASH * 0.5f)
 	{
 		// テキストの移動アニメーション
-		SimpleMath::Matrix stageMat = CreateTextMatrix(rotValue);
+		SimpleMath::Matrix stageMat = CreateTextMatrix(_rotValue);
 
 		// ステージ番号表示
-		m_stageModels[m_stageNum]->Draw(context, states, stageMat, view, proj);
+		m_stageModels[m_stageNum]->Draw(_context, _states, stageMat, _view, _proj);
 	}
 
 	// UIの描画
@@ -233,38 +233,38 @@ void SelectScene::Finalize()
 void SelectScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
-	auto device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-	auto context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
+	auto _device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
+	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
-	GetSystemManager()->CreateUnique(device, context);
+	GetSystemManager()->CreateUnique(_device, _context);
 
 	// 画面サイズの格納
-	float width =
+	float _width =
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float height =
+	float _height =
 		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(width, height, CAMERA_ANGLE);
+	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, CAMERA_ANGLE);
 
 	// スカイドームモデルを作成する
 	{
-		m_skyDomeModel = ModelFactory::GetCreateModel(device, L"Resources/Models/ShineSky.cmo");
+		m_skyDomeModel = ModelFactory::GetCreateModel(_device, L"Resources/Models/ShineSky.cmo");
 		m_skyDomeModel->UpdateEffects([](IEffect* effect)
 			{
-				auto lights = dynamic_cast<IEffectLights*>(effect);
-				if (lights)
+				auto _lights = dynamic_cast<IEffectLights*>(effect);
+				if (_lights)
 				{
-					lights->SetLightEnabled(0, false);
-					lights->SetLightEnabled(1, false);
-					lights->SetLightEnabled(2, false);
+					_lights->SetLightEnabled(0, false);
+					_lights->SetLightEnabled(1, false);
+					_lights->SetLightEnabled(2, false);
 				}
 				// 自己発光する
-				auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-				if (basicEffect)
+				auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
+				if (_basicEffect)
 				{
-					basicEffect->SetEmissiveColor(Colors::White);
+					_basicEffect->SetEmissiveColor(Colors::White);
 				}
 			}
 		);
@@ -272,9 +272,9 @@ void SelectScene::CreateWindowDependentResources()
 
 	// ブロックの作成を裏で処理
 	{
-		std::lock_guard<std::mutex>guard(m_mutex);
+		std::lock_guard<std::mutex>_guard(m_mutex);
 
-		m_loadTask = std::async(std::launch::async, [&]() { CreateStages(device); });
+		m_loadTask = std::async(std::launch::async, [&]() { CreateStages(_device); });
 	}
 
 	// ステージ番号のモデルの作成
@@ -284,19 +284,19 @@ void SelectScene::CreateWindowDependentResources()
 			// 0番目はエディタの文字
 			if (i == 0)
 			{
-				m_stageModels[0] = ModelFactory::GetCreateModel(device, L"Resources/Models/StageEdit.cmo");
+				m_stageModels[0] = ModelFactory::GetCreateModel(_device, L"Resources/Models/StageEdit.cmo");
 			}
 			else
 			{
-				std::wstring path = L"Resources/Models/Stage" + std::to_wstring(i) + L".cmo";
-				m_stageModels[i] = ModelFactory::GetCreateModel(device, path.c_str());
+				std::wstring _path = L"Resources/Models/Stage" + std::to_wstring(i) + L".cmo";
+				m_stageModels[i] = ModelFactory::GetCreateModel(_device, _path.c_str());
 			}
 		}
 	}
 
 	// UIの作成
-	m_userInterface = std::make_unique<SelectUI>(GetSystemManager(), context, device);
-	m_userInterface->Initialize(SimpleMath::Vector2{ width, height });
+	m_userInterface = std::make_unique<SelectUI>(GetSystemManager(), _context, _device);
+	m_userInterface->Initialize(SimpleMath::Vector2{ _width, _height });
 }
 
 /// <summary>
@@ -338,10 +338,10 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 	for (int i = 0; i < MAX_STAGE_NUM; ++i)
 	{
 		// ファクトリーで生成
-		auto grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
-		auto coin    = ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo");
-		auto cloud   = ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo");
-		auto gravity = ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo");
+		auto _grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
+		auto _coin    = ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo");
+		auto _cloud   = ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo");
+		auto _gravity = ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo");
 
 		// 作成されていない場合は作成する
 		if (!m_blocks[i])
@@ -351,10 +351,10 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 			m_blocks[i]->CreateShader(device);
 
 			// モデルの受け渡し
-			m_blocks[i]->CreateModels(std::move(grass),   m_blocks[i]->GRASS);
-			m_blocks[i]->CreateModels(std::move(coin),    m_blocks[i]->COIN);
-			m_blocks[i]->CreateModels(std::move(cloud),   m_blocks[i]->CLOWD);
-			m_blocks[i]->CreateModels(std::move(gravity), m_blocks[i]->GRAVITY);
+			m_blocks[i]->CreateModels(std::move(_grass),   m_blocks[i]->GRASS);
+			m_blocks[i]->CreateModels(std::move(_coin),    m_blocks[i]->COIN);
+			m_blocks[i]->CreateModels(std::move(_cloud),   m_blocks[i]->CLOWD);
+			m_blocks[i]->CreateModels(std::move(_gravity), m_blocks[i]->GRAVITY);
 
 			// 初期化処理
 			m_blocks[i]->Initialize(i);
@@ -370,20 +370,20 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 void SelectScene::CreateFirstStage(ID3D11Device1* device)
 {
 	// ファクトリーで生成
-	auto grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
-	auto coin    = ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo");
-	auto cloud   = ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo");
-	auto gravity = ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo");
+	auto _grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
+	auto _coin    = ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo");
+	auto _cloud   = ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo");
+	auto _gravity = ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo");
 
 	// ブロックの作成
 	m_blocks[m_stageNum] = std::make_unique<Blocks>();
 	m_blocks[m_stageNum]->CreateShader(device);
 
 	// モデルの受け渡し
-	m_blocks[m_stageNum]->CreateModels(std::move(grass),   m_blocks[m_stageNum]->GRASS);
-	m_blocks[m_stageNum]->CreateModels(std::move(coin),    m_blocks[m_stageNum]->COIN);
-	m_blocks[m_stageNum]->CreateModels(std::move(cloud),   m_blocks[m_stageNum]->CLOWD);
-	m_blocks[m_stageNum]->CreateModels(std::move(gravity), m_blocks[m_stageNum]->GRAVITY);
+	m_blocks[m_stageNum]->CreateModels(std::move(_grass),   m_blocks[m_stageNum]->GRASS);
+	m_blocks[m_stageNum]->CreateModels(std::move(_coin),    m_blocks[m_stageNum]->COIN);
+	m_blocks[m_stageNum]->CreateModels(std::move(_cloud),   m_blocks[m_stageNum]->CLOWD);
+	m_blocks[m_stageNum]->CreateModels(std::move(_gravity), m_blocks[m_stageNum]->GRAVITY);
 
 	// 初期化処理
 	m_blocks[m_stageNum]->Initialize(m_stageNum);
@@ -458,12 +458,12 @@ void SelectScene::DirectionSelectChange()
 /// <returns>なし</returns>
 SimpleMath::Matrix SelectScene::CreateTextMatrix(const float& rotValue)
 {
-	SimpleMath::Matrix mat = SimpleMath::Matrix::Identity;
-	mat *= SimpleMath::Matrix::CreateRotationY(rotValue);
-	mat *= SimpleMath::Matrix::CreateScale(10.0f);
-	mat *= SimpleMath::Matrix::CreateTranslation(sinf(rotValue), 10.0f, cosf(rotValue));
+	SimpleMath::Matrix _mat = SimpleMath::Matrix::Identity;
+	_mat *= SimpleMath::Matrix::CreateRotationY(rotValue);
+	_mat *= SimpleMath::Matrix::CreateScale(10.0f);
+	_mat *= SimpleMath::Matrix::CreateTranslation(sinf(rotValue), 10.0f, cosf(rotValue));
 
-	return mat;
+	return _mat;
 }
 
 /// <summary>

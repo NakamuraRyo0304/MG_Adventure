@@ -215,6 +215,12 @@
     <Filter Include="Scenes\EditScene\System\MementoMap">
       <UniqueIdentifier>{25ecdf5c-55bc-4779-bedf-4480f3bd8c1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Transition">
+      <UniqueIdentifier>{5604dedf-a809-4c86-bb0c-2b1b36fc758a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Transition">
+      <UniqueIdentifier>{465f484a-80cf-4a42-925c-e5a2d54428f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -343,6 +349,9 @@
     <ClInclude Include="Game\EditScene\System\EditorLog.h">
       <Filter>Scenes\EditScene\System\EditorLog</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\Transition.h">
+      <Filter>Common\Transition</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -456,6 +465,9 @@
     <ClCompile Include="Game\EditScene\System\EditorLog.cpp">
       <Filter>Scenes\EditScene\System\EditorLog</Filter>
     </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\Transition.cpp">
+      <Filter>Common\Transition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Icon\Icon.rc">
@@ -506,9 +518,6 @@
       <Filter>Resources\Textures\ResultScene</Filter>
     </Image>
     <Image Include="Resources\Textures\Number.dds">
-      <Filter>Resources\Textures\Common</Filter>
-    </Image>
-    <Image Include="Resources\Textures\FadeBlind.dds">
       <Filter>Resources\Textures\Common</Filter>
     </Image>
     <Image Include="Resources\Textures\PLAY_HELP\Help.dds">
@@ -707,6 +716,9 @@
     <None Include="Resources\Models\EditSky.cmo">
       <Filter>Resources\Models\SkyDome</Filter>
     </None>
+    <None Include="Resources\Shaders\Transition.hlsli">
+      <Filter>Resources\Shaders\Transition</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -728,6 +740,15 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\PS_Cloud.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\VS_Transition.hlsl">
+      <Filter>Resources\Shaders\Transition</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PS_Transition.hlsl">
+      <Filter>Resources\Shaders\Transition</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\GS_Transition.hlsl">
+      <Filter>Resources\Shaders\Transition</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

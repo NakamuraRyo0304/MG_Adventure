@@ -321,8 +321,6 @@ void GameMain::DeleteScene()
 void GameMain::CreateWindowDependentResources(const int& screenWidth, const int& screenHeight)
 {
 	DX::DeviceResources* _pDR = DX::DeviceResources::GetInstance();
-	ID3D11Device1* _device = _pDR->GetD3DDevice();
-	ID3D11DeviceContext1* _context = _pDR->GetD3DDeviceContext();
 
 	// スクリーンサイズの設定
 	m_screenWidth = screenWidth;

@@ -13,7 +13,7 @@ SamplerState samLinear : register(s0);
 float4 main(PS_INPUT input) : SV_TARGET
 {
     // 黒色を出力
-    float4 _output = float4(0.8f, 0.8f, 1.f, 1.f);
+    float4 _output = float4(0.9f, 0.9f, 1.f, 1.f);
 
     // テクスチャの色情報を取得
     float4 _color = tex.Sample(samLinear, input.Tex);

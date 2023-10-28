@@ -89,7 +89,7 @@ void SelectUI::Render(const float& fadeValue, const int& selectNum, const int& m
 {
 	// ‰æ–Ê”ä—¦‚ðŒvŽZ
 	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
-	SimpleMath::Vector2 _coinsScale = m_windowSize / FULL_SCREEN_SIZE / 2;
+	SimpleMath::Vector2 _coinsScale = m_windowSize / FULL_SCREEN_SIZE / 1.5;
 
 	// ŠO˜gƒtƒŒ[ƒ€‚ð•`‰æ
 	DrawFrame(_rate);
@@ -99,7 +99,7 @@ void SelectUI::Render(const float& fadeValue, const int& selectNum, const int& m
 		L"CenterCoin",
 		SimpleMath::Vector2::Zero,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
-		_coinsScale,
+		_rate,
 		SimpleMath::Vector2::Zero
 	);
 
@@ -176,11 +176,11 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 windowRate, SimpleMath::Vector2 te
 	RECT_U _tenRec = { m_tenCoins * NUM_WIDTH, 0,m_tenCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
 	RECT_U _hanRec = { m_hanCoins * NUM_WIDTH, 0,m_hanCoins * NUM_WIDTH + NUM_WIDTH, NUM_WIDTH };
 
-	float _positionY = 45.0f + sinf(m_moveY * MOVE_SPEED) * MOVE_WIDTH;
+	float _positionY = 15.0f + sinf(m_moveY * MOVE_SPEED) * MOVE_WIDTH;
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 450.0f ,_positionY } * windowRate,
+		SimpleMath::Vector2{ 500.0f ,_positionY } * windowRate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		texScale,
 		SimpleMath::Vector2::Zero,
@@ -189,7 +189,7 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 windowRate, SimpleMath::Vector2 te
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 500.0f ,_positionY } * windowRate,
+		SimpleMath::Vector2{ 550.0f ,_positionY } * windowRate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		texScale,
 		SimpleMath::Vector2::Zero,
@@ -198,7 +198,7 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 windowRate, SimpleMath::Vector2 te
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
-		SimpleMath::Vector2{ 550.0f ,_positionY } * windowRate,
+		SimpleMath::Vector2{ 600.0f ,_positionY } * windowRate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		texScale,
 		SimpleMath::Vector2::Zero,

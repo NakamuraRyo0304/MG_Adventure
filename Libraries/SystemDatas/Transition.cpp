@@ -73,8 +73,6 @@ void Transition::Create(DX::DeviceResources* pDR)
 /// <returns>なし</returns>
 void Transition::LoadTexture(const wchar_t* path)
 {
-	// デバイス
-	auto _device = m_pDR->GetD3DDevice();
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());
@@ -91,7 +89,6 @@ void Transition::CreateShader()
 {
 	// デバイス
 	auto _device = m_pDR->GetD3DDevice();
-	auto _context = m_pDR->GetD3DDeviceContext();
 
 	//-------------------------------------------------------------------------------------//
 	// シェーダーファイルの読み込み
