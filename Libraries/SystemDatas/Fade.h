@@ -9,14 +9,13 @@
 #ifndef FADE
 #define FADE
 
+class Transition;
 class Fade
 {
 private:
-	// スプライトバッチへのポインタ
-	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+	// トランジション
 
-	// 画像情報
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_SRV;
+	std::unique_ptr<Transition> m_transition;
 
 private:
 
@@ -46,7 +45,7 @@ public:
 	~Fade();
 
 	// 初期化処理
-	void Initialize(ID3D11Device1* device, ID3D11DeviceContext1* context);
+	void Initialize(DX::DeviceResources* pDR);
 
 	// 更新処理
 	void Update();

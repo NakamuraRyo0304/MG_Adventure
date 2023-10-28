@@ -7,6 +7,8 @@
 
 #include "pch.h"
 
+#include "Transition.h"
+
 #include "Fade.h"
 
  /// <summary>
@@ -36,24 +38,13 @@ Fade::~Fade()
 /// <summary>
 /// 初期化
 /// </summary>
-/// <param name="device">ID3D11Device1ポインタ</param>
-/// <param name="context">ID3D11DeviceContext1ポインタ</param>
+/// <param name="pDR">デバイスリソース</param>
 /// <returns>なし</returns>
-void Fade::Initialize(ID3D11Device1* device, ID3D11DeviceContext1* context)
+void Fade::Initialize(DX::DeviceResources* pDR)
 {
-	// スプライトバッチの初期化
-	m_spriteBatch = std::make_unique<SpriteBatch>(context);
-
-	// フェードフラグ初期化
-	is_endFlag = false;
-
-	// 画像の登録
-	CreateDDSTextureFromFile(
-		device,
-		L"Resources/Textures/FadeBlind.dds",
-		nullptr,
-		m_SRV.ReleaseAndGetAddressOf()
-	);
+	// トランジションを作成
+	m_transition = std::make_unique<Transition>();
+	m_transition->Create(pDR);
 }
 
 /// <summary>
@@ -102,21 +93,8 @@ void Fade::Draw()
 	// フェードが終わっていたら描画しない
 	if (is_endFlag) return;
 
-	m_spriteBatch->Begin();
-
-	// フェード用画像の描画
-	m_spriteBatch->Draw(
-		m_SRV.Get(),												// スプライト
-		SimpleMath::Vector2{0.0f},									// 座標
-		nullptr,													// 切り抜き位置
-		SimpleMath::Vector4{1.0f,1.0f,1.0f,m_fadeNum / MAX_NUM},	// 色
-		0.f,														// 回転
-		SimpleMath::Vector2::Zero,									// 中心位置
-		1.f,														// スケール
-		SpriteEffects_None,	0.f
-	);
-
-	m_spriteBatch->End();
+	// 描画関数
+	m_transition->Render(m_fadeNum / MAX_NUM);
 }
 
 /// <summary>

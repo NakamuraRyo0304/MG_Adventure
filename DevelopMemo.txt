@@ -6,7 +6,7 @@
  */
 
  『実装済み』
- 〇ModelFactoryの作成
+ 〇ModelFactory/ParticleFactoryの作成
  　　使用したデザインパターン：Factoryパターン
 
  〇ステージエディタ・UndoRedoの作成

@@ -339,7 +339,7 @@ void GameMain::CreateWindowDependentResources(const int& screenWidth, const int&
 
 	// フェードオブジェクトの初期化
 	m_fade = std::make_unique<Fade>(DEFAULT_FADE_SPEED);
-	m_fade->Initialize(_device, _context);
+	m_fade->Initialize(_pDR);
 }
 
 /// <summary>

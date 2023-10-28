@@ -1,28 +1,29 @@
 /*
- *	@File	PlayerBill.h
- *	@Brief	プレイヤーの位置情報を描画するクラス。
- *	@Date	2023-07-07
+ *	@File	Transition.h
+ *	@Brief	場面切り替えのトランジション。
+ *	@Date	2023-10-28
  *  @Author NakamuraRyo
  */
 
 #pragma once
-#ifndef PLAYERBILL
-#define PLAYERBILL
+#ifndef TRANSITION
+#define TRANSITION
 
 #include <vector>
 #include <list>
 
 class ParticleUtility;
-class PlayerBill
+class Transition
 {
 public:
-	// コンスタントバッファ(シェーダーで使う構造体)
+	//データ受け渡し用コンスタントバッファ(送信側)
 	struct ConstBuffer
 	{
-		DirectX::SimpleMath::Matrix  matWorld;
-		DirectX::SimpleMath::Matrix  matView;
-		DirectX::SimpleMath::Matrix  matProj;
-		DirectX::SimpleMath::Vector4 Diffuse;
+		DirectX::SimpleMath::Matrix		matWorld;
+		DirectX::SimpleMath::Matrix		matView;
+		DirectX::SimpleMath::Matrix		matProj;
+		DirectX::SimpleMath::Vector4	Diffuse;
+		DirectX::SimpleMath::Vector4	Time;
 	};
 private:
 	// デバイスリソース
@@ -53,42 +54,26 @@ private:
 	// コンスタントバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constBuffer;
 
-	// シェーダーの表示座標
-	DirectX::SimpleMath::Vector3 m_defaultPos;
-
 	// Utility
 	std::list<ParticleUtility> m_particleUtility;
-
-	// ビルボード
-	DirectX::SimpleMath::Matrix m_world;
-
-	// ビルボード用カメラ
-	DirectX::SimpleMath::Vector3 m_cameraPosition;
-	DirectX::SimpleMath::Vector3 m_cameraTarget;
 
 public:
 	// インプットレイアウトの設定
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
-	PlayerBill();
-	~PlayerBill();
+	Transition();
+	~Transition();
 
 	// リソースの作成
 	void Create(DX::DeviceResources* pDR);
 
-	// 画像読み込み
-	void LoadTexture(const wchar_t* path);
-
-	// ビルボード作成
-	void CreateBillboard(DirectX::SimpleMath::Vector3 target,DirectX::SimpleMath::Vector3 eye,DirectX::SimpleMath::Vector3 up);
-
-	// 表示座標設定
-	void SetVertexMovePos(DirectX::SimpleMath::Vector3 movePos) { m_defaultPos = movePos; }
-
 	// 描画
-	void Render(DirectX::SimpleMath::Vector3 playerPos, float timer, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void Render(const float& timer);
 
 private:
+
+	// 画像読み込み
+	void LoadTexture(const wchar_t* path);
 
 	// シェーダーの作成
 	void CreateShader();
@@ -97,4 +82,4 @@ private:
 	void CreateConstBuffer(ID3D11Device1*& device);
 };
 
-#endif // PLAYERBILL
+#endif // TRANSITION

@@ -67,7 +67,7 @@ void PlayerBill::Create(DX::DeviceResources* pDR)
 	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());
 
 	// コモンステートの作成
-	m_common = std::make_unique<CommonStates>(_device);
+	m_states = std::make_unique<CommonStates>(_device);
 
 	// 座標の初期化
 	m_defaultPos = SimpleMath::Vector3{ 0.0f,0.0f,0.0f };
@@ -194,6 +194,7 @@ void PlayerBill::CreateConstBuffer(ID3D11Device1*& device)
 	// バッファーを定数バッファーとして紐づける
 	_buffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
+	// CPUから書き換えをできなくする
 	_buffer.CPUAccessFlags = NULL;
 
 	// 作成したバッファを格納
@@ -286,20 +287,20 @@ void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, Dir
 	_context->PSSetConstantBuffers(0, 1, _cbuffer);
 
 	// 画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_common->LinearWrap() };
+	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
 	_context->PSSetSamplers(0, 1, sampler);
 
 	// 半透明描画指定
-	ID3D11BlendState* _blendState = m_common->NonPremultiplied();
+	ID3D11BlendState* _blendState = m_states->NonPremultiplied();
 
 	// 透明判定処理
 	_context->OMSetBlendState(_blendState, nullptr, 0xFFFFFFFF);
 
 	// ブロックの奥でもビルボードを貫通させる
-	_context->OMSetDepthStencilState(m_common->DepthNone(), 0);
+	_context->OMSetDepthStencilState(m_states->DepthNone(), 0);
 
 	// カリングは左周り
-	_context->RSSetState(m_common->CullNone());
+	_context->RSSetState(m_states->CullNone());
 
 	// シェーダをセットする
 	_context->VSSetShader(m_verShader.Get(), nullptr, 0);
