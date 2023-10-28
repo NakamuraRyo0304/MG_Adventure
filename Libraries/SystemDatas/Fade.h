@@ -18,6 +18,8 @@ private:
 	// 画像情報
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_SRV;
 
+private:
+
 	// フェードインを開始するフラグ
 	bool is_fadeInFlag;
 
