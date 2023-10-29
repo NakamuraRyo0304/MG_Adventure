@@ -47,8 +47,6 @@ private:
 	// パスの格納
 	std::wstring m_filePath;
 
-	// ファイル読み込みモード
-	enum MODE { WRITE, READ };
 
 private:
 
@@ -140,9 +138,6 @@ private:
 
 	// マップを編集
 	void EditMap();
-
-	// 座標補正関数
-	void OffsetPosition(std::vector<Object>* obj , const MODE& mode);
 
 	// マップ読み込み
 	void LoadMap(std::wstring filename);

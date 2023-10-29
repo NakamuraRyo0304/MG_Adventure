@@ -111,6 +111,9 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// エスケープで終了
 	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
 
+	// サウンド
+	auto& _sound = GetSystemManager()->GetSoundManager();
+
 	// 選択しているオブジェクトを格納
 	m_nowState = m_userInterface->GetNowState();
 
@@ -124,7 +127,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 		// 要素チェックして保存可能なら実行
 		if (IsCanSave())
 		{
-			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+			_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 			SaveFile();
 		}
 	}
@@ -133,20 +136,19 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	if (m_userInterface->GetOpenFlag() &&
 		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
-		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 		if (!m_mapLoader.LoadMap(L""))
 		{
 			return;
 		}
 		m_mapObj = m_mapLoader.GetMapData();	// 読み込み
-		OffsetPosition(&m_mapObj,READ);			// 座標補正
 	}
 
-	// Zキーを押したら、カメラモードを反転する
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Z))
+	// Cキーを押したら、カメラモードを反転する
+	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::C))
 	{
 		// インターフェースでカメラのフラグを取得
-		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 		m_userInterface->SetCameraFlag(!m_userInterface->GetCameraFlag());
 		GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
 	}
@@ -160,7 +162,7 @@ void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// ボタンクリックでセレクトに戻る
 	if (m_userInterface->GetBackSelectFlag())
 	{
-		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 		ChangeScene(SCENE::SELECT);
 	}
 }
@@ -407,7 +409,9 @@ void EditScene::SetSceneValues()
 	// 読み込んだ後に一時保存する
 	SaveModification();
 
-	GetSystemManager()->GetCamera()->AddEyePosition(SimpleMath::Vector3{ 0.0f,5.0f,0.0f });
+	// カメラの位置をマップの中心にする
+	SimpleMath::Vector2 _XZ = { m_mapLoader.MAP_COLUMN,m_mapLoader.MAP_RAW };
+	GetSystemManager()->GetCamera()->AddEyePosition(SimpleMath::Vector3{ _XZ.x / 2,4.0f,_XZ.y / 2 });
 }
 
 /// <summary>
@@ -425,9 +429,9 @@ void EditScene::EditMap()
 
 	// マウスカーソルで移動
 	m_cursorPos.y = UserUtility::Lerp(
-		m_cursorPos.y,																// 開始地点
-		static_cast<float>((_mouse.scrollWheelValue) / WHEEL_SPAWN) + COMMON_LOW,	// 終了地点
-		CURSOR_MOVE_SPEED															// 速度
+		m_cursorPos.y,												// 開始地点
+		static_cast<float>((_mouse.scrollWheelValue) / WHEEL_SPAWN),// 終了地点
+		CURSOR_MOVE_SPEED											// 速度
 	);
 
 	// 制限をつける
@@ -465,36 +469,6 @@ void EditScene::EditMap()
 }
 
 /// <summary>
-/// 座標補正
-/// </summary>
-/// <param name="object">マップデータ</param>
-/// <param name="mode">読み書きモード</param>
-/// <returns>なし</returns>
-void EditScene::OffsetPosition(std::vector<Object>* object, const MODE& mode)
-{
-	// 読み込み
-	if (mode == READ)
-	{
-		for (auto& i : *object)
-		{
-			i.position.x -= static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
-			i.position.y += static_cast<float>(COMMON_LOW);
-			i.position.z -= static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
-		}
-	}
-	// 書き込み
-	if (mode == WRITE)
-	{
-		for (auto& i : *object)
-		{
-			i.position.x += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
-			i.position.y -= static_cast<float>(COMMON_LOW);
-			i.position.z += static_cast<float>(m_mapLoader.MAP_COLUMN) / 2 * COMMON_SIZE;
-		}
-	}
-}
-
-/// <summary>
 /// マップ読み込み
 /// </summary>
 /// <param name="filename">ファイルパス</param>
@@ -509,9 +483,6 @@ void EditScene::LoadMap(std::wstring filename)
 
 	// マップを格納する
 	m_mapObj = m_mapLoader.GetMapData();
-
-	// 座標補正
-	OffsetPosition(&m_mapObj,READ);
 }
 
 /// <summary>
@@ -521,10 +492,7 @@ void EditScene::LoadMap(std::wstring filename)
 /// <returns>なし</returns>
 void EditScene::SaveFile()
 {
-	// ファイル書き出し
-	OffsetPosition(&m_mapObj,WRITE);	// 書き出し用に座標補正
 	m_mapLoader.WriteMap(m_mapObj);		// ファイルの書き出し
-	OffsetPosition(&m_mapObj,READ);		// 読み込み用に座標補正
 }
 
 /// <summary>
@@ -603,11 +571,13 @@ void EditScene::DoUndoRedo()
 {
 	auto& _key = GetSystemManager()->GetStateTrack();
 
-	if (_key->IsKeyPressed(Keyboard::X))
+	// 前に戻る
+	if (_key->IsKeyPressed(Keyboard::Z))
 	{
 		RestoreHistory(m_history.GetUndo());
 	}
-	if (_key->IsKeyPressed(Keyboard::C))
+	// Undoを取り消す
+	if (_key->IsKeyPressed(Keyboard::X))
 	{
 		RestoreHistory(m_history.GetRedo());
 	}

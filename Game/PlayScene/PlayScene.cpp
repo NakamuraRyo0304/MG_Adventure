@@ -112,9 +112,6 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
 
-	// 風の音を鳴らす
-	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_WIND, true);
-
 	// エスケープで終了
 	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
 

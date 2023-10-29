@@ -31,15 +31,10 @@ private:
 	// フルスクリーンサイズ
 	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
-	// 画像の座標
-	DirectX::SimpleMath::Vector2 m_saveTexPos;
-	DirectX::SimpleMath::Vector2 m_openTexPos;
-	DirectX::SimpleMath::Vector2 m_cameraTexPos;
-	DirectX::SimpleMath::Vector2 m_toolButtonTexPos;
-	DirectX::SimpleMath::Vector2 m_backTexPos;
-
 	// 現在のステータス
 	int m_nowState;
+
+private:
 
 	// フラグ
 	bool is_anyHitFlag;
@@ -48,21 +43,27 @@ private:
 	bool is_cameraFlag;
 	bool is_toolFlag;
 	bool is_backFlag;
-
+	bool is_boxState[MAPSTATE::LENGTH];
 private:
+
+	// 画像の座標
+	DirectX::SimpleMath::Vector2 m_toolTexPos[3];
+	DirectX::SimpleMath::Vector2 m_toolButtonTexPos;
+	DirectX::SimpleMath::Vector2 m_backTexPos;
+	DirectX::SimpleMath::Vector2 m_imagePos[MAPSTATE::LENGTH];
 
 	// テクスチャの切り取りパス
 	enum Cut256 { _0 = 0, _1 = 256, _2 = 512, _3 = 768, _4 = 1024 };
 
-	// ボックスステータスの配列
-	DirectX::SimpleMath::Vector2 m_imagePos[MAPSTATE::LENGTH];	// テクスチャの座標
-	RECT_U m_texRect[MAPSTATE::LENGTH];							// 切り取り位置
-	bool is_boxState[MAPSTATE::LENGTH];							// 現在のステート
-	float m_boxHover[MAPSTATE::LENGTH];							// ホバーチェック
-
-	// モード画像の切り取り位置
+	// 画像切り取り位置
+	RECT_U m_texRect[MAPSTATE::LENGTH];
 	RECT_U m_modeRect[3];
 	RECT_U m_saveRect[4];
+
+	// 拡大
+	float m_boxHover[MAPSTATE::LENGTH];
+
+private:
 
 	// 画像の中心位置
 	const float	IMAGE_CENTER = 128.0f;
@@ -71,6 +72,7 @@ private:
 	const float IMAGE_RATE = 0.55f;
 	const float HALF = 0.5f;
 	const float BAR_HEIGHT = 170.0f;
+	const RECT_U DO_BAR_RECT = { 0L,0L,1420L,150L };
 
 	// 当たり判定オブジェクト
 	Collider::AABBCollider m_imageHitter;

@@ -286,7 +286,7 @@ void PlayUI::Render()
 				{ 1.0f, 1.0f, 1.0f, 1.0f },
 				 _scale,
 				ARROW_SIZE / 2,
-				{ 0,0,static_cast<LONG>(ARROW_SIZE.x),static_cast<LONG>(ARROW_SIZE.y) }
+				RECT_U(0L, 0L, static_cast<LONG>(ARROW_SIZE.x), static_cast<LONG>(ARROW_SIZE.y))
 			);
 		}
 	}
@@ -300,7 +300,7 @@ void PlayUI::Render()
 			{ 1.0f, 1.0f, 1.0f, 1.0f },
 			_scale,
 			SimpleMath::Vector2::Zero,
-			{ 0,0,360,120 }
+			{ 0L,0L,360L,120L }
 		);
 
 		// 画面下のフォント
@@ -318,7 +318,7 @@ void PlayUI::Render()
 			_scale,
 			SimpleMath::Vector2::Zero,
 			// 画像のサイズ
-			{ 0,0,static_cast<LONG>(FULL_SCREEN_SIZE.x * 2),static_cast<LONG>(FULL_SCREEN_SIZE.y) }
+			{ 0L,0L,static_cast<LONG>(FULL_SCREEN_SIZE.x * 2),static_cast<LONG>(FULL_SCREEN_SIZE.y) }
 		);
 	}
 }
@@ -430,7 +430,7 @@ void PlayUI::RenderSunny(SimpleMath::Vector2 scale)
 		{ 1.0f,1.0f,1.0f,1.0f },
 		scale,
 		SimpleMath::Vector2{ SUN_SIZE / 2 },
-		{ 0,0,100,100 }
+		{ 0L,0L,100L,100L }
 	);
 }
 

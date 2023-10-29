@@ -568,9 +568,6 @@
     <Image Include="Resources\Textures\PLAY_COMMON\Adhesion.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_COMMON</Filter>
     </Image>
-    <Image Include="Resources\Textures\EDITS\EditToolBar.dds">
-      <Filter>Resources\Textures\EDITS</Filter>
-    </Image>
     <Image Include="Resources\Textures\EDITS\MouseCursor.dds">
       <Filter>Resources\Textures\EDITS</Filter>
     </Image>
@@ -581,6 +578,12 @@
       <Filter>Resources\Textures\EDITS</Filter>
     </Image>
     <Image Include="Resources\Textures\BLOCK\IconPack.dds">
+      <Filter>Resources\Textures\EDITS</Filter>
+    </Image>
+    <Image Include="Resources\Textures\EDITS\ToolBar.dds">
+      <Filter>Resources\Textures\EDITS</Filter>
+    </Image>
+    <Image Include="Resources\Textures\EDITS\UnderInfo.dds">
       <Filter>Resources\Textures\EDITS</Filter>
     </Image>
   </ItemGroup>

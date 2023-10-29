@@ -285,10 +285,11 @@
     <Image Include="Resources\Textures\BLOCK\IconPack.dds" />
     <Image Include="Resources\Textures\Clock.dds" />
     <Image Include="Resources\Textures\DeathEffect.dds" />
-    <Image Include="Resources\Textures\EDITS\EditToolBar.dds" />
     <Image Include="Resources\Textures\EDITS\MouseCursor.dds" />
     <Image Include="Resources\Textures\EDITS\SavePack.dds" />
+    <Image Include="Resources\Textures\EDITS\ToolBar.dds" />
     <Image Include="Resources\Textures\EDITS\ToolModes.dds" />
+    <Image Include="Resources\Textures\EDITS\UnderInfo.dds" />
     <Image Include="Resources\Textures\FONT\CLEAR.dds" />
     <Image Include="Resources\Textures\FONT\COINS.dds" />
     <Image Include="Resources\Textures\FONT\GETCOINS.dds" />
