@@ -31,14 +31,15 @@ private:
 	// フェード終了判定フラグ
 	bool is_endFlag;
 
-	// フェードの数値0-255
+	// フェードの数値0-1
 	float m_fadeNum;
 
 private:
 
 	// 最大値/最小値
-	const float MAX_NUM = 255.0f;
-	const float MIN_NUM = 0.0f;
+	const float MAX_NUM = 1.f;
+	const float MIN_NUM = 0.f;
+	const float CLAMP_NUM = 255.0f;
 
 public:
 	Fade(float speed);

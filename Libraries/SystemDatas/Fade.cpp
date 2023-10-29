@@ -60,7 +60,7 @@ void Fade::Update()
 	// フェードイン
 	if (is_fadeInFlag)
 	{
- 		m_fadeNum -= m_fadeSpeed;
+ 		m_fadeNum -= m_fadeSpeed / CLAMP_NUM;
 		if (m_fadeNum < MIN_NUM)
 		{
 			m_fadeNum = MIN_NUM;
@@ -69,7 +69,7 @@ void Fade::Update()
 	// フェードアウト
 	if (is_fadeOutFlag)
 	{
-		m_fadeNum += m_fadeSpeed;
+		m_fadeNum += m_fadeSpeed / CLAMP_NUM;
 		if (m_fadeNum > MAX_NUM)
 		{
 			m_fadeNum = MAX_NUM;
@@ -94,7 +94,7 @@ void Fade::Draw()
 	if (is_endFlag) return;
 
 	// 描画関数
-	m_transition->Render(m_fadeNum / MAX_NUM);
+	m_transition->Render(m_fadeNum);
 }
 
 /// <summary>
@@ -130,7 +130,7 @@ void Fade::SetFadeOut()
 /// <returns>なし</returns>
 void Fade::Reset()
 {
-	m_fadeNum = 0.0f;
+	m_fadeNum = MIN_NUM;
 	is_fadeInFlag = false;
 	is_fadeOutFlag = false;
 	is_endFlag = false;

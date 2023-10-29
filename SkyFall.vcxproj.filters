@@ -95,9 +95,6 @@
     <Filter Include="Resources\Textures\FONT">
       <UniqueIdentifier>{509dc2a6-c44e-4a81-8770-7f94b47d8711}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Textures\BLOCK">
-      <UniqueIdentifier>{8efaf320-95be-4e10-a39b-7f7fe4ff6a4b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Models\Player">
       <UniqueIdentifier>{09819858-83fe-49c8-8e09-d95745ece799}</UniqueIdentifier>
     </Filter>
@@ -490,18 +487,6 @@
     <Image Include="Resources\Textures\FONT\COINS.dds">
       <Filter>Resources\Textures\FONT</Filter>
     </Image>
-    <Image Include="Resources\Textures\BLOCK\CoinIcon.dds">
-      <Filter>Resources\Textures\BLOCK</Filter>
-    </Image>
-    <Image Include="Resources\Textures\BLOCK\GrassIcon.dds">
-      <Filter>Resources\Textures\BLOCK</Filter>
-    </Image>
-    <Image Include="Resources\Textures\BLOCK\PlayerIcon.dds">
-      <Filter>Resources\Textures\BLOCK</Filter>
-    </Image>
-    <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds">
-      <Filter>Resources\Textures\BLOCK</Filter>
-    </Image>
     <Image Include="Resources\Textures\TITLE_BUTTON\Exit.dds">
       <Filter>Resources\Textures\TITLE_BUTTON</Filter>
     </Image>
@@ -559,12 +544,6 @@
     <Image Include="Resources\Textures\PLAY_COMMON\GameStart.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_COMMON</Filter>
     </Image>
-    <Image Include="Resources\Textures\BLOCK\ResetIcon.dds">
-      <Filter>Resources\Textures\BLOCK</Filter>
-    </Image>
-    <Image Include="Resources\Textures\BLOCK\CloudIcon.dds">
-      <Filter>Resources\Textures\BLOCK</Filter>
-    </Image>
     <Image Include="Resources\Textures\PlayerPoint.dds">
       <Filter>Resources\ShaderTextures</Filter>
     </Image>
@@ -589,31 +568,19 @@
     <Image Include="Resources\Textures\PLAY_COMMON\Adhesion.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_COMMON</Filter>
     </Image>
-    <Image Include="Resources\Textures\EDITS\BackSelect.dds">
-      <Filter>Resources\Textures\EDITS</Filter>
-    </Image>
-    <Image Include="Resources\Textures\EDITS\Camera.dds">
-      <Filter>Resources\Textures\EDITS</Filter>
-    </Image>
-    <Image Include="Resources\Textures\EDITS\CameraMove.dds">
-      <Filter>Resources\Textures\EDITS</Filter>
-    </Image>
     <Image Include="Resources\Textures\EDITS\EditToolBar.dds">
       <Filter>Resources\Textures\EDITS</Filter>
     </Image>
     <Image Include="Resources\Textures\EDITS\MouseCursor.dds">
       <Filter>Resources\Textures\EDITS</Filter>
     </Image>
-    <Image Include="Resources\Textures\EDITS\OpenFile.dds">
+    <Image Include="Resources\Textures\EDITS\ToolModes.dds">
       <Filter>Resources\Textures\EDITS</Filter>
     </Image>
-    <Image Include="Resources\Textures\EDITS\SaveFile.dds">
+    <Image Include="Resources\Textures\EDITS\SavePack.dds">
       <Filter>Resources\Textures\EDITS</Filter>
     </Image>
-    <Image Include="Resources\Textures\EDITS\ToolOff.dds">
-      <Filter>Resources\Textures\EDITS</Filter>
-    </Image>
-    <Image Include="Resources\Textures\EDITS\ToolOn.dds">
+    <Image Include="Resources\Textures\BLOCK\IconPack.dds">
       <Filter>Resources\Textures\EDITS</Filter>
     </Image>
   </ItemGroup>

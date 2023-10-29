@@ -61,55 +61,32 @@ void EditUI::Initialize(const std::shared_ptr<SystemManager>& shareSystem, ID3D1
 	m_system = shareSystem;
 
 	// キー名　：　ファイルパス名
-	m_system->GetDrawSprite()->AddTextureData(L"Save",			// セーブアイコン
-		L"Resources/Textures/EDITS/SaveFile.dds", device);
-
-	m_system->GetDrawSprite()->AddTextureData(L"Open",			// ファイルアイコン
-		L"Resources/Textures/EDITS/OpenFile.dds", device);
-
-	m_system->GetDrawSprite()->AddTextureData(L"Camera",		// カメラアイコン(未使用時)
-		L"Resources/Textures/EDITS/Camera.dds", device);
-
-	m_system->GetDrawSprite()->AddTextureData(L"CameraMove",	// カメラアイコン(使用時)
-		L"Resources/Textures/EDITS/CameraMove.dds", device);
-
-	m_system->GetDrawSprite()->AddTextureData(L"ToolOn",		// ツール使用切り替えアイコン
-		L"Resources/Textures/EDITS/ToolOn.dds", device);
-
-	m_system->GetDrawSprite()->AddTextureData(L"ToolOff",		// ツール使用切り替えアイコン
-		L"Resources/Textures/EDITS/ToolOff.dds", device);
-
-	m_system->GetDrawSprite()->AddTextureData(L"BackSelect",	// セレクトに戻る
-		L"Resources/Textures/EDITS/BackSelect.dds", device);
-
 	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",		// ツールバー
 		L"Resources/Textures/EDITS/EditToolBar.dds", device);
 
-	m_system->GetDrawSprite()->AddTextureData(L"Grass",			// 草ブロックアイコン
-		L"Resources/Textures/BLOCK/GrassIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"IconPack",		// アイコンパック
+		L"Resources/Textures/EDITS/IconPack.dds",device);
 
-	m_system->GetDrawSprite()->AddTextureData(L"Cloud",			// 雲ブロックアイコン
-		L"Resources/Textures/BLOCK/CloudIcon.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"ModePack",		// モードパック
+		L"Resources/Textures/EDITS/ToolModes.dds",device);
 
-	m_system->GetDrawSprite()->AddTextureData(L"Coin",			// コインブロックアイコン
-		L"Resources/Textures/BLOCK/CoinIcon.dds",  device);
+	m_system->GetDrawSprite()->AddTextureData(L"SavePack",		// セーブパック
+		L"Resources/Textures/EDITS/SavePack.dds", device);
 
-	m_system->GetDrawSprite()->AddTextureData(L"Gravity",		// 重力ブロックアイコン
-		L"Resources/Textures/BLOCK/ResetIcon.dds", device);
-
-	m_system->GetDrawSprite()->AddTextureData(L"Player",		// プレイヤーアイコン
-		L"Resources/Textures/BLOCK/PlayerIcon.dds",device);
-
-	m_system->GetDrawSprite()->AddTextureData(L"Delete",		// ブロック削除アイコン
-		L"Resources/Textures/BLOCK/DeleteIcon.dds",device);
-
-	// IDを格納
-	m_texName[MAPSTATE::GRASS]   = L"Grass";
-	m_texName[MAPSTATE::CLOUD]   = L"Cloud";
-	m_texName[MAPSTATE::COIN]    = L"Coin";
-	m_texName[MAPSTATE::GRAVITY] = L"Gravity";
-	m_texName[MAPSTATE::PLAYER]  = L"Player";
-	m_texName[MAPSTATE::NONE]    = L"Delete";
+	// 切り取り位置を指定
+	m_texRect[MAPSTATE::NONE]    = { _0,_1,_1,_2 };		// ブロックアイコン
+	m_texRect[MAPSTATE::GRASS]   = { _0,_0,_1,_1 };
+	m_texRect[MAPSTATE::CLOUD]   = { _1,_0,_2,_1 };
+	m_texRect[MAPSTATE::COIN]    = { _2,_0,_3,_1 };
+	m_texRect[MAPSTATE::GRAVITY] = { _2,_1,_3,_2 };
+	m_texRect[MAPSTATE::PLAYER]  = { _1,_1,_2,_2 };
+	m_modeRect[0] = { _0,_0,_1,_1 };					// 表示切替・戻るアイコン
+	m_modeRect[1] = { _1,_0,_2,_1 };
+	m_modeRect[2] = { _2,_0,_3,_1 };
+	m_saveRect[0] = { _0,_0,_1,_1 };					// カメラとファイルアイコン
+	m_saveRect[1] = { _1,_0,_2,_1 };
+	m_saveRect[2] = { _2,_0,_3,_1 };
+	m_saveRect[3] = { _3,_0,_4,_1 };
 
 	// 比率を計算
 	float _span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
@@ -216,39 +193,41 @@ void EditUI::Update(Mouse::State& mouseState)
 void EditUI::Render()
 {
 	// 画像の拡大率をウィンドウをもとに計算
-	SimpleMath::Vector2 _imageScale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
 
 	// ツールフラグがTrueならツールバーを表示する
 	if (is_toolFlag)
 	{
 		// ツールバー
 		m_system->GetDrawSprite()->DrawTexture(
-			L"ToolBar",								// 登録キー
-			SimpleMath::Vector2::Zero,				// 座標
-			{ 1.0f,1.0f,1.0f,0.7f },				// 色
-			_imageScale,							// 拡大率
-			SimpleMath::Vector2::Zero				// 中心位置
+			L"ToolBar",						// 登録キー
+			SimpleMath::Vector2::Zero,		// 座標
+			{ 1.0f,1.0f,1.0f,0.7f },		// 色
+			_rate,							// 拡大率
+			SimpleMath::Vector2::Zero		// 中心位置
 		);
 
 		// ファイルアイコン
 		if (is_openFlag)
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				L"Open",							// 登録キー
-				m_openTexPos,						// 座標
-				{ 1.0f,1.0f,1.0f,1.0f },			// 色
-				IMAGE_RATE * _imageScale,			// 拡大率
-				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+				L"SavePack",					// 登録キー
+				m_openTexPos,					// 座標
+				{ 1.0f,1.0f,1.0f,1.0f },		// 色
+				IMAGE_RATE * _rate,				// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER },	// 中心位置
+				m_saveRect[0]					// 開くアイコン
 			);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				L"Open",							// 登録キー
-				m_openTexPos,						// 座標
-				{ 1.0f,1.0f,1.0f,0.2f },			// 色
-				0.5f * _imageScale,					// 拡大率
-				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+				L"SavePack",					// 登録キー
+				m_openTexPos,					// 座標
+				{ 1.0f,1.0f,1.0f,0.2f },		// 色
+				0.5f * _rate,					// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER },	// 中心位置
+				m_saveRect[0]					// 開くアイコン
 			);
 		}
 
@@ -256,21 +235,23 @@ void EditUI::Render()
 		if (is_saveFlag)
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				L"Save",							// 登録キー
-				m_saveTexPos,						// 座標
-				{ 1.0f,1.0f,1.0f,1.0f },			// 色
-				IMAGE_RATE * _imageScale,			// 拡大率
-				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+				L"SavePack",					// 登録キー
+				m_saveTexPos,					// 座標
+				{ 1.0f,1.0f,1.0f,1.0f },		// 色
+				IMAGE_RATE * _rate,				// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER },	// 中心位置
+				m_saveRect[1]					// 保存アイコン
 			);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				L"Save",							// 登録キー
-				m_saveTexPos,						// 座標
-				{ 1.0f,1.0f,1.0f,0.2f },			// 色
-				0.5f * _imageScale,					// 拡大率
-				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+				L"SavePack",					// 登録キー
+				m_saveTexPos,					// 座標
+				{ 1.0f,1.0f,1.0f,0.2f },		// 色
+				0.5f * _rate,					// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER },	// 中心位置
+				m_saveRect[1]					// 保存アイコン
 			);
 		}
 
@@ -278,58 +259,52 @@ void EditUI::Render()
 		if (is_cameraFlag)
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				L"CameraMove",						// 登録キー
-				m_cameraTexPos,						// 座標
-				{ 1.0f,1.0f,1.0f,1.0f },			// 色
-				IMAGE_RATE * _imageScale,			// 拡大率
-				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+				L"SavePack",					// 登録キー
+				m_cameraTexPos,					// 座標
+				{ 1.0f,1.0f,1.0f,1.0f },		// 色
+				IMAGE_RATE * _rate,				// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER },	// 中心位置
+				m_saveRect[2]					// カメラ使用中アイコン
 			);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				L"Camera",							// 登録キー
-				m_cameraTexPos,						// 座標
-				{ 1.0f,1.0f,1.0f,0.3f },			// 色
-				IMAGE_RATE * _imageScale * 0.9f,	// 拡大率
-				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+				L"SavePack",					// 登録キー
+				m_cameraTexPos,					// 座標
+				{ 1.0f,1.0f,1.0f,0.3f },		// 色
+				0.5f * _rate,					// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER },	// 中心位置
+				m_saveRect[3]					// カメラ未使用中アイコン
 			);
 		}
 
 		// セレクトに戻るボタン
 		m_system->GetDrawSprite()->DrawTexture(
-				L"BackSelect",						// 登録キー
-				m_backTexPos,						// 座標
-				{ 1.0f,1.0f,1.0f,1.0f },			// 色
-				IMAGE_RATE * _imageScale,			// 拡大率
-				{ IMAGE_CENTER,IMAGE_CENTER }		// 中心位置
+				L"ModePack",					// 登録キー
+				m_backTexPos,					// 座標
+				{ 1.0f,1.0f,1.0f,1.0f },		// 色
+				IMAGE_RATE * _rate,				// 拡大率
+				{ IMAGE_CENTER,IMAGE_CENTER },	// 中心位置
+				m_modeRect[2]					// Backの切り取り位置
 			);
+	}
 
-		// ブロックのアイコン
-		DrawIcon(_imageScale);
+	// ブロックのアイコン
+	if (is_toolFlag)
+	{
+		DrawIcon(_rate);
 	}
 
 	// ツールバーボタン表示
-	if (is_toolFlag)
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"ToolOn",								// 登録キー
-			m_toolButtonTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },				// 色
-			IMAGE_RATE * _imageScale,				// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }			// 中心位置
-		);
-	}
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"ToolOff",								// 登録キー
-			m_toolButtonTexPos,						// 座標
-			{ 1.0f,1.0f,1.0f,1.0f },				// 色
-			IMAGE_RATE * _imageScale,				// 拡大率
-			{ IMAGE_CENTER,IMAGE_CENTER }			// 中心位置
-		);
-	}
+	m_system->GetDrawSprite()->DrawTexture(
+		L"ModePack",					// 登録キー
+		m_toolButtonTexPos,				// 座標
+		{ 1.0f,1.0f,1.0f,1.0f },		// 色
+		IMAGE_RATE * _rate,				// 拡大率
+		{ IMAGE_CENTER,IMAGE_CENTER },	// 中心位置
+		m_modeRect[is_toolFlag ? 0 : 1]	// OnOffの切り取り位置
+	);
 }
 
 /// <summary>
@@ -353,21 +328,23 @@ void EditUI::DrawIcon(const SimpleMath::Vector2& imageScale)
 		if (is_boxState[i])
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				m_texName[i],
-				SimpleMath::Vector2{ m_imagePos[i].x,m_imagePos[i].y + IMAGE_RATE},
+				L"IconPack",
+				SimpleMath::Vector2{ m_imagePos[i].x,m_imagePos[i].y + IMAGE_RATE },
 				SimpleMath::Vector4::One,
 				IMAGE_RATE * imageScale,
-				SimpleMath::Vector2{ IMAGE_CENTER }
+				SimpleMath::Vector2{ IMAGE_CENTER },
+				m_texRect[i]
 			);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(
-				m_texName[i],
+				L"IconPack",
 				m_imagePos[i],
 				{ 1.0f,1.0f,1.0f,HALF },
 				(HALF + m_boxHover[i]) * imageScale,
-				SimpleMath::Vector2{ IMAGE_CENTER }
+				SimpleMath::Vector2{ IMAGE_CENTER },
+				m_texRect[i]
 			);
 		}
 	}
@@ -381,7 +358,7 @@ void EditUI::DrawIcon(const SimpleMath::Vector2& imageScale)
 void EditUI::ChangeState(DirectX::Mouse::State& mouseState)
 {
 	// マウスがUIエリア以外なら処理しない
-	if (mouseState.y > 170.0f * (m_windowSize.y / FULL_SCREEN_SIZE.y)) return;
+	if (mouseState.y > BAR_HEIGHT * (m_windowSize.y / FULL_SCREEN_SIZE.y)) return;
 
 	// アイコンごとの初期値
 	bool _iconFlags[MAPSTATE::LENGTH] = { false };
@@ -403,7 +380,7 @@ void EditUI::ChangeState(DirectX::Mouse::State& mouseState)
 	is_anyHitFlag = (_iconFlags[MAPSTATE::GRASS]  ||
 					 _iconFlags[MAPSTATE::COIN]   ||
 					 _iconFlags[MAPSTATE::CLOUD]  ||
-					 _iconFlags[MAPSTATE::GRAVITY]  ||
+					 _iconFlags[MAPSTATE::GRAVITY]||
 					 _iconFlags[MAPSTATE::PLAYER] ||
 					 _iconFlags[MAPSTATE::NONE]);
 
@@ -411,43 +388,42 @@ void EditUI::ChangeState(DirectX::Mouse::State& mouseState)
 	for (int i = 0; i < MAPSTATE::LENGTH; ++i)
 	{
 		// 当たっていなければ処理しない
-		if (is_anyHitFlag == false) return;
+		if (not is_anyHitFlag) return;
 
-		if (mouseState.leftButton)
+		if (not mouseState.leftButton) return;
+
+		// クリック音
+		auto& _sound = m_system->GetSoundManager();
+		_sound->SetVolume(_sound->GetVolume(XACT_WAVEBANK_SKBX_SE_ICONTAP) / 2, XACT_WAVEBANK_SKBX_SE_ICONTAP);
+		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+
+		// 有効フラグを格納
+		is_boxState[i] = _iconFlags[i];
+
+		if (_iconFlags[i])
 		{
-			// クリック音
-			auto& _sound = m_system->GetSoundManager();
-			_sound->SetVolume(_sound->GetVolume(XACT_WAVEBANK_SKBX_SE_ICONTAP) / 2, XACT_WAVEBANK_SKBX_SE_ICONTAP);
-			_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
-
-			// 有効フラグを格納
-			is_boxState[i] = _iconFlags[i];
-
-			if (_iconFlags[i])
+			switch (i)
 			{
-				switch (i)
-				{
-				case MAPSTATE::GRASS:
-					m_nowState = MAPSTATE::GRASS;		// 草ブロック
-					break;
-				case MAPSTATE::COIN:
-					m_nowState = MAPSTATE::COIN;		// コイン
-					break;
-				case MAPSTATE::CLOUD:
-					m_nowState = MAPSTATE::CLOUD;		// 雲
-					break;
-				case MAPSTATE::GRAVITY:
-					m_nowState = MAPSTATE::GRAVITY;		// リセットポイント
-					break;
-				case MAPSTATE::PLAYER:
-					m_nowState = MAPSTATE::PLAYER;		// プレイヤー
-					break;
-				case MAPSTATE::NONE:
-					m_nowState = MAPSTATE::NONE;		// なし
-					break;
-				default:
-					break;
-				}
+			case MAPSTATE::GRASS:
+				m_nowState = MAPSTATE::GRASS;		// 草ブロック
+				break;
+			case MAPSTATE::COIN:
+				m_nowState = MAPSTATE::COIN;		// コイン
+				break;
+			case MAPSTATE::CLOUD:
+				m_nowState = MAPSTATE::CLOUD;		// 雲
+				break;
+			case MAPSTATE::GRAVITY:
+				m_nowState = MAPSTATE::GRAVITY;		// リセットポイント
+				break;
+			case MAPSTATE::PLAYER:
+				m_nowState = MAPSTATE::PLAYER;		// プレイヤー
+				break;
+			case MAPSTATE::NONE:
+				m_nowState = MAPSTATE::NONE;		// なし
+				break;
+			default:
+				break;
 			}
 		}
 	}

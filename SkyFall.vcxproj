@@ -282,23 +282,13 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="AppIcon.ico" />
-    <Image Include="Resources\Textures\BLOCK\CloudIcon.dds" />
-    <Image Include="Resources\Textures\BLOCK\CoinIcon.dds" />
-    <Image Include="Resources\Textures\BLOCK\DeleteIcon.dds" />
-    <Image Include="Resources\Textures\BLOCK\GrassIcon.dds" />
-    <Image Include="Resources\Textures\BLOCK\PlayerIcon.dds" />
-    <Image Include="Resources\Textures\BLOCK\ResetIcon.dds" />
+    <Image Include="Resources\Textures\BLOCK\IconPack.dds" />
     <Image Include="Resources\Textures\Clock.dds" />
     <Image Include="Resources\Textures\DeathEffect.dds" />
-    <Image Include="Resources\Textures\EDITS\BackSelect.dds" />
-    <Image Include="Resources\Textures\EDITS\Camera.dds" />
-    <Image Include="Resources\Textures\EDITS\CameraMove.dds" />
     <Image Include="Resources\Textures\EDITS\EditToolBar.dds" />
     <Image Include="Resources\Textures\EDITS\MouseCursor.dds" />
-    <Image Include="Resources\Textures\EDITS\OpenFile.dds" />
-    <Image Include="Resources\Textures\EDITS\SaveFile.dds" />
-    <Image Include="Resources\Textures\EDITS\ToolOff.dds" />
-    <Image Include="Resources\Textures\EDITS\ToolOn.dds" />
+    <Image Include="Resources\Textures\EDITS\SavePack.dds" />
+    <Image Include="Resources\Textures\EDITS\ToolModes.dds" />
     <Image Include="Resources\Textures\FONT\CLEAR.dds" />
     <Image Include="Resources\Textures\FONT\COINS.dds" />
     <Image Include="Resources\Textures\FONT\GETCOINS.dds" />
