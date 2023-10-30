@@ -28,7 +28,7 @@
  /// <returns>なし</returns>
 Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body,
 			   std::unique_ptr<Model> right, std::unique_ptr<Model> left, std::unique_ptr<Model> wink)
-	: m_timer{0.0f}					// タイマー
+	: _timer{0.0f}					// タイマー
 	, m_system{}					// システム
 	, m_parameter{}					// パラメーター
 	, m_coinNum{}					// 合計獲得コイン数
@@ -98,7 +98,7 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 /// <returns>なし</returns>
 void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
 {
-	m_timer = timer;
+	_timer = timer;
 
 	is_lookFlag = lookFlag;
 
@@ -311,7 +311,7 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 	m_leftLeg->Draw(context, states, _legLMat, view, proj);
 
 	// 頭部の描画
-	if (sinf(m_timer) <= WINK_SPAN)
+	if (sinf(_timer) <= WINK_SPAN)
 	{
 		m_head->UpdateEffects(_lightingEffects);
 		m_head->Draw(context, states, _headMat, view, proj);

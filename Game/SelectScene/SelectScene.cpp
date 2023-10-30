@@ -28,7 +28,6 @@
 /// <returns>なし</returns>
 SelectScene::SelectScene()
 	: IScene()					// 基底クラスの初期化
-	, m_timer{}					// タイマー
 	, m_flashCount{}			// 点滅のカウンタ
 	, m_stageNum{1}				// ステージ番号
 	, m_safeStages{}			// 未開放ステージ番号
@@ -74,14 +73,12 @@ void SelectScene::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="elapsedTime">時間/fps</param>
 /// <param name="keyState">キーボードポインタ</param>
 /// <param name="mouseState">マウスポインタ</param>
 /// <returns>なし</returns>
-void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
-	Mouse::State& mouseState)
+void SelectScene::Update(Keyboard::State& keyState, Mouse::State& mouseState)
 {
-	m_timer = elapsedTime;
+	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
@@ -102,7 +99,7 @@ void SelectScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	ChangeStageNumber(keyState);
 
 	// UIの更新
-	m_userInterface->Update(elapsedTime, (keyState.D ||keyState.Right), (keyState.A ||keyState.Left));
+	m_userInterface->Update(_timer, (keyState.D ||keyState.Right), (keyState.A ||keyState.Left));
 
 	// エスケープで終了
 	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
@@ -167,14 +164,15 @@ void SelectScene::Draw()
 	// 描画関連
 	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& _states = *GetSystemManager()->GetCommonStates();
+	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラ用行列
 	SimpleMath::Matrix _view, _proj;
 
 	// 回転量を計算
-	float _rotValue = m_timer * 0.5f;
+	float _rotValue = _timer * 0.5f;
 	// 上下移動量を計算
-	float _verticalValue = sinf(m_timer * 1.5f) * 1.5f;
+	float _verticalValue = sinf(_timer * 1.5f) * 1.5f;
 
 	// ビュー行列
 	SimpleMath::Vector3 _eye(CAMERA_RADIUS * sinf(_rotValue),		// X:回転(ステージと逆回転)
@@ -189,11 +187,11 @@ void SelectScene::Draw()
 
 	// マップの描画
 	m_blocks[m_stageNum] != nullptr ? // 作成済みなら描画する
-		m_blocks[m_stageNum]->Render(_context, _states, _view, _proj, m_timer,
+		m_blocks[m_stageNum]->Render(_context, _states, _view, _proj, _timer,
 			SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f }) : void();
 
 	// スカイドームの描画
-	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
+	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(_timer * SKY_ROT_SPEED);
 	m_skyDomeModel->Draw(_context, _states, skyMat, _view, _proj);
 
 	// 点滅させる

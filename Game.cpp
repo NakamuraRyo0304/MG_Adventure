@@ -8,7 +8,7 @@
 #include "pch.h"
 #include "Game.h"
 
-// TODO: ウィンドウタイトルの設定
+ // TODO: ウィンドウタイトルの設定
 const wchar_t* Game::TITLE = L"SkyFall";
 const int Game::SCREEN_W = 1280;
 const int Game::SCREEN_H = 720;
@@ -20,7 +20,9 @@ using Microsoft::WRL::ComPtr;
 
 Game::Game() noexcept(false)
 {
+    // インスタンスの生成
     DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();
+    DX::StepTimer::GetInstance();
 
     pDR->RegisterDeviceNotify(this);
 }
@@ -38,16 +40,16 @@ void Game::Initialize(HWND window, int width, int height)
     pDR->CreateWindowSizeDependentResources();
     CreateWindowSizeDependentResources();
 
-    // 可変タイマーを使わない場合はタイマーのコメントアウトを外す
-
-    m_timer.ResetElapsedTime();
-    m_timer.SetFixedTimeStep(true);
-    m_timer.SetTargetElapsedSeconds(1.0 / 60);
+    // シングルトンのStepTimerインスタンスを取得
+    DX::StepTimer& _stepTimer = DX::StepTimer::GetInstance();
+    _stepTimer.ResetElapsedTime();
+    _stepTimer.SetFixedTimeStep(true);
+    _stepTimer.SetTargetElapsedSeconds(1.0 / 60);
 
     // シーンの作成
-    mGameMain = std::make_unique<GameMain>();
-    mGameMain->CreateWindowDependentResources(width, height);
-    mGameMain->Initialize();
+    m_gameMain = std::make_unique<GameMain>();
+    m_gameMain->CreateWindowDependentResources(width, height);
+    m_gameMain->Initialize();
 }
 
 #pragma region Frame Update
@@ -56,10 +58,13 @@ void Game::Initialize(HWND window, int width, int height)
 //--------------------------------------------------------//
 void Game::Tick()
 {
-    m_timer.Tick([&]()
-    {
-        Update(m_timer);
-    });
+    // シングルトンのStepTimerインスタンスを取得
+    DX::StepTimer& _stepTimer = DX::StepTimer::GetInstance();
+
+    _stepTimer.Tick([&]()
+        {
+            Update(_stepTimer);
+        });
 
     Draw();
 }
@@ -69,7 +74,8 @@ void Game::Tick()
 //--------------------------------------------------------//
 void Game::Update(DX::StepTimer const& timer)
 {
-    mGameMain->Update(timer);
+    timer;
+    m_gameMain->Update();
 }
 #pragma endregion
 
@@ -80,8 +86,11 @@ void Game::Update(DX::StepTimer const& timer)
 //--------------------------------------------------------//
 void Game::Draw()
 {
+    // シングルトンのStepTimerインスタンスを取得
+    DX::StepTimer& _stepTimer = DX::StepTimer::GetInstance();
+
     // 最初のUpdateの前に何かをレンダリングしようとしない
-    if (m_timer.GetFrameCount() == 0)
+    if (_stepTimer.GetFrameCount() == 0)
     {
         return;
     }
@@ -99,7 +108,7 @@ void Game::Draw()
     pDR->PIXEndEvent();
 
     // ゲームの描画
-    mGameMain->Draw();
+    m_gameMain->Draw();
 
     // フレーム確認
     pDR->Present();
@@ -148,24 +157,25 @@ void Game::OnSuspending()
 
 void Game::OnResuming()
 {
-    m_timer.ResetElapsedTime();
+    DX::StepTimer& _timer = DX::StepTimer::GetInstance();
+    _timer.ResetElapsedTime();
 
     // 最小化から復帰中
 }
 
 void Game::OnWindowMoved()
 {
-    DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();
+    DX::DeviceResources* _pDR = DX::DeviceResources::GetInstance();
 
-    auto r = pDR->GetOutputSize();
-    pDR->WindowSizeChanged(r.right, r.bottom);
+    auto r = _pDR->GetOutputSize();
+    _pDR->WindowSizeChanged(r.right, r.bottom);
 }
 
 void Game::OnWindowSizeChanged(int width, int height)
 {
-    DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();
+    DX::DeviceResources* _pDR = DX::DeviceResources::GetInstance();
 
-    if (!pDR->WindowSizeChanged(width, height))
+    if (!_pDR->WindowSizeChanged(width, height))
         return;
 
     CreateWindowSizeDependentResources();
@@ -175,7 +185,7 @@ void Game::OnWindowSizeChanged(int width, int height)
 // Properties
 void Game::GetDefaultSize(int& width, int& height) const
 {
-    width  = Game::SCREEN_W;
+    width = Game::SCREEN_W;
     height = Game::SCREEN_H;
 }
 #pragma endregion
@@ -184,12 +194,8 @@ void Game::GetDefaultSize(int& width, int& height) const
 // デバイス依存のリソース
 void Game::CreateDeviceDependentResources()
 {
-    DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();
+    DX::DeviceResources* _pDR = DX::DeviceResources::GetInstance();
 
-    auto device = pDR->GetD3DDevice();
-
-    // デバイス依存のオブジェクトをここで初期化する
-    device;
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.

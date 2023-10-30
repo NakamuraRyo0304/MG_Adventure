@@ -58,10 +58,8 @@ private:
     void CreateDeviceDependentResources();
     void CreateWindowSizeDependentResources();
 
-    DX::StepTimer m_timer;
-
     // ÉVÅ[Éì
-    std::unique_ptr<GameMain> mGameMain;
+    std::unique_ptr<GameMain> m_gameMain;
 
 };
 

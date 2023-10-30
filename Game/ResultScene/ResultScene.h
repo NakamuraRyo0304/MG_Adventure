@@ -17,9 +17,6 @@ class ResultScene final : public IScene
 {
 private:
 
-	// タイマー
-	float m_timer;
-
 	// クリアタイム
 	float m_clearTime;
 
@@ -66,7 +63,7 @@ public:
 	void Initialize() override;
 
 	// 更新
-	void Update(const float& elapsedTime, DirectX::Keyboard::State& keyState, DirectX::Mouse::State& mouseState) override;
+	void Update(DirectX::Keyboard::State& keyState, DirectX::Mouse::State& mouseState) override;
 
 	// 描画
 	void Draw() override;

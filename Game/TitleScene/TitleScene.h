@@ -15,9 +15,6 @@ class TitleUI;
 class TitleScene final : public IScene
 {
 private:
-	// タイマー
-	float m_timer;
-
 	// カメラアングル
 	const float CAMERA_ANGLE = 45.0f;
 
@@ -66,7 +63,7 @@ public:
 	void Initialize() override;
 
 	// 更新
-	void Update(const float& elapsedTime, DirectX::Keyboard::State& keyState,DirectX::Mouse::State&) override;
+	void Update(DirectX::Keyboard::State& keyState,DirectX::Mouse::State&) override;
 
 	// 描画
 	void Draw() override;

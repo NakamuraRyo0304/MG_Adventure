@@ -20,7 +20,7 @@
  /// <param name="device">デバイスポインタ</param>
  /// <returns>なし</returns>
 SelectUI::SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device)
-	: m_timer{}				// タイマー
+	: _timer{}				// タイマー
 	, m_rightAlpha{}		// 右矢印の透明度
 	, m_leftAlpha{}			// 左矢印の透明度
 	, m_oneCoins{}			//   1の位のコイン数
@@ -72,7 +72,7 @@ void SelectUI::Initialize()
 /// <returns>なし</returns>
 void SelectUI::Update(const float& timer, const bool& rightFlag, const bool& leftFlag)
 {
-	m_timer = timer;
+	_timer = timer;
 
 	// フラグによって透明度を変える
 	m_rightAlpha = !rightFlag ? 0.5f : 1.0f;

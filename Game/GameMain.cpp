@@ -90,15 +90,12 @@ void GameMain::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="timer">時間を更新するタイマー</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void GameMain::Update(const DX::StepTimer& timer)
+void GameMain::Update()
 {
 	// フェードの更新
 	m_fade->Update();
-
-	// 時間を更新する
-	float _time = static_cast<float>(timer.GetTotalSeconds());
 
 	// キー入力情報を取得する
 	auto _kb = Keyboard::Get().GetState();
@@ -122,7 +119,7 @@ void GameMain::Update(const DX::StepTimer& timer)
 	if (m_nowScene != nullptr)
 	{
 		// シーンの更新処理
-		m_nowScene->Update(_time, _kb, _ms);
+		m_nowScene->Update(_kb, _ms);
 
 		// フェードの値をセット
 		m_nowScene->SetFadeValue(m_fade->GetFadeNum());

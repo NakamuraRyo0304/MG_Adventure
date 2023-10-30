@@ -26,7 +26,7 @@ private:
 	DirectX::SimpleMath::Vector2 m_windowSize;
 
 	// タイマー
-	float m_timer;
+	float _timer;
 
 	// セレクト
 	int m_selectingScene;

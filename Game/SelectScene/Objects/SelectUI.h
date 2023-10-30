@@ -25,7 +25,7 @@ private:
 private:
 
 	// タイマー
-	float m_timer;
+	float _timer;
 
 	// キー判定
 	float m_rightAlpha;

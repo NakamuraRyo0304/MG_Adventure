@@ -40,7 +40,6 @@
  /// <returns>なし</returns>
 PlayScene::PlayScene()
 	: IScene()						// 基底クラスの初期化
-	, m_timer{0.0f}					// タイマー
 	, m_startTimer{0.0f}			// 開始時間
 	, m_gameTimer{0.0f}				// 制限時間
 	, m_clearTime{0.0f}				// クリア時間
@@ -94,14 +93,12 @@ void PlayScene::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="elapsedTime">時間/fps</param>
 /// <param name="keyState">キーボードポインタ</param>
 /// <param name="mouseState">マウスポインタ</param>
 /// <returns>なし</returns>
-void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
-	Mouse::State& mouseState)
+void PlayScene::Update(Keyboard::State& keyState, Mouse::State& mouseState)
 {
-	m_timer = elapsedTime;
+	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
@@ -181,7 +178,7 @@ void PlayScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 
 	// プレイヤの更新
-	m_player->Update(keyState, elapsedTime ,is_thirdPersonMode);
+	m_player->Update(keyState, _timer ,is_thirdPersonMode);
 
 	// 相対移動
 	m_playerBill->SetVertexMovePos(m_player->GetPosition());
@@ -272,6 +269,7 @@ void PlayScene::Draw()
 	// 描画関連
 	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& _states = *GetSystemManager()->GetCommonStates();
+	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラ用行列
 	SimpleMath::Matrix _view, _projection;
@@ -300,13 +298,13 @@ void PlayScene::Draw()
 	InitializeLighting();
 
 	// マップの描画
-	m_blocks->Render(_context, _states, _view, _projection, m_timer, m_lighting);
+	m_blocks->Render(_context, _states, _view, _projection, _timer, m_lighting);
 
 	// プレイヤの描画
 	m_player->Render(_context, _states, _view, _projection, m_lighting);
 
 	// スカイドームの描画
-	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROT_SPEED);
+	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(_timer * SKY_ROT_SPEED);
 	m_skyDomeModel->Draw(_context, _states, skyMat, _view, _projection);
 	m_skyDomeModel->UpdateEffects([&](IEffect* effect)
 		{
@@ -335,7 +333,7 @@ void PlayScene::Draw()
 			GetSystemManager()->GetCamera()->GetPosition(),	// カメラの座標
 			SimpleMath::Vector3::Up
 		);
-		m_playerBill->Render(m_player->GetPosition(), m_timer, _view, _projection);
+		m_playerBill->Render(m_player->GetPosition(), _timer, _view, _projection);
 	}
 	// 回りの靄
 	else

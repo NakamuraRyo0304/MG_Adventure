@@ -33,7 +33,6 @@
  /// <returns>なし</returns>
 EditScene::EditScene()
 	: IScene()									// 基底クラスの初期化
-	, m_timer{ 0.0f }							// タイマー
 	, m_mapLoader{}								// マップローダー
 	, m_mapObj{0}								// 格納配列
 	, m_nowState{}								// 現在のブロックの種類
@@ -81,15 +80,11 @@ void EditScene::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="elapsedTime">時間/fps</param>
 /// <param name="keyState">キーボードポインタ</param>
 /// <param name="mouseState">マウスポインタ</param>
 /// <returns>なし</returns>
-void EditScene::Update(const float& elapsedTime, Keyboard::State& keyState,
-	Mouse::State& mouseState)
+void EditScene::Update(Keyboard::State& keyState,Mouse::State& mouseState)
 {
-	m_timer = elapsedTime;
-
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
 
@@ -177,6 +172,7 @@ void EditScene::Draw()
 	// 描画関連
 	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& _states = *GetSystemManager()->GetCommonStates();
+	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラ用行列
 	SimpleMath::Matrix _cursorMat, _view, _projection;
@@ -192,7 +188,7 @@ void EditScene::Draw()
 
 	// 行列計算
 	SimpleMath::Matrix _scale	 = SimpleMath::Matrix::CreateScale(COMMON_SIZE / 2);
-	SimpleMath::Matrix _rotateY  = SimpleMath::Matrix::CreateRotationY(m_timer);
+	SimpleMath::Matrix _rotateY  = SimpleMath::Matrix::CreateRotationY(_timer);
 	SimpleMath::Matrix _trans	 = SimpleMath::Matrix::CreateTranslation(m_cursorPos);
 
 	// サイズ　×　回転　×　移動
@@ -236,7 +232,7 @@ void EditScene::Draw()
 	}
 
 	// スカイドームの描画
-	SimpleMath::Matrix _skyMat = SimpleMath::Matrix::CreateRotationY(m_timer * SKY_ROTATE_RATE);
+	SimpleMath::Matrix _skyMat = SimpleMath::Matrix::CreateRotationY(_timer * SKY_ROTATE_RATE);
 	m_skyDomeModel->Draw(_context, _states, _skyMat, _view, _projection);
 
 	// 画像の描画
@@ -259,8 +255,10 @@ void EditScene::Draw()
 void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	CommonStates& states,
 	SimpleMath::Matrix world, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
+	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
+
 	// 行列計算
-	SimpleMath::Matrix _rotateY = SimpleMath::Matrix::CreateRotationY(m_timer);
+	SimpleMath::Matrix _rotateY = SimpleMath::Matrix::CreateRotationY(_timer);
 
 	switch (objNum)
 	{

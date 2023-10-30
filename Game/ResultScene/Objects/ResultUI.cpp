@@ -95,7 +95,7 @@ void ResultUI::Initialize()
 /// <returns>なし</returns>
 void ResultUI::Update(const float& timer, const int& clearTime)
 {
-	m_timer = timer;
+	_timer = timer;
 
 	// クリアタイムを保存
 	m_oneTime = clearTime % 10;

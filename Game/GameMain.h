@@ -89,7 +89,7 @@ public:
     void Initialize();
 
     // XV
-    void Update(const DX::StepTimer& timer);
+    void Update();
 
     // •`‰æ
     void Draw();

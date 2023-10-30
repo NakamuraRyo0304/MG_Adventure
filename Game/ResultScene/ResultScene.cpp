@@ -29,7 +29,6 @@
  /// <returns>なし</returns>
 ResultScene::ResultScene()
 	: IScene()					// 基底クラスの初期化
-	, m_timer{0.0f}				// 時計
 	, m_windowSize{}			// ウィンドウサイズ
 	, m_coinNum{}				// コインの数
 	, m_clearTime{0.0f}			// クリアタイムを格納
@@ -74,14 +73,12 @@ void ResultScene::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="elapsedTime">時間/fps</param>
 /// <param name="keyState">キーボードポインタ</param>
 /// <param name="mouseState">マウスポインタ</param>
 /// <returns>なし</returns>
-void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
-	Mouse::State& mouseState)
+void ResultScene::Update(Keyboard::State& keyState,	Mouse::State& mouseState)
 {
-	m_timer = elapsedTime;
+	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
@@ -121,7 +118,7 @@ void ResultScene::Update(const float& elapsedTime, Keyboard::State& keyState,
 	}
 
 	// UIの更新
-	m_userInterface->Update(elapsedTime, static_cast<int>(m_clearTime));
+	m_userInterface->Update(_timer, static_cast<int>(m_clearTime));
 	// 現在選択中のシーンをセット
 	m_userInterface->SetSelecting(m_selectingScene);
 	// 獲得コイン数をセット
@@ -165,12 +162,13 @@ void ResultScene::Draw()
 	// 描画関連
 	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& _states = *GetSystemManager()->GetCommonStates();
+	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラ用行列
 	SimpleMath::Matrix  _view, _projection;
 
 	// ビュー行列
-	SimpleMath::Vector3    _eye(cosf(m_timer), 20.0f + sinf(m_timer) * 2.0f, 10.0f);
+	SimpleMath::Vector3    _eye(cosf(_timer), 20.0f + sinf(_timer) * 2.0f, 10.0f);
 	SimpleMath::Vector3     _up(0.0f, 5.0f, 0.0f);
 	SimpleMath::Vector3 _target(0.0f, -10.0f, -5.0f);
 
@@ -180,7 +178,7 @@ void ResultScene::Draw()
 	_projection = GetSystemManager()->GetCamera()->GetProjection();
 
 	// マップの描画
-	m_blocks->Render(_context, _states, _view, _projection, m_timer, SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f });
+	m_blocks->Render(_context, _states, _view, _projection, _timer, SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f });
 
 	// UIの表示
 	m_userInterface->Render(GetFadeValue());

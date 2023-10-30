@@ -48,7 +48,7 @@ public:
 	virtual void Initialize() = 0;
 
 	// XV
-	virtual void Update(const float& elapsedTime,DirectX::Keyboard::State& keyState,DirectX::Mouse::State& mouseState) = 0;
+	virtual void Update(DirectX::Keyboard::State& keyState,DirectX::Mouse::State& mouseState) = 0;
 
 	// •`‰æ
 	virtual void Draw() = 0;

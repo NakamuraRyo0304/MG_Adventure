@@ -30,7 +30,7 @@ class Player
 private:
 
 	// 時間
-	float m_timer;
+	float _timer;
 
 	// セレクトから受け取ったコイン数
 	int m_coinNum;

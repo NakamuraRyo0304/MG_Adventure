@@ -18,7 +18,6 @@
  /// <returns>なし</returns>
 TitleScene::TitleScene()
 	: IScene()					// 基底クラスの初期化
-	, m_timer{0.0f}				// タイマー
 	, m_titleLogoModel{}		// タイトルロゴのモデル
 	, m_miniatureModel{}		// 中央ステージのモデル
 	, m_cameraMoveY{0.0f}		// カメラ演出(スタート時)
@@ -64,15 +63,11 @@ void TitleScene::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="elapsedTime">時間/fps</param>
 /// <param name="keyState">キーボードポインタ</param>
 /// <param name="mouseState">マウスポインタ</param>
 /// <returns>なし</returns>
-void TitleScene::Update(const float& elapsedTime,Keyboard::State& keyState,
-	Mouse::State& mouseState)
+void TitleScene::Update(Keyboard::State& keyState,Mouse::State& mouseState)
 {
-	m_timer = elapsedTime;
-
 	// キー入力情報を取得する
 	GetSystemManager()->GetStateTrack()->Update(keyState);
 
@@ -146,6 +141,7 @@ void TitleScene::Draw()
 	// 描画関連
 	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& _states = *GetSystemManager()->GetCommonStates();
+	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラ用行列
 	SimpleMath::Matrix _logoMat, _stageMat, _skyMat, _view, _projection;
@@ -164,15 +160,15 @@ void TitleScene::Draw()
 	//-------------------------------------------------------------------------------------//
 
 	// 回転行列
-	_logoRot = SimpleMath::Matrix::CreateRotationX(sinf(m_timer) * 0.5f);
+	_logoRot = SimpleMath::Matrix::CreateRotationX(sinf(_timer) * 0.5f);
 	_stageRotX = SimpleMath::Matrix::CreateRotationX(0.3f);
-	_stageRotY = SimpleMath::Matrix::CreateRotationY(m_timer * 0.5f + m_accelerate);
-	_skyRotX = SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
+	_stageRotY = SimpleMath::Matrix::CreateRotationY(_timer * 0.5f + m_accelerate);
+	_skyRotX = SimpleMath::Matrix::CreateRotationX(_timer * 2.0f);
 
 	//-------------------------------------------------------------------------------------//
 
 	// 移動行列
-	_logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_logoMoveY, cosf(m_timer) * 0.5f);
+	_logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_logoMoveY, cosf(_timer) * 0.5f);
 	_stageTrans = SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
 	_skyTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_cameraMoveY, 0.0f);
 
