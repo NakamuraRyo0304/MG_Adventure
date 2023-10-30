@@ -435,7 +435,7 @@ void PlayScene::CreateWindowDependentResources()
 	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
 
 	// UI�̍쐬
-	m_userInterFace = std::make_unique<PlayUI>(SimpleMath::Vector2(_width, _height));
+	m_userInterFace = std::make_unique<PlayUI>();
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
 	m_userInterFace->Create(GetSystemManager(), _device);
 }

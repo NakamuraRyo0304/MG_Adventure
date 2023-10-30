@@ -296,7 +296,7 @@ void SelectScene::CreateWindowDependentResources()
 
 	// UI�̍쐬
 	m_userInterface = std::make_unique<SelectUI>(GetSystemManager(), _context, _device);
-	m_userInterface->Initialize(SimpleMath::Vector2{ _width, _height });
+	m_userInterface->Initialize();
 }
 
 /// <summary>

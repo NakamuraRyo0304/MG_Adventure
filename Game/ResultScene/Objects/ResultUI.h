@@ -89,7 +89,7 @@ public:
 	~ResultUI();
 
 	// ‰Šú‰»ˆ—
-	void Initialize(const DirectX::SimpleMath::Vector2& windowSize);
+	void Initialize();
 
 	// XVˆ—
 	void Update(const float& timer,const int& clearTime);

@@ -105,7 +105,7 @@ private:
 
 
 public:
-	PlayUI(const DirectX::SimpleMath::Vector2& windowSize);
+	PlayUI();
 	~PlayUI();
 
 	// ì¬ˆ—

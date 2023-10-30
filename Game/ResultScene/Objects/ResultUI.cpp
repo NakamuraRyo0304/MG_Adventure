@@ -71,11 +71,12 @@ ResultUI::~ResultUI()
 /// <summary>
 /// èâä˙âªèàóù
 /// </summary>
-/// <param name="windowSize">âÊñ ÉTÉCÉY</param>
+/// <param name="à¯êîñ≥Çµ"></param>
 /// <returns>Ç»Çµ</returns>
-void ResultUI::Initialize(const SimpleMath::Vector2& windowSize)
+void ResultUI::Initialize()
 {
-	m_windowSize = windowSize;
+	m_windowSize = { static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right),
+					 static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().bottom) };
 
 	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 

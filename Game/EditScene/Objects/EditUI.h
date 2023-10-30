@@ -79,7 +79,7 @@ private:
 
 public:
 
-	EditUI(const DirectX::SimpleMath::Vector2& windowSize);
+	EditUI();
 	~EditUI();
 
 	void Initialize(const std::shared_ptr<SystemManager>& shareSystem,ID3D11Device1* device);

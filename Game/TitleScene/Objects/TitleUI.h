@@ -40,7 +40,7 @@ private:
 
 public:
 
-	TitleUI(const DirectX::SimpleMath::Vector2& windowSize);
+	TitleUI();
 	~TitleUI();
 
 	// ì¬ˆ—

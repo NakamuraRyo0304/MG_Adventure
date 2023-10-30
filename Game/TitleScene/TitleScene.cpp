@@ -329,7 +329,7 @@ void TitleScene::CreateWindowDependentResources()
 	);
 
 	// UI‚Ì‰Šú‰»
-	m_titleUI = std::make_unique<TitleUI>(SimpleMath::Vector2{ _width, _height });
+	m_titleUI = std::make_unique<TitleUI>();
 	m_titleUI->Create(GetSystemManager(), _context, _device);
 }
 

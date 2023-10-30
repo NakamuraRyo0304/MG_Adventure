@@ -323,7 +323,7 @@ void EditScene::CreateWindowDependentResources()
 	float _height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
 
 	// UI‚Ì‰Šú‰»
-	m_userInterface = std::make_unique<EditUI>(SimpleMath::Vector2(_width, _height));
+	m_userInterface = std::make_unique<EditUI>();
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
 	m_userInterface->Initialize(GetSystemManager(), _device);
 

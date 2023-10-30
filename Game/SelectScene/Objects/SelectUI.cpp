@@ -57,9 +57,10 @@ SelectUI::~SelectUI()
 /// </summary>
 /// <param name="windowSize">âÊñ ÉTÉCÉY</param>
 /// <returns>Ç»Çµ</returns>
-void SelectUI::Initialize(const SimpleMath::Vector2& windowSize)
+void SelectUI::Initialize()
 {
-	m_windowSize = windowSize;
+	m_windowSize = { static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right),
+					 static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().bottom) };
 }
 
 /// <summary>

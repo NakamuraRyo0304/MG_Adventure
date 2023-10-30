@@ -251,7 +251,7 @@ void ResultScene::CreateWindowDependentResources()
 
 	// UI�̍쐬
 	m_userInterface = std::make_unique<ResultUI>(GetSystemManager(), _context, _device);
-	m_userInterface->Initialize(SimpleMath::Vector2{ _width, _height });
+	m_userInterface->Initialize();
 
 }
 

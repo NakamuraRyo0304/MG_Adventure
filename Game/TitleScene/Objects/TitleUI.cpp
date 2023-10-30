@@ -18,11 +18,11 @@
  /// <summary>
  /// コンストラクタ
  /// </summary>
- /// <param name="windowSize">画面サイズ</param>
+ /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-TitleUI::TitleUI(const SimpleMath::Vector2& windowSize)
+TitleUI::TitleUI()
 	: is_selectFlag{}			// 選択フラグ
-	, m_windowSize{windowSize}	// ウィンドウサイズ
+	, m_windowSize{}			// ウィンドウサイズ
 	, m_sFontRate{}				// スタートフォントの拡大率
 	, m_eFontRate{}				// エンドフォントの拡大率
 	, m_sLineRate{}				// スタートラインの拡大率
@@ -53,6 +53,9 @@ void TitleUI::Create(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1
 {
 	// システム
 	m_system = system;
+
+	m_windowSize = { static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right),
+					 static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().bottom) };
 
 	// 画像の設定
 	m_system->GetDrawSprite()->MakeSpriteBatch(context);

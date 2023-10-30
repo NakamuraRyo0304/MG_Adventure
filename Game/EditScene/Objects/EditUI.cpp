@@ -19,9 +19,9 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-EditUI::EditUI(const SimpleMath::Vector2& windowSize)
+EditUI::EditUI()
 	: m_system{}					// システムマネージャ
-	, m_windowSize{windowSize}		// 画面サイズ
+	, m_windowSize{}				// 画面サイズ
 	, m_nowState{}					// 最新のステート
 	, m_imageHitter{}				// 当たり判定
 	, m_toolTexPos{}				// ツールアイコンの座標
@@ -57,6 +57,9 @@ void EditUI::Initialize(const std::shared_ptr<SystemManager>& shareSystem, ID3D1
 {
 	// ポインタの共有
 	m_system = shareSystem;
+
+	m_windowSize = { static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right),
+					 static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().bottom) };
 
 	// キー名　：　ファイルパス名
 	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",		// ツールバー

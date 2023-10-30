@@ -20,9 +20,9 @@
  /// </summary>
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-PlayUI::PlayUI(const SimpleMath::Vector2& windowSize)
+PlayUI::PlayUI()
 	: m_system{}								// システムマネージャ
-	, m_windowSize{ windowSize }				// ウィンドウサイズ
+	, m_windowSize{}				// ウィンドウサイズ
 	, m_gameTimer{0}							// ゲームのタイマー
     , m_oneSecPos{SimpleMath::Vector2::Zero}	// 1秒の座標
     , m_tenSecPos{SimpleMath::Vector2::Zero}	// 10秒の座標
@@ -39,7 +39,7 @@ PlayUI::PlayUI(const SimpleMath::Vector2& windowSize)
 	, is_effectFlag{false}						// エフェクトの表示フラグ
 	, is_helpFlag{false}						// ヘルプ画面のフラグ
 {
-	m_windowSize = windowSize;
+
 }
 
 /// <summary>
@@ -63,6 +63,9 @@ void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,ID3D11Device1*
 {
 	// システム
 	m_system = system;
+
+	m_windowSize = { static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right),
+					 static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().bottom) };
 
 	// 画像を登録
 	m_system->GetDrawSprite()->AddTextureData(L"Number",			// 数字スプライト

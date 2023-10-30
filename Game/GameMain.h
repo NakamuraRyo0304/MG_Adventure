@@ -9,9 +9,7 @@
 #ifndef GAMEMAIN
 #define GAMEMAIN
 
- // 前方宣言
-class IScene;
-class Fade;
+#include "StepTimer.h"
 
 // TODO: シーン１：シーンIDの追加
 enum class SCENE : int
@@ -26,6 +24,8 @@ enum class SCENE : int
     ENDGAME,
 };
 
+class IScene;
+class Fade;
 class GameMain
 {
 private: //-------------------------------------------------------------------------------------//
