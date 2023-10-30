@@ -34,9 +34,6 @@ private:
 	// フェードの値
 	float m_fadeValue;
 
-public:
-
-	// 
 private:
 
 	// シーン内の変数の初期化関数
