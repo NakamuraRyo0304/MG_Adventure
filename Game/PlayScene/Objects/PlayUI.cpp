@@ -27,6 +27,7 @@ PlayUI::PlayUI()
     , m_oneSecPos{SimpleMath::Vector2::Zero}	// 1秒の座標
     , m_tenSecPos{SimpleMath::Vector2::Zero}	// 10秒の座標
 	, m_countDownPos{SimpleMath::Vector2::Zero}	// ３カウントダウンの座標
+	, m_countDownEnds{1.0f}						// カウントダウンが消える時間
 	, m_underFontPos{SimpleMath::Vector2::Zero}	// 下の文字ロールの座標
 	, m_moveTexPos{SimpleMath::Vector2::Zero}	// 画像移動用座標
 	, m_arrowPos{SimpleMath::Vector2::Zero}		// 選択項目下線座標
@@ -336,12 +337,13 @@ void PlayUI::RenderCountDown(const float& countDown)
 
 	if (static_cast<int>(countDown / 60) == 0)
 	{
+		m_countDownEnds -= COUNT_END_SPEED;
 		m_system->GetDrawSprite()->DrawTexture(
-			L"GameStart",                      // 登録キー
-			SimpleMath::Vector2::Zero,         // 座標
-			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-			_scale,                            // 拡大率
-			SimpleMath::Vector2::Zero          // 中心位置
+			L"GameStart",
+			{ (m_windowSize / 2).x,(m_windowSize / 2).y + m_countDownEnds * COUNT_MOVE_SPEED },
+			{ 1.0f, 1.0f, 1.0f, 1.0f },
+			_scale,
+			m_windowSize / 2
 		);
 		return;
 	}

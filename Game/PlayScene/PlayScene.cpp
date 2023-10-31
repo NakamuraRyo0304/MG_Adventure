@@ -340,7 +340,7 @@ void PlayScene::Draw()
 	}
 
 	// UI‚Ì•`‰æ
-	if (static_cast<int>(m_startTimer) == 0)
+	if (m_playUI->IsCountDownEnd())
 	{
 		m_playUI->Render();
 	}

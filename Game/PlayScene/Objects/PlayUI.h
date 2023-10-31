@@ -33,6 +33,9 @@ private:
 	// タイマーの座標(最初のカウントダウン)
 	DirectX::SimpleMath::Vector2 m_countDownPos;
 
+	// スタートが消えるタイマー
+	float m_countDownEnds;
+
 	// 画面下の説明文の座標
 	DirectX::SimpleMath::Vector2 m_underFontPos;
 
@@ -103,6 +106,11 @@ private:
 	// 矢印のサイズ
 	const DirectX::SimpleMath::Vector2 ARROW_SIZE = { 256.0f,256.0f };
 
+	// カウントダウン表示終了速度
+	const float COUNT_END_SPEED = 0.025f;
+
+	// スタートの文字の上移動速度
+	const float COUNT_MOVE_SPEED = 25.0f;
 
 public:
 	PlayUI();
@@ -128,6 +136,9 @@ public:
 
 	// 終了処理
 	void Finalize();
+
+	// カウントダウン終了判定
+	bool IsCountDownEnd() { return (m_countDownEnds < -0.5f); };
 
 private:
 
