@@ -46,7 +46,7 @@ public:
 	~Fade();
 
 	// ‰Šú‰»ˆ—
-	void Initialize(DX::DeviceResources* pDR);
+	void Initialize();
 
 	// XVˆ—
 	void Update();

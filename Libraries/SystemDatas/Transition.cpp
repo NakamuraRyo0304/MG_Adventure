@@ -7,7 +7,8 @@
 
 #include "pch.h"
 
-#include "ParticleUtility.h"
+// ランダムの追加
+#include <random>
 
 // ファイル読み込み
 #include "../ReadData.h"
@@ -30,8 +31,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Transition::INPUT_LAYOUT =
  /// <param name="引数無し"></param>
  /// <returns>なし</returns>
 Transition::Transition()
-	: m_pDR{nullptr}
-	, m_vertice{}
+	: m_pDR{ DX::DeviceResources::GetInstance() }
 {
 }
 
@@ -47,14 +47,12 @@ Transition::~Transition()
 /// <summary>
 /// リソースの作成
 /// </summary>
-/// <param name="pDR">デバイスリソースポインタ</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void Transition::Create(DX::DeviceResources* pDR)
+void Transition::Create()
 {
-	m_pDR = pDR;
-
 	// 画像の読み込み（読み込み失敗でnullptr)
-	LoadTexture(L"Resources/Textures/CloudRule.png");
+	LoadTexture(L"Resources/Textures/TRANSITION/CloudRule.png");
 
 	// シェーダーの作成
 	CreateShader();
@@ -73,10 +71,9 @@ void Transition::Create(DX::DeviceResources* pDR)
 /// <returns>なし</returns>
 void Transition::LoadTexture(const wchar_t* path)
 {
-
+	// 画像を変更する
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 	CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, nullptr, texture.ReleaseAndGetAddressOf());
-
 	m_texture = texture;
 }
 
@@ -252,4 +249,26 @@ void Transition::Render(const float& timer)
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->GSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
+}
+
+/// <summary>
+/// テクスチャを変更(１回のみ処理が走る)
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void Transition::CycleTextures()
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dist(1,4);
+
+	// ランダムな浮動小数点数を生成
+	int randomValue = dist(gen);
+
+	// 文字列変換
+	std::wstring fileName =
+		L"Resources/Textures/TRANSITION/Cloud" + std::to_wstring(randomValue) + L"Rule.png";
+
+	// 対応する数字のパスを入れる
+	LoadTexture(fileName.c_str());
 }

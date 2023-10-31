@@ -218,6 +218,9 @@
     <Filter Include="Resources\Shaders\Transition">
       <UniqueIdentifier>{465f484a-80cf-4a42-925c-e5a2d54428f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\Transition\Textures">
+      <UniqueIdentifier>{a27bd2ad-159b-48d7-a6ef-22ff8a61a472}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -585,6 +588,18 @@
     </Image>
     <Image Include="Resources\Textures\EDITS\UnderInfo.dds">
       <Filter>Resources\Textures\EDITS</Filter>
+    </Image>
+    <Image Include="Resources\Textures\TRANSITION\Cloud2Rule.png">
+      <Filter>Resources\Shaders\Transition\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\TRANSITION\Cloud3Rule.png">
+      <Filter>Resources\Shaders\Transition\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\TRANSITION\Cloud4Rule.png">
+      <Filter>Resources\Shaders\Transition\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\TRANSITION\Cloud1Rule.png">
+      <Filter>Resources\Shaders\Transition\Textures</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

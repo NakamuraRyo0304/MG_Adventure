@@ -316,6 +316,10 @@
     <Image Include="Resources\Textures\TITLE_BUTTON\Exit.dds" />
     <Image Include="Resources\Textures\TITLE_BUTTON\Start.dds" />
     <Image Include="Resources\Textures\TITLE_BUTTON\UnderLine.dds" />
+    <Image Include="Resources\Textures\TRANSITION\Cloud1Rule.png" />
+    <Image Include="Resources\Textures\TRANSITION\Cloud2Rule.png" />
+    <Image Include="Resources\Textures\TRANSITION\Cloud3Rule.png" />
+    <Image Include="Resources\Textures\TRANSITION\Cloud4Rule.png" />
     <Image Include="Resources\Textures\UnderFont.dds" />
     <Image Include="Resources\Textures\UnderLine.dds" />
   </ItemGroup>

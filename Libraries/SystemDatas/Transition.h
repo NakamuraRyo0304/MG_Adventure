@@ -10,9 +10,7 @@
 #define TRANSITION
 
 #include <vector>
-#include <list>
 
-class ParticleUtility;
 class Transition
 {
 public:
@@ -35,9 +33,6 @@ private:
 	// コモンステート
 	std::unique_ptr<DirectX::CommonStates> m_states;
 
-	// 頂点
-	DirectX::VertexPositionColorTexture m_vertice;
-
 	// テクスチャハンドル
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 
@@ -54,9 +49,6 @@ private:
 	// コンスタントバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constBuffer;
 
-	// Utility
-	std::list<ParticleUtility> m_particleUtility;
-
 public:
 	// インプットレイアウトの設定
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
@@ -65,10 +57,13 @@ public:
 	~Transition();
 
 	// リソースの作成
-	void Create(DX::DeviceResources* pDR);
+	void Create();
 
 	// 描画
 	void Render(const float& timer);
+
+	// テクスチャの変更
+	void CycleTextures();
 
 private:
 

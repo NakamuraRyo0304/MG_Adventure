@@ -38,13 +38,13 @@ Fade::~Fade()
 /// <summary>
 /// 初期化
 /// </summary>
-/// <param name="pDR">デバイスリソース</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void Fade::Initialize(DX::DeviceResources* pDR)
+void Fade::Initialize()
 {
 	// トランジションを作成
 	m_transition = std::make_unique<Transition>();
-	m_transition->Create(pDR);
+	m_transition->Create();
 }
 
 /// <summary>
@@ -134,4 +134,5 @@ void Fade::Reset()
 	is_fadeInFlag = false;
 	is_fadeOutFlag = false;
 	is_endFlag = false;
+	m_transition->CycleTextures();
 }
