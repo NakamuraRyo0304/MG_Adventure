@@ -145,12 +145,6 @@ if(GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape)) { Chang
 		is_thirdPersonMode = !is_thirdPersonMode;
 	}
 
-	// コインすべて獲得でクリア音を鳴らす なんかならないから要修正
-	if (m_blocks->IsCollectedFlag())
-	{
-		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_CLEAR, false);
-	}
-
 	// コインをすべて獲得かタイムアップでリザルト
 	if (m_blocks->IsCollectedFlag() || m_gameTimer < 0.0f)
 	{
@@ -379,7 +373,7 @@ void PlayScene::CreateWindowDependentResources()
 	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
-	GetSystemManager()->CreateUnique(_device, _context);
+	GetSystemManager()->CreateUnique();
 
 	// デフォルトカメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);

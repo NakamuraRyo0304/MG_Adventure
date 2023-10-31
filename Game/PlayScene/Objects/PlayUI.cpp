@@ -340,7 +340,8 @@ void PlayUI::RenderCountDown(const float& countDown)
 		m_countDownEnds -= COUNT_END_SPEED;
 		m_system->GetDrawSprite()->DrawTexture(
 			L"GameStart",
-			{ (m_windowSize / 2).x,(m_windowSize / 2).y + m_countDownEnds * COUNT_MOVE_SPEED },
+			{ (m_windowSize / 2).x * _scale.x,
+			((m_windowSize / 2).y + m_countDownEnds * COUNT_MOVE_SPEED) * _scale.y },
 			{ 1.0f, 1.0f, 1.0f, 1.0f },
 			_scale,
 			m_windowSize / 2

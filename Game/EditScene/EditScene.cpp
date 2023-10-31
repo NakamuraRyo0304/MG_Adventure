@@ -313,7 +313,7 @@ void EditScene::CreateWindowDependentResources()
 	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
-	GetSystemManager()->CreateUnique(_device, _context);
+	GetSystemManager()->CreateUnique();
 
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);

@@ -13,12 +13,14 @@
 
  //-------------------------------------------------------------------------------------//
  // システムのインクルード
-#include "../SystemDatas/DrawString.h"
 #include "../SystemDatas/Camera.h"
-#include "../SystemDatas/GridFloor.h"
 #include "../SystemDatas/RayCast.h"
 #include "../SystemDatas/DrawSprite.h"
 #include "../SystemDatas/SoundManager.h"
+#ifdef _DEBUG
+#include "../SystemDatas/GridFloor.h"
+#include "../SystemDatas/DrawString.h"
+#endif
 //-------------------------------------------------------------------------------------//
 
 class SystemManager
@@ -32,10 +34,6 @@ private:
 	std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>	m_keyboardStateTracker;
 	// マウス
 	std::unique_ptr<DirectX::Mouse::ButtonStateTracker>			m_mouseStateTracker;
-	// 文字描画
-	std::unique_ptr<Debug::DrawString>                          m_drawString;
-	// グリッド床
-	std::unique_ptr<Debug::GridFloor>                           m_gridFloor;
 	// レイキャスト
 	std::unique_ptr<RayCast>									m_rayCast;
 	// ドロースプライト
@@ -46,10 +44,16 @@ private:
 	std::unique_ptr<Camera>										m_camera;
 	// サウンド
 	std::unique_ptr<SoundManager>								m_soundManager;
+#ifdef _DEBUG
+	// 文字描画
+	std::unique_ptr<Debug::DrawString>                          m_drawString;
+	// グリッド床
+	std::unique_ptr<Debug::GridFloor>                           m_gridFloor;
+#endif
 
 public: // ゲッター、セッター、ファクトリー
 	// 共通のメイクユニーク
-	void CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* context);
+	void CreateUnique();
 
 	// unique_ptrのアクセサ
 
@@ -62,14 +66,8 @@ public: // ゲッター、セッター、ファクトリー
 	// キーボードステートトラッカーの取得
 	const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& GetStateTrack();
 
-	// ドローストリングの取得
-	const std::unique_ptr<Debug::DrawString>& GetString();
-
 	// マウストラッカーの取得
 	const std::unique_ptr<DirectX::Mouse::ButtonStateTracker>& GetMouseTrack();
-
-	// グリッドフロアの取得
-	const std::unique_ptr<Debug::GridFloor>& GetGridFloor();
 
 	// レイキャストの取得
 	const std::unique_ptr<RayCast>& GetRayCast();
@@ -86,7 +84,15 @@ public: // ゲッター、セッター、ファクトリー
 	// サウンドマネージャの取得
 	const std::unique_ptr<SoundManager>& GetSoundManager();
 
+#ifdef _DEBUG
 
+	// ドローストリングの取得
+	const std::unique_ptr<Debug::DrawString>& GetString();
+
+	// グリッドフロアの取得
+	const std::unique_ptr<Debug::GridFloor>& GetGridFloor();
+
+#endif
 public:
 	SystemManager();
 	~SystemManager();

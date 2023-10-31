@@ -17,14 +17,16 @@
 SystemManager::SystemManager()
 	: m_commonState{nullptr}
 	, m_drawSprite{nullptr}
-	, m_drawString{nullptr}
 	, m_effect{nullptr}
-	, m_gridFloor{nullptr}
 	, m_keyboardStateTracker{nullptr}
 	, m_mouseStateTracker{nullptr}
 	, m_camera{nullptr}
 	, m_pDR{nullptr}
 	, m_rayCast{nullptr}
+#ifdef _DEBUG
+	, m_gridFloor{nullptr}
+	, m_drawString{nullptr}
+#endif
 {
 }
 
@@ -84,21 +86,6 @@ SystemManager::GetStateTrack()
 	return m_keyboardStateTracker;
 }
 
-/// <summary>
-/// 文字描画クラスの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>文字描画クラスのユニークポインタ</returns>
-const std::unique_ptr<Debug::DrawString>&
-SystemManager::GetString()
-{
-	if (!m_drawString)
-	{
-		m_pDR = DX::DeviceResources::GetInstance();
-		m_drawString = std::make_unique<Debug::DrawString>(m_pDR->GetD3DDevice(), m_pDR->GetD3DDeviceContext());
-	}
-	return m_drawString;
-}
 
 /// <summary>
 /// マウストラッカーの取得
@@ -113,21 +100,6 @@ SystemManager::GetMouseTrack()
 		throw;
 	}
 	return m_mouseStateTracker;
-}
-
-/// <summary>
-/// ドローフロアの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>ドローフロアのユニークポインタ</returns>
-const std::unique_ptr<Debug::GridFloor>&
-SystemManager::GetGridFloor()
-{
-	if (!m_gridFloor)
-	{
-		throw;
-	}
-	return m_gridFloor;
 }
 
 /// <summary>
@@ -204,19 +176,53 @@ const std::unique_ptr<SoundManager>& SystemManager::GetSoundManager()
 	return m_soundManager;
 }
 
+#ifdef _DEBUG
+
+/// <summary>
+/// 文字描画クラスの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>文字描画クラスのユニークポインタ</returns>
+const std::unique_ptr<Debug::DrawString>&
+SystemManager::GetString()
+{
+	if (!m_drawString)
+	{
+		m_pDR = DX::DeviceResources::GetInstance();
+		m_drawString = std::make_unique<Debug::DrawString>(m_pDR->GetD3DDevice(), m_pDR->GetD3DDeviceContext());
+	}
+	return m_drawString;
+}
+/// <summary>
+/// ドローフロアの取得
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>ドローフロアのユニークポインタ</returns>
+const std::unique_ptr<Debug::GridFloor>&
+SystemManager::GetGridFloor()
+{
+	if (!m_gridFloor)
+	{
+		throw;
+	}
+	return m_gridFloor;
+}
+
+#endif
+
 /// <summary>
 /// 一括でシステムのリソースを作成
 /// </summary>
-/// <param name="device">ID3D11Device1のポインタ</param>
-/// <param name="context">ID3D11DeviceContext1のポインタ</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* context)
+void SystemManager::CreateUnique()
 {
 	// デバイスリソース
 	m_pDR = DX::DeviceResources::GetInstance();
+	auto _device = m_pDR->GetD3DDevice();
 
 	// ３Ｄレンダリング
-	m_commonState = std::make_unique<CommonStates>(device);
+	m_commonState = std::make_unique<CommonStates>(_device);
 
 	// キーボード
 	m_keyboardStateTracker
@@ -236,14 +242,19 @@ void SystemManager::CreateUnique(ID3D11Device1* device, ID3D11DeviceContext1* co
 	m_drawSprite = std::make_unique<DrawSprite>();
 
 	// ベーシックエフェクト
-	m_effect = std::make_unique<BasicEffect>(device);
+	m_effect = std::make_unique<BasicEffect>(_device);
 
 	// サウンドマネージャ
 	m_soundManager = std::make_unique<SoundManager>();
 
+#ifdef _DEBUG
+
+	auto _context = m_pDR->GetD3DDeviceContext();
+
 	// 文字の描画
-	m_drawString = std::make_unique<Debug::DrawString>(device, context);
+	m_drawString = std::make_unique<Debug::DrawString>(_device, _context);
 
 	// グリッドフロア 30 x 30
-	m_gridFloor = std::make_unique<Debug::GridFloor>(device, context, 50, 50);
+	m_gridFloor = std::make_unique<Debug::GridFloor>(_device, _context, 50, 50);
+#endif
 }
