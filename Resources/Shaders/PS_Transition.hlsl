@@ -13,13 +13,13 @@ SamplerState samLinear : register(s0);
 float4 main(PS_INPUT input) : SV_TARGET
 {
     // 白色を出力
-    float4 _output = float4(0.9f, 0.9f, 0.9f, 1.f);
+    float4 _output = float4(0.95f, 0.95f, 1.0f, 1.f);
 
     // テクスチャの色情報を取得
     float4 _color = tex.Sample(samLinear, input.Tex);
 
-    // rgbの方が大きい場合は真っ黒
-    _output.a = step(_color.r, Time.x + 0.1f);
-
+    // エッジ条件を設定し、縁取りしながらフェードさせる
+    float _edge = saturate((_color.b - Time.x) / 0.1f);
+    _output.a *= (Time.x - _edge);
     return _output;
 }
