@@ -194,7 +194,6 @@ void Game::GetDefaultSize(int& width, int& height) const
 // デバイス依存のリソース
 void Game::CreateDeviceDependentResources()
 {
-    DX::DeviceResources* _pDR = DX::DeviceResources::GetInstance();
 
 }
 

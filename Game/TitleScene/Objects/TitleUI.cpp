@@ -46,19 +46,14 @@ TitleUI::~TitleUI()
 /// 作成関数
 /// </summary>
 /// <param name="system">システムマネージャ</param>
-/// <param name="context">コンテキストポインタ</param>
 /// <param name="device">デバイスポインタ</param>
+/// <param name="windowSize">ウィンドウサイズ</param>
 /// <returns>なし</returns>
-void TitleUI::Create(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device)
+void TitleUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
 {
 	// システム
 	m_system = system;
-
-	m_windowSize = { static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right),
-					 static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().bottom) };
-
-	// 画像の設定
-	m_system->GetDrawSprite()->MakeSpriteBatch(context);
+	m_windowSize = windowSize;
 
 	// 画像の追加
 	m_system->GetDrawSprite()->AddTextureData(L"Start",		L"Resources/Textures/TITLE_BUTTON/Start.dds", device);

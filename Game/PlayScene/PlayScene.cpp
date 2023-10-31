@@ -93,24 +93,22 @@ void PlayScene::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="keyState">キーボードポインタ</param>
-/// <param name="mouseState">マウスポインタ</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void PlayScene::Update(Keyboard::State& keyState, Mouse::State& mouseState)
+void PlayScene::Update()
 {
+	// インプットの更新
+	auto _key = Keyboard::Get().GetState();
+	auto _mouse = Mouse::Get().GetState();
+	GetSystemManager()->GetStateTrack()->Update(_key);
+	GetSystemManager()->GetMouseTrack()->Update(_mouse);
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
-
-	// キー入力情報を取得する
-	GetSystemManager()->GetStateTrack()->Update(keyState);
-
-	// マウス情報を取得する
-	GetSystemManager()->GetMouseTrack()->Update(mouseState);
 
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
 
 	// エスケープで終了
-	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+if(GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
 
 	// UI表示中は以降処理しない
 	if (UpdateUI()) return;
@@ -178,7 +176,7 @@ void PlayScene::Update(Keyboard::State& keyState, Mouse::State& mouseState)
 	}
 
 	// プレイヤの更新
-	m_player->Update(keyState, _timer ,is_thirdPersonMode);
+	m_player->Update(_key, _timer ,is_thirdPersonMode);
 
 	// 相対移動
 	m_playerBill->SetVertexMovePos(m_player->GetPosition());
@@ -192,7 +190,7 @@ void PlayScene::Update(Keyboard::State& keyState, Mouse::State& mouseState)
 		for (auto& i : m_blocks->GetMapData())
 		{
 			// エフェクトをオフ
-			m_userInterFace->SetEffectFlag(false);
+			m_playUI->SetEffectFlag(false);
 
 			// オブジェクトの振動
 			GetSystemManager()->GetCamera()->ShakeObject(
@@ -220,11 +218,11 @@ void PlayScene::Update(Keyboard::State& keyState, Mouse::State& mouseState)
 			// エフェクトをオン
 			if (static_cast<int>(m_player->GetPosition().y) % 2 == 0)
 			{
-				m_userInterFace->SetEffectFlag(true);
+				m_playUI->SetEffectFlag(true);
 			}
 			else
 			{
-				m_userInterFace->SetEffectFlag(false);
+				m_playUI->SetEffectFlag(false);
 			}
 			GetSystemManager()->GetCamera()->ShakeObject(
 				1.0f,									// 振動時間
@@ -250,7 +248,7 @@ void PlayScene::Update(Keyboard::State& keyState, Mouse::State& mouseState)
 	}
 
 	// UIの更新
-	m_userInterFace->Update(m_gameTimer);
+	m_playUI->Update(m_gameTimer);
 
 	// 落下したらリスタート
 	if (m_player->GetDeathFlag())
@@ -344,11 +342,11 @@ void PlayScene::Draw()
 	// UIの描画
 	if (static_cast<int>(m_startTimer) == 0)
 	{
-		m_userInterFace->Render();
+		m_playUI->Render();
 	}
 	else
 	{
-		m_userInterFace->RenderCountDown(m_startTimer);
+		m_playUI->RenderCountDown(m_startTimer);
 	}
 }
 
@@ -383,19 +381,15 @@ void PlayScene::CreateWindowDependentResources()
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(_device, _context);
 
-	// 画面サイズの格納
-	float _width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float _height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
-
 	// デフォルトカメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, CAMERA_ANGLE);
+	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
 
 	// サードパーソンカメラの作成
 	m_thirdCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager(), _context, _device);
-	m_thirdCamera->CreateProjection(_width, _height, CAMERA_ANGLE);
+	m_thirdCamera->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
 
 	// スタート用カメラの作成
-	m_playCamera = std::make_unique<PlayCamera>(SimpleMath::Vector2(_width, _height));
+	m_playCamera = std::make_unique<PlayCamera>(SimpleMath::Vector2(GetScreenSize().x, GetScreenSize().y));
 	m_playCamera->SetPosition(START_CAMERA_POS);
 
 	//-------------------------------------------------------------------------------------//
@@ -433,9 +427,9 @@ void PlayScene::CreateWindowDependentResources()
 	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
 
 	// UIの作成
-	m_userInterFace = std::make_unique<PlayUI>();
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
-	m_userInterFace->Create(GetSystemManager(), _device);
+	m_playUI = std::make_unique<PlayUI>();
+	m_playUI->Create(GetSystemManager(), _device, GetScreenSize());
 }
 
 /// <summary>
@@ -458,7 +452,7 @@ void PlayScene::SetSceneValues()
 	m_startTimer = 4 * FLAME_RATE;
 
 	// 死亡エフェクトを切る
-	m_userInterFace->SetEffectFlag(false);
+	m_playUI->SetEffectFlag(false);
 
 	// 空の色の初期化
 	m_skyColor = { 1.0f,1.0f,1.0f };
@@ -620,14 +614,14 @@ bool PlayScene::UpdateUI()
 	if (_key->IsKeyPressed(Keyboard::Enter) && StartTimer())
 	{
 		is_helpFlag = !is_helpFlag;
-		m_userInterFace->SetHelpFlag(is_helpFlag);
+		m_playUI->SetHelpFlag(is_helpFlag);
 		_se->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
 
 	if (is_helpFlag)
 	{
 		// 表示切替
-		m_userInterFace->UpdatePage(
+		m_playUI->UpdatePage(
 			(_key->IsKeyPressed(Keyboard::A) || _key->IsKeyPressed(Keyboard::Left)),
 			(_key->IsKeyPressed(Keyboard::D) || _key->IsKeyPressed(Keyboard::Right)));
 
@@ -639,10 +633,10 @@ bool PlayScene::UpdateUI()
 		}
 
 		// 遷移ページの場合、UpdateTransitionにUpDownWSを渡す
-		if (m_userInterFace->GetTransitionPage())
+		if (m_playUI->GetTransitionPage())
 		{
 			// 上下キーで選択
-			m_userInterFace->UpdateTransition(
+			m_playUI->UpdateTransition(
 				(_key->IsKeyPressed(Keyboard::W) || _key->IsKeyPressed(Keyboard::Up)),
 				(_key->IsKeyPressed(Keyboard::S) || _key->IsKeyPressed(Keyboard::Down)));
 
@@ -673,7 +667,7 @@ bool PlayScene::UpdateUI()
 /// <returns>なし</returns>
 void PlayScene::HelpNext()
 {
-	switch (m_userInterFace->GetTransNum())
+	switch (m_playUI->GetTransNum())
 	{
 	case PlayUI::GO::RETRY:
 		ChangeScene(SCENE::PLAY);

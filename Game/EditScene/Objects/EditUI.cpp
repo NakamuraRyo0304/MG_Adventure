@@ -51,15 +51,13 @@ EditUI::~EditUI()
 /// 初期化処理
 /// </summary>
 /// <param name="shareSystem">システムデータ</param>
-/// <param name="device">ID3D11Device1ポインタ</param>
+/// <param name="device">デバイスポインタ</param>
+/// <param name="windowSize">ウィンドウサイズ</param>
 /// <returns>なし</returns>
-void EditUI::Initialize(const std::shared_ptr<SystemManager>& shareSystem, ID3D11Device1* device)
+void EditUI::Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
 {
-	// ポインタの共有
-	m_system = shareSystem;
-
-	m_windowSize = { static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right),
-					 static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().bottom) };
+	m_system = system;
+	m_windowSize = windowSize;
 
 	// キー名　：　ファイルパス名
 	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",		// ツールバー

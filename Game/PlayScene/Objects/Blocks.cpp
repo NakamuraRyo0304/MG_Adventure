@@ -180,7 +180,7 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 	SimpleMath::Matrix view, SimpleMath::Matrix proj, float timer, const SimpleMath::Vector3& lightDir)
 {
 	// ワールド座標
-	SimpleMath::Matrix _world, _rotMat, _revScaleMat;
+	SimpleMath::Matrix _world, _rotMat, _verticle;
 
 	// ライティング設定
 	std::function<void(IEffect* effect)> _lightSetting;
@@ -196,10 +196,6 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		// 回転行列
 		_rotMat = SimpleMath::Matrix::CreateRotationY(timer);
 
-		// スケール行列
-		float _revScaleTimer = fmodf(timer, 2 * XM_PI);
-		_revScaleMat = SimpleMath::Matrix::CreateScale(sinf(_revScaleTimer));
-
 		// ビュー行列からカメラの回転を取得
 		SimpleMath::Matrix _cameraRot;
 
@@ -214,6 +210,10 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		// ライトの方向をカメラの回転に逆向きにする
 		m_lighting = SimpleMath::Vector3::TransformNormal(lightDir, _cameraRot);
 		SimpleMath::Color lightColor(0.3f, 0.3f, 0.3f, 1.0f);
+
+		// 上下移動する
+		_verticle *= SimpleMath::Matrix::CreateTranslation(
+			SimpleMath::Vector3(0.0f, ((sinf(timer) + 1) * 0.5f) * 2.f, 0.0f));
 
 		_lightSetting = [&](IEffect* effect)
 		{
@@ -280,14 +280,8 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		// 重力ブロック
 		if (m_mapObj[i].id == MAPSTATE::GRAVITY)
 		{
-			// 反転防止
-			if (sinf(_revScaleTimer) < 0.0f)
-			{
-				_revScaleMat *= SimpleMath::Matrix::CreateScale(1.0f, -1.0f,1.0f);
-			}
-
 			m_gravityModel->UpdateEffects(_lightSetting);
-			m_gravityModel->Draw(context, states, _revScaleMat * _rotMat * _world, view, proj);
+			m_gravityModel->Draw(context, states, _world, view, proj);
 		}
 	}
 

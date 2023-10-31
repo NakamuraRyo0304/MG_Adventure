@@ -15,13 +15,10 @@
  /// <summary>
  /// コンストラクタ
  /// </summary>
- /// <param name="system">システムマネージャ</param>
- /// <param name="context">コンテキストポインタ</param>
- /// <param name="device">デバイスポインタ</param>
+ /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-SelectUI::SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device)
-	: _timer{}				// タイマー
-	, m_rightAlpha{}		// 右矢印の透明度
+SelectUI::SelectUI()
+	: m_rightAlpha{}		// 右矢印の透明度
 	, m_leftAlpha{}			// 左矢印の透明度
 	, m_oneCoins{}			//   1の位のコイン数
 	, m_tenCoins{}			//  10の位のコイン数
@@ -29,17 +26,6 @@ SelectUI::SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* 
 	, m_moveY{}				// 上下移動
 	, is_pushToFlag{ false }// スペース画像点滅フラグ
 {
-	m_system = system;
-
-	m_system->GetDrawSprite()->MakeSpriteBatch(context);
-
-	// 画像の登録
-	m_system->GetDrawSprite()->AddTextureData(L"Number",	   L"Resources/Textures/Number.dds",					 device);
-	m_system->GetDrawSprite()->AddTextureData(L"RightArrow",   L"Resources/Textures/SELECT_INFO/RightArrow.dds",	 device);
-	m_system->GetDrawSprite()->AddTextureData(L"LeftArrow",    L"Resources/Textures/SELECT_INFO/LeftArrow.dds",		 device);
-	m_system->GetDrawSprite()->AddTextureData(L"CenterCoin",   L"Resources/Textures/SELECT_INFO/TotalCoins.dds",	 device);
-	m_system->GetDrawSprite()->AddTextureData(L"PushSpace",    L"Resources/Textures/SELECT_INFO/SpaceToStart.dds",	 device);
-	m_system->GetDrawSprite()->AddTextureData(L"OutsideFrame", L"Resources/Textures/SELECT_INFO/OutFrame.dds",		 device);
 }
 
 /// <summary>
@@ -53,14 +39,24 @@ SelectUI::~SelectUI()
 }
 
 /// <summary>
-/// 初期化処理
+/// 作成関数
 /// </summary>
+ /// <param name="system">システムマネージャ</param>
+ /// <param name="device">デバイスポインタ</param>
 /// <param name="windowSize">画面サイズ</param>
 /// <returns>なし</returns>
-void SelectUI::Initialize()
+void SelectUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
 {
-	m_windowSize = { static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right),
-					 static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().bottom) };
+	m_system = system;
+	m_windowSize = windowSize;
+
+	// 画像の登録
+	m_system->GetDrawSprite()->AddTextureData(L"Number",		L"Resources/Textures/Number.dds",					device);
+	m_system->GetDrawSprite()->AddTextureData(L"RightArrow",	L"Resources/Textures/SELECT_INFO/RightArrow.dds",	device);
+	m_system->GetDrawSprite()->AddTextureData(L"LeftArrow",		L"Resources/Textures/SELECT_INFO/LeftArrow.dds",	device);
+	m_system->GetDrawSprite()->AddTextureData(L"CenterCoin",	L"Resources/Textures/SELECT_INFO/TotalCoins.dds",	device);
+	m_system->GetDrawSprite()->AddTextureData(L"PushSpace",		L"Resources/Textures/SELECT_INFO/SpaceToStart.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"OutsideFrame",	L"Resources/Textures/SELECT_INFO/OutFrame.dds",		device);
 }
 
 /// <summary>

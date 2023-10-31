@@ -33,20 +33,13 @@ private:
 	std::unique_ptr<Blocks> m_blocks;
 
 	// UI
-	std::unique_ptr<ResultUI> m_userInterface;
+	std::unique_ptr<ResultUI> m_resultUI;
 
 	// マップ番号
 	int m_stageNum;
 
 	// コインの枚数
 	int m_coinNum;
-
-	// 画面サイズ
-	DirectX::SimpleMath::Vector2 m_windowSize;
-
-private:
-	// フルスクリーンサイズ
-	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
 	// 最大秒数
 	const int MAX_TIME = 60;
@@ -63,7 +56,7 @@ public:
 	void Initialize() override;
 
 	// 更新
-	void Update(DirectX::Keyboard::State& keyState, DirectX::Mouse::State& mouseState) override;
+	void Update() override;
 
 	// 描画
 	void Draw() override;

@@ -19,14 +19,8 @@ private:
 	// システム
 	std::shared_ptr<SystemManager> m_system;
 
-	// フルスクリーンサイズ
-	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
-
 	// ウィンドウサイズ
 	DirectX::SimpleMath::Vector2 m_windowSize;
-
-	// タイマー
-	float _timer;
 
 	// セレクト
 	int m_selectingScene;
@@ -42,15 +36,11 @@ private:
 	int m_oneTime;
 	int m_tenTime;
 
-	// 透明度
-	float m_retryAlpha;
-	float m_selectAlpha;
-	float m_titleAlpha;
-
-	// 拡大率
-	float m_retryScale;
-	float m_selectScale;
-	float m_titleScale;
+	// 描画で使う情報
+	struct TexInfo { DirectX::SimpleMath::Vector2 pos; float alpha; float scale; };
+	TexInfo m_retryInfo;
+	TexInfo m_selectInfo;
+	TexInfo m_titleInfo;
 
 private:
 	// 画像拡大率
@@ -77,22 +67,18 @@ private:
 	// 数字のデフォルトサイズ
 	const DirectX::SimpleMath::Vector2 DRAW_NUM_SIZE = SimpleMath::Vector2{ 1.0f };
 
-
-private:
-	// 画像座標
-	DirectX::SimpleMath::Vector2 m_retryPos;
-	DirectX::SimpleMath::Vector2 m_selectPos;
-	DirectX::SimpleMath::Vector2 m_titlePos;
+	// フルスクサイズ
+	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
 public:
-	ResultUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device);
+	ResultUI();
 	~ResultUI();
 
-	// 初期化処理
-	void Initialize();
+	// 作成関数
+	void Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const DirectX::SimpleMath::Vector2& windowSize);
 
 	// 更新処理
-	void Update(const float& timer,const int& clearTime);
+	void Update(const int& clearTime);
 
 	// 描画処理
 	void Render(const float& fadeValue);

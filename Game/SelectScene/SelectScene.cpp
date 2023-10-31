@@ -73,18 +73,14 @@ void SelectScene::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="keyState">キーボードポインタ</param>
-/// <param name="mouseState">マウスポインタ</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void SelectScene::Update(Keyboard::State& keyState, Mouse::State& mouseState)
+void SelectScene::Update()
 {
+	// インプットの更新
+	auto _key = Keyboard::Get().GetState();
+	GetSystemManager()->GetStateTrack()->Update(_key);
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
-
-	// キー入力情報を取得する
-	GetSystemManager()->GetStateTrack()->Update(keyState);
-
-	// マウス情報を取得する
-	GetSystemManager()->GetMouseTrack()->Update(mouseState);
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
@@ -96,13 +92,13 @@ void SelectScene::Update(Keyboard::State& keyState, Mouse::State& mouseState)
 	DirectionSelectChange();
 
 	// ステージの変更
-	ChangeStageNumber(keyState);
+	ChangeStageNumber(_key);
 
 	// UIの更新
-	m_userInterface->Update(_timer, (keyState.D ||keyState.Right), (keyState.A ||keyState.Left));
+	m_selectUI->Update(_timer, (_key.D || _key.Right), (_key.A || _key.Left));
 
 	// エスケープで終了
-	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+if(GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
 
 	// コインの数を保存
 	m_allCoins = m_initCoins - static_cast<int>(m_useCoins);
@@ -139,8 +135,8 @@ void SelectScene::Update(Keyboard::State& keyState, Mouse::State& mouseState)
 	if (is_selectEdit)
 	{
 		// コイン数をセットする
-		m_userInterface->SetAllCoins(m_initCoins - static_cast<int>(m_useCoins));
-		m_userInterface->MoveCoins(m_useCoins);
+		m_selectUI->SetAllCoins(m_initCoins - static_cast<int>(m_useCoins));
+		m_selectUI->MoveCoins(m_useCoins);
 
 		// 使用料を支払ったら遷移する
 		if (static_cast<int>(m_useCoins) == STAGE_CREATE_PRICE)
@@ -205,7 +201,7 @@ void SelectScene::Draw()
 	}
 
 	// UIの描画
-	m_userInterface->Render(GetFadeValue(), m_stageNum, MAX_STAGE_NUM - 1);
+	m_selectUI->Render(GetFadeValue(), m_stageNum, MAX_STAGE_NUM - 1);
 }
 
 /// <summary>
@@ -220,7 +216,7 @@ void SelectScene::Finalize()
 	{
 		m_blocks[i]->Finalize();
 	}
-	m_userInterface->Finalize();
+	m_selectUI->Finalize();
 }
 
 /// <summary>
@@ -237,14 +233,13 @@ void SelectScene::CreateWindowDependentResources()
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(_device, _context);
 
-	// 画面サイズの格納
-	float _width =
-		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float _height =
-		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
-
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, CAMERA_ANGLE);
+	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
+
+	// UIの作成
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
+	m_selectUI = std::make_unique<SelectUI>();
+	m_selectUI->Create(GetSystemManager(), _device, GetScreenSize());
 
 	// スカイドームモデルを作成する
 	{
@@ -291,10 +286,6 @@ void SelectScene::CreateWindowDependentResources()
 			}
 		}
 	}
-
-	// UIの作成
-	m_userInterface = std::make_unique<SelectUI>(GetSystemManager(), _context, _device);
-	m_userInterface->Initialize();
 }
 
 /// <summary>
@@ -311,7 +302,7 @@ void SelectScene::SetSceneValues()
 	m_flashCount = 0.0f;
 
 	// コイン数をセット
-	m_userInterface->SetAllCoins(m_allCoins);
+	m_selectUI->SetAllCoins(m_allCoins);
 
 	// 使用コイン数をリセット
 	m_useCoins = 0.0f;

@@ -57,11 +57,11 @@ private:
 	const DirectX::SimpleMath::Vector2 PUSH_SIZE = SimpleMath::Vector2{ 1280.0f,128.0f };
 
 public:
-	SelectUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device);
+	SelectUI();
 	~SelectUI();
 
-	// ‰Šú‰»ˆ—
-	void Initialize();
+	// ì¬ŠÖ”
+	void Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const DirectX::SimpleMath::Vector2& windowSize);
 
 	// XVˆ—
 	void Update(const float& timer, const bool& rightFlag, const bool& leftFlag);

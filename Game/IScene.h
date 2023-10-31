@@ -25,6 +25,9 @@ private:
 	// 次のシーンを指定する
 	SCENE m_nextScene;
 
+	// スクリーンサイズ
+	DirectX::SimpleMath::Vector2 m_fullScreenSize;
+
 	// シーン切り替え判定フラグ
 	bool is_changeFlag;
 
@@ -48,7 +51,7 @@ public:
 	virtual void Initialize() = 0;
 
 	// 更新
-	virtual void Update(DirectX::Keyboard::State& keyState,DirectX::Mouse::State& mouseState) = 0;
+	virtual void Update() = 0;
 
 	// 描画
 	virtual void Draw() = 0;
@@ -74,7 +77,7 @@ public:
 	// ゲームシーン内で使用する関数
 	//-------------------------------------------------------------------------------------//
 
-	// システムマネージャをゲット
+	// システムマネージャを取得する
 	inline const std::shared_ptr<SystemManager>& GetSystemManager() { return m_system; }
 
 	// 遷移先のシーン設定
@@ -83,6 +86,9 @@ public:
 		m_nextScene = nextScene;
 		is_changeFlag = true;
 	}
+
+	// スクリーンサイズを取得する
+	const DirectX::SimpleMath::Vector2& GetScreenSize() { return m_fullScreenSize; }
 
 	//-------------------------------------------------------------------------------------//
 	// GameMainで使用する関数 (通常は使用しない)
@@ -94,6 +100,9 @@ public:
 		m_nextScene = SCENE::NONE;
 		is_changeFlag = false;
 	}
+
+	// 画面サイズを設定する
+	inline void SetScreenSize(const DirectX::SimpleMath::Vector2& size) { m_fullScreenSize = size; }
 
 	// ソフト終了
 	inline void ExitApp(){	PostQuitMessage(0);	}

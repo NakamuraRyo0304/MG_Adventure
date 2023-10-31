@@ -63,7 +63,7 @@ public:
 	void Initialize() override;
 
 	// XV
-	void Update(DirectX::Keyboard::State& keyState,DirectX::Mouse::State&) override;
+	void Update() override;
 
 	// •`‰æ
 	void Draw() override;

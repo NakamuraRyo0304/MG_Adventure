@@ -19,43 +19,19 @@
  /// <summary>
  /// コンストラクタ
  /// </summary>
- /// <param name="system">システムマネージャ</param>
- /// <param name="context">コンテキストポインタ</param>
- /// <param name="device">デバイスポインタ</param>
+ /// <param name="引数無し"></param>
  /// <returns>なし</returns>
-ResultUI::ResultUI(std::shared_ptr<SystemManager> system, ID3D11DeviceContext1* context, ID3D11Device1* device)
+ResultUI::ResultUI()
 	: m_selectingScene{ RETRY }	// 現在選択中のシーン
 	, m_oneCoins{}				//  1の位のコイン数
 	, m_tenCoins{}				// 10の位のコイン数
 	, m_oneTime{}				//  1の位のクリアタイム
 	, m_tenTime{}				// 10の位のクリアタイム
-	//-------------------------------------------------------------------------------------//
-	,m_retryPos{}				// リトライテキストの位置
-	,m_retryAlpha{}				// 透明度
-	,m_retryScale{}				// 大きさ
-	//-------------------------------------------------------------------------------------//
-	,m_selectPos{}				// セレクトテキストの位置
-	,m_selectAlpha{}			// 透明度
-	,m_selectScale{}			// 大きさ
-	//-------------------------------------------------------------------------------------//
-	,m_titlePos{}				// タイトルテキストの位置
-	,m_titleAlpha{}				// 透明度
-	,m_titleScale{}				// 大きさ
-	//-------------------------------------------------------------------------------------//
-	,m_coinNum{ 0 }				// 枚数
-	//-------------------------------------------------------------------------------------//
+	, m_retryInfo{}				// リトライフォントの情報
+	, m_selectInfo{}			// セレクトフォントの情報
+	, m_titleInfo{}				// タイトルフォントの情報
+	, m_coinNum{ 0 }			// 枚数
 {
-	m_system = system;
-
-	m_system->GetDrawSprite()->MakeSpriteBatch(context);
-
-	// 画像を登録
-	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds",      device);
-	m_system->GetDrawSprite()->AddTextureData(L"RFont",  L"Resources/Textures/ResultFonts.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"BLIND",  L"Resources/Textures/ResultBack.dds",  device);
-	m_system->GetDrawSprite()->AddTextureData(L"RETRY",  L"Resources/Textures/FONT/RETRY.dds",  device);
-	m_system->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"TITLE",  L"Resources/Textures/FONT/TITLE.dds",  device);
 }
 
 /// <summary>
@@ -71,32 +47,39 @@ ResultUI::~ResultUI()
 /// <summary>
 /// 初期化処理
 /// </summary>
-/// <param name="引数無し"></param>
+/// <param name="system">システムマネージャ</param>
+/// <param name="device">デバイスポインタ</param>
+/// <param name="windowSize">ウィンドウサイズ</param>
 /// <returns>なし</returns>
-void ResultUI::Initialize()
+void ResultUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
 {
-	m_windowSize = { static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().right),
-					 static_cast<float>(m_system->GetDeviceResources()->GetOutputSize().bottom) };
+	m_system = system;
+	m_windowSize = windowSize;
+
+	// 画像を登録
+	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds",		device);
+	m_system->GetDrawSprite()->AddTextureData(L"RFont",  L"Resources/Textures/ResultFonts.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"BLIND",  L"Resources/Textures/ResultBack.dds",	device);
+	m_system->GetDrawSprite()->AddTextureData(L"RETRY",  L"Resources/Textures/FONT/RETRY.dds",	device);
+	m_system->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds", device);
+	m_system->GetDrawSprite()->AddTextureData(L"TITLE",  L"Resources/Textures/FONT/TITLE.dds",	device);
 
 	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 
 	// 文字の座標の初期化
 	float _commonY = FULL_SCREEN_SIZE.y - NUM_SIZE * 2;
-	m_retryPos  = SimpleMath::Vector2{ FONT_WIDTH / 2, _commonY };
-	m_selectPos = SimpleMath::Vector2{ m_retryPos.x + FONT_WIDTH, _commonY };
-	m_titlePos  = SimpleMath::Vector2{ m_selectPos.x + FONT_WIDTH, _commonY };
+	m_retryInfo.pos  = SimpleMath::Vector2{ FONT_WIDTH / 2,					 _commonY };
+	m_selectInfo.pos = SimpleMath::Vector2{ m_retryInfo.pos.x  + FONT_WIDTH, _commonY };
+	m_titleInfo.pos  = SimpleMath::Vector2{ m_selectInfo.pos.x + FONT_WIDTH, _commonY };
 }
 
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="timer">時間</param>
 /// <param name="clearTime">クリアタイム</param>
 /// <returns>なし</returns>
-void ResultUI::Update(const float& timer, const int& clearTime)
+void ResultUI::Update(const int& clearTime)
 {
-	_timer = timer;
-
 	// クリアタイムを保存
 	m_oneTime = clearTime % 10;
 	m_tenTime = clearTime / 10 % 10;
@@ -242,23 +225,23 @@ void ResultUI::DrawFonts(const DirectX::SimpleMath::Vector2& windowRate)
 {
 	m_system->GetDrawSprite()->DrawTexture(
 		L"RETRY",
-		m_retryPos * windowRate,
-		{ 1.0f, 1.0f, 1.0f, m_retryAlpha },
-		IMAGE_RATE * windowRate * m_retryScale,
+		m_retryInfo.pos * windowRate,
+		{ 1.0f, 1.0f, 1.0f, m_retryInfo.alpha },
+		IMAGE_RATE * windowRate * m_retryInfo.scale,
 		SimpleMath::Vector2::Zero
 	);
 	m_system->GetDrawSprite()->DrawTexture(
 		L"SELECT",
-		m_selectPos * windowRate,
-		{ 1.0f, 1.0f, 1.0f, m_selectAlpha },
-		IMAGE_RATE * windowRate * m_selectScale,
+		m_selectInfo.pos * windowRate,
+		{ 1.0f, 1.0f, 1.0f, m_selectInfo.alpha },
+		IMAGE_RATE * windowRate * m_selectInfo.scale,
 		SimpleMath::Vector2::Zero
 	);
 	m_system->GetDrawSprite()->DrawTexture(
 		L"TITLE",
-		m_titlePos * windowRate,
-		{ 1.0f, 1.0f, 1.0f, m_titleAlpha },
-		IMAGE_RATE * windowRate * m_titleScale,
+		m_titleInfo.pos * windowRate,
+		{ 1.0f, 1.0f, 1.0f, m_titleInfo.alpha },
+		IMAGE_RATE * windowRate * m_titleInfo.scale,
 		SimpleMath::Vector2::Zero
 	);
 }
@@ -282,13 +265,13 @@ void ResultUI::SetCoins(const int& totalCoinNum)
 void ResultUI::CaseRetry()
 {
 	// 透明度
-	m_retryAlpha = UserUtility::Lerp(m_retryAlpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
-	m_selectAlpha = DEFAULT_FONT_ALPHA;
-	m_titleAlpha = DEFAULT_FONT_ALPHA;
+	m_retryInfo.alpha = UserUtility::Lerp(m_retryInfo.alpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
+	m_selectInfo.alpha = DEFAULT_FONT_ALPHA;
+	m_titleInfo.alpha = DEFAULT_FONT_ALPHA;
 	// サイズ
-	m_retryScale = UserUtility::Lerp(m_retryScale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
-	m_selectScale = DEFAULT_FONT_SCALE;
-	m_titleScale = DEFAULT_FONT_SCALE;
+	m_retryInfo.scale = UserUtility::Lerp(m_retryInfo.scale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
+	m_selectInfo.scale = DEFAULT_FONT_SCALE;
+	m_titleInfo.scale = DEFAULT_FONT_SCALE;
 }
 
 /// <summary>
@@ -299,13 +282,13 @@ void ResultUI::CaseRetry()
 void ResultUI::CaseSelect()
 {
 	// 透明度
-	m_retryAlpha = DEFAULT_FONT_ALPHA;
-	m_selectAlpha = UserUtility::Lerp(m_selectAlpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
-	m_titleAlpha = DEFAULT_FONT_ALPHA;
+	m_retryInfo.alpha = DEFAULT_FONT_ALPHA;
+	m_selectInfo.alpha = UserUtility::Lerp(m_selectInfo.alpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
+	m_titleInfo.alpha = DEFAULT_FONT_ALPHA;
 	// サイズ
-	m_retryScale = DEFAULT_FONT_SCALE;
-	m_selectScale = UserUtility::Lerp(m_selectScale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
-	m_titleScale = DEFAULT_FONT_SCALE;
+	m_retryInfo.scale = DEFAULT_FONT_SCALE;
+	m_selectInfo.scale = UserUtility::Lerp(m_selectInfo.scale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
+	m_titleInfo.scale = DEFAULT_FONT_SCALE;
 }
 
 /// <summary>
@@ -316,11 +299,11 @@ void ResultUI::CaseSelect()
 void ResultUI::CaseTitle()
 {
 	// 透明度
-	m_retryAlpha = DEFAULT_FONT_ALPHA;
-	m_selectAlpha = DEFAULT_FONT_ALPHA;
-	m_titleAlpha = UserUtility::Lerp(m_titleAlpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
+	m_retryInfo.alpha = DEFAULT_FONT_ALPHA;
+	m_selectInfo.alpha = DEFAULT_FONT_ALPHA;
+	m_titleInfo.alpha = UserUtility::Lerp(m_titleInfo.alpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
 	// サイズ
-	m_retryScale = DEFAULT_FONT_SCALE;
-	m_selectScale = DEFAULT_FONT_SCALE;
-	m_titleScale = UserUtility::Lerp(m_titleScale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
+	m_retryInfo.scale = DEFAULT_FONT_SCALE;
+	m_selectInfo.scale = DEFAULT_FONT_SCALE;
+	m_titleInfo.scale = UserUtility::Lerp(m_titleInfo.scale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
 }

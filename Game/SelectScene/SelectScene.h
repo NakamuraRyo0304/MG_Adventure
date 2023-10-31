@@ -44,7 +44,7 @@ private:
 	std::mutex m_mutex;
 
 	// UI
-	std::unique_ptr<SelectUI> m_userInterface;
+	std::unique_ptr<SelectUI> m_selectUI;
 
 	// コイン使用演出
 	float m_useCoins;
@@ -92,7 +92,7 @@ public:
 	void Initialize() override;
 
 	// 更新
-	void Update(DirectX::Keyboard::State& keyState,DirectX::Mouse::State& mouseState) override;
+	void Update() override;
 
 	// 描画
 	void Draw() override;

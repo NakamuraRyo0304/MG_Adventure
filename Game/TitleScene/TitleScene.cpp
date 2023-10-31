@@ -63,16 +63,13 @@ void TitleScene::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="keyState">キーボードポインタ</param>
-/// <param name="mouseState">マウスポインタ</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void TitleScene::Update(Keyboard::State& keyState,Mouse::State& mouseState)
+void TitleScene::Update()
 {
-	// キー入力情報を取得する
-	GetSystemManager()->GetStateTrack()->Update(keyState);
-
-	// マウス情報を取得する
-	GetSystemManager()->GetMouseTrack()->Update(mouseState);
+	// インプットの更新
+	auto _key = Keyboard::Get().GetState();
+	GetSystemManager()->GetStateTrack()->Update(_key);
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
@@ -81,15 +78,16 @@ void TitleScene::Update(Keyboard::State& keyState,Mouse::State& mouseState)
 	GetSystemManager()->GetSoundManager()->Update();
 
 	// エスケープで終了
-	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+	if(GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
 
 	// 起動時のロゴの動き
 	m_logoMoveY = UserUtility::Lerp(m_logoMoveY, END_MOVE_POS, 0.1f);
 
-	// 決定していなければ選択を切り替える
+	// 選択項目を変更する
 	if (!is_startFlag)
 	{
-		// 選択項目を変更する
+		if (GetFadeValue() >= 0.7f) return;
+
 		if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
 			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right) ||
 			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::A) ||
@@ -100,11 +98,9 @@ void TitleScene::Update(Keyboard::State& keyState,Mouse::State& mouseState)
 			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 		}
 
-		// 最大まで回転したら回転をやめる
+		// 変更時の動き
 		is_accelerateFlag = m_accelerate >= MAX_ACCELERATE_TIME ? false : is_accelerateFlag;
-		// 回転フラグが立っていたら加算
 		m_accelerate += is_accelerateFlag ? 0.1f : 0.0f;
-		// 回転フラグが立っていなければ初期化する
 		m_accelerate = !is_accelerateFlag ? 0.0f : m_accelerate;
 	}
 
@@ -113,16 +109,12 @@ void TitleScene::Update(Keyboard::State& keyState,Mouse::State& mouseState)
 	{
 		// フェード中は処理しない
 		if (GetFadeValue() >= 0.7f) return;
-
 		is_startFlag = true;
-
-		// 決定音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
-	// 演出が終わったかどうか判定する
+	// セレクト
 	if (FlyStartObjects())
 	{
-		// Startを選んだらセレクトへ移行、Exitを選んだらゲームを終了
 		ChangeScene(is_menuFlag ? SCENE::SELECT : SCENE::ENDGAME);
 	}
 
@@ -145,8 +137,6 @@ void TitleScene::Draw()
 
 	// カメラ用行列
 	SimpleMath::Matrix _logoMat, _stageMat, _skyMat, _view, _projection;
-
-	//-------------------------------------------------------------------------------------//
 
 	// 移動、回転行列
 	SimpleMath::Matrix
@@ -268,14 +258,13 @@ void TitleScene::CreateWindowDependentResources()
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(_device, _context);
 
-	// 画面サイズの格納
-	float _width  =
-		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float _height =
-		static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
-
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, CAMERA_ANGLE);
+	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
+
+	// UIの初期化
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
+	m_titleUI = std::make_unique<TitleUI>();
+	m_titleUI->Create(GetSystemManager(), _device, GetScreenSize());
 
 	// モデルの作成---------------------------------------------------------------------------------
 
@@ -323,10 +312,6 @@ void TitleScene::CreateWindowDependentResources()
 			}
 		}
 	);
-
-	// UIの初期化
-	m_titleUI = std::make_unique<TitleUI>();
-	m_titleUI->Create(GetSystemManager(), _context, _device);
 }
 
 /// <summary>

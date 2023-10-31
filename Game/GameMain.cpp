@@ -98,12 +98,10 @@ void GameMain::Update()
 	m_fade->Update();
 
 	// キー入力情報を取得する
-	auto _kb = Keyboard::Get().GetState();
-	m_keyboardStateTracker->Update(_kb);
+	m_keyboardStateTracker->Update(Keyboard::Get().GetState());
 
 	// マウス入力情報を取得する
-	auto _ms = Mouse::Get().GetState();
-	m_mouseStateTracker->Update(_ms);
+	m_mouseStateTracker->Update(Mouse::Get().GetState());
 
 	// 次のシーンが設定されていたらシーン切り替え
 	if (m_nextScene != SCENE::NONE && m_fade->GetEndFlag())
@@ -119,7 +117,7 @@ void GameMain::Update()
 	if (m_nowScene != nullptr)
 	{
 		// シーンの更新処理
-		m_nowScene->Update(_kb, _ms);
+		m_nowScene->Update();
 
 		// フェードの値をセット
 		m_nowScene->SetFadeValue(m_fade->GetFadeNum());
@@ -246,6 +244,7 @@ void GameMain::CreateScene()
 	}
 
 	// 作成したシーンを初期化
+	m_nowScene->SetScreenSize({ static_cast<float>(m_screenWidth) , static_cast<float>(m_screenHeight) });
 	m_nowScene->Initialize();
 
 	// フェードイン

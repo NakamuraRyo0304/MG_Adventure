@@ -55,7 +55,7 @@ private:
 	Collider::BoxCollider is_hitCol;
 
 	// UI
-	std::unique_ptr<EditUI> m_userInterface;
+	std::unique_ptr<EditUI> m_editUI;
 
 	// クリアチェッカー
 	std::unique_ptr<ClearChecker> m_checker;
@@ -112,7 +112,7 @@ public:
 	void Initialize() override;
 
 	// 更新
-	void Update(DirectX::Keyboard::State& keyState,DirectX::Mouse::State& mouseState) override;
+	void Update() override;
 
 	// 描画
 	void Draw() override;

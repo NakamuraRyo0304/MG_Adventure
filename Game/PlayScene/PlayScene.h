@@ -83,7 +83,7 @@ private:
 	std::unique_ptr<PlayerBill> m_playerBill;
 
 	// タイマー表示とコイン表示
-	std::unique_ptr<PlayUI> m_userInterFace;
+	std::unique_ptr<PlayUI> m_playUI;
 
 	// サードパーソンカメラ
 	std::unique_ptr<ThirdPersonCamera> m_thirdCamera;
@@ -143,7 +143,7 @@ public:
 	void Initialize() override;
 
 	// 更新
-	void Update(DirectX::Keyboard::State& keyState, DirectX::Mouse::State& mouseState) override;
+	void Update() override;
 
 	// 描画
 	void Draw() override;

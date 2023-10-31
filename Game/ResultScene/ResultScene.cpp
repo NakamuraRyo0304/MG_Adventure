@@ -29,7 +29,6 @@
  /// <returns>なし</returns>
 ResultScene::ResultScene()
 	: IScene()					// 基底クラスの初期化
-	, m_windowSize{}			// ウィンドウサイズ
 	, m_coinNum{}				// コインの数
 	, m_clearTime{0.0f}			// クリアタイムを格納
 	, m_saveTime{0.0f}			// クリアタイムを保存する変数
@@ -73,18 +72,13 @@ void ResultScene::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="keyState">キーボードポインタ</param>
-/// <param name="mouseState">マウスポインタ</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void ResultScene::Update(Keyboard::State& keyState,	Mouse::State& mouseState)
+void ResultScene::Update()
 {
-	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
-
-	// キー入力情報を取得する
-	GetSystemManager()->GetStateTrack()->Update(keyState);
-
-	// マウス情報を取得する
-	GetSystemManager()->GetMouseTrack()->Update(mouseState);
+	// インプットの更新
+	auto _key = Keyboard::Get().GetState();
+	GetSystemManager()->GetStateTrack()->Update(_key);
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
@@ -118,11 +112,11 @@ void ResultScene::Update(Keyboard::State& keyState,	Mouse::State& mouseState)
 	}
 
 	// UIの更新
-	m_userInterface->Update(_timer, static_cast<int>(m_clearTime));
+	m_resultUI->Update(static_cast<int>(m_clearTime));
 	// 現在選択中のシーンをセット
-	m_userInterface->SetSelecting(m_selectingScene);
+	m_resultUI->SetSelecting(m_selectingScene);
 	// 獲得コイン数をセット
-	m_userInterface->SetCoins(m_coinNum);
+	m_resultUI->SetCoins(m_coinNum);
 
 	// Spaceキーでシーン切り替え
 	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
@@ -149,7 +143,7 @@ void ResultScene::Update(Keyboard::State& keyState,	Mouse::State& mouseState)
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
 	// エスケープで終了
-	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+if(GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
 }
 
 /// <summary>
@@ -181,7 +175,7 @@ void ResultScene::Draw()
 	m_blocks->Render(_context, _states, _view, _projection, _timer, SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f });
 
 	// UIの表示
-	m_userInterface->Render(GetFadeValue());
+	m_resultUI->Render(GetFadeValue());
 }
 
 
@@ -196,7 +190,7 @@ void ResultScene::Finalize()
 	m_blocks->Finalize();
 
 	// UIの後処理
-	m_userInterface->Finalize();
+	m_resultUI->Finalize();
 }
 
 /// <summary>
@@ -213,15 +207,13 @@ void ResultScene::CreateWindowDependentResources()
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(_device, _context);
 
-	// 画面サイズの格納
-	float _width  = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float _height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
-
-	// ウィンドウサイズを取得
-	m_windowSize = SimpleMath::Vector2{ _width,_height };
-
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, 45.0f);
+	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, 45.0f);
+
+	// UIの作成
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
+	m_resultUI = std::make_unique<ResultUI>();
+	m_resultUI->Create(GetSystemManager(), _device, GetScreenSize());
 
 	// ブロックの作成
 	m_blocks = std::make_unique<Blocks>();
@@ -246,11 +238,6 @@ void ResultScene::CreateWindowDependentResources()
 		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo")),
 		m_blocks->GRAVITY
 	);
-
-	// UIの作成
-	m_userInterface = std::make_unique<ResultUI>(GetSystemManager(), _context, _device);
-	m_userInterface->Initialize();
-
 }
 
 /// <summary>

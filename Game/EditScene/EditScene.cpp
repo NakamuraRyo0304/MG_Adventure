@@ -71,7 +71,7 @@ void EditScene::Initialize()
 	CreateWindowDependentResources();
 
 	// カメラ視点移動を有効にする
-	GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
+	GetSystemManager()->GetCamera()->SetEagleMode(m_editUI->GetCameraFlag());
 
 	// 変数の初期化
 	SetSceneValues();
@@ -80,43 +80,42 @@ void EditScene::Initialize()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="keyState">キーボードポインタ</param>
-/// <param name="mouseState">マウスポインタ</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void EditScene::Update(Keyboard::State& keyState,Mouse::State& mouseState)
+void EditScene::Update()
 {
-	// キー入力情報を取得する
-	GetSystemManager()->GetStateTrack()->Update(keyState);
-
-	// マウス情報を取得する
-	GetSystemManager()->GetMouseTrack()->Update(mouseState);
+	// インプットの更新
+	auto _key = Keyboard::Get().GetState();
+	auto _mouse = Mouse::Get().GetState();
+	GetSystemManager()->GetStateTrack()->Update(_key);
+	GetSystemManager()->GetMouseTrack()->Update(_mouse);
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
 	// レイの更新
-	GetSystemManager()->GetRayCast()->Update(mouseState);
+	GetSystemManager()->GetRayCast()->Update(_mouse);
 
 	// UIの処理
-	m_userInterface->Update(mouseState);
+	m_editUI->Update(_mouse);
 
 	// マウスカーソルの位置を更新
-	m_mouseCursor->Update(SimpleMath::Vector2{ static_cast<float>(mouseState.x),static_cast<float>(mouseState.y) });
+	m_mouseCursor->Update(SimpleMath::Vector2{ static_cast<float>(_mouse.x),static_cast<float>(_mouse.y) });
 
 	// エスケープで終了
-	GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape) ? ChangeScene(SCENE::ENDGAME) : void();
+	if(GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
 
 	// サウンド
 	auto& _sound = GetSystemManager()->GetSoundManager();
 
 	// 選択しているオブジェクトを格納
-	m_nowState = m_userInterface->GetNowState();
+	m_nowState = m_editUI->GetNowState();
 
 	// 編集の取り消し等処理
 	DoUndoRedo();
 
 	// セーブフラグがたったらファイルを保存
-	if (m_userInterface->GetSaveFlag() &&
+	if (m_editUI->GetSaveFlag() &&
 		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		// 要素チェックして保存可能なら実行
@@ -128,7 +127,7 @@ void EditScene::Update(Keyboard::State& keyState,Mouse::State& mouseState)
 	}
 
 	// オープンフラグがたったらファイルを開く
-	if (m_userInterface->GetOpenFlag() &&
+	if (m_editUI->GetOpenFlag() &&
 		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
@@ -144,18 +143,18 @@ void EditScene::Update(Keyboard::State& keyState,Mouse::State& mouseState)
 	{
 		// インターフェースでカメラのフラグを取得
 		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
-		m_userInterface->SetCameraFlag(!m_userInterface->GetCameraFlag());
-		GetSystemManager()->GetCamera()->SetEagleMode(m_userInterface->GetCameraFlag());
+		m_editUI->SetCameraFlag(!m_editUI->GetCameraFlag());
+		GetSystemManager()->GetCamera()->SetEagleMode(m_editUI->GetCameraFlag());
 	}
 
 	// カメラモードじゃなければ編集できる
-	if (not m_userInterface->GetCameraFlag())
+	if (not m_editUI->GetCameraFlag())
 	{
 		EditMap();
 	}
 
 	// ボタンクリックでセレクトに戻る
-	if (m_userInterface->GetBackSelectFlag())
+	if (m_editUI->GetBackSelectFlag())
 	{
 		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 		ChangeScene(SCENE::SELECT);
@@ -236,7 +235,7 @@ void EditScene::Draw()
 	m_skyDomeModel->Draw(_context, _states, _skyMat, _view, _projection);
 
 	// 画像の描画
-	m_userInterface->Render();
+	m_editUI->Render();
 
 	// マウスカーソルの描画
 	m_mouseCursor->Render();
@@ -316,20 +315,16 @@ void EditScene::CreateWindowDependentResources()
 	// メイクユニーク
 	GetSystemManager()->CreateUnique(_device, _context);
 
-	// 画面サイズの格納
-	float _width = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().right);
-	float _height = static_cast<float>(GetSystemManager()->GetDeviceResources()->GetOutputSize().bottom);
+	// カメラの設定
+	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
 
 	// UIの初期化
-	m_userInterface = std::make_unique<EditUI>();
+	m_editUI = std::make_unique<EditUI>();
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
-	m_userInterface->Initialize(GetSystemManager(), _device);
-
-	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(_width, _height, CAMERA_ANGLE);
+	m_editUI->Create(GetSystemManager(), _device, GetScreenSize());
 
 	// レイが及ぶ範囲を設定
-	GetSystemManager()->GetRayCast()->SetScreenSize(_width, _height);
+	GetSystemManager()->GetRayCast()->SetScreenSize(GetScreenSize().x, GetScreenSize().y);
 
 	// モデルを作成する
 	m_grassModel = ModelFactory::GetCreateModel(		// 草ブロック
