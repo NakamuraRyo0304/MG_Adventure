@@ -11,11 +11,7 @@
 
 #include "Fade.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="speed">フェードの速度</param>
- /// <returns>なし</returns>
+// コンストラクタ
 Fade::Fade(float speed)
 	: m_fadeNum{}			// フェードカウンタ
 	, m_fadeSpeed{speed}	// フェード速度
@@ -26,20 +22,12 @@ Fade::Fade(float speed)
 	m_fadeNum = MAX_NUM;
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 Fade::~Fade()
 {
 }
 
-/// <summary>
-/// 初期化
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 初期化処理
 void Fade::Initialize()
 {
 	// トランジションを作成
@@ -47,11 +35,7 @@ void Fade::Initialize()
 	m_transition->Create();
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void Fade::Update()
 {
 	// フェードが終わっていたら処理しない
@@ -83,11 +67,7 @@ void Fade::Update()
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 描画処理
 void Fade::Draw()
 {
 	// フェードが終わっていたら描画しない
@@ -97,11 +77,7 @@ void Fade::Draw()
 	m_transition->Render(m_fadeNum);
 }
 
-/// <summary>
-/// フェードインを開始する関数
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// フェードインスタート
 void Fade::SetFadeIn()
 {
 	Reset();
@@ -110,11 +86,7 @@ void Fade::SetFadeIn()
 	m_fadeNum = MAX_NUM;
 }
 
-/// <summary>
-/// フェードアウトを開始する関数
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// フェードアウトスタート
 void Fade::SetFadeOut()
 {
 	Reset();
@@ -123,11 +95,7 @@ void Fade::SetFadeOut()
 	m_fadeNum = MIN_NUM;
 }
 
-/// <summary>
-/// フェード処理を行う前に呼び出す関数
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// リセット関数
 void Fade::Reset()
 {
 	m_fadeNum = MIN_NUM;

@@ -56,24 +56,48 @@ public:
 	Transition();
 	~Transition();
 
-	// リソースの作成
+	/// <summary>
+	/// リソースの作成
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Create();
 
-	// 描画
+	/// <summary>
+	/// 描画関数
+	/// </summary>
+	/// <param name="timer">タイマー</param>
+	/// <returns>なし</returns>
 	void Render(const float& timer);
 
-	// テクスチャの変更
+	/// <summary>
+	/// テクスチャを変更(１回のみ処理が走る)
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CycleTextures();
 
 private:
 
-	// 画像読み込み
+	/// <summary>
+	/// 画像読み込み
+	/// </summary>
+	/// <param name="path">画像パス</param>
+	/// <returns>なし</returns>
 	void LoadTexture(const wchar_t* path);
 
-	// シェーダーの作成
+	/// <summary>
+	/// シェーダーの作成
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CreateShader();
 
-	// コンスタントバッファの作成
+	/// <summary>
+	/// コンスタントバッファ作成
+	/// </summary>
+	/// <param name="device">デバイスポインタ</param>
+	/// <returns>なし</returns>
 	void CreateConstBuffer(ID3D11Device1*& device);
 };
 

@@ -21,11 +21,7 @@ const float Camera::DEFAULT_CAMERA_SPEED = 0.05f;
 const int Camera::MAX_SCROLL_VALUE = 1640;
 const int Camera::MIN_SCROLL_VALUE = -1440;
 
-/// <summary>
-/// コンストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// コンストラクタ
 Camera::Camera()
 	: m_screenHeight{}			// 画面の高さ
 	, m_screenWidth{}			// 画面の幅
@@ -48,20 +44,12 @@ Camera::Camera()
 	m_prevMouse.eagle = false;
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 Camera::~Camera()
 {
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void Camera::Update()
 {
 	// キーボードのインスタンス取得
@@ -105,12 +93,7 @@ void Camera::Update()
 	m_angle += _moveVal;
 }
 
-/// <summary>
-/// マウスのドラッグした距離を計算
-/// </summary>
-/// <param name="x">スクリーン座標X</param>
-/// <param name="y">スクリーン座標Y</param>
-/// <returns>なし</returns>
+// マウスのドラッグ距離を計算
 void Camera::DraggedDistance(int x, int y)
 {
 	// マウスポインタの前回からの変位
@@ -134,13 +117,7 @@ void Camera::DraggedDistance(int x, int y)
 
 }
 
-/// <summary>
-/// オブジェクトの振動処理
-/// </summary>
-/// <param name="duration">揺れ継続時間</param>
-/// <param name="tremor">揺れ幅</param>
-/// <param name="pos">対象オブジェのポジション</param>
-/// <returns>なし</returns>
+// オブジェクトを揺らす
 void Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
 {
 	int _counta = 0;
@@ -163,13 +140,7 @@ void Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
 }
 
 
-/// <summary>
-/// 射影行列を作成
-/// </summary>
-/// <param name="width">画面横幅</param>
-/// <param name="height">画面縦幅</param>
-/// <param name="angle">カメラ画角</param>
-/// <returns>射影行列</returns>
+// プロジェクション行列を作成
 const SimpleMath::Matrix& Camera::CreateProjection(float width, float height, float angle)
 {
 	// 画面サイズとアングルの保存
@@ -204,11 +175,7 @@ const SimpleMath::Matrix& Camera::CreateProjection(float width, float height, fl
 	return m_projection = _projection;
 }
 
-/// <summary>
-/// ビュー行列計算
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// ビュー行列を計算
 void Camera::CalculateViewMatrix()
 {
 	// ビュー行列を算出する
@@ -239,11 +206,7 @@ void Camera::CalculateViewMatrix()
 	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLE_X_MIN, ANGLE_X_MAX);
 }
 
-/// <summary>
-/// カメラの拡大率の変更
-/// </summary>
-/// <param name="state">マウスのステート</param>
-/// <returns>なし</returns>
+// 拡大率変更
 void Camera::RollWheelToRate(Mouse::State state)
 {
 	// マウスホイールのスクロール値の差分を計算

@@ -15,9 +15,7 @@
 
 #include "Transition.h"
 
-/// <summary>
 /// インプットレイアウトの設定
-/// </summary>
 const std::vector<D3D11_INPUT_ELEMENT_DESC> Transition::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -25,30 +23,18 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Transition::INPUT_LAYOUT =
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3) + sizeof(SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 Transition::Transition()
 	: m_pDR{ DX::DeviceResources::GetInstance() }
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 Transition::~Transition()
 {
 }
 
-/// <summary>
-/// リソースの作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 画像の作成
 void Transition::Create()
 {
 	// 画像の読み込み（読み込み失敗でnullptr)
@@ -64,11 +50,7 @@ void Transition::Create()
 	m_states = std::make_unique<CommonStates>(m_pDR->GetD3DDevice());
 }
 
-/// <summary>
-/// 画像読み込み
-/// </summary>
-/// <param name="path">画像パス</param>
-/// <returns>なし</returns>
+// 画像読み込み
 void Transition::LoadTexture(const wchar_t* path)
 {
 	// 画像を変更する
@@ -77,11 +59,7 @@ void Transition::LoadTexture(const wchar_t* path)
 	m_texture = texture;
 }
 
-/// <summary>
-/// シェーダーの作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// シェーダー作成
 void Transition::CreateShader()
 {
 	// デバイス
@@ -149,11 +127,7 @@ void Transition::CreateShader()
 	CreateConstBuffer(_device);
 }
 
-/// <summary>
-/// コンスタントバッファ作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// コンスタントバッファの作成
 void Transition::CreateConstBuffer(ID3D11Device1*& device)
 {
 	// コンスタントバッファ定義
@@ -178,11 +152,7 @@ void Transition::CreateConstBuffer(ID3D11Device1*& device)
 	device->CreateBuffer(&_buffer, nullptr, &m_constBuffer);
 }
 
-/// <summary>
-/// 描画
-/// </summary>
-/// <param name="timer">タイマー</param>
-/// <returns>なし</returns>
+// 描画関数
 void Transition::Render(const float& timer)
 {
 	auto context = m_pDR->GetD3DDeviceContext();
@@ -251,11 +221,7 @@ void Transition::Render(const float& timer)
 	context->PSSetShader(nullptr, nullptr, 0);
 }
 
-/// <summary>
-/// テクスチャを変更(１回のみ処理が走る)
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// テクスチャの変更関数
 void Transition::CycleTextures()
 {
 	std::random_device rd;

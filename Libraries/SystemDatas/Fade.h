@@ -14,7 +14,6 @@ class Fade
 {
 private:
 	// トランジション
-
 	std::unique_ptr<Transition> m_transition;
 
 private:
@@ -42,39 +41,85 @@ private:
 	const float CLAMP_NUM = 255.0f;
 
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="speed">フェードの速度</param>
+	/// <returns>なし</returns>
 	Fade(float speed);
 	~Fade();
 
-	// 初期化処理
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Initialize();
 
-	// 更新処理
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update();
 
-	// 描画処理
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Draw();
 
-	// フェードインを開始する関数
+	/// <summary>
+	/// フェードインを開始する関数
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void SetFadeIn();
 
-	// フェードアウトを開始する関数
+	/// <summary>
+	/// フェードアウトを開始する関数
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void SetFadeOut();
 
-	// フェードアウトの値を返す
+	/// <summary>
+	/// フェードアウトの値を返す
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>フェードアウトの値</returns>
 	const float& GetMaxValue() { return MAX_NUM; }
 
-	// 値のリセットをかける関数
-	void Reset();
-
-	// フェード終了を判定する関数
+	/// <summary>
+	/// フェード終了判定
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>フェード終了でTrue</returns>
 	const bool& GetEndFlag() { return is_endFlag; }
 
-	// フェードの数値の取得関数
+	/// <summary>
+	/// フェードの数値の取得関数
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>フェードの値</returns>
 	const float& GetFadeNum() { return m_fadeNum; }
 
-	// フェード速度セッター
+	/// <summary>
+	/// フェード速度セッター
+	/// </summary>
+	/// <param name="speed">フェード速度</param>
+	/// <returns>なし</returns>
 	void SetFadeSpeed(float speed) { m_fadeSpeed = speed; }
 
+private:
+
+	/// <summary>
+	/// フェード処理を行う前に呼び出す関数
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void Reset();
 };
 
 #endif // FADE

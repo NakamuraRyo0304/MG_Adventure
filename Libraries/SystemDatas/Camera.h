@@ -59,46 +59,106 @@ public:
 	Camera();
 	~Camera();
 
-	// 更新処理
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update();
 
-	// オブジェクトを揺らす処理
+	/// <summary>
+	/// オブジェクトの振動処理
+	/// </summary>
+	/// <param name="duration">揺れ継続時間</param>
+	/// <param name="tremor">揺れ幅</param>
+	/// <param name="pos">対象オブジェのポジション</param>
+	/// <returns>なし</returns>
 	void ShakeObject(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
 
 
 private:
-	// マウスの移動距離の計算
+	/// <summary>
+	/// マウスのドラッグした距離を計算
+	/// </summary>
+	/// <param name="x">スクリーン座標X</param>
+	/// <param name="y">スクリーン座標Y</param>
+	/// <returns>なし</returns>
 	void DraggedDistance(int x, int y);
 
-	// ビュー行列を計算する
+	/// <summary>
+	/// ビュー行列計算
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CalculateViewMatrix();
 
-	// マウスホイールの拡縮処理
+	/// <summary>
+	/// カメラの拡大率の変更
+	/// </summary>
+	/// <param name="state">マウスのステート</param>
+	/// <returns>なし</returns>
 	void RollWheelToRate(DirectX::Mouse::State state);
 
 //--------------------------------------------------------//
 //アクセサ                                                //
 //--------------------------------------------------------//
 public:
-	// ビュー行列を取得する
+	/// <summary>
+	/// ビュー行列を取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	const DirectX::SimpleMath::Matrix& GetView() { return m_view; }
 
-	// カメラの座標を取得する
+	/// <summary>
+	/// カメラの座標を取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>カメラの目線の位置</returns>
 	const DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
 
-	// カメラの座標移動用セッター(指定座標に移動)
+	/// <summary>
+	/// カメラの目線の位置を変更する
+	/// </summary>
+	/// <param name="pos">移動量</param>
+	/// <returns>なし</returns>
 	void AddEyePosition(const DirectX::SimpleMath::Vector3& pos){ m_addPos = pos;}
 
-	// ターゲットを取得する
+	/// <summary>
+	/// カメラの注視点を取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>注視点</returns>
 	const DirectX::SimpleMath::Vector3& GetTarget() { return m_target; }
 
-	// 射影行列の取得
+	/// <summary>
+	/// 射影行列を作成
+	/// </summary>
+	/// <param name="width">画面横幅</param>
+	/// <param name="height">画面縦幅</param>
+	/// <param name="angle">カメラ画角</param>
+	/// <returns>射影行列</returns>
 	const DirectX::SimpleMath::Matrix& CreateProjection(float width, float height,float angle = 45.0f);
+
+	/// <summary>
+	/// 射影行列を取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>射影行列</returns>
 	const DirectX::SimpleMath::Matrix& GetProjection() { return m_projection; }
 
-	// マウスドラッグで視点を回転
+	/// <summary>
+	/// マウスドラッグで視点を回転するモードを切り替える
+	/// </summary>
+	/// <param name="flag">ドラッグで回転するかをフラグでセット</param>
+	/// <returns>なし</returns>
 	void SetEagleMode(const bool& flag = true) { is_eagleMode = flag; }
-	// 十字キーで視点を回転
+
+	/// <summary>
+	/// 十字キーで視点を回転するモードを切り替える
+	/// </summary>
+	/// <param name="flag">十字キーで視点を回転するかをフラグでセット</param>
+	/// <returns>なし</returns>
 	void SetArrowMode(const bool& flag = true) { is_allowMode = flag; }
 
 };
