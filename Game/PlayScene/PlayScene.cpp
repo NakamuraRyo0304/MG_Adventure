@@ -417,7 +417,7 @@ void PlayScene::CreateWindowDependentResources()
 	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
 
 	// UI�̍쐬
-	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
 	m_playUI = std::make_unique<PlayUI>();
 	m_playUI->Create(GetSystemManager(), _device, GetScreenSize());
 }

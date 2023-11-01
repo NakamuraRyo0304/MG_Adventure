@@ -9,11 +9,7 @@
 
 #include "DrawSprite.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 DrawSprite::DrawSprite()
 	: m_spriteBatch{}	// スプライトバッチ
 	, m_textures{}		// テクスチャ配列
@@ -22,36 +18,24 @@ DrawSprite::DrawSprite()
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 DrawSprite::~DrawSprite()
 {
 	m_textures.clear();
 	m_SRV.clear();
 }
 
-/// <summary>
-/// スプライトバッチを作成
-/// </summary>
-/// <param name="context">ID3D11DeviceContext1ポインタ</param>
-/// <returns>なし</returns>
-void DrawSprite::MakeSpriteBatch(ID3D11DeviceContext1* context)
+// スプライトバッチを作成
+void DrawSprite::MakeSpriteBatch()
 {
-	m_spriteBatch = std::make_unique<SpriteBatch>(context);
+	m_spriteBatch = std::make_unique<SpriteBatch>(DX::DeviceResources::GetInstance()->GetD3DDeviceContext());
 }
 
-/// <summary>
-/// 画像を登録する関数
-/// </summary>
-/// <param name="key">登録キー(これを指定して呼び出す)</param>
-/// <param name="path">画像のパス(L"Resources/Textures/....dds)拡張子は「.dds」</param>
-/// <param name="device">ID3D11Deviceポインタ</param>
-/// <returns>なし</returns>
-void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11Device* device)
+//  画像を登録する関数
+void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path)
 {
+	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+
 	// 画像の追加
 	m_textures.emplace(key, path);
 
@@ -59,7 +43,7 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 	{
 		// 画像の登録
 		CreateDDSTextureFromFile(
-			device,										// デバイスポインタ
+			_device,										// デバイスポインタ
 			_it->second,								// テクスチャのパス
 			nullptr,									// 特性は識別しない
 			m_SRV[_it->first].ReleaseAndGetAddressOf()	// 対応するキー番号に登録
@@ -70,16 +54,7 @@ void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path ,ID3D11D
 	m_rotate.emplace(key, 0.0f);
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="key">キー</param>
-/// <param name="pos">表示座標</param>
-/// <param name="color">色</param>
-/// <param name="rate">拡大率</param>
-/// <param name="origin">中心位置</param>
-/// <param name="rect">切り取り位置</param>
-/// <returns>なし</returns>
+// 画像を描画する
 void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos,
 	SimpleMath::Vector4 color, SimpleMath::Vector2 rate, SimpleMath::Vector2 origin, RECT_U rect)
 {
@@ -106,12 +81,7 @@ void DrawSprite::DrawTexture(const wchar_t* key, SimpleMath::Vector2 pos,
 	m_spriteBatch->End();
 }
 
-/// <summary>
-/// 回転量セッター
-/// </summary>
-/// <param name="key">登録キー</param>
-/// <param name="rotate">回転量</param>
-/// <returns>なし</returns>
+// 回転量セッター
 void DrawSprite::CreateRotation(const wchar_t* key, const float& rotate)
 {
 	// 回転量を格納

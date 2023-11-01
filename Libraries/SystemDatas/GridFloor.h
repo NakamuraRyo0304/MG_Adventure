@@ -12,9 +12,6 @@
 
 namespace Debug
 {
-	/// <summary>
-	/// デバッグ表示用のグリッド床を表示するクラス
-	/// </summary>
 	class GridFloor
 	{
 		// エフェクト
@@ -33,10 +30,13 @@ namespace Debug
 		int m_divsX, m_divsY;
 
 	public:
-		// コンストラクタ
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		/// <param name="divsX"></param>
+		/// <param name="divsY"></param>
+		/// <returns>なし</returns>
 		GridFloor(
-			ID3D11Device1* device,
-			ID3D11DeviceContext1* context,
 			const int divsX,	// 分割数X
 			const int divsY		// 分割数Y
 		);
@@ -44,9 +44,15 @@ namespace Debug
 		// デストラクタ
 		~GridFloor();
 
-		// 描画処理
+		/// <summary>
+		/// 描画関数
+		/// </summary>
+		/// <param name="states">D3Dレンダリング状態オブジェクト</param>
+		/// <param name="view">ビュー行列</param>
+		/// <param name="proj">射影行列</param>
+		/// <param name="color">グリッドの色</param>
+		/// <returns>なし</returns>
 		void Draw(
-			ID3D11DeviceContext1* context,
 			DirectX::CommonStates* states,			// D3Dレンダリング状態オブジェクト
 			const DirectX::SimpleMath::Matrix view,	// ビュー行列
 			const DirectX::SimpleMath::Matrix proj,	// 射影行列

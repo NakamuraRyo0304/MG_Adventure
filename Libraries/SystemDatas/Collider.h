@@ -41,26 +41,52 @@ namespace Collider
 		BoxCollider();
 		~BoxCollider() = default;
 
-		// 押し戻し処理 引数：&動かすやつ,動かないやつ,大きさ１,大きさ２
+		/// <summary>
+		/// 押し戻し処理
+		/// </summary>
+		/// <param name= moveObj">押し戻したいオブジェ</param>
+		/// <param name= constObj">ぶつかる対象オブジェ</param>
+		/// <param name= sz1">大きさ</param>
+		/// <param name= sz2">大きさ</param>
+		/// <returns>なし</returns>
 		void PushBox(DirectX::SimpleMath::Vector3* moveObj,
 		       const DirectX::SimpleMath::Vector3& constObj,
 		       const DirectX::SimpleMath::Vector3& sz1,
 		       const DirectX::SimpleMath::Vector3& sz2);
 
-		// 当たり判定のみ取る 引数：物体A、物体Bの座標、物体A、物体Bのサイズ
+		/// <summary>
+		/// 当たっているかどうかのみ判定する(面が格納される)
+		/// </summary>
+		/// <param name= moveObj">押し戻したいオブジェ(動いているもの)</param>
+		/// <param name= constObj">ぶつかる対象オブジェ(より強いもの)</param>
+		/// <param name= sz1">大きさ</param>
+		/// <param name= sz2">大きさ</param>
+		/// <returns>なし</returns>
 		void PushBox(const DirectX::SimpleMath::Vector3& moveObj,
 					 const DirectX::SimpleMath::Vector3& constObj,
 					 const DirectX::SimpleMath::Vector3& sz1,
 					 const DirectX::SimpleMath::Vector3& sz2);
 
-		// 当った位置を返す
+		/// <summary>
+		/// 面の判定
+		/// </summary>
+		/// <param name="引数無し"></param>
+		/// <returns>当たっている面を返す</returns>
 		const unsigned int& GetHitFace() { return m_hitFace; }
 
-		// 当ったか判定
+		/// <summary>
+		/// 当たっているか判定
+		/// </summary>
+		/// <param name="引数無し"></param>
+		/// <returns>当たっていたらTrueを返す</returns>
 		const bool& IsHitBoxFlag() { return is_hitFlag; }
 
-		// 押し戻し処理をするか
-		void SetPushMode(bool flag) { is_pushMode = flag; }
+		/// <summary>
+		/// 押し戻しを有効にする関数
+		/// </summary>
+		/// <param name="flag">有効にする場合Trueにする</param>
+		/// <returns>なし</returns>
+		void SetPushMode(const bool& flag) { is_pushMode = flag; }
 	};
 
 	// スフィアコライダークラス
@@ -76,15 +102,30 @@ namespace Collider
 		SphereCollider();
 		~SphereCollider() = default;
 
-		// 当たり判定と押し戻し
+		/// <summary>
+		/// 球の当たり判定
+		/// </summary>
+		/// <param name="pos1">座標</param>
+		/// <param name="pos2">座標</param>
+		/// <param name="radius1">半径</param>
+		/// <param name="radius2">半径</param>
+		/// <returns>なし</returns>
 		void PushSphere(DirectX::SimpleMath::Vector3& pos1,
 			            DirectX::SimpleMath::Vector3& pos2,
 			            float radius1,float radius2);
 
-		// 当っているかどうか判定する
+		/// <summary>
+		/// 当たっているか判定する
+		/// </summary>
+		/// <param name="引数無し"></param>
+		/// <returns>当たっていたらTrueを返す</returns>
 		const bool& IsHitSphereFlag() { return is_hitFlag; }
 
-		// 押し戻し処理をするか
+		/// <summary>
+		/// 押し戻しを有効にする関数
+		/// </summary>
+		/// <param name="flag">Trueで押し戻しを有効にする</param>
+		/// <returns>なし</returns>
 		void SetPushMode(const bool& flag) { is_pushMode = flag; }
 
 	};
@@ -97,7 +138,14 @@ namespace Collider
 		AABBCollider();
 		~AABBCollider() = default;
 
-		// 当っているかどうかを返す
+		/// <summary>
+		/// 二次元四角形の判定
+		/// </summary>
+		/// <param name="pos1">座標１</param>
+		/// <param name="pos2">座標２</param>
+		/// <param name="sz1">サイズ１</param>
+		/// <param name="sz2">サイズ２</param>
+		/// <returns>当たっていたらTrueを返す</returns>
 		bool IsHitAABB2D(const DirectX::SimpleMath::Vector2& pos1,
 						 const DirectX::SimpleMath::Vector2& pos2,
 						 const DirectX::SimpleMath::Vector2& sz1,

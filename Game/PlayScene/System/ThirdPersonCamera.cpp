@@ -26,9 +26,9 @@ ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
 	// ドロースプライト
 	auto& _sp = m_system->GetDrawSprite();
 
-	_sp->MakeSpriteBatch(context);
+	_sp->MakeSpriteBatch();
 
-	_sp->AddTextureData(L"Adhesion", L"Resources/Textures/PLAY_COMMON/Adhesion.dds", device);
+	_sp->AddTextureData(L"Adhesion", L"Resources/Textures/PLAY_COMMON/Adhesion.dds");
 }
 
 /// <summary>

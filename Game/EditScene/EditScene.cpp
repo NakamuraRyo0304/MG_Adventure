@@ -317,7 +317,7 @@ void EditScene::CreateWindowDependentResources()
 
 	// UI‚Ì‰Šú‰»
 	m_editUI = std::make_unique<EditUI>();
-	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
 	m_editUI->Create(GetSystemManager(), _device, GetScreenSize());
 
 	// ƒŒƒC‚ª‹y‚Ô”ÍˆÍ‚ğİ’è

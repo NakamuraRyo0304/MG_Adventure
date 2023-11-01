@@ -1,6 +1,6 @@
 /*
  *	@File	Collider.cpp
- *	@Brief	箱同士の当たり判定。
+ *	@Brief	当たり判定クラス
  *	@Date	2023-04-19
  *  @Author NakamuraRyo
  */
@@ -9,11 +9,7 @@
 
 #include "Collider.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 Collider::BoxCollider::BoxCollider()
 	: m_hitFace{ HIT_FACE::NONE }		// 当たっている面
 	, is_hitFlag{ false }				// 判定フラグ
@@ -21,14 +17,7 @@ Collider::BoxCollider::BoxCollider()
 {
 }
 
-/// <summary>
-/// 押し戻し処理
-/// </summary>
-/// <param name= moveObj">押し戻したいオブジェ</param>
-/// <param name= constObj">ぶつかる対象オブジェ</param>
-/// <param name= sz1">大きさ</param>
-/// <param name= sz2">大きさ</param>
-/// <returns>なし</returns>
+// 押し戻し判定
 void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 			                        const SimpleMath::Vector3& constObj,
 			                        const SimpleMath::Vector3& sz1,
@@ -94,14 +83,7 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 	(*moveObj).z = _maxRatio == _backRatio  ? constObj.z - (sz1.z + sz2.z) / 2 : (*moveObj).z;
 }
 
-/// <summary>
-/// 当たっているかどうかのみ判定する(面が格納される)
-/// </summary>
-/// <param name= moveObj">押し戻したいオブジェ(動いているもの)</param>
-/// <param name= constObj">ぶつかる対象オブジェ(より強いもの)</param>
-/// <param name= sz1">大きさ</param>
-/// <param name= sz2">大きさ</param>
-/// <returns>なし</returns>
+// ヒット判定のみ返す
 void Collider::BoxCollider::PushBox(const SimpleMath::Vector3& moveObj,
 									const SimpleMath::Vector3& constObj,
 									const SimpleMath::Vector3& sz1,
@@ -122,11 +104,7 @@ void Collider::BoxCollider::PushBox(const SimpleMath::Vector3& moveObj,
 	is_hitFlag = true;
 }
 
-/// <summary>
-/// コンストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// コンストラクタ
 Collider::SphereCollider::SphereCollider() :
 	is_hitFlag{},
 	is_pushMode{}
@@ -135,14 +113,7 @@ Collider::SphereCollider::SphereCollider() :
 	is_pushMode = false;
 }
 
-/// <summary>
-/// 球の当たり判定
-/// </summary>
-/// <param name="pos1">座標</param>
-/// <param name="pos2">座標</param>
-/// <param name="radius1">半径</param>
-/// <param name="radius2">半径</param>
-/// <returns>なし</returns>
+// 球の当たり判定
 void Collider::SphereCollider::PushSphere(SimpleMath::Vector3& pos1,
 	                                      SimpleMath::Vector3& pos2,
 	                                      float radius1, float radius2)

@@ -9,27 +9,27 @@
 #include "pch.h"
 #include "GridFloor.h"
 
-//-------------------------------------------------------------------
 // コンストラクタ
-//-------------------------------------------------------------------
-Debug::GridFloor::GridFloor(ID3D11Device1* device, ID3D11DeviceContext1* context, const int divsX, const int divsY)
+Debug::GridFloor::GridFloor(const int divsX, const int divsY)
 	: m_divsX(divsX)
 	, m_divsY(divsY)
 {
+	auto _pDR = DX::DeviceResources::GetInstance();
+
 	// エフェクトの生成
-	m_basicEffect = std::make_unique<BasicEffect>(device);
+	m_basicEffect = std::make_unique<BasicEffect>(_pDR->GetD3DDevice());
 
 	// 頂点カラーの設定
 	m_basicEffect->SetVertexColorEnabled(true);
 
 	// プリミティブバッチの生成
-	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(context);
+	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(_pDR->GetD3DDeviceContext());
 
 	// インプットレイアウトの設定
 	void const* _shaderByteCode;
 	size_t _byteCodeLength;
 	m_basicEffect->GetVertexShaderBytecode(&_shaderByteCode, &_byteCodeLength);
-	device->CreateInputLayout(
+	_pDR->GetD3DDevice()->CreateInputLayout(
 		VertexPositionColor::InputElements,
 		VertexPositionColor::InputElementCount,
 		_shaderByteCode,
@@ -38,28 +38,26 @@ Debug::GridFloor::GridFloor(ID3D11Device1* device, ID3D11DeviceContext1* context
 	);
 }
 
-//-------------------------------------------------------------------
 // デストラクタ
-//-------------------------------------------------------------------
 Debug::GridFloor::~GridFloor()
 {
 }
 
-//-------------------------------------------------------------------
-// 描画
-//-------------------------------------------------------------------
-void Debug::GridFloor::Draw(ID3D11DeviceContext1* context, CommonStates* states, const SimpleMath::Matrix view, const SimpleMath::Matrix proj, const GXMVECTOR color)
+// 描画関数
+void Debug::GridFloor::Draw(CommonStates* states, const SimpleMath::Matrix view, const SimpleMath::Matrix proj, const GXMVECTOR color)
 {
+	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
+
 	SimpleMath::Matrix _world = SimpleMath::Matrix::Identity;
 
-	context->IASetInputLayout(m_inputLayout.Get());
-	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	_context->IASetInputLayout(m_inputLayout.Get());
+	_context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
+	_context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
 	m_basicEffect->SetWorld(_world);
 	m_basicEffect->SetView(view);
 	m_basicEffect->SetProjection(proj);
-	m_basicEffect->Apply(context);
+	m_basicEffect->Apply(_context);
 
 	m_primitiveBatch->Begin();
 

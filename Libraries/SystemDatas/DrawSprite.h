@@ -42,20 +42,50 @@ public:
 	DrawSprite();
 	~DrawSprite();
 
-	// スプライトバッチの初期化
-	void MakeSpriteBatch(ID3D11DeviceContext1* context);
+	/// <summary>
+	/// スプライトバッチの作成
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void MakeSpriteBatch();
 
-	// 画像を登録する
-	void AddTextureData(const wchar_t* key, const wchar_t* path, ID3D11Device* device);
+	/// <summary>
+	/// 画像を登録する関数
+	/// </summary>
+	/// <param name="key">登録キー(これを指定して呼び出す)</param>
+	/// <param name="path">画像のパス(L"Resources/Textures/....dds)拡張子は「.dds」</param>
+	/// <returns>なし</returns>
+	void AddTextureData(const wchar_t* key, const wchar_t* path);
 
-	// 画像を描画する
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="key">キー</param>
+	/// <param name="pos">表示座標</param>
+	/// <param name="color">色</param>
+	/// <param name="rate">拡大率</param>
+	/// <param name="origin">中心位置</param>
+	/// <param name="rect">切り取り位置</param>
+	/// <returns>なし</returns>
 	void DrawTexture(const wchar_t* key, DirectX::SimpleMath::Vector2 pos,
 						DirectX::SimpleMath::Vector4 color, DirectX::SimpleMath::Vector2 rate,
 						DirectX::SimpleMath::Vector2 origin, RECT_U rect = RECT_U());
 
-	// 回転率セッター
+
+	/// <summary>
+	/// 回転量セッター
+	/// </summary>
+	/// <param name="key">登録キー</param>
+	/// <param name="rotate">回転量</param>
+	/// <returns>なし</returns>
 	void CreateRotation(const wchar_t* key, const float& rotate);
 
+
+	/// <summary>
+	/// 回転量ゲッター
+	/// </summary>
+	/// <param name="key">登録キー</param>
+	/// <returns>回転量</returns>
 	const float GetRotate(const wchar_t* key) { auto it = m_rotate.find(key); return it->second; }
 };
 

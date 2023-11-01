@@ -68,40 +68,40 @@ void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,ID3D11Device1*
 
 	// 画像を登録
 	m_system->GetDrawSprite()->AddTextureData(L"Number",			// 数字スプライト
-		L"Resources/Textures/Number.dds", device);
+		L"Resources/Textures/Number.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"GameStart",			// スタート合図
-		L"Resources/Textures/PLAY_COMMON/GameStart.dds", device);
+		L"Resources/Textures/PLAY_COMMON/GameStart.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"Death",				// 死亡エフェクト
-		L"Resources/Textures/PLAY_COMMON/DeathEffect.dds", device);
+		L"Resources/Textures/PLAY_COMMON/DeathEffect.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"Sun",				// 日没メーター
-		L"Resources/Textures/PLAY_COMMON/Sun.dds", device);
+		L"Resources/Textures/PLAY_COMMON/Sun.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"HelpBack",			// ヘルプ時の背景暗転
-		L"Resources/Textures/PLAY_HELP/HelpBack.dds", device);
+		L"Resources/Textures/PLAY_HELP/HelpBack.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp",			// ヘルプを開く表示
-		L"Resources/Textures/PLAY_HELP/OpenHelp.dds", device);
+		L"Resources/Textures/PLAY_HELP/OpenHelp.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"UnderFont",			// 下のテキスト
-		L"Resources/Textures/PLAY_HELP/UnderFont.dds", device);
+		L"Resources/Textures/PLAY_HELP/UnderFont.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"UnderBack",			// 下のテキストのライン
-		L"Resources/Textures/PLAY_HELP/UnderBack.dds", device);
+		L"Resources/Textures/PLAY_HELP/UnderBack.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"HowToPlay",			// ヘルプ表示
-		L"Resources/Textures/PLAY_HELP/Help.dds", device);
+		L"Resources/Textures/PLAY_HELP/Help.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"BlockInfo",			// ブロック情報
-		L"Resources/Textures/PLAY_HELP/BlockInfo.dds", device);
+		L"Resources/Textures/PLAY_HELP/BlockInfo.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"GoScenes",			// シーンセレクト
-		L"Resources/Textures/PLAY_HELP/GoScenes.dds", device);
+		L"Resources/Textures/PLAY_HELP/GoScenes.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"SelectArrow",		// 選択の矢印
-		L"Resources/Textures/PLAY_HELP/SelectArrow.dds", device);
+		L"Resources/Textures/PLAY_HELP/SelectArrow.dds");
 
 	// 比率を計算
 	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;

@@ -22,7 +22,7 @@ namespace Debug
 		~DrawString();
 
 		/// <summary>
-		/// 文字列描画関数(高木式)
+		/// 文字列描画関数
 		/// </summary>
 		/// <param name="common">コモンステート</param>
 		/// <param name="pos">座標</param>

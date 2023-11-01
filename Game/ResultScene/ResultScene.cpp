@@ -211,7 +211,7 @@ void ResultScene::CreateWindowDependentResources()
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, 45.0f);
 
 	// UI�̍쐬
-	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
 	m_resultUI = std::make_unique<ResultUI>();
 	m_resultUI->Create(GetSystemManager(), _device, GetScreenSize());
 

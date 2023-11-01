@@ -170,7 +170,7 @@ SystemManager::GetGridFloor()
 {
 	if (!m_gridFloor)
 	{
-		throw;
+		m_gridFloor = std::make_unique<Debug::GridFloor>(50, 50);
 	}
 	return m_gridFloor;
 }
@@ -214,6 +214,6 @@ void SystemManager::CreateUnique()
 	m_drawString = std::make_unique<Debug::DrawString>(_device, _context);
 
 	// グリッドフロア 30 x 30
-	m_gridFloor = std::make_unique<Debug::GridFloor>(_device, _context, 50, 50);
+	m_gridFloor = std::make_unique<Debug::GridFloor>(50, 50);
 #endif
 }

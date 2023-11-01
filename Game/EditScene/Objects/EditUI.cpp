@@ -62,19 +62,19 @@ void EditUI::Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1*
 
 	// キー名　：　ファイルパス名
 	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",		// ツールバー
-		L"Resources/Textures/EDITS/ToolBar.dds", device);
+		L"Resources/Textures/EDITS/ToolBar.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"DoBar",			// 操作ガイド
-		L"Resources/Textures/EDITS/UnderInfo.dds", device);
+		L"Resources/Textures/EDITS/UnderInfo.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"IconPack",		// アイコンパック
-		L"Resources/Textures/EDITS/IconPack.dds",device);
+		L"Resources/Textures/EDITS/IconPack.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"ModePack",		// モードパック
-		L"Resources/Textures/EDITS/ToolModes.dds",device);
+		L"Resources/Textures/EDITS/ToolModes.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"SavePack",		// セーブパック
-		L"Resources/Textures/EDITS/SavePack.dds", device);
+		L"Resources/Textures/EDITS/SavePack.dds");
 
 	// 切り取り位置を指定
 	m_texRect[MAPSTATE::NONE]    = { _0,_1,_1,_2 };		// ブロックアイコン

@@ -44,7 +44,7 @@ public:
 	~TitleUI();
 
 	// ì¬ˆ—
-	void Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device , const DirectX::SimpleMath::Vector2& windowSize);
+	void Create(std::shared_ptr<SystemManager> system, const DirectX::SimpleMath::Vector2& windowSize);
 
 	// XVˆ—
 	void Update(const bool& selectFlag);

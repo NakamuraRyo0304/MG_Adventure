@@ -57,12 +57,12 @@ void ResultUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* devi
 	m_windowSize = windowSize;
 
 	// ‰æ‘œ‚ð“o˜^
-	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds",		device);
-	m_system->GetDrawSprite()->AddTextureData(L"RFont",  L"Resources/Textures/ResultFonts.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"BLIND",  L"Resources/Textures/ResultBack.dds",	device);
-	m_system->GetDrawSprite()->AddTextureData(L"RETRY",  L"Resources/Textures/FONT/RETRY.dds",	device);
-	m_system->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds", device);
-	m_system->GetDrawSprite()->AddTextureData(L"TITLE",  L"Resources/Textures/FONT/TITLE.dds",	device);
+	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds");
+	m_system->GetDrawSprite()->AddTextureData(L"RFont",  L"Resources/Textures/ResultFonts.dds");
+	m_system->GetDrawSprite()->AddTextureData(L"BLIND",  L"Resources/Textures/ResultBack.dds");
+	m_system->GetDrawSprite()->AddTextureData(L"RETRY",  L"Resources/Textures/FONT/RETRY.dds");
+	m_system->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds");
+	m_system->GetDrawSprite()->AddTextureData(L"TITLE",  L"Resources/Textures/FONT/TITLE.dds");
 
 	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 

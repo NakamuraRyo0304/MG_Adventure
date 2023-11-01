@@ -252,7 +252,6 @@ void TitleScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
 	auto _device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
 	GetSystemManager()->CreateUnique();
@@ -261,9 +260,9 @@ void TitleScene::CreateWindowDependentResources()
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
 
 	// UIの初期化
-	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
+	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
 	m_titleUI = std::make_unique<TitleUI>();
-	m_titleUI->Create(GetSystemManager(), _device, GetScreenSize());
+	m_titleUI->Create(GetSystemManager(), GetScreenSize());
 
 	// モデルの作成---------------------------------------------------------------------------------
 

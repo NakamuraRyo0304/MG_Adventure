@@ -7,17 +7,9 @@
 
 #include "pch.h"
 
-#include "CommonStates.h"
-#include "SpriteBatch.h"
-#include "SpriteFont.h"
-
 #include "DrawString.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 Debug::DrawString::DrawString(ID3D11Device1* device, ID3D11DeviceContext1* context)
 {
 	// フォントパス
@@ -28,11 +20,7 @@ Debug::DrawString::DrawString(ID3D11Device1* device, ID3D11DeviceContext1* conte
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 Debug::DrawString::~DrawString()
 {
 	m_spriteBatch.reset();
