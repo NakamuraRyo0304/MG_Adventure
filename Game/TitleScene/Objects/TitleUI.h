@@ -19,9 +19,6 @@ private:
 	// ウィンドウサイズ
 	DirectX::SimpleMath::Vector2 m_windowSize;
 
-	// フルスクリーンサイズ
-	DirectX::SimpleMath::Vector2 m_fullScreenSize;
-
 	// セレクトフラグ
 	bool is_selectFlag;
 
@@ -37,6 +34,9 @@ private:
 	DirectX::SimpleMath::Color m_startColor;
 	DirectX::SimpleMath::Color m_exitColor;
 
+private:
+	// フルスクリーンサイズ
+	DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
 public:
 
@@ -44,8 +44,7 @@ public:
 	~TitleUI();
 
 	// 作成処理
-	void Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device ,
-		const DirectX::SimpleMath::Vector2& windowSize, const DirectX::SimpleMath::Vector2& fullSize);
+	void Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device , const DirectX::SimpleMath::Vector2& windowSize);
 
 	// 更新処理
 	void Update(const bool& selectFlag);

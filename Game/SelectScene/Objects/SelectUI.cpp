@@ -42,17 +42,14 @@ SelectUI::~SelectUI()
 /// <summary>
 /// 作成関数
 /// </summary>
-/// <param name="system">システムマネージャ</param>
-/// <param name="device">デバイスポインタ</param>
-/// <param name="windowSize">ウィンドウサイズ</param>
-/// <param name="fullSize">フルスクリーンサイズ</param>
+ /// <param name="system">システムマネージャ</param>
+ /// <param name="device">デバイスポインタ</param>
+/// <param name="windowSize">画面サイズ</param>
 /// <returns>なし</returns>
-void SelectUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device,
-	const SimpleMath::Vector2& windowSize, const SimpleMath::Vector2& fullSize)
+void SelectUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
 {
 	m_system = system;
 	m_windowSize = windowSize;
-	m_fullScreenSize = fullSize;
 
 	// 画像の登録
 	m_system->GetDrawSprite()->AddTextureData(L"Number",		L"Resources/Textures/Number.dds",					device);
@@ -89,8 +86,8 @@ void SelectUI::Update(const float& timer, const bool& rightFlag, const bool& lef
 void SelectUI::Render(const float& fadeValue, const int& selectNum, const int& maxNum)
 {
 	// 画面比率を計算
-	SimpleMath::Vector2 _rate = m_windowSize / m_fullScreenSize;
-	SimpleMath::Vector2 _coinsRate = m_windowSize / m_fullScreenSize / 1.5;
+	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _coinsScale = m_windowSize / FULL_SCREEN_SIZE / 1.5;
 
 	// 外枠フレームを描画
 	DrawFrame(_rate);
@@ -105,7 +102,7 @@ void SelectUI::Render(const float& fadeValue, const int& selectNum, const int& m
 	);
 
 	// 数字を描画
-	DrawNumber(_rate, _coinsRate);
+	DrawNumber(_rate, _coinsScale);
 
 	// 矢印を描画
 	DrawArrow(_rate, selectNum, maxNum);
@@ -116,7 +113,7 @@ void SelectUI::Render(const float& fadeValue, const int& selectNum, const int& m
 	// プッシュ画像を表示
 	m_system->GetDrawSprite()->DrawTexture(
 		L"PushSpace",
-		SimpleMath::Vector2{ (m_fullScreenSize.x - PUSH_SIZE.x) / 2, m_fullScreenSize.y - PUSH_SIZE.y } * _rate,
+		SimpleMath::Vector2{ (FULL_SCREEN_SIZE.x - PUSH_SIZE.x) / 2, FULL_SCREEN_SIZE.y - PUSH_SIZE.y } * _rate,
 		SimpleMath::Color{ 1.0f, 1.0f, 1.0f, 1.0f },
 		_rate,
 		SimpleMath::Vector2::Zero

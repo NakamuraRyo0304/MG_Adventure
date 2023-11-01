@@ -36,8 +36,6 @@ Camera::Camera()
 	, m_scrollWheelValue{}		// マウスホイールの回転量
 	, m_tempScrollValue{}		// マウスホイールの回転量(不動時の蓄積用)
 	, m_view{}					// ビュー行列
-	, m_downOver{}				// 見下げのビュー行列
-	, m_viewport{}				// ビューポート
 	, m_projection{}			// プロジェクション行列
 	, m_rotateMatrix{}			// 回転量
 	, is_allowMode{ false }		// カメラの視点移動フラグ(十字操作)
@@ -108,31 +106,6 @@ void Camera::Update()
 }
 
 /// <summary>
-/// 見下げるビュー行列（俯瞰）
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>見下げているビュー行列</returns>
-const DirectX::SimpleMath::Matrix& Camera::CreateDownOverView()
-{
-	// 初期化
-	m_downOver = SimpleMath::Matrix::Identity;
-
-	// カメラの位置
-	SimpleMath::Vector3 _pos = SimpleMath::Vector3(0.0f, 10.0f, 0.0f);
-
-	// 注視点
-	SimpleMath::Vector3 _target = SimpleMath::Vector3::Zero;
-
-	// アップベクトル
-	SimpleMath::Vector3 _up = SimpleMath::Vector3::UnitZ;
-
-	m_downOver = SimpleMath::Matrix::CreateLookAt(_pos, _target, _up);
-
-	// ビュー行列を作成
-	return m_downOver;
-}
-
-/// <summary>
 /// マウスのドラッグした距離を計算
 /// </summary>
 /// <param name="x">スクリーン座標X</param>
@@ -189,29 +162,6 @@ void Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
 	}
 }
 
-/// <summary>
-/// ビューポート作成返却関数
-/// </summary>
-/// <param name="width"></param>
-/// <param name="height"></param>
-/// <param name="topLeftX"></param>
-/// <param name="topLeftY"></param>
-/// <param name="minDepth"></param>
-/// <param name="maxDepth"></param>
-/// <returns>作成したビューポート</returns>
-D3D11_VIEWPORT& Camera::CreateViewport(float width, float height, float topLeftX, float topLeftY,
-									   float minDepth, float maxDepth)
-{
-	// ビューポートを設定
-	m_viewport.Width = width;
-	m_viewport.Height = height;
-	m_viewport.TopLeftX = topLeftX;
-	m_viewport.TopLeftY = topLeftY;
-	m_viewport.MinDepth = minDepth;
-	m_viewport.MaxDepth = maxDepth;
-
-	return m_viewport;
-}
 
 /// <summary>
 /// 射影行列を作成

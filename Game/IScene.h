@@ -9,13 +9,13 @@
 #ifndef ISCENE
 #define	ISCENE
 
-#include "../GameMain.h"
+#include "GameMain.h"
 
  // ライブラリ
-#include "../../Libraries/SystemManager/SystemManager.h"
-#include "../../Libraries/UserUtility.h"
-#include "../../Libraries/SystemDatas/Input.h"
-#include "../../Libraries/Factories/ModelFactory.h"
+#include "../Libraries/SystemManager/SystemManager.h"
+#include "../Libraries/UserUtility.h"
+#include "../Libraries/SystemDatas/Input.h"
+#include "../Libraries/Factories/ModelFactory.h"
 
 class IScene
 {
@@ -27,8 +27,7 @@ private:
 	SCENE m_nextScene;
 
 	// スクリーンサイズ
-	DirectX::SimpleMath::Vector2 m_screenSize;
-	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.f,1080.f };
+	DirectX::SimpleMath::Vector2 m_fullScreenSize;
 
 	// シーン切り替え判定フラグ
 	bool is_changeFlag;
@@ -45,25 +44,7 @@ private:
 	virtual void SetSceneValues() = 0;
 
 public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="可変長引数">任意の値を渡す</param>
-	/// <returns>なし</returns>
-	IScene()
-		: m_system{ std::make_shared<SystemManager>() }	// システムマネージャ
-		, m_nextScene{ SCENE::NONE }					// 次のシーン
-		, m_screenSize{}							    // フルスクリーンサイズ
-		, m_fadeSpeed{ 4.0f }							// フェードの速度
-		, m_fadeValue{ 0.0f }							// フェードの現在値
-		, is_changeFlag{ false }						// シーン切り替えフラグ
-	{
-		// 作成されていなければシステムを作成
-		if (!m_system)
-		{
-			m_system = std::make_shared<SystemManager>();
-		}
-	}
+	IScene();
 
 	virtual ~IScene() = default;
 
@@ -108,10 +89,7 @@ public:
 	}
 
 	// スクリーンサイズを取得する
-	const DirectX::SimpleMath::Vector2& GetScreenSize() { return m_screenSize; }
-	// フルスクリーンサイズを取得する
-	const DirectX::SimpleMath::Vector2& GetFullScreenSize() { return FULL_SCREEN_SIZE; }
-
+	const DirectX::SimpleMath::Vector2& GetScreenSize() { return m_fullScreenSize; }
 
 	//-------------------------------------------------------------------------------------//
 	// GameMainで使用する関数 (通常は使用しない)
@@ -125,7 +103,7 @@ public:
 	}
 
 	// 画面サイズを設定する
-	inline void SetScreenSize(const DirectX::SimpleMath::Vector2& size) { m_screenSize = size; }
+	inline void SetScreenSize(const DirectX::SimpleMath::Vector2& size) { m_fullScreenSize = size; }
 
 	// ソフト終了
 	inline void ExitApp(){	PostQuitMessage(0);	}

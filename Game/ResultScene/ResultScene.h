@@ -9,7 +9,7 @@
 #ifndef RESULTSCENE
 #define	RESULTSCENE
 
-#include "../Interfaces/IScene.h"
+#include "../IScene.h"
 
 class Blocks;
 class ResultUI;

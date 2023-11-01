@@ -9,7 +9,7 @@
 #ifndef EDITSCENE
 #define EDITSCENE
 
-#include "../Interfaces/IScene.h"
+#include "../IScene.h"
 
  // CSVì«Ç›çûÇ›
 #include "../../Libraries/SystemDatas/MapLoad.h"

@@ -40,27 +40,28 @@ private: //---------------------------------------------------------------------
 
 	// 前回のマウス情報
 	PrevMouse m_prevMouse;
-
 	// マウスホイールのスクロール値
-	int m_scrollWheelValue, m_tempScrollValue;
-
+	int m_scrollWheelValue;
+	// 一時的なスクロール値の蓄積用変数
+	int m_tempScrollValue;
 	// 回転角
 	DirectX::SimpleMath::Vector2 m_angle;
 
 	// ビュー行列
-	DirectX::SimpleMath::Matrix m_view, m_downOver, m_projection;
-
+	DirectX::SimpleMath::Matrix m_view;
+	// プロジェクション行列
+	DirectX::SimpleMath::Matrix m_projection;
 	// 回転量
 	DirectX::SimpleMath::Matrix m_rotateMatrix;
 
-	// カメラの座標/加算用座標
-	DirectX::SimpleMath::Vector3 m_position, m_addPos;
+	// カメラの座標
+	DirectX::SimpleMath::Vector3 m_position;
+
+	// カメラの加算用座標
+	DirectX::SimpleMath::Vector3 m_addPos;
 
 	// 注視点
 	DirectX::SimpleMath::Vector3 m_target;
-
-	// ビューポート
-	D3D11_VIEWPORT m_viewport;
 
 	// 視点移動モード
 	bool is_eagleMode;
@@ -76,11 +77,6 @@ public:
 	// オブジェクトを揺らす処理
 	void ShakeObject(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
 
-	// ビューポート作成返却関数
-	D3D11_VIEWPORT& CreateViewport(float width, float height, float topLeftX, float  topLeftY, float minDepth, float maxDepth);
-
-	// 俯瞰ビュー行列を作成
-	const DirectX::SimpleMath::Matrix& CreateDownOverView();
 
 private:
 	// マウスの移動距離の計算

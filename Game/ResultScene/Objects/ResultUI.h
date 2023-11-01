@@ -22,9 +22,6 @@ private:
 	// ウィンドウサイズ
 	DirectX::SimpleMath::Vector2 m_windowSize;
 
-	// フルスクリーンサイズ
-	DirectX::SimpleMath::Vector2 m_fullScreenSize;
-
 	// セレクト
 	int m_selectingScene;
 
@@ -70,13 +67,15 @@ private:
 	// 数字のデフォルトサイズ
 	const DirectX::SimpleMath::Vector2 DRAW_NUM_SIZE = SimpleMath::Vector2{ 1.0f };
 
+	// フルスクサイズ
+	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
+
 public:
 	ResultUI();
 	~ResultUI();
 
 	// 作成関数
-	void Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device,
-		const DirectX::SimpleMath::Vector2& windowSize, const DirectX::SimpleMath::Vector2& fullSize);
+	void Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const DirectX::SimpleMath::Vector2& windowSize);
 
 	// 更新処理
 	void Update(const int& clearTime);

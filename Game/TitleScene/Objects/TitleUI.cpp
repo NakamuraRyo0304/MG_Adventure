@@ -48,15 +48,12 @@ TitleUI::~TitleUI()
 /// <param name="system">システムマネージャ</param>
 /// <param name="device">デバイスポインタ</param>
 /// <param name="windowSize">ウィンドウサイズ</param>
-/// <param name="fullSize">フルスクリーンサイズ</param>
 /// <returns>なし</returns>
-void TitleUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device,
-	const SimpleMath::Vector2& windowSize, const SimpleMath::Vector2& fullSize)
+void TitleUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
 {
 	// システム
 	m_system = system;
 	m_windowSize = windowSize;
-	m_fullScreenSize = fullSize;
 
 	// 画像の追加
 	m_system->GetDrawSprite()->AddTextureData(L"Start",		L"Resources/Textures/TITLE_BUTTON/Start.dds", device);
@@ -116,7 +113,7 @@ void TitleUI::Update(const bool& selectFlag)
 void TitleUI::Render(const float& fadeValue, const bool& endAnim)
 {
 	// 画面比率
-	SimpleMath::Vector2 _rate = m_windowSize / m_fullScreenSize * 0.5f;
+	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE * 0.5f;
 
 	// フェード中は処理しない
 	if (fadeValue >= 0.7f) return;
@@ -127,34 +124,34 @@ void TitleUI::Render(const float& fadeValue, const bool& endAnim)
 	// スタートの文字--------------------------------------------------------------------
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Start",
-		SimpleMath::Vector2{ 2048.0f,1792.0f } * _rate,
+		SimpleMath::Vector2{ 2048.0f,1792.0f } * _scale,
 		m_startColor,
-		_rate * m_sFontRate,
+		_scale * m_sFontRate,
 		SimpleMath::Vector2::Zero
 	);
 	// イグジットの文字------------------------------------------------------------------
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Exit",
-		SimpleMath::Vector2{ 2816.0f,1792.0f } * _rate,
+		SimpleMath::Vector2{ 2816.0f,1792.0f } * _scale,
 		m_exitColor,
-		_rate * m_eFontRate,
+		_scale * m_eFontRate,
 		SimpleMath::Vector2::Zero
 	);
 
 	// アンダーライン--------------------------------------------------------------------
 	m_system->GetDrawSprite()->DrawTexture(
 		L"UnderLine",
-		SimpleMath::Vector2{ 2048.0f,1792.0f } * _rate,
+		SimpleMath::Vector2{ 2048.0f,1792.0f } * _scale,
 		SimpleMath::Vector4::One,
-		m_sLineRate * _rate,
+		m_sLineRate * _scale,
 		SimpleMath::Vector2::Zero,
 		{ 0,0,768,256 }
 	);
 	m_system->GetDrawSprite()->DrawTexture(
 		L"UnderLine",
-		SimpleMath::Vector2{ 2816.0f,1792.0f } * _rate,
+		SimpleMath::Vector2{ 2816.0f,1792.0f } * _scale,
 		SimpleMath::Vector4::One,
-		m_eLineRate * _rate,
+		m_eLineRate * _scale,
 		SimpleMath::Vector2::Zero,
 		{ 0,0,768,256 }
 	);
