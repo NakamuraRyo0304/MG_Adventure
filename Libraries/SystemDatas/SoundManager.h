@@ -37,29 +37,68 @@ public:
 	SoundManager();
 	~SoundManager();
 
-    // 音の更新
+    /// <summary>
+    /// オーディオエンジンの更新
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>なし</returns>
     void Update();
 
 public:
     //-------------------------------------------------------------------------------------//
     // アクセサ  --------------------------------------------------------------------------//
 
-    // TYPE : BGM or SE //// NAME : ならしたい音の名前 : bool trueでループ再生　falseで単発再生
+    /// <summary>
+    /// サウンドを鳴らす
+    /// </summary>
+    /// <param name="WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME">ならしたい音のID</param>
+    /// <param name="playType">ループか単発か(trueでループ、falseで単発)</param>
+    /// <returns>なし</returns>
     void PlaySound(const XACT_WAVEBANK_SKBX& WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME, const bool& playType);
 
-    // マスター音量の調整
+    /// <summary>
+    /// マスター音量の設定
+    /// </summary>
+    /// <param name="volume">音量(0.0f～1.0f)</param>
+    /// <returns>なし</returns>
     void SetMasterVolume(const float& volume);
+
+    /// <summary>
+    /// マスター音量の取得
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>マスター音量</returns>
     const float& GetMasterVolume() { return m_masterVolume; }
 
-    // 指定された音量の調整
+    /// <summary>
+    /// 指定した音の音量を設定
+    /// </summary>
+    /// <param name="volume">音量</param>
+    /// <param name="WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME">音のID</param>
+    /// <returns>なし</returns>
     void SetVolume(const float& volume, const XACT_WAVEBANK_SKBX& WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME);
+
+    /// <summary>
+    /// 指定した音の音量を取得
+    /// </summary>
+    /// <param name="WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME">音のID</param>
+    /// <returns>なし</returns>
     const float& GetVolume(const XACT_WAVEBANK_SKBX& WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME) { return m_volumes[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME]; }
 
-    // フェードさせる
+    /// <summary>
+    /// 音をフェードさせる
+    /// </summary>
+    /// <param name="speed">速度</param>
+    /// <returns>なし</returns>
     void FadeVolume(const float& speed);
 
 private:
-	// リソース作成関数
+
+    /// <summary>
+    /// リソース保存関数
+    /// </summary>
+    /// <param name="引数無し">/param>
+    /// <returns>なし</returns>
 	void Create();
 };
 

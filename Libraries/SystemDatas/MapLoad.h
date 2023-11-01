@@ -71,33 +71,71 @@ public:
 	MapLoad();
 	~MapLoad();
 
-	// マップの読み込み
+	/// <summary>
+	/// マップの読み込み
+	/// </summary>
+	/// <param name="filename">ファイルパスを指定(L"...csv")拡張子は「.csv」</param>
+	/// <returns>成功したらTrueを返す</returns>
 	bool LoadMap(std::wstring filename);
 
-	// マップの書き出し
+	/// <summary>
+	/// ファイルを書きだす関数
+	/// </summary>
+	/// <param name="obj">書き出すオブジェ配列</param>
+	/// <returns>なし</returns>
 	void WriteMap(std::vector<Object> obj);
 
-	// マップのデータを渡す
+	/// <summary>
+	/// マップを取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>マップのデータ</returns>
 	std::vector<Object> GetMapData() { return m_mapData; }
 
-	// マップのパス名を渡す
+	/// <summary>
+	/// マップのパスを取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>マップのCSVパス</returns>
 	std::wstring GetFilePath() { return m_filename; }
 
-	// メモリの解放
+	/// <summary>
+	/// メモリ解放
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void ReleaseMemory();
 
 private:
-	// マップの保存パス指定
+	/// <summary>
+	/// パスを取得し、保存する関数
+	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
+	/// <returns>正常終了でTrue</returns>
 	bool SaveMapPath(std::wstring& filePath);
 
-	// マップの読み込みパス指定
+	/// <summary>
+	/// ファイルを読み込む
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>正常終了でTrue</returns>
 	bool LoadMapPath();
 
-	// 拡張子がついていない場合に自動で拡張子を追加する関数
+	/// <summary>
+	/// 拡張子自動付加関数
+	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
+	/// <param name="extension">追加したい文字(拡張子)</param>
+	/// <returns>拡張子を付与した文字列</returns>
 	std::wstring AutoAddExtension(const std::wstring& filePath, const std::wstring& extension);
 
 public:
-	// 新しくマップを作成する
+
+	/// <summary>
+	/// マップ新規作成関数
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CreateNewMap();
 
 };

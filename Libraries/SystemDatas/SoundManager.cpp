@@ -9,11 +9,7 @@
 
 #include "SoundManager.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 SoundManager::SoundManager()
 	: m_masterVolume{1.0f}		// マスター音量
 	, m_volumes{ 1.0f }			// 個々の音量
@@ -35,21 +31,12 @@ SoundManager::SoundManager()
 	}
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 SoundManager::~SoundManager()
 {
 }
 
-/// <summary>
-/// サウンドを鳴らす
-/// </summary>
-/// <param name="WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME">ならしたい音のID</param>
-/// <param name="playType">ループか単発か(trueでループ、falseで単発)</param>
-/// <returns>なし</returns>
+// サウンドを鳴らす
 void SoundManager::PlaySound(const XACT_WAVEBANK_SKBX& WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME, const bool& playType)
 {
 	m_soundEffectInstances[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME]->Stop();
@@ -59,11 +46,7 @@ void SoundManager::PlaySound(const XACT_WAVEBANK_SKBX& WAVEBANKXACT_WAVEBANK_SKB
 	m_volumes[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME] = 1.0f;
 }
 
-/// <summary>
-/// オーディオエンジンの更新
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void SoundManager::Update()
 {
 	// オーディオエンジンの更新
@@ -77,11 +60,7 @@ void SoundManager::Update()
 	}
 }
 
-/// <summary>
-/// マスター音量の設定
-/// </summary>
-/// <param name="volume">音量(0.0f～1.0f)</param>
-/// <returns>なし</returns>
+// マスター音量設定
 void SoundManager::SetMasterVolume(const float& volume)
 {
 	for (int i = 0; i < XACT_WAVEBANK_SKBX_ENTRY_COUNT; ++i)
@@ -93,12 +72,7 @@ void SoundManager::SetMasterVolume(const float& volume)
 	m_masterVolume = volume;
 }
 
-/// <summary>
-/// 指定した音の音量調整
-/// </summary>
-/// <param name="volume">音量</param>
-/// <param name="WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME">音のID</param>
-/// <returns>なし</returns>
+// 特定の音量調整
 void SoundManager::SetVolume(const float& volume, const XACT_WAVEBANK_SKBX& WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME)
 {
 	m_volumes[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME] = volume;
@@ -106,11 +80,7 @@ void SoundManager::SetVolume(const float& volume, const XACT_WAVEBANK_SKBX& WAVE
 		m_volumes[WAVEBANKXACT_WAVEBANK_SKBX_TYPE_NAME]);
 }
 
-/// <summary>
-/// 音をフェードさせる
-/// </summary>
-/// <param name="speed">速度</param>
-/// <returns>なし</returns>
+// 音の減衰
 void SoundManager::FadeVolume(const float& speed)
 {
 	m_masterVolume = m_masterVolume + speed * (0 - m_masterVolume);
@@ -121,11 +91,7 @@ void SoundManager::FadeVolume(const float& speed)
 	}
 }
 
-/// <summary>
-/// リソース保存関数
-/// </summary>
-/// <param name="引数無し">/param>
-/// <returns>なし</returns>
+// 音の作成
 void SoundManager::Create()
 {
 	for (unsigned int i = 0; i < XACT_WAVEBANK_SKBX_ENTRY_COUNT; ++i)

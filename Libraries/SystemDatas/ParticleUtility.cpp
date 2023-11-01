@@ -8,27 +8,13 @@
 
 #include "pch.h"
 
-#include "StepTimer.h"
-#include "DeviceResources.h"
 #include <vector>
 
 #include "ParticleUtility.h"
 
 static const float ENDLESS = -100.0f;
 
-/// <summary>
-/// コンストラクタ
-/// 引数は初期設定用の数値
-/// </summary>
-/// <param name="life">生存時間</param>
-/// <param name="pos">座標</param>
-/// <param name="velocity">速度</param>
-/// <param name="accele">加速度</param>
-/// <param name="startScale">初期サイズ</param>
-/// <param name="endScale">最終サイズ</param>
-/// <param name="startColor">初期色</param>
-/// <param name="endColor">最終色</param>
-/// <returns>なし</returns>
+// コンストラクタ
 ParticleUtility::ParticleUtility(
 	float life,
 	SimpleMath::Vector3 pos,
@@ -57,19 +43,12 @@ ParticleUtility::ParticleUtility(
 	m_endColor = endColor;
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <returns>なし</returns>
+// デストラクタ
 ParticleUtility::~ParticleUtility()
 {
 }
 
-/// <summary>
-/// 更新関数
-/// </summary>
-/// <param name="timer">時間</param>
-/// <returns>生存時間ありでTrue</returns>
+// 更新処理
 bool ParticleUtility::Update(float elapsedTime)
 {
 	// スケール

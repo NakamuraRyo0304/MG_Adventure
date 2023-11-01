@@ -37,13 +37,25 @@ public:
 
 	~Input() = default;
 
-	// アップデート
+	/// <summary>
+	/// インプットシステムの更新
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update();
 
-	// キーボードステートトラッカーの取得
+	/// <summary>
+	/// キーボードトラッカーの取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>キーステートトラッカー</returns>
 	const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& GetKeyTrack();
 
-	// マウストラッカーの取得
+	/// <summary>
+	/// マウストラッカーの取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>マウストラッカー/returns>
 	const std::unique_ptr<DirectX::Mouse::ButtonStateTracker>& GetMouseTrack();
 };
 

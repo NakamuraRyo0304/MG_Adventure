@@ -73,25 +73,55 @@ public:
     GameMain();
     ~GameMain();
 
-    // 初期化
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>なし</returns>
     void Initialize();
 
-    // 更新
+    /// <summary>
+    /// 更新処理
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>なし</returns>
     void Update();
 
-    // 描画
+    /// <summary>
+    /// 描画処理
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>なし</returns>
     void Draw();
 
-    // 終了
+    /// <summary>
+    /// 終了処理
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>なし</returns>
     void Finalize();
 
-    // シーンの作成
+
+    /// <summary>
+    /// シーンの新規作成
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>なし</returns>
     void CreateScene();
 
-    // シーンの削除
+    /// <summary>
+    /// シーンの削除
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>なし</returns>
     void DeleteScene();
 
-    // ウィンドウサイズ依存の初期化
+    /// <summary>
+    /// 画面依存、デバイス依存の初期化
+    /// </summary>
+    /// <param name="screenWidth">画面横幅</param>
+    /// <param name="screenHeight">画面縦幅</param>
+    /// <returns>なし</returns>
     void CreateWindowDependentResources(const int& screenWidth, const int& screenHeight);
 
     // シーンキャスタ    // 引数：T = 変換したい型名 / scene 今のシーン
@@ -101,13 +131,25 @@ public:
         return dynamic_cast<T*>(scene.get());
     }
 
-    // セーブデータを読み込む
+    /// <summary>
+    /// セーブデータを読み込む
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>なし</returns>
     void LoadSaveData();
 
-    // セーブデータを書き込む
+    /// <summary>
+    /// セーブデータを書き出す
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>なし</returns>
     void WriteSaveData();
 
-    // ステージを開放する
+    /// <summary>
+    /// ステージ解放処理
+    /// </summary>
+    /// <param name="引数無し"></param>
+    /// <returns>なし</returns>
     void OpenNewStage();
 };
 

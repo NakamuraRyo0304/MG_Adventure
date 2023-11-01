@@ -34,11 +34,7 @@
 #include "Game/PlayScene/PlayScene.h"
 #include "Game/ResultScene/ResultScene.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 GameMain::GameMain()
 	: m_nextScene{ SCENE::TITLE }		// 最初のシーン
 	, m_prevScene{ SCENE::NONE }		// 前回のシーン
@@ -49,27 +45,19 @@ GameMain::GameMain()
 	, m_screenWidth{}					// スクリーンサイズ(横)
 	, m_screenHeight{}					// スクリーンサイズ(縦)
 	//以下はセーブデータ対応------------------------------------------------------------------------//
-	, is_saveOnce{false}				// セーブ済みか確認するフラグ
 	, m_safeStages{}					// 未開放ステージ
 	, m_allCoins{}						// 累計コイン枚数
+	, is_saveOnce{false}				// セーブ済みか確認するフラグ
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 GameMain::~GameMain()
 {
 	Finalize();
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 初期化処理
 void GameMain::Initialize()
 {
 	// シーン作成
@@ -87,11 +75,7 @@ void GameMain::Initialize()
 	LoadSaveData();
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void GameMain::Update()
 {
 	// フェードの更新
@@ -128,11 +112,7 @@ void GameMain::Update()
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 描画処理
 void GameMain::Draw()
 {
 	// 実態があれば描画
@@ -145,21 +125,13 @@ void GameMain::Draw()
 	m_fade->Draw();
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void GameMain::Finalize()
 {
 	m_nowScene.reset();
 }
 
-/// <summary>
-/// シーンの新規作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// シーン作成
 void GameMain::CreateScene()
 {
 	// シーンが作成されているときは処理しない
@@ -249,11 +221,8 @@ void GameMain::CreateScene()
 
 	is_saveOnce = false;
 }
-/// <summary>
-/// シーンの削除
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+
+// シーン削除
 void GameMain::DeleteScene()
 {
 	// シーンが作成されていなければ処理しない
@@ -302,12 +271,7 @@ void GameMain::DeleteScene()
 	}
 }
 
-/// <summary>
-/// 画面依存、デバイス依存の初期化
-/// </summary>
-/// <param name="screenWidth">画面横幅</param>
-/// <param name="screenHeight">画面縦幅</param>
-/// <returns>なし</returns>
+// デバイス系設定
 void GameMain::CreateWindowDependentResources(const int& screenWidth, const int& screenHeight)
 {
 	// スクリーンサイズの設定
@@ -319,11 +283,7 @@ void GameMain::CreateWindowDependentResources(const int& screenWidth, const int&
 	m_fade->Initialize();
 }
 
-/// <summary>
-/// セーブデータを読み込む
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// セーブデータ読み込み
 void GameMain::LoadSaveData()
 {
 	using Json = nlohmann::json;
@@ -344,11 +304,7 @@ void GameMain::LoadSaveData()
 	}
 }
 
-/// <summary>
-/// セーブデータを書き出す
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// セーブデータ書き出し
 void GameMain::WriteSaveData()
 {
 	using Json = nlohmann::json;
@@ -375,11 +331,7 @@ void GameMain::WriteSaveData()
 	}
 }
 
-/// <summary>
-/// ステージ解放処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// ステージ解放処理
 void GameMain::OpenNewStage()
 {
 	if (m_nextScene != SCENE::RESULT || is_saveOnce) return;

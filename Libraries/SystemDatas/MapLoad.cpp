@@ -22,11 +22,7 @@
 
 #include "MapLoad.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 MapLoad::MapLoad()
 	: m_mapData{}			// マップデータ
 	, m_hWnd{ nullptr }		// ウィンドウハンドル
@@ -34,22 +30,14 @@ MapLoad::MapLoad()
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 MapLoad::~MapLoad()
 {
 	m_mapData.clear();
 }
 
 
-/// <summary>
-/// マップの読み込み
-/// </summary>
-/// <param name="filename">ファイルパスを指定(L"...csv")拡張子は「.csv」</param>
-/// <returns>成功したか</returns>
+// マップ読み込み
 bool MapLoad::LoadMap(std::wstring filename)
 {
 	m_filename = filename;
@@ -110,11 +98,7 @@ bool MapLoad::LoadMap(std::wstring filename)
 	return true;
 }
 
-/// <summary>
-/// ファイルを書きだす関数
-/// </summary>
-/// <param name="obj">書き出すオブジェ配列</param>
-/// <returns>なし</returns>
+// ファイル書き出し
 void MapLoad::WriteMap(std::vector<Object> obj)
 {
 	// ファイルパスを指定
@@ -144,21 +128,13 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 	_ofs.close();
 }
 
-/// <summary>
-/// メモリ解放
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// メモリ解放
 void MapLoad::ReleaseMemory()
 {
 	std::vector<Object>().swap(m_mapData);
 }
 
-/// <summary>
-/// パスを取得し、保存する関数
-/// </summary>
-/// <param name="filePath">ファイルパス</param>
-/// <returns>正常終了でTrue</returns>
+// マップのパスを保存する
 bool MapLoad::SaveMapPath(std::wstring& filePath)
 {
 	// 例外エラー用変数
@@ -240,11 +216,7 @@ bool MapLoad::SaveMapPath(std::wstring& filePath)
 	return false;
 }
 
-/// <summary>
-/// ファイルを読み込む
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>正常終了でTrue</returns>
+// マップの読み込みパス指定
 bool MapLoad::LoadMapPath()
 {
 	// 例外エラー用変数
@@ -334,12 +306,7 @@ bool MapLoad::LoadMapPath()
 	return false;
 }
 
-/// <summary>
-/// 拡張子自動付加関数
-/// </summary>
-/// <param name="filePath">ファイルパス</param>
-/// <param name="extension">追加したい文字(拡張子)</param>
-/// <returns>拡張子を付与した文字列</returns>
+// 拡張子付与関数
 std::wstring MapLoad::AutoAddExtension(const std::wstring& filePath, const std::wstring& extension)
 {
 	// 元ファイル名を格納する

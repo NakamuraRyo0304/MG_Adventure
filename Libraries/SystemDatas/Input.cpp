@@ -9,11 +9,7 @@
 
 #include "Input.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 Input::Input()
 	: m_keyboard{}
 	, m_mouse{}
@@ -33,11 +29,7 @@ Input::Input()
 	m_mouse->SetWindow(_pDR->GetHwnd());
 }
 
-/// <summary>
-/// インプットシステムの更新
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void Input::Update()
 {
 	auto _key = Keyboard::Get().GetState();

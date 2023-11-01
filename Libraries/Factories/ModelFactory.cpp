@@ -9,30 +9,17 @@
 
 #include "ModelFactory.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 ModelFactory::ModelFactory()
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 ModelFactory::~ModelFactory()
 {
 }
 
-/// <summary>
-/// モデルを作成し、返却する(std::unique_ptr<Model>で格納可)
-/// </summary>
-/// <param name="device">ID3D11Device1ポインタ</param>
-/// <param name="filename">ファイルパス　拡張子は「.cmo」</param>
-/// <returns>作成したモデルデータ</returns>
+// モデル作成関数
 std::unique_ptr<DX11::Model> ModelFactory::GetCreateModel(ID3D11Device1* device, const wchar_t* filename)
 {
 	// モデルの作成(作成時のみの使い捨て)
@@ -53,11 +40,7 @@ std::unique_ptr<DX11::Model> ModelFactory::GetCreateModel(ID3D11Device1* device,
 	return _model;
 }
 
-/// <summary>
-/// モデルの解放
-/// </summary>
-/// <param name="model">解放したいモデルデータ</param>
-/// <returns>なし</returns>
+// モデル破棄関数
 void ModelFactory::DeleteModel(std::unique_ptr<Model>& model)
 {
 	model.reset();

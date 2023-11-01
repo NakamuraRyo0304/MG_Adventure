@@ -17,11 +17,7 @@
 
 #include "RayCast.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 RayCast::RayCast()
 	: m_screenSize{}			// スクリーンのサイズ
 	, m_convertPosition{}		// ワールド座標に変換した座標
@@ -29,21 +25,13 @@ RayCast::RayCast()
 
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 RayCast::~RayCast()
 {
 
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void RayCast::Update()
 {
 	auto _mouse = Mouse::Get().GetState();
@@ -53,12 +41,7 @@ void RayCast::Update()
 }
 
 
-/// <summary>
-/// レイを飛ばして地面との交点を取る
-/// </summary>
-/// <param name="mx">マウスX</param>
-/// <param name="my">マウスY</param>
-/// <returns>当たった地面との交点</returns>
+// レイを飛ばす関数
 SimpleMath::Vector3 RayCast::ShotRay(int mx, int my)
 {
 	// 最近、最遠、レイを定義
@@ -103,17 +86,7 @@ SimpleMath::Vector3 RayCast::ShotRay(int mx, int my)
 	return _output;
 }
 
-/// <summary>
-/// スクリーン座標をワールド座標に変換する
-/// </summary>
-/// <param name="mx">マウスX</param>
-/// <param name="my">マウスY</param>
-/// <param name="fz">任意の値</param>
-/// <param name="width">画面横幅</param>
-/// <param name="height">画面縦幅</param>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
-/// <returns>変換後の座標</returns>
+// スクリーン座標をワールド座標にする
 SimpleMath::Vector3 RayCast::ConvertScreenToWorld(int mx, int my, float fz,
 	int width, int height, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
