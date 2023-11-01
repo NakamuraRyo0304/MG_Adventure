@@ -9,7 +9,7 @@
 #ifndef TITLESCENE
 #define	TITLESCENE
 
-#include "../IScene.h"
+#include "../Interfaces/IScene.h"
 
 class TitleUI;
 class TitleScene final : public IScene

@@ -6,9 +6,10 @@
  */
 
  『実装済み』
+ 〇Input,StepTimerの単一オブジェクト化
+ 　　使用したデザインパターン：Singletonパターン
  〇ModelFactory/ParticleFactoryの作成
  　　使用したデザインパターン：Factoryパターン
-
  〇ステージエディタ・UndoRedoの作成
  　　使用したデザインパターン：Mementoパターン
 

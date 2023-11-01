@@ -9,7 +9,7 @@
 #ifndef PLAYSCENE
 #define PLAYSCENE
 
-#include "../IScene.h"
+#include "../Interfaces/IScene.h"
 
 // “–‚½‚è”»’è—p
 #include <deque>

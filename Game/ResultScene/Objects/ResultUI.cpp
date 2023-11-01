@@ -45,16 +45,19 @@ ResultUI::~ResultUI()
 }
 
 /// <summary>
-/// 初期化処理
+/// 作成関数
 /// </summary>
 /// <param name="system">システムマネージャ</param>
 /// <param name="device">デバイスポインタ</param>
 /// <param name="windowSize">ウィンドウサイズ</param>
+/// <param name="fullSize">フルスクリーンサイズ</param>
 /// <returns>なし</returns>
-void ResultUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
+void ResultUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device,
+	const SimpleMath::Vector2& windowSize, const SimpleMath::Vector2& fullSize)
 {
 	m_system = system;
 	m_windowSize = windowSize;
+	m_fullScreenSize = fullSize;
 
 	// 画像を登録
 	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds",		device);
@@ -64,10 +67,10 @@ void ResultUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* devi
 	m_system->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds", device);
 	m_system->GetDrawSprite()->AddTextureData(L"TITLE",  L"Resources/Textures/FONT/TITLE.dds",	device);
 
-	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _scale = m_windowSize / m_fullScreenSize;
 
 	// 文字の座標の初期化
-	float _commonY = FULL_SCREEN_SIZE.y - NUM_SIZE * 2;
+	float _commonY = m_fullScreenSize.y - NUM_SIZE * 2;
 	m_retryInfo.pos  = SimpleMath::Vector2{ FONT_WIDTH / 2,					 _commonY };
 	m_selectInfo.pos = SimpleMath::Vector2{ m_retryInfo.pos.x  + FONT_WIDTH, _commonY };
 	m_titleInfo.pos  = SimpleMath::Vector2{ m_selectInfo.pos.x + FONT_WIDTH, _commonY };
@@ -109,7 +112,7 @@ void ResultUI::Update(const int& clearTime)
 void ResultUI::Render(const float& fadeValue)
 {
 	// 画面比率を計算
-	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _rate = m_windowSize / m_fullScreenSize;
 
 	// レイアウトの描画
 	DrawBack(_rate);

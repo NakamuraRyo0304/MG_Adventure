@@ -11,9 +11,6 @@
     <Filter Include="GameLoop">
       <UniqueIdentifier>{8a1eb1ff-b944-4453-9ebd-b07a051aeadc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="IScene">
-      <UniqueIdentifier>{972675d9-5a97-4792-95b5-af7e631221f2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameMain">
       <UniqueIdentifier>{941c7117-b2d9-4102-8ce2-6aca54491ae6}</UniqueIdentifier>
     </Filter>
@@ -230,6 +227,12 @@
     <Filter Include="Common\Input">
       <UniqueIdentifier>{384b2334-9697-40a3-8742-085e4f0eb785}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{dca1726e-4bff-4831-a443-a2a289954c6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interfaces\IScene">
+      <UniqueIdentifier>{972675d9-5a97-4792-95b5-af7e631221f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -240,9 +243,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameMain.h">
       <Filter>GameMain</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\IScene.h">
-      <Filter>IScene</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>pch</Filter>
@@ -364,6 +364,9 @@
     <ClInclude Include="Libraries\SystemDatas\Input.h">
       <Filter>Common\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Interfaces\IScene.h">
+      <Filter>Interfaces\IScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -374,9 +377,6 @@
     </ClCompile>
     <ClCompile Include="Game\GameMain.cpp">
       <Filter>GameMain</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\IScene.cpp">
-      <Filter>IScene</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>pch</Filter>
@@ -482,6 +482,9 @@
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\Input.cpp">
       <Filter>Common\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Interfaces\IScene.cpp">
+      <Filter>Interfaces\IScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

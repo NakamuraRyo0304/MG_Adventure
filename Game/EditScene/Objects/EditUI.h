@@ -29,7 +29,7 @@ private:
 	DirectX::SimpleMath::Vector2 m_windowSize;
 
 	// フルスクリーンサイズ
-	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
+	DirectX::SimpleMath::Vector2 m_fullScreenSize;
 
 	// 現在のステータス
 	int m_nowState;
@@ -82,7 +82,8 @@ public:
 	EditUI();
 	~EditUI();
 
-	void Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize);
+	void Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device,
+		const SimpleMath::Vector2& windowSize, const DirectX::SimpleMath::Vector2& fullSize);
 	void Update();
 	void Render();
 	void Finalize();

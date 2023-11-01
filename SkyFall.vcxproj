@@ -195,8 +195,8 @@
     <ClInclude Include="Game\EditScene\System\ClearChecker.h" />
     <ClInclude Include="Game\EditScene\System\MementoMap.h" />
     <ClInclude Include="Game\EditScene\System\MouseCursor.h" />
-    <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
+    <ClInclude Include="Game\Interfaces\IScene.h" />
     <ClInclude Include="Game\PlayScene\Objects\Blocks.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h" />
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
@@ -241,8 +241,8 @@
     <ClCompile Include="Game\EditScene\System\ClearChecker.cpp" />
     <ClCompile Include="Game\EditScene\System\MementoMap.cpp" />
     <ClCompile Include="Game\EditScene\System\MouseCursor.cpp" />
-    <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />
+    <ClCompile Include="Game\Interfaces\IScene.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Blocks.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayerBill.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />

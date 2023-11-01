@@ -49,16 +49,19 @@ EditUI::~EditUI()
 }
 
 /// <summary>
-/// 初期化処理
+/// 作成関数
 /// </summary>
-/// <param name="shareSystem">システムデータ</param>
+/// <param name="system">システムマネージャ</param>
 /// <param name="device">デバイスポインタ</param>
 /// <param name="windowSize">ウィンドウサイズ</param>
+/// <param name="fullSize">フルスクリーンサイズ</param>
 /// <returns>なし</returns>
-void EditUI::Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
+void EditUI::Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device,
+	const SimpleMath::Vector2& windowSize, const SimpleMath::Vector2& fullSize)
 {
 	m_system = system;
 	m_windowSize = windowSize;
+	m_fullScreenSize = fullSize;
 
 	// キー名　：　ファイルパス名
 	m_system->GetDrawSprite()->AddTextureData(L"ToolBar",		// ツールバー
@@ -92,7 +95,7 @@ void EditUI::Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1*
 	m_saveRect[3] = { _3,_0,_4,_1 };
 
 	// 比率を計算
-	float _span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
+	float _span = static_cast<float>(m_windowSize.x) / m_fullScreenSize.x;
 
 	// 座標情報
 	m_toolTexPos[0] = {80 * _span , 80 * _span};
@@ -199,7 +202,7 @@ void EditUI::Update()
 void EditUI::Render()
 {
 	// 画像の拡大率をウィンドウをもとに計算
-	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _rate = m_windowSize / m_fullScreenSize;
 
 	// ツールフラグがTrueならツールバーを表示する
 	if (is_toolFlag)
@@ -315,7 +318,7 @@ void EditUI::DrawIcon(const SimpleMath::Vector2& imageScale)
 void EditUI::ChangeState(DirectX::Mouse::State& mouseState)
 {
 	// マウスがUIエリア以外なら処理しない
-	if (mouseState.y > BAR_HEIGHT * (m_windowSize.y / FULL_SCREEN_SIZE.y)) return;
+	if (mouseState.y > BAR_HEIGHT * (m_windowSize.y / m_fullScreenSize.y)) return;
 
 	// アイコンごとの初期値
 	bool _iconFlags[MAPSTATE::LENGTH] = { false };

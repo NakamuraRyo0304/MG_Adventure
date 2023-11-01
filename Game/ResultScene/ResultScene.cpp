@@ -213,7 +213,7 @@ void ResultScene::CreateWindowDependentResources()
 	// UI‚Ìì¬
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
 	m_resultUI = std::make_unique<ResultUI>();
-	m_resultUI->Create(GetSystemManager(), _device, GetScreenSize());
+	m_resultUI->Create(GetSystemManager(), _device, GetScreenSize(), GetFullScreenSize());
 
 	// ƒuƒƒbƒN‚Ìì¬
 	m_blocks = std::make_unique<Blocks>();

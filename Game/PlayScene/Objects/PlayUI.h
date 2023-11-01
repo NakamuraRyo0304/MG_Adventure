@@ -24,6 +24,9 @@ private:
 	// ウィンドウサイズ
 	DirectX::SimpleMath::Vector2 m_windowSize;
 
+	// フルスクリーンサイズ
+	DirectX::SimpleMath::Vector2 m_fullScreenSize;
+
 	// タイマーの座標(1の位)
 	DirectX::SimpleMath::Vector2 m_oneSecPos;
 
@@ -73,9 +76,6 @@ private:
 
 private:
 
-	// フルスクリーンサイズ
-	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
-
 	// タイマーのスプライトのサイズ
 	const int NUM_SIZE = 100;
 
@@ -95,7 +95,7 @@ private:
 	const float ROT_SPEED = 0.005f;
 
 	// 太陽の移動速度
-	const float SUN_MOVE_SPEED = (FULL_SCREEN_SIZE.x - SUN_SIZE.x) / MAX_LIMITS;
+	const float SUN_MOVE_SPEED = (1920.0f - SUN_SIZE.x) / MAX_LIMITS;
 
 	// ヘルプページ数
 	const int MAX_PAGE = 3;
@@ -117,7 +117,8 @@ public:
 	~PlayUI();
 
 	// 作成処理
-	void Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device, const DirectX::SimpleMath::Vector2& windowSize);
+	void Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device,
+		const DirectX::SimpleMath::Vector2& windowSize, const DirectX::SimpleMath::Vector2& fullSize);
 
 	// 更新処理
 	void Update(const float& timelimit);

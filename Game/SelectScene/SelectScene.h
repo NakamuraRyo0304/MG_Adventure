@@ -10,7 +10,7 @@
 #define	SELECTSCENE
 
 #include <future>
-#include "../IScene.h"
+#include "../Interfaces/IScene.h"
 
 class Blocks;
 class SelectUI;

@@ -55,16 +55,19 @@ PlayUI::~PlayUI()
 }
 
 /// <summary>
-/// 作成処理
+/// 作成関数
 /// </summary>
 /// <param name="system">システムマネージャ</param>
 /// <param name="device">デバイスポインタ</param>
 /// <param name="windowSize">ウィンドウサイズ</param>
+/// <param name="fullSize">フルスクリーンサイズ</param>
 /// <returns>なし</returns>
-void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,ID3D11Device1* device,const SimpleMath::Vector2& windowSize)
+void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,ID3D11Device1* device,
+	const SimpleMath::Vector2& windowSize, const SimpleMath::Vector2& fullSize)
 {
 	m_system = system;
 	m_windowSize = windowSize;
+	m_fullScreenSize = fullSize;
 
 	// 画像を登録
 	m_system->GetDrawSprite()->AddTextureData(L"Number",			// 数字スプライト
@@ -104,10 +107,10 @@ void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,ID3D11Device1*
 		L"Resources/Textures/PLAY_HELP/SelectArrow.dds", device);
 
 	// 比率を計算
-	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _scale = m_windowSize / m_fullScreenSize;
 
 	// スプライトの位置を計算
-	m_countDownPos = { (FULL_SCREEN_SIZE.x / 2 - NUM_SIZE / 2) * _scale.x , 80.0f * _scale.y };
+	m_countDownPos = { (m_fullScreenSize.x / 2 - NUM_SIZE / 2) * _scale.x , 80.0f * _scale.y };
 	m_oneSecPos = { m_countDownPos.x + static_cast<float>(NUM_SIZE / 2) * _scale.x ,m_countDownPos.y * _scale.y};
 	m_tenSecPos = { m_countDownPos.x - static_cast<float>(NUM_SIZE / 2) * _scale.x ,m_countDownPos.y * _scale.y};
 
@@ -124,14 +127,14 @@ void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,ID3D11Device1*
 	m_pageNum = 1;
 	m_helpPoses.emplace(L"HowToPlay", HelpPosition{ SimpleMath::Vector2::Zero ,
 		SimpleMath::Vector2::Zero });
-	m_helpPoses.emplace(L"BlockInfo", HelpPosition{ SimpleMath::Vector2{ FULL_SCREEN_SIZE.x, 0.0f},
-		SimpleMath::Vector2{ FULL_SCREEN_SIZE.x, 0.0f} });
-	m_helpPoses.emplace(L"GoScenes", HelpPosition{ SimpleMath::Vector2{ FULL_SCREEN_SIZE.x * 2, 0.0f},
-		SimpleMath::Vector2{ FULL_SCREEN_SIZE.x * 2, 0.0f} });
+	m_helpPoses.emplace(L"BlockInfo", HelpPosition{ SimpleMath::Vector2{ m_fullScreenSize.x, 0.0f},
+		SimpleMath::Vector2{ m_fullScreenSize.x, 0.0f} });
+	m_helpPoses.emplace(L"GoScenes", HelpPosition{ SimpleMath::Vector2{ m_fullScreenSize.x * 2, 0.0f},
+		SimpleMath::Vector2{ m_fullScreenSize.x * 2, 0.0f} });
 
 	// 矢印座標
 	m_arrowPos.initPos = m_arrowPos.nowPos =
-	{ m_helpPoses[L"GoScenes"].initPos.x + (FULL_SCREEN_SIZE.x / 3), m_targetArrow[RETRY]};
+	{ m_helpPoses[L"GoScenes"].initPos.x + (m_fullScreenSize.x / 3), m_targetArrow[RETRY]};
 
 	// 落下フラグを切る
 	is_effectFlag = false;
@@ -151,16 +154,16 @@ void PlayUI::Update(const float& timelimit)
 	m_gameTimer = static_cast<int>(timelimit);
 
 	// 比率を計算
-	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _rate = m_windowSize / m_fullScreenSize;
 
 	// 太陽の回転をセット
 	m_system->GetDrawSprite()->CreateRotation(L"Sun", static_cast<float>(MAX_LIMITS - m_gameTimer) * ROT_SPEED);
 
 	// 太陽の移動処理
-	m_sunPos.x += m_gameTimer != 0 ? SUN_MOVE_SPEED * _scale.x : 0.0f;
+	m_sunPos.x += m_gameTimer != 0 ? SUN_MOVE_SPEED * _rate.x : 0.0f;
 
 	// フォントの移動処理
-	UpdateUnderLine(_scale);
+	UpdateUnderLine(_rate);
 
 	// 変更をリセット
 	if (!is_helpFlag)
@@ -188,17 +191,17 @@ void PlayUI::UpdatePage(const bool& leftArrow, const bool& rightArrow)
 	// 移動量を計算
 	if (leftArrow)
 	{
-		m_moveTexPos.x += FULL_SCREEN_SIZE.x;
+		m_moveTexPos.x += m_fullScreenSize.x;
 		m_pageNum--;
 	}
 	if (rightArrow)
 	{
-		m_moveTexPos.x -= FULL_SCREEN_SIZE.x;
+		m_moveTexPos.x -= m_fullScreenSize.x;
 		m_pageNum++;
 	}
 
 	// クランプ処理
-	m_moveTexPos.x = UserUtility::Clamp(m_moveTexPos.x, -FULL_SCREEN_SIZE.x * (MAX_PAGE - 1), 0.0f);
+	m_moveTexPos.x = UserUtility::Clamp(m_moveTexPos.x, -m_fullScreenSize.x * (MAX_PAGE - 1), 0.0f);
 	m_pageNum = UserUtility::Clamp(m_pageNum, 1, MAX_PAGE);
 
 	// 遷移画面ならTrueにする
@@ -244,7 +247,7 @@ void PlayUI::UpdateTransition(const bool& upArrow, const bool& downArrow)
 void PlayUI::Render()
 {
     // 比率を計算
-	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _rate = m_windowSize / m_fullScreenSize;
 
 	// 落下エフェクト
 	if (is_effectFlag)
@@ -253,16 +256,16 @@ void PlayUI::Render()
 			L"Death",                          // 登録キー
 			SimpleMath::Vector2::Zero,         // 座標
 			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-			_scale,                            // 拡大率
+			_rate,                             // 拡大率
 			SimpleMath::Vector2::Zero          // 中心位置
 		);
 	}
 
 	// 太陽アイコンの描画
-	RenderSunny(_scale);
+	RenderSunny(_rate);
 
 	// タイマーの描画
-	RenderTimer(_scale);
+	RenderTimer(_rate);
 
 	//-------------------------------------------------------------------------------------//
 	// ヘルプ中の表示
@@ -272,21 +275,21 @@ void PlayUI::Render()
 			L"HelpBack",                       // 登録キー
 			SimpleMath::Vector2::Zero,         // 座標
 			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-			_scale,                            // 拡大率
+			_rate,                             // 拡大率
 			SimpleMath::Vector2::Zero          // 中心位置
 		);
 
 		// ページの描画
-		RenderHelpPage(_scale);
+		RenderHelpPage(_rate);
 
 		// アロー
 		if (is_transFlag)
 		{
 			m_system->GetDrawSprite()->DrawTexture(
 				L"SelectArrow",
-				m_arrowPos.nowPos * _scale,
+				m_arrowPos.nowPos * _rate,
 				{ 1.0f, 1.0f, 1.0f, 1.0f },
-				 _scale,
+				 _rate,
 				ARROW_SIZE / 2,
 				RECT_U(0L, 0L, static_cast<LONG>(ARROW_SIZE.x), static_cast<LONG>(ARROW_SIZE.y))
 			);
@@ -298,9 +301,9 @@ void PlayUI::Render()
 	{
 		m_system->GetDrawSprite()->DrawTexture(
 			L"OpenHelp",
-			SimpleMath::Vector2{ m_windowSize.x - HELP_WIDTH * _scale.x, 0.0f },
+			SimpleMath::Vector2{ m_windowSize.x - HELP_WIDTH * _rate.x, 0.0f },
 			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			_scale,
+			_rate,
 			SimpleMath::Vector2::Zero,
 			{ 0L,0L,360L,120L }
 		);
@@ -310,17 +313,17 @@ void PlayUI::Render()
 			L"UnderBack",
 			SimpleMath::Vector2::Zero,
 			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			_scale,
+			_rate,
 			SimpleMath::Vector2::Zero
 		);
 		m_system->GetDrawSprite()->DrawTexture(
 			L"UnderFont",
 			m_underFontPos,
 			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			_scale,
+			_rate,
 			SimpleMath::Vector2::Zero,
 			// 画像のサイズ
-			{ 0L,0L,static_cast<LONG>(FULL_SCREEN_SIZE.x * 2),static_cast<LONG>(FULL_SCREEN_SIZE.y) }
+			{ 0L,0L,static_cast<LONG>(m_fullScreenSize.x * 2),static_cast<LONG>(m_fullScreenSize.y) }
 		);
 	}
 }
@@ -333,17 +336,17 @@ void PlayUI::Render()
 void PlayUI::RenderCountDown(const float& countDown)
 {
 	// 比率を計算
-	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
+	SimpleMath::Vector2 _rate = m_windowSize / m_fullScreenSize;
 
 	if (static_cast<int>(countDown / 60) == 0)
 	{
 		m_countDownEnds -= COUNT_END_SPEED;
 		m_system->GetDrawSprite()->DrawTexture(
 			L"GameStart",
-			{ (m_windowSize / 2).x * _scale.x,
-			((m_windowSize / 2).y + m_countDownEnds * COUNT_MOVE_SPEED) * _scale.y },
+			{ (m_windowSize / 2).x * _rate.x,
+			((m_windowSize / 2).y + m_countDownEnds * COUNT_MOVE_SPEED) * _rate.y },
 			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			_scale,
+			_rate,
 			m_windowSize / 2
 		);
 		return;
@@ -356,7 +359,7 @@ void PlayUI::RenderCountDown(const float& countDown)
 		L"Number",
 		m_countDownPos,
 		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		_scale,
+		_rate,
 		SimpleMath::Vector2::Zero,
 		_countRec
 	);
@@ -380,9 +383,9 @@ void PlayUI::UpdateUnderLine(SimpleMath::Vector2 scale)
 {
 	m_underFontPos.x -= UNDER_SPEED * scale.x;
 
-	if (m_underFontPos.x < -FULL_SCREEN_SIZE.x * 2 * scale.x)
+	if (m_underFontPos.x < -m_fullScreenSize.x * 2 * scale.x)
 	{
-		m_underFontPos.x = FULL_SCREEN_SIZE.x;
+		m_underFontPos.x = m_fullScreenSize.x;
 	}
 
 }

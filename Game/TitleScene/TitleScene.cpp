@@ -263,7 +263,7 @@ void TitleScene::CreateWindowDependentResources()
 	// UI‚Ì‰Šú‰»
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
 	m_titleUI = std::make_unique<TitleUI>();
-	m_titleUI->Create(GetSystemManager(), _device, GetScreenSize());
+	m_titleUI->Create(GetSystemManager(), _device, GetScreenSize(), GetFullScreenSize());
 
 	// ƒ‚ƒfƒ‹‚Ìì¬---------------------------------------------------------------------------------
 

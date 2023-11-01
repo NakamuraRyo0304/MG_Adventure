@@ -239,7 +239,7 @@ void SelectScene::CreateWindowDependentResources()
 	// UIの作成
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch(_context);
 	m_selectUI = std::make_unique<SelectUI>();
-	m_selectUI->Create(GetSystemManager(), _device, GetScreenSize());
+	m_selectUI->Create(GetSystemManager(), _device, GetScreenSize(), GetFullScreenSize());
 
 	// スカイドームモデルを作成する
 	{
