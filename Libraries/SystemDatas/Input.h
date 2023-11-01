@@ -24,9 +24,9 @@ private:
 public:
 
 	// インスタンスを作成＆取得
-	static Input* GetInstance()
+	static Input& GetInstance()
 	{
-		static Input* instance = !instance ? new Input() : instance;
+		static Input instance;
 		return instance;
 	}
 

@@ -85,7 +85,7 @@ void EditScene::Initialize()
 void EditScene::Update()
 {
 	// インプットの更新
-	auto _input = Input::GetInstance();
+	auto& _input = Input::GetInstance();
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
@@ -100,7 +100,7 @@ void EditScene::Update()
 	m_mouseCursor->Update();
 
 	// エスケープで終了
-	if(_input->GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
+	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
 
 	// サウンド
 	auto& _sound = GetSystemManager()->GetSoundManager();
@@ -113,7 +113,7 @@ void EditScene::Update()
 
 	// セーブフラグがたったらファイルを保存
 	if (m_editUI->GetSaveFlag() &&
-		_input->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+		_input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		// 要素チェックして保存可能なら実行
 		if (IsCanSave())
@@ -125,7 +125,7 @@ void EditScene::Update()
 
 	// オープンフラグがたったらファイルを開く
 	if (m_editUI->GetOpenFlag() &&
-		_input->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+		_input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 		if (!m_mapLoader.LoadMap(L""))
@@ -136,7 +136,7 @@ void EditScene::Update()
 	}
 
 	// Cキーを押したら、カメラモードを反転する
-	if (_input->GetKeyTrack()->IsKeyReleased(Keyboard::C))
+	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::C))
 	{
 		// インターフェースでカメラのフラグを取得
 		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
@@ -559,15 +559,15 @@ bool EditScene::IsCanSave()
 /// <returns>なし</returns>
 void EditScene::DoUndoRedo()
 {
-	auto _input = Input::GetInstance();
+	auto& _input = Input::GetInstance();
 
 	// 前に戻る
-	if (_input->GetKeyTrack()->IsKeyPressed(Keyboard::Z))
+	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Z))
 	{
 		RestoreHistory(m_history.GetUndo());
 	}
 	// Undoを取り消す
-	if (_input->GetKeyTrack()->IsKeyPressed(Keyboard::X))
+	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::X))
 	{
 		RestoreHistory(m_history.GetRedo());
 	}

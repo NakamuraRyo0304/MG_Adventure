@@ -98,13 +98,13 @@ void PlayScene::Initialize()
 void PlayScene::Update()
 {
 	// インプットの更新
-	auto _input = Input::GetInstance();
+	auto& _input = Input::GetInstance();
 
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
 
 	// エスケープで終了
-	if(_input->GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
+	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
 
 	// UI表示中は以降処理しない
 	if (UpdateUI()) return;
@@ -136,7 +136,7 @@ void PlayScene::Update()
 	GetSystemManager()->GetCamera()->SetArrowMode(true);
 
 	// サードパーソンモードの切り替え
-	if (_input->GetKeyTrack()->IsKeyPressed(Keyboard::Space))
+	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Space))
 	{
 		is_thirdPersonMode = !is_thirdPersonMode;
 	}
@@ -597,11 +597,11 @@ void PlayScene::UpdateSky()
 /// <returns>ヘルプフラグ</returns>
 bool PlayScene::UpdateUI()
 {
-	auto _input = Input::GetInstance();
+	auto& _input = Input::GetInstance();
 	auto& _se = GetSystemManager()->GetSoundManager();
 
 	// ヘルプ表示を切り替える
-	if (_input->GetKeyTrack()->IsKeyPressed(Keyboard::Enter) && StartTimer())
+	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Enter) && StartTimer())
 	{
 		is_helpFlag = !is_helpFlag;
 		m_playUI->SetHelpFlag(is_helpFlag);
@@ -612,16 +612,16 @@ bool PlayScene::UpdateUI()
 	{
 		// 表示切替
 		m_playUI->UpdatePage(
-			(_input->GetKeyTrack()->IsKeyPressed(Keyboard::A) ||  // 左
-		     _input->GetKeyTrack()->IsKeyPressed(Keyboard::Left)),
-			(_input->GetKeyTrack()->IsKeyPressed(Keyboard::D) ||  // 右
-		     _input->GetKeyTrack()->IsKeyPressed(Keyboard::Right)));
+			(_input.GetKeyTrack()->IsKeyPressed(Keyboard::A) ||  // 左
+		     _input.GetKeyTrack()->IsKeyPressed(Keyboard::Left)),
+			(_input.GetKeyTrack()->IsKeyPressed(Keyboard::D) ||  // 右
+		     _input.GetKeyTrack()->IsKeyPressed(Keyboard::Right)));
 
 		// ページをめくる音を鳴らす
-		if (_input->GetKeyTrack()->IsKeyPressed(Keyboard::A)    ||
-			_input->GetKeyTrack()->IsKeyPressed(Keyboard::Left) ||
-			_input->GetKeyTrack()->IsKeyPressed(Keyboard::D)    ||
-			_input->GetKeyTrack()->IsKeyPressed(Keyboard::Right))
+		if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::A)    ||
+			_input.GetKeyTrack()->IsKeyPressed(Keyboard::Left) ||
+			_input.GetKeyTrack()->IsKeyPressed(Keyboard::D)    ||
+			_input.GetKeyTrack()->IsKeyPressed(Keyboard::Right))
 		{
 			_se->PlaySound(XACT_WAVEBANK_SKBX_SE_NEXTHELP, false);
 		}
@@ -631,21 +631,21 @@ bool PlayScene::UpdateUI()
 		{
 			// 上下キーで選択
 			m_playUI->UpdateTransition(
-				(_input->GetKeyTrack()->IsKeyPressed(Keyboard::W) ||
-				 _input->GetKeyTrack()->IsKeyPressed(Keyboard::Up)),
-				(_input->GetKeyTrack()->IsKeyPressed(Keyboard::S) ||
-				 _input->GetKeyTrack()->IsKeyPressed(Keyboard::Down)));
+				(_input.GetKeyTrack()->IsKeyPressed(Keyboard::W) ||
+				 _input.GetKeyTrack()->IsKeyPressed(Keyboard::Up)),
+				(_input.GetKeyTrack()->IsKeyPressed(Keyboard::S) ||
+				 _input.GetKeyTrack()->IsKeyPressed(Keyboard::Down)));
 
-			if (_input->GetKeyTrack()->IsKeyPressed(Keyboard::W) ||
-				_input->GetKeyTrack()->IsKeyPressed(Keyboard::Up)||
-				_input->GetKeyTrack()->IsKeyPressed(Keyboard::S) ||
-				_input->GetKeyTrack()->IsKeyPressed(Keyboard::Down))
+			if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::W) ||
+				_input.GetKeyTrack()->IsKeyPressed(Keyboard::Up)||
+				_input.GetKeyTrack()->IsKeyPressed(Keyboard::S) ||
+				_input.GetKeyTrack()->IsKeyPressed(Keyboard::Down))
 			{
 				_se->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 			}
 
 			// 決定する
-			if (_input->GetKeyTrack()->IsKeyPressed(Keyboard::Space))
+			if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Space))
 			{
 				// シーンの遷移
 				HelpNext();

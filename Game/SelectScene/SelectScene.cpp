@@ -78,7 +78,7 @@ void SelectScene::Initialize()
 void SelectScene::Update()
 {
 	// インプットの更新
-	auto _input = Input::GetInstance();
+	auto& _input = Input::GetInstance();
 	auto _key = Keyboard::Get().GetState();
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
@@ -98,13 +98,13 @@ void SelectScene::Update()
 	m_selectUI->Update(_timer, (_key.D || _key.Right), (_key.A || _key.Left));
 
 	// エスケープで終了
-	if(_input->GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME); }
+	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME); }
 
 	// コインの数を保存
 	m_allCoins = m_initCoins - static_cast<int>(m_useCoins);
 
 	// Spaceキーでシーン切り替え
-	if (_input->GetKeyTrack()->IsKeyReleased(Keyboard::Space))
+	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		// フェード中は処理しない
 		if (GetFadeValue() >= 0.7f) return;

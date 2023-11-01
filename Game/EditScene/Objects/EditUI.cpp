@@ -127,7 +127,7 @@ void EditUI::Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1*
 /// <returns>なし</returns>
 void EditUI::Update()
 {
-	auto _input = Input::GetInstance();
+	auto& _input = Input::GetInstance();
 	auto _mouse = Mouse::Get().GetState();
 
 	// ツールバー表示切り替えアイコンをクリック
@@ -138,7 +138,7 @@ void EditUI::Update()
 		SimpleMath::Vector2{ 80.0f });						 // サイズ
 
 	// ツールを表示するフラグを切り替え
-	if (_tool && _input->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (_tool && _input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_toolFlag = !is_toolFlag;
 	}
@@ -157,7 +157,7 @@ void EditUI::Update()
 		SimpleMath::Vector2{ 80.0f });				 // サイズ
 
 	// ツールを表示するフラグを切り替え
-	if (_back && _input->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (_back && _input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_backFlag = true;
 	}
@@ -184,7 +184,7 @@ void EditUI::Update()
 		SimpleMath::Vector2{ 100.0f });				 // サイズ
 
 	// カメラ移動モード切り替え
-	if (_camera && _input->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (_camera && _input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_cameraFlag = !is_cameraFlag;
 		m_system->GetCamera()->SetEagleMode(is_cameraFlag);

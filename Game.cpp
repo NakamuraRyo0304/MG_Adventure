@@ -75,8 +75,8 @@ void Game::Tick()
 //--------------------------------------------------------//
 void Game::Update()
 {
-    auto _input = Input::GetInstance();
-    _input->Update();
+    auto& _input = Input::GetInstance();
+    _input.Update();
     m_gameMain->Update();
 }
 #pragma endregion
