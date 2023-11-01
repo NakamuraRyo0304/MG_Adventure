@@ -27,7 +27,8 @@ private:
 	SCENE m_nextScene;
 
 	// スクリーンサイズ
-	DirectX::SimpleMath::Vector2 m_fullScreenSize;
+	DirectX::SimpleMath::Vector2 m_screenSize;
+	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
 
 	// シーン切り替え判定フラグ
 	bool is_changeFlag;
@@ -89,7 +90,8 @@ public:
 	}
 
 	// スクリーンサイズを取得する
-	const DirectX::SimpleMath::Vector2& GetScreenSize() { return m_fullScreenSize; }
+	const DirectX::SimpleMath::Vector2& GetScreenSize() { return m_screenSize; }
+	const DirectX::SimpleMath::Vector2& GetFullScreenSize() { return FULL_SCREEN_SIZE; }
 
 	//-------------------------------------------------------------------------------------//
 	// GameMainで使用する関数 (通常は使用しない)
@@ -103,7 +105,7 @@ public:
 	}
 
 	// 画面サイズを設定する
-	inline void SetScreenSize(const DirectX::SimpleMath::Vector2& size) { m_fullScreenSize = size; }
+	inline void SetScreenSize(const DirectX::SimpleMath::Vector2& size) { m_screenSize = size; }
 
 	// ソフト終了
 	inline void ExitApp(){	PostQuitMessage(0);	}

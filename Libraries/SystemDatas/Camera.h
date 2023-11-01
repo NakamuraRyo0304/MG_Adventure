@@ -41,31 +41,19 @@ private: //---------------------------------------------------------------------
 	// 前回のマウス情報
 	PrevMouse m_prevMouse;
 	// マウスホイールのスクロール値
-	int m_scrollWheelValue;
-	// 一時的なスクロール値の蓄積用変数
-	int m_tempScrollValue;
+	int m_scrollWheelValue, m_tempScrollValue;
+
 	// 回転角
 	DirectX::SimpleMath::Vector2 m_angle;
 
-	// ビュー行列
-	DirectX::SimpleMath::Matrix m_view;
-	// プロジェクション行列
-	DirectX::SimpleMath::Matrix m_projection;
-	// 回転量
-	DirectX::SimpleMath::Matrix m_rotateMatrix;
+	// ビュー行列・プロジェクション行列・回転行列
+	DirectX::SimpleMath::Matrix m_view, m_projection, m_rotateMatrix;
 
-	// カメラの座標
-	DirectX::SimpleMath::Vector3 m_position;
-
-	// カメラの加算用座標
-	DirectX::SimpleMath::Vector3 m_addPos;
-
-	// 注視点
-	DirectX::SimpleMath::Vector3 m_target;
+	// カメラの座標・加算用座標・注視点
+	DirectX::SimpleMath::Vector3 m_position, m_addPos, m_target;
 
 	// 視点移動モード
-	bool is_eagleMode;
-	bool is_allowMode;
+	bool is_eagleMode, is_allowMode;
 
 public:
 	Camera();
