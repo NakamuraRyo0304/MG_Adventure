@@ -83,7 +83,7 @@ public:
 	~EditUI();
 
 	void Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize);
-	void Update(DirectX::Mouse::State& mouseState);
+	void Update();
 	void Render();
 	void Finalize();
 

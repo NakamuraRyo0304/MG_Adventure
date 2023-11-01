@@ -97,12 +97,6 @@ void GameMain::Update()
 	// フェードの更新
 	m_fade->Update();
 
-	// キー入力情報を取得する
-	m_keyboardStateTracker->Update(Keyboard::Get().GetState());
-
-	// マウス入力情報を取得する
-	m_mouseStateTracker->Update(Mouse::Get().GetState());
-
 	// 次のシーンが設定されていたらシーン切り替え
 	if (m_nextScene != SCENE::NONE && m_fade->GetEndFlag())
 	{
@@ -316,20 +310,9 @@ void GameMain::DeleteScene()
 /// <returns>なし</returns>
 void GameMain::CreateWindowDependentResources(const int& screenWidth, const int& screenHeight)
 {
-	DX::DeviceResources* _pDR = DX::DeviceResources::GetInstance();
-
 	// スクリーンサイズの設定
 	m_screenWidth = screenWidth;
 	m_screenHeight = screenHeight;
-
-	// キーボード関連
-	m_keyboard = std::make_unique<Keyboard>();
-	m_keyboardStateTracker = std::make_unique<Keyboard::KeyboardStateTracker>();
-
-	// マウス関連
-	m_mouse = std::make_unique<Mouse>();
-	m_mouseStateTracker = std::make_unique<Mouse::ButtonStateTracker>();
-	m_mouse->SetWindow(_pDR->GetHwnd());
 
 	// フェードオブジェクトの初期化
 	m_fade = std::make_unique<Fade>(DEFAULT_FADE_SPEED);

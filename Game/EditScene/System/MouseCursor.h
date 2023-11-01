@@ -27,7 +27,7 @@ public:
 	~MouseCursor();
 
 	void Initialize(const wchar_t* filename, ID3D11Device* device);
-	void Update(DirectX::SimpleMath::Vector2 pos) { m_cursorPos = pos; }
+	void Update();
 	void Render();
 	void Finalize();
 };

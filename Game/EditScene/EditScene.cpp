@@ -19,7 +19,7 @@
 #include "Objects/EditUI.h"
 
 // マウスカーソル
-#include "../../Libraries/SystemDatas/MouseCursor.h"
+#include "System/MouseCursor.h"
 
 // クリア難易度チェッカー
 #include "System/ClearChecker.h"
@@ -85,25 +85,22 @@ void EditScene::Initialize()
 void EditScene::Update()
 {
 	// インプットの更新
-	auto _key = Keyboard::Get().GetState();
-	auto _mouse = Mouse::Get().GetState();
-	GetSystemManager()->GetStateTrack()->Update(_key);
-	GetSystemManager()->GetMouseTrack()->Update(_mouse);
+	auto _input = Input::GetInstance();
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
 
 	// レイの更新
-	GetSystemManager()->GetRayCast()->Update(_mouse);
+	GetSystemManager()->GetRayCast()->Update();
 
 	// UIの処理
-	m_editUI->Update(_mouse);
+	m_editUI->Update();
 
 	// マウスカーソルの位置を更新
-	m_mouseCursor->Update(SimpleMath::Vector2{ static_cast<float>(_mouse.x),static_cast<float>(_mouse.y) });
+	m_mouseCursor->Update();
 
 	// エスケープで終了
-	if(GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
+	if(_input->GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
 
 	// サウンド
 	auto& _sound = GetSystemManager()->GetSoundManager();
@@ -116,7 +113,7 @@ void EditScene::Update()
 
 	// セーブフラグがたったらファイルを保存
 	if (m_editUI->GetSaveFlag() &&
-		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+		_input->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		// 要素チェックして保存可能なら実行
 		if (IsCanSave())
@@ -128,7 +125,7 @@ void EditScene::Update()
 
 	// オープンフラグがたったらファイルを開く
 	if (m_editUI->GetOpenFlag() &&
-		GetSystemManager()->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+		_input->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 		if (!m_mapLoader.LoadMap(L""))
@@ -139,7 +136,7 @@ void EditScene::Update()
 	}
 
 	// Cキーを押したら、カメラモードを反転する
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::C))
+	if (_input->GetKeyTrack()->IsKeyReleased(Keyboard::C))
 	{
 		// インターフェースでカメラのフラグを取得
 		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
@@ -562,15 +559,15 @@ bool EditScene::IsCanSave()
 /// <returns>なし</returns>
 void EditScene::DoUndoRedo()
 {
-	auto& _key = GetSystemManager()->GetStateTrack();
+	auto _input = Input::GetInstance();
 
 	// 前に戻る
-	if (_key->IsKeyPressed(Keyboard::Z))
+	if (_input->GetKeyTrack()->IsKeyPressed(Keyboard::Z))
 	{
 		RestoreHistory(m_history.GetUndo());
 	}
 	// Undoを取り消す
-	if (_key->IsKeyPressed(Keyboard::X))
+	if (_input->GetKeyTrack()->IsKeyPressed(Keyboard::X))
 	{
 		RestoreHistory(m_history.GetRedo());
 	}

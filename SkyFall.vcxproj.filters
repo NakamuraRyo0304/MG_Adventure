@@ -38,12 +38,6 @@
     <Filter Include="Common\DeviceResources">
       <UniqueIdentifier>{a2d73052-253b-4e9b-b2fa-e34918ac4ad7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\DrawString">
-      <UniqueIdentifier>{4e74567a-c8e0-4d55-897c-84489a262085}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\GridFloor">
-      <UniqueIdentifier>{4b800ea6-ace5-4bd5-b7d6-2ff72fe944cc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common\MapLoad">
       <UniqueIdentifier>{0fe180e7-fe66-453f-afc3-6b0091d33735}</UniqueIdentifier>
     </Filter>
@@ -79,9 +73,6 @@
     </Filter>
     <Filter Include="Scenes\EditScene\Objects">
       <UniqueIdentifier>{0b6acfe5-f1a3-4424-873c-3f20290cf034}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Fade">
-      <UniqueIdentifier>{7c91f0be-f5e3-4cf5-b110-ada0c1ed334d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders">
       <UniqueIdentifier>{f529bb67-c32b-4d65-9654-6bcdb90f737e}</UniqueIdentifier>
@@ -130,9 +121,6 @@
     </Filter>
     <Filter Include="Resources\Textures\PLAY_UI\PLAY_HELP">
       <UniqueIdentifier>{8a98519b-37bd-4a79-be13-4abedcb3ba54}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\MouseCursor">
-      <UniqueIdentifier>{dec65e1a-97d1-40d8-88cf-2337775d9678}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scenes\SelectScene\Objects">
       <UniqueIdentifier>{b184d944-50fd-427a-8bb5-0386bea9f225}</UniqueIdentifier>
@@ -212,14 +200,35 @@
     <Filter Include="Scenes\EditScene\System\MementoMap">
       <UniqueIdentifier>{25ecdf5c-55bc-4779-bedf-4480f3bd8c1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\Transition">
-      <UniqueIdentifier>{5604dedf-a809-4c86-bb0c-2b1b36fc758a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Shaders\Transition">
       <UniqueIdentifier>{465f484a-80cf-4a42-925c-e5a2d54428f3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders\Transition\Textures">
       <UniqueIdentifier>{a27bd2ad-159b-48d7-a6ef-22ff8a61a472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Debug">
+      <UniqueIdentifier>{d34d2eba-1763-42fd-8fd9-3f35d1a48057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Debug\GridFloor">
+      <UniqueIdentifier>{4b800ea6-ace5-4bd5-b7d6-2ff72fe944cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Debug\DrawString">
+      <UniqueIdentifier>{4e74567a-c8e0-4d55-897c-84489a262085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ChangeSceneEffects">
+      <UniqueIdentifier>{47bbbf2b-40f4-4cbf-ae8c-4eefd6179c43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ChangeSceneEffects\Fade">
+      <UniqueIdentifier>{7c91f0be-f5e3-4cf5-b110-ada0c1ed334d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ChangeSceneEffects\Transition">
+      <UniqueIdentifier>{5604dedf-a809-4c86-bb0c-2b1b36fc758a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\EditScene\System\MouseCursor">
+      <UniqueIdentifier>{dec65e1a-97d1-40d8-88cf-2337775d9678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Input">
+      <UniqueIdentifier>{384b2334-9697-40a3-8742-085e4f0eb785}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -257,10 +266,10 @@
       <Filter>Common\DeviceResources</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\DrawString.h">
-      <Filter>Common\DrawString</Filter>
+      <Filter>Common\Debug\DrawString</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\GridFloor.h">
-      <Filter>Common\GridFloor</Filter>
+      <Filter>Common\Debug\GridFloor</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\MapLoad.h">
       <Filter>Common\MapLoad</Filter>
@@ -296,7 +305,7 @@
       <Filter>Scenes\EditScene\Objects\EditUI</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\Fade.h">
-      <Filter>Common\Fade</Filter>
+      <Filter>Common\ChangeSceneEffects\Fade</Filter>
     </ClInclude>
     <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h">
       <Filter>Scenes\PlayScene\Objects\PlayerBill</Filter>
@@ -312,9 +321,6 @@
     </ClInclude>
     <ClInclude Include="Game\TitleScene\Objects\TitleUI.h">
       <Filter>Scenes\TitleScene\Objects\TitleUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\MouseCursor.h">
-      <Filter>Common\MouseCursor</Filter>
     </ClInclude>
     <ClInclude Include="Game\SelectScene\Objects\SelectUI.h">
       <Filter>Scenes\SelectScene\Objects\SelectUI</Filter>
@@ -350,7 +356,13 @@
       <Filter>Scenes\EditScene\System\EditorLog</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\Transition.h">
-      <Filter>Common\Transition</Filter>
+      <Filter>Common\ChangeSceneEffects\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\EditScene\System\MouseCursor.h">
+      <Filter>Scenes\EditScene\System\MouseCursor</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\Input.h">
+      <Filter>Common\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -388,10 +400,10 @@
       <Filter>Common\DeviceResources</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\DrawString.cpp">
-      <Filter>Common\DrawString</Filter>
+      <Filter>Common\Debug\DrawString</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\GridFloor.cpp">
-      <Filter>Common\GridFloor</Filter>
+      <Filter>Common\Debug\GridFloor</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp">
       <Filter>Common\MapLoad</Filter>
@@ -421,7 +433,7 @@
       <Filter>Scenes\EditScene\Objects\EditUI</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\Fade.cpp">
-      <Filter>Common\Fade</Filter>
+      <Filter>Common\ChangeSceneEffects\Fade</Filter>
     </ClCompile>
     <ClCompile Include="Game\PlayScene\Objects\PlayerBill.cpp">
       <Filter>Scenes\PlayScene\Objects\PlayerBill</Filter>
@@ -437,9 +449,6 @@
     </ClCompile>
     <ClCompile Include="Game\TitleScene\Objects\TitleUI.cpp">
       <Filter>Scenes\TitleScene\Objects\TitleUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\MouseCursor.cpp">
-      <Filter>Common\MouseCursor</Filter>
     </ClCompile>
     <ClCompile Include="Game\SelectScene\Objects\SelectUI.cpp">
       <Filter>Scenes\SelectScene\Objects\SelectUI</Filter>
@@ -466,7 +475,13 @@
       <Filter>Scenes\EditScene\System\EditorLog</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\Transition.cpp">
-      <Filter>Common\Transition</Filter>
+      <Filter>Common\ChangeSceneEffects\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\EditScene\System\MouseCursor.cpp">
+      <Filter>Scenes\EditScene\System\MouseCursor</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\Input.cpp">
+      <Filter>Common\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

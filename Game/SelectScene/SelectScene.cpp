@@ -78,8 +78,8 @@ void SelectScene::Initialize()
 void SelectScene::Update()
 {
 	// インプットの更新
+	auto _input = Input::GetInstance();
 	auto _key = Keyboard::Get().GetState();
-	GetSystemManager()->GetStateTrack()->Update(_key);
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラの更新
@@ -92,19 +92,19 @@ void SelectScene::Update()
 	DirectionSelectChange();
 
 	// ステージの変更
-	ChangeStageNumber(_key);
+	ChangeStageNumber();
 
 	// UIの更新
 	m_selectUI->Update(_timer, (_key.D || _key.Right), (_key.A || _key.Left));
 
 	// エスケープで終了
-if(GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
+	if(_input->GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME); }
 
 	// コインの数を保存
 	m_allCoins = m_initCoins - static_cast<int>(m_useCoins);
 
 	// Spaceキーでシーン切り替え
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
+	if (_input->GetKeyTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		// フェード中は処理しない
 		if (GetFadeValue() >= 0.7f) return;
@@ -381,14 +381,17 @@ void SelectScene::CreateFirstStage(ID3D11Device1* device)
 /// <summary>
 /// ステージの選択
 /// </summary>
-/// <param name="keyState">キーボード</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void SelectScene::ChangeStageNumber(Keyboard::State keyState)
+void SelectScene::ChangeStageNumber()
 {
 	// 切り替え可能なタイミングはここで変更
 	if (m_targetY >= UP_VALUE * 0.25f) return;
 
-	if (keyState.Right || keyState.D)
+	// インプットの更新
+	auto _input = Keyboard::Get().GetState();
+
+	if (_input.Right || _input.D)
 	{
 		// ステージ番号が最大なら処理しない
 		if (m_stageNum == MAX_STAGE_NUM - 1 - m_safeStages) return;
@@ -400,7 +403,7 @@ void SelectScene::ChangeStageNumber(Keyboard::State keyState)
 		m_stageNum++;
 		m_flashCount = 0.0f;
 	}
-	if (keyState.Left || keyState.A)
+	if (_input.Left || _input.A)
 	{
 		// ステージ番号が0なら処理しない
 		if (m_stageNum == 0) return;

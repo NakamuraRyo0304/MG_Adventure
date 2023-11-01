@@ -14,6 +14,7 @@
  // ƒ‰ƒCƒuƒ‰ƒŠ
 #include "../Libraries/SystemManager/SystemManager.h"
 #include "../Libraries/UserUtility.h"
+#include "../Libraries/SystemDatas/Input.h"
 #include "../Libraries/Factories/ModelFactory.h"
 
 class IScene

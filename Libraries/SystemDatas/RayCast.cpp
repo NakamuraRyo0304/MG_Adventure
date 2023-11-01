@@ -42,12 +42,14 @@ RayCast::~RayCast()
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="mouseState">マウスを渡す</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void RayCast::Update(Mouse::State& mouseState)
+void RayCast::Update()
 {
+	auto _mouse = Mouse::Get().GetState();
+
 	// レイを飛ばして交点を求める
-	m_convertPosition = ShotRay(mouseState.x, mouseState.y);
+	m_convertPosition = ShotRay(_mouse.x, _mouse.y);
 }
 
 

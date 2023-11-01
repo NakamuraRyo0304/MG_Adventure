@@ -7,6 +7,7 @@
 
 #include "pch.h"
 
+#include "../../../Libraries/SystemDatas/Input.h"
 #include "../../../Libraries/SystemManager/SystemManager.h"
 
 // ユーザーユーティリティ
@@ -122,19 +123,22 @@ void EditUI::Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1*
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="mouseState">マウス</param>
+/// <param name="引数無し"></param>
 /// <returns>なし</returns>
-void EditUI::Update(Mouse::State& mouseState)
+void EditUI::Update()
 {
+	auto _input = Input::GetInstance();
+	auto _mouse = Mouse::Get().GetState();
+
 	// ツールバー表示切り替えアイコンをクリック
 	bool _tool = m_imageHitter.IsHitAABB2D(
-		{ (float)mouseState.x,(float)mouseState.y },		 // マウスの位置
+		{ (float)_mouse.x,(float)_mouse.y },				 // マウスの位置
 		{ m_toolButtonTexPos.x,m_toolButtonTexPos.y },	 	 // 画像の位置
 		SimpleMath::Vector2{ 5.0f }, 						 // サイズ
 		SimpleMath::Vector2{ 80.0f });						 // サイズ
 
 	// ツールを表示するフラグを切り替え
-	if (_tool && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (_tool && _input->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_toolFlag = !is_toolFlag;
 	}
@@ -143,44 +147,44 @@ void EditUI::Update(Mouse::State& mouseState)
 	if (!is_toolFlag) return;
 
 	// ボックスのアイコン
-	ChangeState(mouseState);
+	ChangeState(_mouse);
 
 	// セレクトに戻るボタンをクリック
 	bool _back = m_imageHitter.IsHitAABB2D(
-		{ (float)mouseState.x,(float)mouseState.y },		 // マウスの位置
-		{ m_backTexPos.x,m_backTexPos.y },	 				 // 画像の位置
-		SimpleMath::Vector2{ 5.0f }, 						 // サイズ
-		SimpleMath::Vector2{ 80.0f });						 // サイズ
+		{ (float)_mouse.x,(float)_mouse.y },		 // マウスの位置
+		{ m_backTexPos.x,m_backTexPos.y },	 		 // 画像の位置
+		SimpleMath::Vector2{ 5.0f }, 				 // サイズ
+		SimpleMath::Vector2{ 80.0f });				 // サイズ
 
 	// ツールを表示するフラグを切り替え
-	if (_back && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (_back && _input->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_backFlag = true;
 	}
 
 	// ファイルを開くアイコン
 	is_openFlag = m_imageHitter.IsHitAABB2D(
-		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
+		{ (float)_mouse.x,(float)_mouse.y },// マウスの位置
 		m_toolTexPos[0],							// 画像の位置
 		SimpleMath::Vector2{ 5.0f },			    // サイズ
 		SimpleMath::Vector2{ 100.0f });				// サイズ
 
 	// ファイルを保存するアイコン
 	is_saveFlag = m_imageHitter.IsHitAABB2D(
-		{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
+		{ (float)_mouse.x,(float)_mouse.y },// マウスの位置
 		m_toolTexPos[1],							// 画像の位置
 		SimpleMath::Vector2{ 5.0f },				// サイズ
 		SimpleMath::Vector2{ 100.0f });				// サイズ
 
 	// カメラアイコンをクリック
 	bool _camera = m_imageHitter.IsHitAABB2D(
-		{ (float)mouseState.x,(float)mouseState.y }, // マウスの位置
+		{ (float)_mouse.x,(float)_mouse.y }, // マウスの位置
 		m_toolTexPos[2],						 	 // 画像の位置
 		SimpleMath::Vector2{ 5.0f }, 				 // サイズ
 		SimpleMath::Vector2{ 100.0f });				 // サイズ
 
 	// カメラ移動モード切り替え
-	if (_camera && m_system->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (_camera && _input->GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		is_cameraFlag = !is_cameraFlag;
 		m_system->GetCamera()->SetEagleMode(is_cameraFlag);

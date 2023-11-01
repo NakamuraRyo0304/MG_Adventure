@@ -33,18 +33,6 @@ private: //---------------------------------------------------------------------
     // スクリーンサイズ
     int m_screenWidth, m_screenHeight;
 
-    // キーボード
-    std::unique_ptr<DirectX::Keyboard> m_keyboard;
-
-    // 押された瞬間を検知する
-    std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker> m_keyboardStateTracker;
-
-    // マウス
-    std::unique_ptr<DirectX::Mouse> m_mouse;
-
-    // 押された瞬間を検知する
-    std::unique_ptr<DirectX::Mouse::ButtonStateTracker> m_mouseStateTracker;
-
     // 次のシーン番号
     SCENE m_nextScene;
     // 前のシーン番号

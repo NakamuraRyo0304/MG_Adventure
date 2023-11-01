@@ -77,8 +77,7 @@ void ResultScene::Initialize()
 void ResultScene::Update()
 {
 	// インプットの更新
-	auto _key = Keyboard::Get().GetState();
-	GetSystemManager()->GetStateTrack()->Update(_key);
+	auto _input = Input::GetInstance();
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
@@ -89,9 +88,12 @@ void ResultScene::Update()
 	// 数字のアニメーション
 	AnimationValue();
 
+	// エスケープで終了
+	if (_input->GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME); }
+
 	// メニューセレクト
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right) ||
-	    GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::D))
+	if (_input->GetKeyTrack()->IsKeyReleased(Keyboard::Right) ||
+	    _input->GetKeyTrack()->IsKeyReleased(Keyboard::D))
 	{
 		// フェード中は処理しない
 		if (GetFadeValue() >= 0.7f) return;
@@ -100,8 +102,8 @@ void ResultScene::Update()
 		m_selectingScene = m_selectingScene ==  3 ? RETRY : m_selectingScene;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 	}
-	else if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
-			 GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::A))
+	else if (_input->GetKeyTrack()->IsKeyReleased(Keyboard::Left) ||
+			 _input->GetKeyTrack()->IsKeyReleased(Keyboard::A))
 	{
 		// フェード中は処理しない
 		if (static_cast<int>(GetFadeValue()) != 0) return;
@@ -119,7 +121,7 @@ void ResultScene::Update()
 	m_resultUI->SetCoins(m_coinNum);
 
 	// Spaceキーでシーン切り替え
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
+	if (_input->GetKeyTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		// フェード中は処理しない
 		if (static_cast<int>(GetFadeValue()) != 0) return;
@@ -142,8 +144,6 @@ void ResultScene::Update()
 		// 決定音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
-	// エスケープで終了
-if(GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
 }
 
 /// <summary>

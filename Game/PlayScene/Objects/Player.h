@@ -98,8 +98,8 @@ public:
 	// 初期化処理（システムマネージャポインタ）
 	void Initialize(std::shared_ptr<SystemManager> system);
 
-	// 更新処理（キーボード、タイマー、視点変更フラグ）
-	void Update(DirectX::Keyboard::State& keyState,float timer, bool lookFlag);
+	// 更新処理
+	void Update(bool lookFlag);
 
 	// 描画処理（コンテキスト、ステート、ビュー行列、射影行列）
 	void Render(ID3D11DeviceContext* context, DirectX::CommonStates& states,

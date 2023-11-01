@@ -22,7 +22,7 @@ public:
 	~RayCast();
 
 	// XVˆ—
-	void Update(DirectX::Mouse::State& mouseState);
+	void Update();
 
 private:
 

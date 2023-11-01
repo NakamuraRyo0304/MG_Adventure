@@ -23,6 +23,7 @@ Game::Game() noexcept(false)
     // インスタンスの生成
     DX::DeviceResources* pDR = DX::DeviceResources::GetInstance();
     DX::StepTimer::GetInstance();
+    Input::GetInstance();
 
     pDR->RegisterDeviceNotify(this);
 }
@@ -63,7 +64,7 @@ void Game::Tick()
 
     _stepTimer.Tick([&]()
         {
-            Update(_stepTimer);
+            Update();
         });
 
     Draw();
@@ -72,9 +73,10 @@ void Game::Tick()
 //--------------------------------------------------------//
 //更新処理                                                //
 //--------------------------------------------------------//
-void Game::Update(DX::StepTimer const& timer)
+void Game::Update()
 {
-    timer;
+    auto _input = Input::GetInstance();
+    _input->Update();
     m_gameMain->Update();
 }
 #pragma endregion

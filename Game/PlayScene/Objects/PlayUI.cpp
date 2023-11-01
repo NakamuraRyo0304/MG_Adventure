@@ -77,7 +77,7 @@ void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,ID3D11Device1*
 		L"Resources/Textures/PLAY_COMMON/DeathEffect.dds", device);
 
 	m_system->GetDrawSprite()->AddTextureData(L"Sun",				// “ú–vƒ[ƒ^[
-		L"Resources/Textures/PLAY_COMMON/sun.dds", device);
+		L"Resources/Textures/PLAY_COMMON/Sun.dds", device);
 
 	m_system->GetDrawSprite()->AddTextureData(L"HelpBack",			// ƒwƒ‹ƒvŽž‚Ì”wŒiˆÃ“]
 		L"Resources/Textures/PLAY_HELP/HelpBack.dds", device);

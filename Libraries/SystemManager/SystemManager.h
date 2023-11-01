@@ -30,10 +30,6 @@ private:
 	DX::DeviceResources*										m_pDR = nullptr;
 	// コモンステート
 	std::unique_ptr<DirectX::CommonStates>						m_commonState;
-	// 押された瞬間を検知する
-	std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>	m_keyboardStateTracker;
-	// マウス
-	std::unique_ptr<DirectX::Mouse::ButtonStateTracker>			m_mouseStateTracker;
 	// レイキャスト
 	std::unique_ptr<RayCast>									m_rayCast;
 	// ドロースプライト
@@ -62,12 +58,6 @@ public: // ゲッター、セッター、ファクトリー
 
 	// コモンステートの取得
 	const std::unique_ptr<DirectX::CommonStates>& GetCommonStates();
-
-	// キーボードステートトラッカーの取得
-	const std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>& GetStateTrack();
-
-	// マウストラッカーの取得
-	const std::unique_ptr<DirectX::Mouse::ButtonStateTracker>& GetMouseTrack();
 
 	// レイキャストの取得
 	const std::unique_ptr<RayCast>& GetRayCast();

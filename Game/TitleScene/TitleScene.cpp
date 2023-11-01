@@ -68,8 +68,7 @@ void TitleScene::Initialize()
 void TitleScene::Update()
 {
 	// インプットの更新
-	auto _key = Keyboard::Get().GetState();
-	GetSystemManager()->GetStateTrack()->Update(_key);
+	auto _input = Input::GetInstance();
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
@@ -78,7 +77,7 @@ void TitleScene::Update()
 	GetSystemManager()->GetSoundManager()->Update();
 
 	// エスケープで終了
-	if(GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
+	if(_input->GetKeyTrack()->IsKeyReleased(Keyboard::Escape)){ ChangeScene(SCENE::ENDGAME);}
 
 	// 起動時のロゴの動き
 	m_logoMoveY = UserUtility::Lerp(m_logoMoveY, END_MOVE_POS, 0.1f);
@@ -88,10 +87,10 @@ void TitleScene::Update()
 	{
 		if (GetFadeValue() >= 0.7f) return;
 
-		if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Left) ||
-			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Right) ||
-			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::A) ||
-			GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::D))
+		if (_input->GetKeyTrack()->IsKeyReleased(Keyboard::Left) ||
+			_input->GetKeyTrack()->IsKeyReleased(Keyboard::Right) ||
+			_input->GetKeyTrack()->IsKeyReleased(Keyboard::A) ||
+			_input->GetKeyTrack()->IsKeyReleased(Keyboard::D))
 		{
 			is_menuFlag = !is_menuFlag;
 			is_accelerateFlag = true;
@@ -105,7 +104,7 @@ void TitleScene::Update()
 	}
 
 	// 遷移先を決定する(ゲーム開始 OR ゲーム終了)
-	if (GetSystemManager()->GetStateTrack()->IsKeyReleased(Keyboard::Space))
+	if (_input->GetKeyTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		// フェード中は処理しない
 		if (GetFadeValue() >= 0.7f) return;

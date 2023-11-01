@@ -18,8 +18,6 @@ SystemManager::SystemManager()
 	: m_commonState{nullptr}
 	, m_drawSprite{nullptr}
 	, m_effect{nullptr}
-	, m_keyboardStateTracker{nullptr}
-	, m_mouseStateTracker{nullptr}
 	, m_camera{nullptr}
 	, m_pDR{nullptr}
 	, m_rayCast{nullptr}
@@ -69,37 +67,6 @@ SystemManager::GetCommonStates()
 		m_commonState = std::make_unique<CommonStates>(GetDeviceResources()->GetD3DDevice());
 	}
 	return m_commonState;
-}
-
-/// <summary>
-/// キーボードトラッカーの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>キーボードトラッカーのユニークポインタ</returns>
-const std::unique_ptr<Keyboard::KeyboardStateTracker>&
-SystemManager::GetStateTrack()
-{
-	if (!m_keyboardStateTracker)
-	{
-		throw;
-	}
-	return m_keyboardStateTracker;
-}
-
-
-/// <summary>
-/// マウストラッカーの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>マウストラッカーのユニークポインタ</returns>
-const std::unique_ptr<Mouse::ButtonStateTracker>&
-SystemManager::GetMouseTrack()
-{
-	if (!m_mouseStateTracker)
-	{
-		throw;
-	}
-	return m_mouseStateTracker;
 }
 
 /// <summary>
@@ -224,16 +191,8 @@ void SystemManager::CreateUnique()
 	// ３Ｄレンダリング
 	m_commonState = std::make_unique<CommonStates>(_device);
 
-	// キーボード
-	m_keyboardStateTracker
-		= std::make_unique<Keyboard::KeyboardStateTracker>();
-
 	// カメラの初期化
 	m_camera = std::make_unique<Camera>();
-
-	// マウス
-	m_mouseStateTracker
-		= std::make_unique<Mouse::ButtonStateTracker>();
 
 	// レイを飛ばす
 	m_rayCast = std::make_unique<RayCast>();

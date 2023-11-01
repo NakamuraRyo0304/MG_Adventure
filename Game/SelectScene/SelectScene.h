@@ -115,7 +115,7 @@ private:
 	void CreateFirstStage(ID3D11Device1* device);
 
 	// ステージ番号の変更
-	void ChangeStageNumber(DirectX::Keyboard::State keyState);
+	void ChangeStageNumber();
 
 	// セレクト演出
 	void DirectionSelectChange();

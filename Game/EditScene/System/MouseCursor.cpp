@@ -47,6 +47,17 @@ void MouseCursor::Initialize(const wchar_t* filename, ID3D11Device* device)
 }
 
 /// <summary>
+/// マウス位置の更新
+/// </summary>
+/// <param name="引数無し"></param>
+/// <returns>なし</returns>
+void MouseCursor::Update()
+{
+	auto _mouse = Mouse::Get().GetState();
+	m_cursorPos = SimpleMath::Vector2{ static_cast<float>(_mouse.x),static_cast<float>(_mouse.y) };
+}
+
+/// <summary>
 /// 描画処理
 /// </summary>
 /// <param name="引数無し"></param>

@@ -13,6 +13,8 @@
 // インライン関数群
 #include "../../../Libraries/UserUtility.h"
 
+#include "../../../Libraries/SystemDatas/Input.h"
+
 // モデルファクトリー
 #include "../../../Libraries/Factories/ModelFactory.h"
 
@@ -92,13 +94,11 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 /// <summary>
 /// 更新処理
 /// </summary>
-/// <param name="keyState">キーボード</param>
-/// <param name="timer">派生シーンのStepTimer(TotalTime)</param>
 /// <param name="lookFlag">視点フラグ</param>
 /// <returns>なし</returns>
-void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
+void Player::Update(bool lookFlag)
 {
-	_timer = timer;
+	auto _key = Keyboard::Get().GetState();
 
 	is_lookFlag = lookFlag;
 
@@ -112,11 +112,11 @@ void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
 	if (lookFlag)
 	{
 		// 上下回転
-		if (keyState.Up)
+		if (_key.Up)
 		{
 			m_neckRotate.x += NECK_ROT_SPEED;
 		}
-		if (keyState.Down)
+		if (_key.Down)
 		{
 			m_neckRotate.x -= NECK_ROT_SPEED;
 		}
@@ -126,11 +126,11 @@ void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
 		m_neckRotate.x = UserUtility::Lerp(m_neckRotate.x, 0.0f, NECK_ROT_SPEED * 0.1f);
 
 		// 左右回転
-		if (keyState.Left)
+		if (_key.Left)
 		{
 			m_neckRotate.y += NECK_ROT_SPEED;
 		}
-		if (keyState.Right)
+		if (_key.Right)
 		{
 			m_neckRotate.y -= NECK_ROT_SPEED;
 		}
@@ -141,24 +141,24 @@ void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
 	}
 
 	// 左右回転
-	if (keyState.A)
+	if (_key.A)
 	{
 		m_parameter.rotate *= SimpleMath::Quaternion::CreateFromAxisAngle(
 			SimpleMath::Vector3::UnitY, ROT_SPEED);
 	}
-	if (keyState.D)
+	if (_key.D)
 	{
 		m_parameter.rotate *= SimpleMath::Quaternion::CreateFromAxisAngle(
 			SimpleMath::Vector3::UnitY, -ROT_SPEED);
 	}
 	// 前後移動
-	if (keyState.W)
+	if (_key.W)
 	{
 		SimpleMath::Vector3 _newVec(0.0f, 0.0f, m_parameter.accelerate);
 		_newVec = SimpleMath::Vector3::Transform(_newVec, m_parameter.rotate);
 		m_parameter.velocity -= _newVec;
 	}
-	else if (keyState.S)
+	else if (_key.S)
 	{
 		SimpleMath::Vector3 _newVec(0.0f, 0.0f, m_parameter.accelerate / 2);
 		_newVec = SimpleMath::Vector3::Transform(_newVec, m_parameter.rotate);
@@ -166,7 +166,7 @@ void Player::Update(Keyboard::State& keyState, float timer, bool lookFlag)
 	}
 
 	// 脚の動き
-	if (keyState.W || keyState.A || keyState.S || keyState.D)
+	if (_key.W || _key.A || _key.S || _key.D)
 	{
 		m_footMove++;
 	}

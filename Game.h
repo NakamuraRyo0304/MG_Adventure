@@ -11,6 +11,7 @@
 
 #include "DeviceResources.h"
 #include "StepTimer.h"
+#include "Libraries/SystemDatas/Input.h"
 #include "Game/GameMain.h"
 
 // ‘O•ûéŒ¾
@@ -50,7 +51,7 @@ public:
 
 private:
 
-    void Update(DX::StepTimer const& timer);
+    void Update();
     void Draw();
 
     void Clear();
