@@ -236,6 +236,18 @@
     <Filter Include="Scenes\SelectScene\Objects\FontObject">
       <UniqueIdentifier>{8c55365a-a4ed-4e68-8d22-97264a98932b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\TitleScene\Objects\Logo">
+      <UniqueIdentifier>{75a7fff3-8f42-4252-8c44-49bf3d4566fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\TitleScene\Objects\Stage">
+      <UniqueIdentifier>{bc42a774-59ef-467a-82a3-00df3c3ab6ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\TitleScene\Objects\TitleSky">
+      <UniqueIdentifier>{6a2a78f4-9b38-4669-988c-75b187a99d0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\TitleScene\Objects\ITitleObject">
+      <UniqueIdentifier>{a59ea26f-ed06-4b1b-a45c-38083278ff6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -376,6 +388,18 @@
     <ClInclude Include="Game\SelectScene\Objects\FontObject.h">
       <Filter>Scenes\SelectScene\Objects\FontObject</Filter>
     </ClInclude>
+    <ClInclude Include="Game\TitleScene\Objects\Logo.h">
+      <Filter>Scenes\TitleScene\Objects\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\TitleScene\Objects\Stage.h">
+      <Filter>Scenes\TitleScene\Objects\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\TitleScene\Objects\TitleSky.h">
+      <Filter>Scenes\TitleScene\Objects\TitleSky</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\TitleScene\Objects\ITitleObject.h">
+      <Filter>Scenes\TitleScene\Objects\ITitleObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -500,6 +524,18 @@
     </ClCompile>
     <ClCompile Include="Game\SelectScene\Objects\FontObject.cpp">
       <Filter>Scenes\SelectScene\Objects\FontObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\TitleScene\Objects\Logo.cpp">
+      <Filter>Scenes\TitleScene\Objects\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\TitleScene\Objects\Stage.cpp">
+      <Filter>Scenes\TitleScene\Objects\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\TitleScene\Objects\TitleSky.cpp">
+      <Filter>Scenes\TitleScene\Objects\TitleSky</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\TitleScene\Objects\ITitleObject.cpp">
+      <Filter>Scenes\TitleScene\Objects\ITitleObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

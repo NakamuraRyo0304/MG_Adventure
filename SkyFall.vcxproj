@@ -209,6 +209,10 @@
     <ClInclude Include="Game\SelectScene\Objects\FontObject.h" />
     <ClInclude Include="Game\SelectScene\Objects\SelectUI.h" />
     <ClInclude Include="Game\SelectScene\SelectScene.h" />
+    <ClInclude Include="Game\TitleScene\Objects\ITitleObject.h" />
+    <ClInclude Include="Game\TitleScene\Objects\Logo.h" />
+    <ClInclude Include="Game\TitleScene\Objects\TitleSky.h" />
+    <ClInclude Include="Game\TitleScene\Objects\Stage.h" />
     <ClInclude Include="Game\TitleScene\Objects\TitleUI.h" />
     <ClInclude Include="Game\TitleScene\TitleScene.h" />
     <ClInclude Include="Libraries\Factories\ModelFactory.h" />
@@ -257,6 +261,10 @@
     <ClCompile Include="Game\SelectScene\Objects\FontObject.cpp" />
     <ClCompile Include="Game\SelectScene\Objects\SelectUI.cpp" />
     <ClCompile Include="Game\SelectScene\SelectScene.cpp" />
+    <ClCompile Include="Game\TitleScene\Objects\ITitleObject.cpp" />
+    <ClCompile Include="Game\TitleScene\Objects\Logo.cpp" />
+    <ClCompile Include="Game\TitleScene\Objects\TitleSky.cpp" />
+    <ClCompile Include="Game\TitleScene\Objects\Stage.cpp" />
     <ClCompile Include="Game\TitleScene\Objects\TitleUI.cpp" />
     <ClCompile Include="Game\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Libraries\Factories\ModelFactory.cpp" />

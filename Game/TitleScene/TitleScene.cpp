@@ -7,6 +7,16 @@
 
 #include "pch.h"
 
+// タイトルロゴ
+#include "Objects/Logo.h"
+
+// ステージ
+#include "Objects/Stage.h"
+
+// スカイドーム
+#include "Objects/TitleSky.h"
+
+// UI
 #include "Objects/TitleUI.h"
 
 #include "TitleScene.h"
@@ -14,15 +24,9 @@
 // コンストラクタ
 TitleScene::TitleScene()
 	: IScene()					// 基底クラスの初期化
-	, m_titleLogoModel{}		// タイトルロゴのモデル
-	, m_miniatureModel{}		// 中央ステージのモデル
 	, m_cameraMoveY{0.0f}		// カメラ演出(スタート時)
-	, m_logoMoveY{0.0f}			// ロゴの動き(移動)
-	, m_logoMoveScale{}			// ロゴの動き(サイズ)
-	, m_accelerate{ 0.0f }		// 選択変更時のステージの回転加速
 	, is_startFlag{ false }		// 開始フラグ
 	, is_menuFlag{ true }		// 選択フラグ
-	, is_accelerateFlag{ false }// 回転加速しているかの判定フラグ
 {
 }
 
@@ -63,8 +67,8 @@ void TitleScene::Update()
 	// エスケープで終了
 	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)){ ChangeScene(SCENE::ENDGAME);}
 
-	// 起動時のロゴの動き
-	m_logoMoveY = UserUtility::Lerp(m_logoMoveY, END_MOVE_POS, 0.1f);
+	// ロゴの更新
+	m_logo->Update();
 
 	// 選択項目を変更する
 	if (!is_startFlag)
@@ -77,14 +81,9 @@ void TitleScene::Update()
 			_input.GetKeyTrack()->IsKeyReleased(Keyboard::D))
 		{
 			is_menuFlag = !is_menuFlag;
-			is_accelerateFlag = true;
+			m_stage->AddAccelerate();
 			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 		}
-
-		// 変更時の動き
-		is_accelerateFlag = m_accelerate >= MAX_ACCELERATE_TIME ? false : is_accelerateFlag;
-		m_accelerate += is_accelerateFlag ? 0.1f : 0.0f;
-		m_accelerate = !is_accelerateFlag ? 0.0f : m_accelerate;
 	}
 
 	// 遷移先を決定する(ゲーム開始 OR ゲーム終了)
@@ -101,6 +100,9 @@ void TitleScene::Update()
 		ChangeScene(is_menuFlag ? SCENE::SELECT : SCENE::ENDGAME);
 	}
 
+	// ステージの更新
+	m_stage->Update();
+
 	// UIの更新
 	m_titleUI->Update(is_menuFlag);
 
@@ -110,111 +112,42 @@ void TitleScene::Update()
 void TitleScene::Draw()
 {
 	// 描画関連
-	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& _states = *GetSystemManager()->GetCommonStates();
-	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラ用行列
-	SimpleMath::Matrix _logoMat, _stageMat, _skyMat, _view, _projection;
-
-	// 移動、回転行列
-	SimpleMath::Matrix
-		_logoTrans, _logoRot,								// ロゴ
-		_stageTrans, _stageRotX, _stageRotY, _stageScale,	// ステージ
-		_skyTrans, _skyRotX;								// スカイドーム
-
-	// ワールド行列
-	_logoMat = _stageMat = _skyMat = SimpleMath::Matrix::Identity;
-
-	//-------------------------------------------------------------------------------------//
-
-	// 回転行列
-	_logoRot = SimpleMath::Matrix::CreateRotationX(sinf(_timer) * 0.5f);
-	_stageRotX = SimpleMath::Matrix::CreateRotationX(0.3f);
-	_stageRotY = SimpleMath::Matrix::CreateRotationY(_timer * 0.5f + m_accelerate);
-	_skyRotX = SimpleMath::Matrix::CreateRotationX(_timer * 2.0f);
-
-	//-------------------------------------------------------------------------------------//
-
-	// 移動行列
-	_logoTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_logoMoveY, cosf(_timer) * 0.5f);
-	_stageTrans = SimpleMath::Matrix::CreateTranslation(0.0f, -1.0f, -10.0f);
-	_skyTrans = SimpleMath::Matrix::CreateTranslation(0.0f, m_cameraMoveY, 0.0f);
-
-	//-------------------------------------------------------------------------------------//
-
-	// スケール行列
-	_stageScale = SimpleMath::Matrix::CreateScale(1.2f);
-
-	//-------------------------------------------------------------------------------------//
-
-	// ロゴ
-	_logoMat *= _logoRot * _logoTrans;
-	// ステージ
-	_stageMat *= _stageScale * _stageRotY * _stageRotX * _stageTrans;
-	// スカイドーム
-	_skyMat *= _skyRotX;
-
-	//-------------------------------------------------------------------------------------//
+	SimpleMath::Matrix _view, _projection;
 
 	// スタート演出の処理はこの中を処理する
 	if (is_startFlag)
 	{
-		// スカイドームの回転と移動
-		_skyMat *= _skyRotX;
-		_skyMat *= _skyTrans;
-
-		// ロゴも一緒に動く
-		m_logoMoveScale *= LOGO_CHANGE_SCALE;
-		_logoMat *= SimpleMath::Matrix::CreateScale(m_logoMoveScale);
+		m_titleSky->SetStartFlag(true);
+		m_logo->SetStartFlag(true);
 	}
 
 	// ビュー行列
 	SimpleMath::Vector3 eye(0.0f, 0.1f + m_cameraMoveY, 8.0f);
+	m_titleSky->SetPositionY(eye.y);
 	_view = SimpleMath::Matrix::CreateLookAt(eye, SimpleMath::Vector3::Zero, SimpleMath::Vector3::Up);
 
 	// プロジェクション行列
 	_projection = GetSystemManager()->GetCamera()->GetProjection();
 
-	// ライトの設定
-	SimpleMath::Vector3	 _lightDir(-1.0f, 1.0f, 1.0f);
-	SimpleMath::Color	 _lightColor(0.3f, 0.3f, 0.3f, 1.0f);
+	// ステージを描画
+	m_stage->Render(_states, _view, _projection);
 
-	// アマチュアモデル設定
-	m_miniatureModel->UpdateEffects([&](IEffect* effect)
-		{
-			auto _lights = dynamic_cast<IEffectLights*>(effect);
-			if (_lights)
-			{
-				for (int i = 0; i < 3; ++i)
-				{
-					// ライトの使用を設定
-					_lights->SetLightEnabled(i, true);
+	// ロゴを描画
+	m_logo->Render(_states, _view, _projection);
 
-					// ライトの方向を設定
-					_lights->SetLightDirection(i, _lightDir);
-
-					// ライトの色を設定
-					_lights->SetLightDiffuseColor(i, _lightColor);
-				}
-			}
-		});
-	m_miniatureModel->Draw(_context, _states, _stageMat, _view, _projection);	// ステージ
-	m_titleLogoModel->Draw(_context, _states, _logoMat, _view, _projection);	// ロゴ
-	m_skyDomeModel->Draw(_context, _states, _skyMat, _view, _projection);  		// スカイドーム
+	// スカイドームを描画
+	m_titleSky->Render(_states, _view, _projection);
 
 	// UIの描画
-	m_titleUI->Render(GetFadeValue(), static_cast<int>(m_logoMoveY) == static_cast<int>(END_MOVE_POS));
+	m_titleUI->Render(GetFadeValue(), m_logo->IsLogoEndFlag());
 }
 
 // 終了処理
 void TitleScene::Finalize()
 {
-	// モデルの解放
-	ModelFactory::DeleteModel(m_titleLogoModel);
-	ModelFactory::DeleteModel(m_miniatureModel);
-	ModelFactory::DeleteModel(m_skyDomeModel);
-
 	// UIの終了処理
 	m_titleUI->Finalize();
 }
@@ -222,9 +155,6 @@ void TitleScene::Finalize()
 // 画面、デバイス依存の初期化
 void TitleScene::CreateWindowDependentResources()
 {
-	// デバイスとデバイスコンテキストの取得
-	auto _device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-
 	// メイクユニーク
 	GetSystemManager()->CreateUnique();
 
@@ -236,66 +166,21 @@ void TitleScene::CreateWindowDependentResources()
 	m_titleUI = std::make_unique<TitleUI>();
 	m_titleUI->Create(GetSystemManager(), GetScreenSize());
 
-	// モデルの作成---------------------------------------------------------------------------------
+	// タイトルロゴの設定
+	m_logo = std::make_unique<Logo>(L"Resources/Models/TitleLogoVer2.cmo");
 
-	// タイトルロゴ
-	m_titleLogoModel = ModelFactory::GetCreateModel(_device, L"Resources/Models/TitleLogoVer2.cmo");
-	m_titleLogoModel->UpdateEffects([](IEffect* effect)
-		{
-			// ライティング
-			auto _lights = dynamic_cast<IEffectLights*>(effect);
-			if (_lights)
-			{
-				// ライトの指定
-				_lights->SetLightEnabled(0, true);
-				_lights->SetLightEnabled(1, true);
-				_lights->SetLightEnabled(2, false);
+	// ステージの設定
+	m_stage = std::make_unique<Stage>(L"Resources/Models/TitleStage.cmo");
 
-				// ライトの方向を設定
-				SimpleMath::Vector3 _lightDir = -SimpleMath::Vector3::UnitZ;
-				_lights->SetLightDirection(0, _lightDir);
-				_lights->SetLightDirection(1, _lightDir);
-			}
-		}
-	);
-
-	// ステージモデル
-	m_miniatureModel = ModelFactory::GetCreateModel(_device, L"Resources/Models/TitleStage.cmo");
-
-	// スカイドーム
-	m_skyDomeModel = ModelFactory::GetCreateModel(_device, L"Resources/Models/ShineSky.cmo");
-	m_skyDomeModel->UpdateEffects([](IEffect* effect)
-		{
-			// ライティング
-			auto _lights = dynamic_cast<IEffectLights*>(effect);
-			if (_lights)
-			{
-				_lights->SetLightEnabled(0, false);
-				_lights->SetLightEnabled(1, true);
-				_lights->SetLightEnabled(2, false);
-			}
-			// 自己発光する
-			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (_basicEffect)
-			{
-				_basicEffect->SetEmissiveColor(Colors::White);
-			}
-		}
-	);
+	// スカイドームの設定
+	m_titleSky = std::make_unique<TitleSky>(L"Resources/Models/ShineSky.cmo");
 }
 
 // シーン変数初期化関数
 void TitleScene::SetSceneValues()
 {
-	// ロゴの大きさ
-	m_logoMoveY = 10.0f;
-	m_logoMoveScale = 1.0f;
-
 	// ゲームを開始/ゲームを終了
 	is_menuFlag = true;
-
-	// 加速度を初期化
-	m_accelerate = 0.0f;
 }
 
 // スタート演出

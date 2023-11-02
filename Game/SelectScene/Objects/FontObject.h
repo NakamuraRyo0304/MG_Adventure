@@ -36,7 +36,8 @@ public:
 	/// <param name="view">ビュー行列</param>
 	/// <param name="proj">射影行列</param>
 	/// <returns>なし</returns>
-	void Render(DirectX::CommonStates& states, const int& selectNum, const float& rotate, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Render(DirectX::CommonStates& states, const int& selectNum, const float& rotate,
+		const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 
 	/// <summary>
 	/// カメラと逆回転の行列

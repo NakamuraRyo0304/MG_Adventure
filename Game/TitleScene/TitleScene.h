@@ -11,6 +11,9 @@
 
 #include "../IScene.h"
 
+class Logo;
+class Stage;
+class TitleSky;
 class TitleUI;
 class TitleScene final : public IScene
 {
@@ -18,32 +21,23 @@ private:
 	// カメラアングル
 	const float CAMERA_ANGLE = 45.0f;
 
-	// タイトルロゴモデル
-	std::unique_ptr<DirectX::Model> m_titleLogoModel;
-	// タイトルステージモデル
-	std::unique_ptr<DirectX::Model> m_miniatureModel;
-	// スカイドーム
-	std::unique_ptr<DirectX::Model> m_skyDomeModel;
-
 	// カメラ演出
 	float m_cameraMoveY;
 	const float MAX_HEIGHT = 10.0f;
-	float m_logoMoveScale;
-
-	// 選択変更時の加速
-	bool is_accelerateFlag;
-	const float MAX_ACCELERATE_TIME = 6.0f;
-	float m_accelerate;
-
-	// ロゴの開始時の演出
-	float m_logoMoveY;
-	const float END_MOVE_POS = 1.0f;
-	const float LOGO_CHANGE_SCALE = 1.05f;
 
 private:
 
 	// UI
 	std::unique_ptr<TitleUI> m_titleUI;
+
+	// タイトルロゴ
+	std::unique_ptr<Logo> m_logo;
+
+	// ステージ
+	std::unique_ptr<Stage> m_stage;
+
+	// スカイドーム
+	std::unique_ptr<TitleSky> m_titleSky;
 
 	// 決定判定
 	bool is_startFlag;

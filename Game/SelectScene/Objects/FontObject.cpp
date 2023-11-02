@@ -22,12 +22,12 @@ FontObject::FontObject(const int& safeStage, const int& maxStage)
 		// 0番目はエディタの文字
 		if (i == 0)
 		{
-			m_fonts[0] = ModelFactory::GetCreateModel(_device, L"Resources/Models/StageEdit.cmo");
+			m_fonts[0] = std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/StageEdit.cmo"));
 		}
 		else
 		{
 			std::wstring _path = L"Resources/Models/Stage" + std::to_wstring(i) + L".cmo";
-			m_fonts[i] = ModelFactory::GetCreateModel(_device, _path.c_str());
+			m_fonts[i] = std::move(ModelFactory::GetCreateModel(_device, _path.c_str()));
 		}
 	}
 }
@@ -43,7 +43,7 @@ FontObject::~FontObject()
 
 // 描画処理
 void FontObject::Render(CommonStates& states, const int& selectNum, const float& rotate,
-	 const SimpleMath::Matrix& view, const SimpleMath::Matrix& proj)
+	const SimpleMath::Matrix& view, const SimpleMath::Matrix& proj)
 {
 	// コンテキストの取得
 	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
