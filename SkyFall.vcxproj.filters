@@ -230,6 +230,9 @@
     <Filter Include="Common\Input">
       <UniqueIdentifier>{384b2334-9697-40a3-8742-085e4f0eb785}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Button">
+      <UniqueIdentifier>{1434c8ff-58f3-468d-b023-84a92efdee68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -364,7 +367,9 @@
     <ClInclude Include="Libraries\SystemDatas\Input.h">
       <Filter>Common\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\Button.h" />
+    <ClInclude Include="Libraries\SystemDatas\Button.h">
+      <Filter>Common\Button</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -484,7 +489,9 @@
     <ClCompile Include="Libraries\SystemDatas\Input.cpp">
       <Filter>Common\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\Button.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\Button.cpp">
+      <Filter>Common\Button</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Icon\Icon.rc">
@@ -757,10 +764,5 @@
     <Font Include="Resources\Fonts\myfile.spritefont">
       <Filter>Assets</Filter>
     </Font>
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="..\EditSky.fbx">
-      <Filter>Resources\Models\SkyDome</Filter>
-    </MeshContentTask>
   </ItemGroup>
 </Project>

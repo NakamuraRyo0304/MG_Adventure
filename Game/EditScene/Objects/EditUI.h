@@ -82,33 +82,64 @@ public:
 	EditUI();
 	~EditUI();
 
-	void Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize);
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="shareSystem">システムデータ</param>
+	/// <param name="windowSize">ウィンドウサイズ</param>
+	/// <returns>なし</returns>
+	void Create(const std::shared_ptr<SystemManager>& system, const DirectX::SimpleMath::Vector2& windowSize);
+
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update();
+
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Render();
+
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize();
 
-	// アイコンの描画
+	/// <summary>
+	/// アイコンの描画
+	/// </summary>
+	/// <param name="imageScale">拡大率</param>
+	/// <returns>なし</returns>
 	void DrawIcon(const DirectX::SimpleMath::Vector2& imageScale);
 
-	// ステータスの変更
-	void ChangeState(DirectX::Mouse::State& mouseState);
+	/// <summary>
+	/// ステータスの変更
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void ChangeState();
 
 	// アクセサ
-	// カメラフラグ
+	// カメラフラグの取得
 	const bool& GetCameraFlag() { return is_cameraFlag; }
+	// カメラフラグの設定
 	void SetCameraFlag(const bool flag) { is_cameraFlag = flag; }
-
-	// オープンフラグ
+	// ファイル開くフラグの取得
 	const bool& GetOpenFlag() { return is_openFlag; }
+	// ファイル開くフラグの設定
 	void SetOpenFlag(const bool flag) { is_openFlag = flag; }
-
-	// セーブフラグ
+	// 保存フラグの取得
 	const bool& GetSaveFlag() { return is_saveFlag; }
+	// 保存フラグの設定
 	void SetSaveFlag(const bool flag) { is_saveFlag = flag; }
-
-	// バックボタンフラグ
+	// セレクトへ戻るフラグの設定
 	const bool& GetBackSelectFlag() { return is_backFlag; }
-
 	// 今のステータスを取得
 	const int& GetNowState() { return m_nowState; }
 };

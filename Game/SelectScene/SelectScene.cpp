@@ -183,7 +183,7 @@ void SelectScene::Draw()
 
 	// マップの描画
 	m_blocks[m_stageNum] != nullptr ? // 作成済みなら描画する
-		m_blocks[m_stageNum]->Render(_context, _states, _view, _proj, _timer,
+		m_blocks[m_stageNum]->Render(_states, _view, _proj, _timer,
 			SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f }) : void();
 
 	// スカイドームの描画
@@ -337,7 +337,7 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 		{
 			// ブロックの作成
 			m_blocks[i] = std::make_unique<Blocks>();
-			m_blocks[i]->CreateShader(device);
+			m_blocks[i]->CreateShader();
 
 			// モデルの受け渡し
 			m_blocks[i]->CreateModels(std::move(_grass),   m_blocks[i]->GRASS);
@@ -366,7 +366,7 @@ void SelectScene::CreateFirstStage(ID3D11Device1* device)
 
 	// ブロックの作成
 	m_blocks[m_stageNum] = std::make_unique<Blocks>();
-	m_blocks[m_stageNum]->CreateShader(device);
+	m_blocks[m_stageNum]->CreateShader();
 
 	// モデルの受け渡し
 	m_blocks[m_stageNum]->CreateModels(std::move(_grass),   m_blocks[m_stageNum]->GRASS);

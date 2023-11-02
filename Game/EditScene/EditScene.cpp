@@ -26,11 +26,7 @@
 
 #include "EditScene.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 EditScene::EditScene()
 	: IScene()									// 基底クラスの初期化
 	, m_mapLoader{}								// マップローダー
@@ -49,22 +45,14 @@ EditScene::EditScene()
 	ShowCursor(false);
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 EditScene::~EditScene()
 {
 	Finalize();
 	ShowCursor(true);
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 初期化処理
 void EditScene::Initialize()
 {
 	// 画面依存の初期化
@@ -77,11 +65,7 @@ void EditScene::Initialize()
 	SetSceneValues();
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void EditScene::Update()
 {
 	// インプットの更新
@@ -158,11 +142,7 @@ void EditScene::Update()
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 描画処理
 void EditScene::Draw()
 {
 	// 描画関連
@@ -238,16 +218,7 @@ void EditScene::Draw()
 	m_mouseCursor->Render();
 }
 
-/// <summary>
-/// 描画オブジェクト切り替え
-/// </summary>
-/// <param name="objNum">オブジェクト番号</param>
-/// <param name="context">デバイスコンテキスト</param>
-/// <param name="states">コモンステート</param>
-/// <param name="world">ワールド行列</param>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
-/// <returns>なし</returns>
+// 描画オブジェクト切り替え
 void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	CommonStates& states,
 	SimpleMath::Matrix world, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
@@ -278,11 +249,7 @@ void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	Comm
 	}
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 狩猟処理
 void EditScene::Finalize()
 {
 	// マップの解放
@@ -298,16 +265,11 @@ void EditScene::Finalize()
 	ModelFactory::DeleteModel(m_noneModel);
 }
 
-/// <summary>
-/// 画面依存、デバイス依存の初期化
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 画面依存、デバイス依存の初期化
 void EditScene::CreateWindowDependentResources()
 {
-	// デバイスとデバイスコンテキストの取得
+	// デバイスの取得
 	auto _device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
 	GetSystemManager()->CreateUnique();
@@ -318,7 +280,7 @@ void EditScene::CreateWindowDependentResources()
 	// UIの初期化
 	m_editUI = std::make_unique<EditUI>();
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
-	m_editUI->Create(GetSystemManager(), _device, GetScreenSize());
+	m_editUI->Create(GetSystemManager(),GetScreenSize());
 
 	// レイが及ぶ範囲を設定
 	GetSystemManager()->GetRayCast()->SetScreenSize(GetScreenSize().x, GetScreenSize().y);
@@ -373,18 +335,14 @@ void EditScene::CreateWindowDependentResources()
 	);
 
 	// マウスカーソルの作成
-	m_mouseCursor = std::make_unique<MouseCursor>(_context);
-	m_mouseCursor->Initialize(L"Resources/Textures/EDITS/MouseCursor.dds", _device);
+	m_mouseCursor = std::make_unique<MouseCursor>();
+	m_mouseCursor->Initialize(L"Resources/Textures/EDITS/MouseCursor.dds");
 
 	// クリアチェッカーの作成
 	m_checker = std::make_unique<ClearChecker>();
 }
 
-/// <summary>
-/// シーン内の変数初期化関数
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// シーン変数初期化関数
 void EditScene::SetSceneValues()
 {
 	// 初期値は草ブロック
@@ -404,11 +362,7 @@ void EditScene::SetSceneValues()
 	GetSystemManager()->GetCamera()->AddEyePosition(SimpleMath::Vector3{ _XZ.x / 2,4.0f,_XZ.y / 2 });
 }
 
-/// <summary>
-/// マップの編集
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// マップの編集
 void EditScene::EditMap()
 {
 	auto _mouse = Mouse::Get().GetState();
@@ -458,11 +412,7 @@ void EditScene::EditMap()
 	}
 }
 
-/// <summary>
-/// マップ読み込み
-/// </summary>
-/// <param name="filename">ファイルパス</param>
-/// <returns>なし</returns>
+// マップ読み込み
 void EditScene::LoadMap(std::wstring filename)
 {
 	// マップの読み込み
@@ -475,21 +425,13 @@ void EditScene::LoadMap(std::wstring filename)
 	m_mapObj = m_mapLoader.GetMapData();
 }
 
-/// <summary>
-/// マップ書き出し
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// ファイル書き出し
 void EditScene::SaveFile()
 {
 	m_mapLoader.WriteMap(m_mapObj);		// ファイルの書き出し
 }
 
-/// <summary>
-/// セーブ可能かを確認する
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 要素チェック
 bool EditScene::IsCanSave()
 {
 	// カーソルをつける
@@ -552,11 +494,7 @@ bool EditScene::IsCanSave()
 	}
 }
 
-/// <summary>
-/// UndoRedoを実行する
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// UndoRedoを実行
 void EditScene::DoUndoRedo()
 {
 	auto& _input = Input::GetInstance();
@@ -573,22 +511,14 @@ void EditScene::DoUndoRedo()
 	}
 }
 
-/// <summary>
-/// UndoRedo用に保存する
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// UndoRedo保存
 void EditScene::SaveModification()
 {
 	// 状態を保存
 	m_history.AddHistory(MementoMap(m_mapObj));
 }
 
-/// <summary>
-/// UndoRedoを適用する
-/// </summary>
-/// <param name="mement"></param>
-/// <returns>なし</returns>
+// UndoRedoの適用
 void EditScene::RestoreHistory(MementoMap mement)
 {
 	m_mapObj = mement.GetState();

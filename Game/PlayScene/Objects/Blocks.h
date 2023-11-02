@@ -83,56 +83,91 @@ public:
 
 public:
 
-	// コンストラクタ
 	Blocks();
-
-	// デストラクタ
 	~Blocks();
 
-	// 初期化
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="stageNum">ステージ番号</param>
+	/// <returns>なし</returns>
 	void Initialize(int stageNum);
 
-	// 更新
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update();
 
-	// 描画
-	void Render(ID3D11DeviceContext* context, DirectX::CommonStates& states,
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="states">コモンステート</param>
+	/// <param name="view">ビュー行列</param>
+	/// <param name="proj">射影行列</param>
+	/// <param name="timer">経過時間</param>
+	/// <param name="lightDir">ライティング</param>
+	/// <returns>なし</returns>
+	void Render(DirectX::CommonStates& states,
 		DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj, float timer,
 		const DirectX::SimpleMath::Vector3& lightDir);
 
-	// 終了処理
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize();
 
-	// モデル作成
+	/// <summary>
+	/// モデル作成
+	/// </summary>
+	/// <param name="model">モデルデータ</param>
+	/// <param name="modelNum">対応したモデル番号</param>
+	/// <returns>なし</returns>
 	void CreateModels(std::unique_ptr<Model> model, int modelName);
-
 
 public:
 
-	// シェーダーの作成
-	void CreateShader(ID3D11Device1* device);
+	/// <summary>
+	/// シェーダーの作成
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void CreateShader();
 
-	// コインのカウントアップ
+	/// <summary>
+	/// コイン取得処理
+	/// </summary>
+	/// <param name="index">当たったコインの番号</param>
+	/// <returns>なし</returns>
 	void CountUpCoin(int index);
 
-	// 雲を元の場所に戻す処理
+	/// <summary>
+	/// 雲の位置をもとに戻す処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CallGravity();
 
 	// ライティングのセッター
 	void InitializeLighting(const DirectX::SimpleMath::Vector3& lightDir) { m_lighting = lightDir; }
 public:
 
+	// 取得コイン数を取得
 	const int& GetCoinCount() { return m_coinCount; }
+	// 最大コイン数を取得
 	const int& GetMaxCoinCount() { return m_maxCoins; }
-	const bool& IsCollectedFlag();
-
-	// プレイヤー座標ゲッター
+	// コインの回収判定
+	const bool& IsCollectedFlag() { return is_collectedFlag; }
+	// プレイヤー座標を取得
 	const DirectX::SimpleMath::Vector3& GetPlayerPosition() { return m_playerPos; }
 
-	// マップ全体のゲッター
+	// マップ全体を取得
 	const std::vector<Object>& GetMapData() { return m_mapObj; }
 
-	// ブロック単体の座標ゲッター
+	// ブロック単体の座標を取得
 	DirectX::SimpleMath::Vector3& GetBlockPosition(const int& index)
 	{
 		if (index >= m_mapObj.max_size()) throw std::out_of_range("Index out of range");
@@ -140,15 +175,21 @@ public:
 	}
 	void SetBlockPosition(const DirectX::SimpleMath::Vector3& newPos, const int& index) { m_mapObj[index].position = newPos; }
 
-	// ブロックの大きさゲッター
+	/// <summary>
+	/// サイズゲッター
+	/// </summary>
+	/// <param name="objName">オブジェクトの名前(構造体)</param>
+	/// <returns>なし</returns>
 	const float& GetObjSize(const int& objName);
-
-
 	// 雲の判定アクセサ
 	void SetCloudHitFlag(const int& index, bool flag) { m_cloudState[index].moveFlag = flag; }
 
 private:
 
-	// マップセレクト
+	/// <summary>
+	/// マップ選択
+	/// </summary>
+	/// <param name="num">ステージ番号</param>
+	/// <returns>ファイルパス</returns>
 	std::wstring MapSelect(int num);
 };

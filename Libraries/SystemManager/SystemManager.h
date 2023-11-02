@@ -17,10 +17,9 @@
 #include "../SystemDatas/RayCast.h"
 #include "../SystemDatas/DrawSprite.h"
 #include "../SystemDatas/SoundManager.h"
-#ifdef _DEBUG
 #include "../SystemDatas/GridFloor.h"
 #include "../SystemDatas/DrawString.h"
-#endif
+
 //-------------------------------------------------------------------------------------//
 
 class SystemManager
@@ -40,12 +39,11 @@ private:
 	std::unique_ptr<Camera>										m_camera;
 	// サウンド
 	std::unique_ptr<SoundManager>								m_soundManager;
-#ifdef _DEBUG
 	// 文字描画
 	std::unique_ptr<Debug::DrawString>                          m_drawString;
 	// グリッド床
 	std::unique_ptr<Debug::GridFloor>                           m_gridFloor;
-#endif
+
 
 public: // ゲッター、セッター、ファクトリー
 	// 共通のメイクユニーク
@@ -74,15 +72,12 @@ public: // ゲッター、セッター、ファクトリー
 	// サウンドマネージャの取得
 	const std::unique_ptr<SoundManager>& GetSoundManager();
 
-#ifdef _DEBUG
-
 	// ドローストリングの取得
 	const std::unique_ptr<Debug::DrawString>& GetString();
 
 	// グリッドフロアの取得
 	const std::unique_ptr<Debug::GridFloor>& GetGridFloor();
 
-#endif
 public:
 	SystemManager();
 	~SystemManager();

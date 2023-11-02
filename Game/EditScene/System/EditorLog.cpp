@@ -12,11 +12,7 @@
 
 #include "EditorLog.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 EditorLog::EditorLog()
 	: m_currentIndex{0}
 	, m_histories{}
@@ -25,21 +21,13 @@ EditorLog::EditorLog()
 	m_currentIndex = 0;
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 EditorLog::~EditorLog()
 {
 	m_histories.clear();
 }
 
-/// <summary>
-/// 状態を蓄積していく関数
-/// </summary>
-/// <param name="history">変更点</param>
-/// <returns>なし</returns>
+// 履歴を蓄積する
 void EditorLog::AddHistory(const MementoMap& history)
 {
 	// 変更点をまとめた情報を保存
@@ -47,11 +35,7 @@ void EditorLog::AddHistory(const MementoMap& history)
 	m_currentIndex = m_histories.size() - 1;
 }
 
-/// <summary>
-/// ひとつ前の状態に戻す
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>ひとつ前の状態</returns>
+// Undo機能
 const MementoMap& EditorLog::GetUndo()
 {
 	if (m_currentIndex > 0)
@@ -61,11 +45,7 @@ const MementoMap& EditorLog::GetUndo()
 	return m_histories[m_currentIndex];
 }
 
-/// <summary>
-/// Undoを取り消す
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>前回のUndoの前の状態</returns>
+// Redo機能
 const MementoMap& EditorLog::GetRedo()
 {
 	if (m_currentIndex < m_histories.size() - 1)

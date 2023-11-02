@@ -15,11 +15,7 @@
 
 #include "PlayUI.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 PlayUI::PlayUI()
 	: m_system{}								// システムマネージャ
 	, m_windowSize{}							// ウィンドウサイズ
@@ -43,25 +39,15 @@ PlayUI::PlayUI()
 
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 PlayUI::~PlayUI()
 {
 	Finalize();
 	m_system.reset();
 }
 
-/// <summary>
-/// 作成処理
-/// </summary>
-/// <param name="system">システムマネージャ</param>
-/// <param name="device">デバイスポインタ</param>
-/// <param name="windowSize">ウィンドウサイズ</param>
-/// <returns>なし</returns>
-void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,ID3D11Device1* device,const SimpleMath::Vector2& windowSize)
+// 作成関数
+void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,const SimpleMath::Vector2& windowSize)
 {
 	m_system = system;
 	m_windowSize = windowSize;
@@ -141,11 +127,7 @@ void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,ID3D11Device1*
 	is_transFlag = false;
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="timelimit">残り時間</param>
-/// <returns>なし</returns>
+// 更新処理
 void PlayUI::Update(const float& timelimit)
 {
 	m_gameTimer = static_cast<int>(timelimit);
@@ -177,12 +159,7 @@ void PlayUI::Update(const float& timelimit)
 	}
 }
 
-/// <summary>
-/// キーボードの更新
-/// </summary>
-/// <param name="leftArrow">左orAキー</param>
-/// <param name="rightArrow">右orDキー</param>
-/// <returns>なし</returns>
+// ページをめくる
 void PlayUI::UpdatePage(const bool& leftArrow, const bool& rightArrow)
 {
 	// 移動量を計算
@@ -215,12 +192,7 @@ void PlayUI::UpdatePage(const bool& leftArrow, const bool& rightArrow)
 		SimpleMath::Vector2{ m_arrowPos.initPos.x, m_arrowPos.nowPos.y } + m_moveTexPos);
 }
 
-/// <summary>
-/// 遷移の更新
-/// </summary>
-/// <param name="upArrow">上orWキー</param>
-/// <param name="downArrow">下orSキー</param>
-/// <returns>なし</returns>
+// 遷移先の選択
 void PlayUI::UpdateTransition(const bool& upArrow, const bool& downArrow)
 {
 	if (upArrow)
@@ -236,11 +208,7 @@ void PlayUI::UpdateTransition(const bool& upArrow, const bool& downArrow)
 	m_arrowPos.nowPos.y = UserUtility::Lerp(m_arrowPos.nowPos.y, m_targetArrow[m_transNum], 0.1f);
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 描画関数
 void PlayUI::Render()
 {
     // 比率を計算
@@ -325,11 +293,7 @@ void PlayUI::Render()
 	}
 }
 
-/// <summary>
-/// 開始のカウントダウン
-/// </summary>
-/// <param name="countDown">カウントダウン</param>
-/// <returns>なし</returns>
+// カウントダウン
 void PlayUI::RenderCountDown(const float& countDown)
 {
 	// 比率を計算
@@ -362,20 +326,12 @@ void PlayUI::RenderCountDown(const float& countDown)
 	);
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void PlayUI::Finalize()
 {
 }
 
-/// <summary>
-/// 下のフォントの位置の更新
-/// </summary>
-/// <param name="scale">拡大率</param>
-/// <returns>なし</returns>
+// 下のフォントの更新
 void PlayUI::UpdateUnderLine(SimpleMath::Vector2 scale)
 {
 	m_underFontPos.x -= UNDER_SPEED * scale.x;
@@ -387,11 +343,7 @@ void PlayUI::UpdateUnderLine(SimpleMath::Vector2 scale)
 
 }
 
-/// <summary>
-/// タイマーの描画
-/// </summary>
-/// <param name="scale">拡大率</param>
-/// <returns>なし</returns>
+// タイマーの描画
 void PlayUI::RenderTimer(SimpleMath::Vector2 scale)
 {
 	// 一桁に変換
@@ -421,11 +373,7 @@ void PlayUI::RenderTimer(SimpleMath::Vector2 scale)
 	);
 }
 
-/// <summary>
-/// 太陽の描画
-/// </summary>
-/// <param name="scale">画像の拡大率</param>
-/// <returns>なし</returns>
+// 太陽の描画
 void PlayUI::RenderSunny(SimpleMath::Vector2 scale)
 {
 	m_system->GetDrawSprite()->DrawTexture(
@@ -438,11 +386,7 @@ void PlayUI::RenderSunny(SimpleMath::Vector2 scale)
 	);
 }
 
-/// <summary>
-/// ページの描画
-/// </summary>
-/// <param name="scale">画面の拡大率</param>
-/// <returns>なし</returns>
+// ページの描画
 void PlayUI::RenderHelpPage(SimpleMath::Vector2 scale)
 {
 	// Page1
@@ -473,22 +417,13 @@ void PlayUI::RenderHelpPage(SimpleMath::Vector2 scale)
 	);
 }
 
-/// <summary>
-/// 座標を移動させる
-/// </summary>
-/// <param name="*pos">座標</param>
-/// <param name="end">エンド座標</param>
-/// <returns>なし</returns>
+// 位置を移動する
 void PlayUI::MovePositions(SimpleMath::Vector2* pos,const SimpleMath::Vector2& end)
 {
 	(*pos) = UserUtility::Lerp(*pos, end, SimpleMath::Vector2{ PAGE_SPEED });
 }
 
-/// <summary>
-/// 登録した座標を呼び出す
-/// </summary>
-/// <param name="key">登録キー</param>
-/// <returns>登録座標</returns>
+// 座標を呼び出す
 const SimpleMath::Vector2& PlayUI::GetHelpPosition(const wchar_t* key)
 {
 	std::map<const wchar_t*, HelpPosition>::const_iterator _it = m_helpPoses.find(key);

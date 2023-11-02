@@ -14,9 +14,7 @@
 
 #include "PlayerBill.h"
 
-/// <summary>
-/// インプットレイアウトの設定
-/// </summary>
+// インプットレイアウトの設定
 const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerBill::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -24,38 +22,22 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerBill::INPUT_LAYOUT =
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3) + sizeof(SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 PlayerBill::PlayerBill()
-	: m_pDR{nullptr}
-	, m_defaultPos{SimpleMath::Vector3::Zero}
+	: m_defaultPos{SimpleMath::Vector3::Zero}
 	, m_vertice{}
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 PlayerBill::~PlayerBill()
 {
 }
 
-/// <summary>
-/// リソースの作成
-/// </summary>
-/// <param name="pDR">デバイスリソースポインタ</param>
-/// <returns>なし</returns>
-void PlayerBill::Create(DX::DeviceResources* pDR)
+// 作成関数
+void PlayerBill::Create()
 {
-	m_pDR = pDR;
-
-	// デバイスの取得
-	auto _device = pDR->GetD3DDevice();
+	auto _pDR = DX::DeviceResources::GetInstance();
 
 	// シェーダーの作成
 	CreateShader();
@@ -64,45 +46,36 @@ void PlayerBill::Create(DX::DeviceResources* pDR)
 	LoadTexture(L"Resources/Textures/PLAY_COMMON/PlayerPoint.dds");
 
 	// プリミティブバッチの作成
-	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());
+	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(_pDR->GetD3DDeviceContext());
 
 	// コモンステートの作成
-	m_states = std::make_unique<CommonStates>(_device);
+	m_states = std::make_unique<CommonStates>(_pDR->GetD3DDevice());
 
 	// 座標の初期化
 	m_defaultPos = SimpleMath::Vector3{ 0.0f,0.0f,0.0f };
 }
 
-/// <summary>
-/// 画像読み込み
-/// </summary>
-/// <param name="path">画像パス</param>
-/// <returns>なし</returns>
+// 画像読み込み
 void PlayerBill::LoadTexture(const wchar_t* path)
 {
-	// デバイス
-	auto _device = m_pDR->GetD3DDevice();
+	auto _pDR = DX::DeviceResources::GetInstance();
+
 	// シェーダーリソースビュー
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _tex;
 
 	// ファイル読み込み
 	CreateDDSTextureFromFile(
-		_device,
+		_pDR->GetD3DDevice(),
 		path,
 		nullptr,
 		m_texture.ReleaseAndGetAddressOf()
 	);
 }
 
-/// <summary>
-/// シェーダーの作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// シェーダー作成
 void PlayerBill::CreateShader()
 {
-	// デバイス
-	auto _device = m_pDR->GetD3DDevice();
+	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
 
 	//-------------------------------------------------------------------------------------//
 	// シェーダーファイルの読み込み
@@ -172,11 +145,7 @@ void PlayerBill::CreateShader()
 	CreateConstBuffer(_device);
 }
 
-/// <summary>
-/// コンスタントバッファ作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// コンスタントバッファを作成
 void PlayerBill::CreateConstBuffer(ID3D11Device1*& device)
 {
 	// コンスタントバッファ定義
@@ -201,13 +170,7 @@ void PlayerBill::CreateConstBuffer(ID3D11Device1*& device)
 	device->CreateBuffer(&_buffer, nullptr, &m_constBuffer);
 }
 
-/// <summary>
-/// ビルボード作成関数
-/// </summary>
-/// <param name="target">カメラターゲット（注視点）</param>
-/// <param name="eye">カメラアイ（カメラ座標）</param>
-/// <param name="up">上向きベクトル（基本はYのみ１のベクトル）</param>
-/// <returns>なし</returns>
+// ビルボード作成関数
 void PlayerBill::CreateBillboard(SimpleMath::Vector3 target, SimpleMath::Vector3 eye, SimpleMath::Vector3 up)
 {
 	m_world = SimpleMath::Matrix::CreateBillboard(SimpleMath::Vector3::Zero, eye - target, up);
@@ -225,17 +188,10 @@ void PlayerBill::CreateBillboard(SimpleMath::Vector3 target, SimpleMath::Vector3
 }
 
 
-/// <summary>
-/// 描画
-/// </summary>
-/// <param name="playerPos">プレイヤの座標</param>
-/// <param name="timer">タイマーSinfで使う</param>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
-/// <returns>なし</returns>
-void PlayerBill::Render(DirectX::SimpleMath::Vector3 playerPos, float timer, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+// 描画関数
+void PlayerBill::Render(SimpleMath::Vector3 playerPos, float timer, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
-	auto _context = m_pDR->GetD3DDeviceContext();
+	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
 
 	// 頂点情報
 	VertexPositionColorTexture _vertex = VertexPositionColorTexture(

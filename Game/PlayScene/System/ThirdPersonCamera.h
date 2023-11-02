@@ -27,18 +27,34 @@ private:
 	std::shared_ptr<SystemManager> m_system;
 
 public:
-	ThirdPersonCamera(std::shared_ptr<SystemManager> system,ID3D11DeviceContext1* context, ID3D11Device1* device);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="system">システムマネージャ</param>
+	/// <returns>なし</returns>
+	ThirdPersonCamera(std::shared_ptr<SystemManager> system);
 	~ThirdPersonCamera();
 
-	// 追従処理
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="pos">基準点</param>
+	/// <param name="rotate">回転量</param>
+	/// <param name="distance">基準点からの距離</param>
+	/// <returns>なし</returns>
 	void UpdateFollow(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Quaternion& rotate ,
 		const DirectX::SimpleMath::Vector3& distance);
 
+	/// <summary>
+	/// 雲の付着を描画
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void DrawAdhesion();
+
 	// ビュー行列の取得
 	const DirectX::SimpleMath::Matrix& GetFollowView() { return m_followView; }
-
-	// 画像の描画
-	void DrawAdhesion();
 };
 
 #endif // THIRDPERSONCAMERA

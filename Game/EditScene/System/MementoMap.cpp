@@ -9,31 +9,19 @@
 
 #include "MementoMap.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="state">変更があったオブジェクト</param>
- /// <returns>なし</returns>
+// コンストラクタ
 MementoMap::MementoMap(const std::vector<Object>& state)
 	: m_state{ state }
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 MementoMap::~MementoMap()
 {
 	m_state.clear();
 }
 
-/// <summary>
-/// ステートゲッター
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>前回のステート</returns>
+// ステートを取得
 const std::vector<Object>& MementoMap::GetState()
 {
 	return m_state;

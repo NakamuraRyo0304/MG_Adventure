@@ -28,10 +28,25 @@ public:
 	EditorLog();
 	~EditorLog();
 
-	// 状態を蓄積していく関数
+	/// <summary>
+	/// 状態を蓄積していく関数
+	/// </summary>
+	/// <param name="history">変更点</param>
+	/// <returns>なし</returns>
 	void AddHistory(const MementoMap& history);
 
+	/// <summary>
+	/// ひとつ前の状態に戻す
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>ひとつ前の状態</returns>
 	const MementoMap& GetUndo();
+
+	/// <summary>
+	/// Undoを取り消す
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>前回のUndoの前の状態</returns>
 	const MementoMap& GetRedo();
 };
 

@@ -9,59 +9,39 @@
 
 #include "MouseCursor.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="context">コンテキストのポインタ</param>
- /// <returns>なし</returns>
-MouseCursor::MouseCursor(ID3D11DeviceContext1* context)
+
+// コンストラクタ
+MouseCursor::MouseCursor()
 {
-	m_spriteBatch = std::make_unique<SpriteBatch>(context);
+	m_spriteBatch = std::make_unique<SpriteBatch>(DX::DeviceResources::GetInstance()->GetD3DDeviceContext());
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 MouseCursor::~MouseCursor()
 {
 	Finalize();
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="filename">マウスポインタの画像パス</param>
-/// <param name="device">デバイスのポインタ</param>
-/// <returns>なし</returns>
-void MouseCursor::Initialize(const wchar_t* filename, ID3D11Device* device)
+// 初期化処理
+void MouseCursor::Initialize(const wchar_t* filename)
 {
 	// 画像の登録
 	CreateDDSTextureFromFile(
-		device,
+		DX::DeviceResources::GetInstance()->GetD3DDevice(),
 		filename,
 		nullptr,
 		m_SRV.ReleaseAndGetAddressOf()
 	);
 }
 
-/// <summary>
-/// マウス位置の更新
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// マウス位置の更新
 void MouseCursor::Update()
 {
 	auto _mouse = Mouse::Get().GetState();
 	m_cursorPos = SimpleMath::Vector2{ static_cast<float>(_mouse.x),static_cast<float>(_mouse.y) };
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 描画処理
 void MouseCursor::Render()
 {
 	m_spriteBatch->Begin();
@@ -80,11 +60,7 @@ void MouseCursor::Render()
 	m_spriteBatch->End();
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void MouseCursor::Finalize()
 {
 	m_SRV.Reset();

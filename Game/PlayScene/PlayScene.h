@@ -133,76 +133,138 @@ private:
 
 public:
 
-	// コンストラクタ
 	PlayScene();
-
-	// デストラクタ
 	~PlayScene();
 
-	// 初期化
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Initialize() override;
 
-	// 更新
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update() override;
 
-	// 描画
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Draw() override;
 
-	// 終了処理
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize() override;
 
-	// 画面依存の初期化
+	/// <summary>
+	/// 画面依存、デバイス依存の初期化
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CreateWindowDependentResources() override;
 
 private:
 
-	// シーン内の変数初期化関数
+	/// <summary>
+	/// シーン内の変数初期化関数
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void SetSceneValues() override;
 
 private:
 
-	// ライティングの設定
+	/// <summary>
+	/// ライティングの更新
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void InitializeLighting();
 
-	// プレイヤーの作成
+	/// <summary>
+	/// プレイヤーの作成
+	/// </summary>
+	/// <param name="device">デバイスポインタ</param>
+	/// <returns>なし</returns>
 	void MakePlayer(ID3D11Device1* device);
 
-	// ブロックの作成
+	/// <summary>
+	/// ブロックの作成
+	/// </summary>
+	/// <param name="device">デバイスポインタ</param>
+	/// <returns>なし</returns>
 	void MakeBlocks(ID3D11Device1* device);
 
-	// スタートのカウントダウン
+	/// <summary>
+	/// スタートのカウントダウン
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>終わっていたらTrueを返す</returns>
 	bool StartTimer();
 
-	// スタート演出
+	/// <summary>
+	/// スタート演出
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void MoveStart();
 
-	// 空の更新
+	/// <summary>
+	/// 空の更新
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void UpdateSky();
 
-	// UIの更新
+	/// <summary>
+	/// UIの更新
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>ヘルプフラグ</returns>
 	bool UpdateUI();
+
+	/// <summary>
+	/// ヘルプシーンで選択されたシーンへの遷移
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void HelpNext();
 
-	// 当たり判定処理
+	/// <summary>
+	/// 当たり判定処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Judgement();
 
-	// 押し戻し処理
+	/// <summary>
+	/// 押し戻し処理
+	/// </summary>
+	/// <param name="obj">当たったオブジェクト</param>
+	/// <returns>なし</returns>
 	void ApplyPushBack(Object& obj);
 
 public:
 
-	// タイムリミットのゲッター
+	// タイムリミットの取得
 	const float& GetClearTime() { return m_clearTime; }
-
-	// コインの枚数ゲッター
+	/// 獲得したコインを取得
 	const int& GetCoinNum();
+	/// ステージの最大コインを取得
 	const int& GetMaxCoinCount();
-
-	// マップ番号のセッター
+	// マップ番号の取得
 	const int& GetStageNum() { return m_stageNum; }
+	// マップ番号の設定
 	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
-
-	// 合計コイン数セッター
+	// 合計コイン数の設定
 	void SetAllCoinNum(const int& allCoins) { m_allCoins = allCoins; }
 
 };

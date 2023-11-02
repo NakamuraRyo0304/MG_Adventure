@@ -12,11 +12,7 @@
 
 #include "ClearChecker.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 ClearChecker::ClearChecker()
 	: m_checkMap{}				// マップデータ
 	, m_playerNum{0}			// プレイヤーの数
@@ -32,11 +28,8 @@ ClearChecker::ClearChecker()
 {
 }
 
-/// <summary>
-/// マップのセットとその他設定
-/// </summary>
-/// <param name="map">チェック対象のマップ</param>
-/// <returns>なし</returns>
+
+// 捜査マップの設定
 void ClearChecker::SetMap(const std::vector<Object>& map)
 {
 	// 捜査するマップを格納
@@ -61,11 +54,7 @@ void ClearChecker::SetMap(const std::vector<Object>& map)
 	m_coinLength = 0.0f;
 }
 
-/// <summary>
- /// クリアチェックを実行
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>成功でTrue：失敗でFalse</returns>
+// クリアチェックを実行
 bool ClearChecker::RunCheck()
 {
 	// オブジェクトの数を計算
@@ -125,21 +114,7 @@ bool ClearChecker::RunCheck()
 	return is_playerCheck && is_coinCheck && is_cloudCheck && is_startCheck;
 }
 
-/// <summary>
-/// クリアできる可能性が高ければTrueを返す
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>Summaryと同じ</returns>
-const bool& ClearChecker::GetClearPossibility()
-{
-	return is_clearPossibility;
-}
-
-/// <summary>
-/// プレイヤーと雲の座標比較
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>雲が乗れる位置にあればTrue</returns>
+// 雲が乗れるか判定
 bool ClearChecker::CheckSameHeight()
 {
 	// 雲がなければ比較せず抜ける
@@ -160,11 +135,7 @@ bool ClearChecker::CheckSameHeight()
 	return false;
 }
 
-/// <summary>
-/// 正常にスタート可能かチェック
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>可能ならTrue</returns>
+// スタート可能か判定
 bool ClearChecker::CheckNormalStart()
 {
 	for (auto& i : m_checkMap)

@@ -21,11 +21,7 @@
 
 #include "Blocks.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 Blocks::Blocks()
 	: m_coinCount{0}							// コインカウンタ
 	, m_maxCoins{0}								// コイン最大値
@@ -41,21 +37,13 @@ Blocks::Blocks()
 	m_mapLoad = std::make_unique<MapLoad>();
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 Blocks::~Blocks()
 {
 
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="stageNum">ステージ番号</param>
-/// <returns>なし</returns>
+// 初期化処理
 void Blocks::Initialize(int stageNum)
 {
 	// ファイル名の宣言
@@ -133,11 +121,7 @@ void Blocks::Initialize(int stageNum)
 	m_lighting = SimpleMath::Vector3::Zero;
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void Blocks::Update()
 {
 	// 雲は上下移動する
@@ -166,19 +150,12 @@ void Blocks::Update()
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="context">ID3D11DeviceContextポインタ</param>
-/// <param name="states">コモンステート</param>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
-/// <param name="timer">経過時間</param>
-/// <param name="lightDir">ライティング</param>
-/// <returns>なし</returns>
-void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
-	SimpleMath::Matrix view, SimpleMath::Matrix proj, float timer, const SimpleMath::Vector3& lightDir)
+// 描画関数
+void Blocks::Render(CommonStates& states,SimpleMath::Matrix view, SimpleMath::Matrix proj,
+	float timer, const SimpleMath::Vector3& lightDir)
 {
+	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
+
 	// ワールド座標
 	SimpleMath::Matrix _world, _rotMat, _verticle;
 
@@ -267,21 +244,21 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		if (m_mapObj[i].id == MAPSTATE::GRASS)
 		{
 			m_grassModel->UpdateEffects(_lightSetting);
-			m_grassModel->Draw(context, states, _world, view, proj);
+			m_grassModel->Draw(_context, states, _world, view, proj);
 		}
 
 		// コインブロック
 		if (m_mapObj[i].id == MAPSTATE::COIN)
 		{
 			m_coinModel->UpdateEffects(_lightSetting);
-			m_coinModel->Draw(context, states, _rotMat * _world, view, proj);
+			m_coinModel->Draw(_context, states, _rotMat * _world, view, proj);
 		}
 
 		// 重力ブロック
 		if (m_mapObj[i].id == MAPSTATE::GRAVITY)
 		{
 			m_gravityModel->UpdateEffects(_lightSetting);
-			m_gravityModel->Draw(context, states, _world, view, proj);
+			m_gravityModel->Draw(_context, states, _world, view, proj);
 		}
 	}
 
@@ -294,21 +271,17 @@ void Blocks::Render(ID3D11DeviceContext* context, CommonStates& states,
 		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
 		m_cloudModel->UpdateEffects(_lightSetting);
-		m_cloudModel->Draw(context, states, _rotMat * _world, view, proj, false, [&]()
+		m_cloudModel->Draw(_context, states, _rotMat * _world, view, proj, false, [&]()
 			{
-				context->OMSetBlendState(states.NonPremultiplied(), nullptr, 0xffffffff);
-				context->OMSetDepthStencilState(states.DepthDefault(), 0);
-				context->PSSetShader(m_psCloud.Get(), nullptr, 0);
+				_context->OMSetBlendState(states.NonPremultiplied(), nullptr, 0xffffffff);
+				_context->OMSetDepthStencilState(states.DepthDefault(), 0);
+				_context->PSSetShader(m_psCloud.Get(), nullptr, 0);
 			}
 		);
 	}
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void Blocks::Finalize()
 {
 	// マップの解放
@@ -323,12 +296,7 @@ void Blocks::Finalize()
 	ModelFactory::DeleteModel(m_gravityModel);
 }
 
-/// <summary>
-/// モデル作成
-/// </summary>
-/// <param name="model">モデルデータ</param>
-/// <param name="modelNum">対応したモデル番号</param>
-/// <returns>なし</returns>
+// モデル作成関数
 void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 {
 	switch (modelNum)
@@ -350,46 +318,26 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 	}
 }
 
-/// <summary>
-/// シェーダーの作成
-/// </summary>
-/// <param name="device">デバイスポインタ</param>
-/// <returns>なし</returns>
-void Blocks::CreateShader(ID3D11Device1* device)
+// シェーダー作成
+void Blocks::CreateShader()
 {
+	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+
 	// ピクセルシェーダー
 	std::vector<uint8_t> _psCloud = DX::ReadData(L"Resources/Shaders/PS_Cloud.cso");
 	DX::ThrowIfFailed(
-		device->CreatePixelShader(_psCloud.data(), _psCloud.size(), nullptr,
+		_device->CreatePixelShader(_psCloud.data(), _psCloud.size(), nullptr,
 			m_psCloud.ReleaseAndGetAddressOf()));
 }
 
-/// <summary>
-/// コイン取得処理
-/// </summary>
-/// <param name="index">当たったコインの番号</param>
-/// <returns>なし</returns>
+// コインのカウントアップ
 void Blocks::CountUpCoin(int index)
 {
 	m_coinCount++;
 	m_mapObj[index].id = MAPSTATE::NONE;
 }
 
-/// <summary>
-/// コインを回収判定
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>回収終わったらTrue</returns>
-const bool& Blocks::IsCollectedFlag()
-{
-	return is_collectedFlag;
-}
-
-/// <summary>
-/// サイズゲッター
-/// </summary>
-/// <param name="objName">オブジェクトの名前(構造体)</param>
-/// <returns>なし</returns>
+// オブジェクトの大きさを取得
 const float& Blocks::GetObjSize(const int& objName)
 
 {
@@ -415,11 +363,7 @@ const float& Blocks::GetObjSize(const int& objName)
 	}
 }
 
-/// <summary>
-/// 雲の位置をもとに戻す処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 雲を元に戻す
 void Blocks::CallGravity()
 {
 	for (auto& i : m_mapObj)
@@ -439,11 +383,7 @@ void Blocks::CallGravity()
 	}
 }
 
-/// <summary>
-/// マップ選択
-/// </summary>
-/// <param name="num">ステージ番号</param>
-/// <returns>ファイルパス</returns>
+// マップ選択
 std::wstring Blocks::MapSelect(int num)
 {
 	std::wstring _filePath;

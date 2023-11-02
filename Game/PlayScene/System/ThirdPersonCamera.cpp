@@ -11,15 +11,8 @@
 
 #include "ThirdPersonCamera.h"
 
-/// <summary>
-/// コンストラクタ
-/// </summary>
-/// <param name="system">システムマネージャ</param>
-/// <param name="context">コンテキストポインタ</param>
-/// <param name="device">デバイスポインタ</param>
-/// <returns>なし</returns>
-ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
-	ID3D11DeviceContext1* context, ID3D11Device1* device)
+// コンストラクタ
+ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system)
 	: m_system{ system }
 	, m_followView{}
 {
@@ -31,22 +24,12 @@ ThirdPersonCamera::ThirdPersonCamera(std::shared_ptr<SystemManager> system,
 	_sp->AddTextureData(L"Adhesion", L"Resources/Textures/PLAY_COMMON/Adhesion.dds");
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 ThirdPersonCamera::~ThirdPersonCamera()
 {
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="pos">基準点</param>
-/// <param name="rotate">回転量</param>
-/// <param name="distance">基準点からの距離</param>
-/// <returns>なし</returns>
+// 追従処理
 void ThirdPersonCamera::UpdateFollow(const SimpleMath::Vector3& pos, const SimpleMath::Quaternion& rotate,
 	const SimpleMath::Vector3& distance)
 {
@@ -65,11 +48,7 @@ void ThirdPersonCamera::UpdateFollow(const SimpleMath::Vector3& pos, const Simpl
 	m_followView = SimpleMath::Matrix::CreateLookAt(_eye, _target, SimpleMath::Vector3::Up);
 }
 
-/// <summary>
-/// 雲の付着を表現
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 外界を制限
 void ThirdPersonCamera::DrawAdhesion()
 {
 	// デバイスリソース

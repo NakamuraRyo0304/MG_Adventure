@@ -116,64 +116,115 @@ public:
 	PlayUI();
 	~PlayUI();
 
-	// 作成処理
-	void Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device, const DirectX::SimpleMath::Vector2& windowSize);
+	/// <summary>
+	/// 作成処理
+	/// </summary>
+	/// <param name="system">システムマネージャ</param>
+	/// <param name="windowSize">ウィンドウサイズ</param>
+	/// <returns>なし</returns>
+	void Create(const std::shared_ptr<SystemManager>& system, const DirectX::SimpleMath::Vector2& windowSize);
 
-	// 更新処理
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="timelimit">残り時間</param>
+	/// <returns>なし</returns>
 	void Update(const float& timelimit);
 
-	// ページ更新
+	/// <summary>
+	/// ページをめくる
+	/// </summary>
+	/// <param name="leftArrow">左orAキー</param>
+	/// <param name="rightArrow">右orDキー</param>
+	/// <returns>なし</returns>
 	void UpdatePage(const bool& leftArrow, const bool& rightArrow);
 
-	// 遷移更新
+	/// <summary>
+	/// 遷移の更新
+	/// </summary>
+	/// <param name="upArrow">上orWキー</param>
+	/// <param name="downArrow">下orSキー</param>
+	/// <returns>なし</returns>
 	void UpdateTransition(const bool& upArrow, const bool& downArrow);
 
-	// 描画処理
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Render();
 
-	// カウントダウン
+	/// <summary>
+	/// 開始のカウントダウン
+	/// </summary>
+	/// <param name="countDown">カウントダウン</param>
+	/// <returns>なし</returns>
 	void RenderCountDown(const float& countDown);
 
-	// 終了処理
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize();
-
-	// カウントダウン終了判定
-	bool IsCountDownEnd() { return (m_countDownEnds < -0.5f); };
 
 private:
 
-	// 下線の更新
+	/// <summary>
+	/// 下のフォントの位置の更新
+	/// </summary>
+	/// <param name="scale">拡大率</param>
+	/// <returns>なし</returns>
 	void UpdateUnderLine(DirectX::SimpleMath::Vector2 scale);
 
-	// タイマーの描画
+	/// <summary>
+	/// タイマーの描画
+	/// </summary>
+	/// <param name="scale">拡大率</param>
+	/// <returns>なし</returns>
 	void RenderTimer(DirectX::SimpleMath::Vector2 scale);
 
-	// 太陽の描画関数
+	/// <summary>
+	/// 太陽の描画
+	/// </summary>
+	/// <param name="scale">画像の拡大率</param>
+	/// <returns>なし</returns>
 	void RenderSunny(DirectX::SimpleMath::Vector2 scale);
 
-	// ヘルプページの描画
+	/// <summary>
+	/// ページの描画
+	/// </summary>
+	/// <param name="scale">画面の拡大率</param>
+	/// <returns>なし</returns>
 	void RenderHelpPage(DirectX::SimpleMath::Vector2 scale);
 
-	// ヘルプ画像の左右移動
+	/// <summary>
+	/// 座標を移動させる
+	/// </summary>
+	/// <param name="*pos">座標</param>
+	/// <param name="end">エンド座標</param>
+	/// <returns>なし</returns>
 	void MovePositions(DirectX::SimpleMath::Vector2* pos,const DirectX::SimpleMath::Vector2& end);
 
-	// ヘルプ画像の座標を呼び出す
+	/// <summary>
+	/// 登録した座標を呼び出す
+	/// </summary>
+	/// <param name="key">登録キー</param>
+	/// <returns>登録座標</returns>
 	const DirectX::SimpleMath::Vector2& GetHelpPosition(const wchar_t* key);
 
 public:
 
+	// カウントダウン終了判定
+	bool IsCountDownEnd() { return (m_countDownEnds < -0.5f); };
 	// ページ番号ゲッター
 	const int& GetPage() { return m_pageNum; }
-
 	// 遷移ページゲッター
 	const bool& GetTransitionPage() { return is_transFlag; }
-
 	// 遷移先ゲッター
 	const int& GetTransNum() { return m_transNum; }
-
 	// エフェクトフラグのセット
 	void SetEffectFlag(const bool& flag) { is_effectFlag = flag; }
-
 	// ヘルプフラグのセット
 	void SetHelpFlag(const bool& flag) { is_helpFlag = flag; }
 };

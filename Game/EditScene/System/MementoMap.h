@@ -20,10 +20,19 @@ private:
 
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="state">変更があったオブジェクト</param>
+	/// <returns>なし</returns>
 	MementoMap(const std::vector<Object>& state);
 	~MementoMap();
 
-	// ステートゲッター
+	/// <summary>
+	/// ステートを取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>前回のステート</returns>
 	const std::vector<Object>& GetState();
 };
 

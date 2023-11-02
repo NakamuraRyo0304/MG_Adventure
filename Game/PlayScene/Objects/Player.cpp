@@ -20,14 +20,7 @@
 
 #include "Player.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="head">頭部のモデルデータ</param>
- /// <param name="body">胴体のモデルデータ</param>
- /// <param name="right">右足モデルデータ</param>
- /// <param name="left">左足モデルデータ</param>
- /// <returns>なし</returns>
+// コンストラクタ
 Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body,
 			   std::unique_ptr<Model> right, std::unique_ptr<Model> left, std::unique_ptr<Model> wink)
 	: _timer{0.0f}					// タイマー
@@ -51,22 +44,14 @@ Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body,
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 Player::~Player()
 {
 	Finalize();
 	m_system.reset();
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="system">システムデータ</param>
-/// <returns>なし</returns>
+// 初期化処理
 void Player::Initialize(std::shared_ptr<SystemManager> system)
 {
 	// システムの取得
@@ -91,11 +76,7 @@ void Player::Initialize(std::shared_ptr<SystemManager> system)
 	m_lighting = SimpleMath::Vector3::Zero;
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="lookFlag">視点フラグ</param>
-/// <returns>なし</returns>
+// 更新処理
 void Player::Update(bool lookFlag)
 {
 	auto _key = Keyboard::Get().GetState();
@@ -191,18 +172,12 @@ void Player::Update(bool lookFlag)
 	m_thirdRotate = m_neckQuaternion * m_parameter.rotate;
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="context">ID3D11DeviceContextポインタ</param>
-/// <param name="states">コモンステート</param>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
-/// <param name="lightDir">ライティング</param>
-/// <returns>なし</returns>
-void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
-	SimpleMath::Matrix view, SimpleMath::Matrix proj,const SimpleMath::Vector3& lightDir)
+// 描画処理
+void Player::Render(CommonStates& states, SimpleMath::Matrix view, SimpleMath::Matrix proj,
+	const SimpleMath::Vector3& lightDir)
 {
+	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
+
 	// ワールド行列
 	SimpleMath::Matrix _commonMat, _headMat, _legRMat, _legLMat;
 
@@ -304,33 +279,29 @@ void Player::Render(ID3D11DeviceContext* context, CommonStates& states,
 
 	// 右足の描画
 	m_rightLeg->UpdateEffects(_lightingEffects);
-	m_rightLeg->Draw(context, states, _legRMat, view, proj);
+	m_rightLeg->Draw(_context, states, _legRMat, view, proj);
 
 	// 左足の描画
 	m_leftLeg->UpdateEffects(_lightingEffects);
-	m_leftLeg->Draw(context, states, _legLMat, view, proj);
+	m_leftLeg->Draw(_context, states, _legLMat, view, proj);
 
 	// 頭部の描画
 	if (sinf(_timer) <= WINK_SPAN)
 	{
 		m_head->UpdateEffects(_lightingEffects);
-		m_head->Draw(context, states, _headMat, view, proj);
+		m_head->Draw(_context, states, _headMat, view, proj);
 	}
 	else
 	{
 		m_wink->UpdateEffects(_lightingEffects);
-		m_wink->Draw(context, states, _headMat, view, proj);
+		m_wink->Draw(_context, states, _headMat, view, proj);
 	}
 	// 身体の描画
 	m_body->UpdateEffects(_lightingEffects);
-	m_body->Draw(context, states, _commonMat, view, proj);
+	m_body->Draw(_context, states, _commonMat, view, proj);
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void Player::Finalize()
 {
 	m_head.reset();
@@ -340,11 +311,7 @@ void Player::Finalize()
 	m_parameter.reset();
 }
 
-/// <summary>
-/// 重力処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 重力処理
 void Player::UpdateGravity()
 {
 	// 重力の加算
@@ -360,11 +327,7 @@ void Player::UpdateGravity()
 	}
 }
 
-/// <summary>
-/// リスポーンさせる関数
-/// </summary>
-/// <param name="spawnPosition">プレイヤーの座標を指定する</param>
-/// <returns>なし</returns>
+// リスポーン関数
 void Player::Spawn(SimpleMath::Vector3 spawnPosition)
 {
 	// パラメータの初期化

@@ -35,27 +35,38 @@ private:
 	const float ANGLE = 45.0f;
 
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="screenSize">スクリーンサイズ</param>
+	/// <returns>なし</returns>
 	PlayCamera(const DirectX::SimpleMath::Vector2& screenSize);
 	~PlayCamera();
 
-	// ビュー行列作成関数（ビューの処理の最後に呼ぶ）
+	/// <summary>
+	/// ビューを作成
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>ビュー行列</returns>
 	const DirectX::SimpleMath::Matrix& CreateView();
-
-	// プロジェクション行列ゲッター
+	// プロジェクション行列を取得
 	const DirectX::SimpleMath::Matrix& GetProjection() { return m_projection; }
-
-	// 座標ゲッター
+	// 座標を取得
 	const DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
-	// 座標セッター
+	// 座標を設定
 	void SetPosition(const DirectX::SimpleMath::Vector3& pos = { 0.f,1.f,1.f }) { m_position = pos; }
-
-	// 注視点ゲッター
+	// 注視点を取得
 	const DirectX::SimpleMath::Vector3& GetTarget() { return m_target; }
-	// 注視点セッター
+	// 注視点を設定
 	void SetTarget(const DirectX::SimpleMath::Vector3& target = DirectX::SimpleMath::Vector3::Zero) { m_target = target; }
 
 private:
-	// プロジェクション作成クラス
+
+	/// <summary>
+	/// プロジェクションを作成
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CreateProjection();
 
 };

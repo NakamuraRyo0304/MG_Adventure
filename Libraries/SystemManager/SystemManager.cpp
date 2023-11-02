@@ -21,10 +21,8 @@ SystemManager::SystemManager()
 	, m_camera{nullptr}
 	, m_pDR{nullptr}
 	, m_rayCast{nullptr}
-#ifdef _DEBUG
 	, m_gridFloor{nullptr}
 	, m_drawString{nullptr}
-#endif
 {
 }
 
@@ -79,7 +77,7 @@ SystemManager::GetRayCast()
 {
 	if (!m_rayCast)
 	{
-		throw;
+		m_rayCast = std::make_unique<RayCast>();
 	}
 	return m_rayCast;
 }
@@ -94,7 +92,8 @@ SystemManager::GetDrawSprite()
 {
 	if (!m_drawSprite)
 	{
-		throw;
+		m_drawSprite = std::make_unique<DrawSprite>();
+		m_drawSprite->MakeSpriteBatch();
 	}
 	return m_drawSprite;
 }
@@ -143,8 +142,6 @@ const std::unique_ptr<SoundManager>& SystemManager::GetSoundManager()
 	return m_soundManager;
 }
 
-#ifdef _DEBUG
-
 /// <summary>
 /// 文字描画クラスの取得
 /// </summary>
@@ -175,8 +172,6 @@ SystemManager::GetGridFloor()
 	return m_gridFloor;
 }
 
-#endif
-
 /// <summary>
 /// 一括でシステムのリソースを作成
 /// </summary>
@@ -206,14 +201,11 @@ void SystemManager::CreateUnique()
 	// サウンドマネージャ
 	m_soundManager = std::make_unique<SoundManager>();
 
-#ifdef _DEBUG
-
 	auto _context = m_pDR->GetD3DDeviceContext();
 
 	// 文字の描画
 	m_drawString = std::make_unique<Debug::DrawString>(_device, _context);
 
-	// グリッドフロア 30 x 30
+	// グリッドフロア
 	m_gridFloor = std::make_unique<Debug::GridFloor>(50, 50);
-#endif
 }

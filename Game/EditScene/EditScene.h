@@ -102,59 +102,116 @@ private:
 	const float SKY_ROTATE_RATE = 0.01f;
 public:
 
-	// コンストラクタ
 	EditScene();
-
-	// デストラクタ
 	~EditScene();
 
-	// 初期化
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Initialize() override;
 
-	// 更新
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update() override;
 
-	// 描画
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Draw() override;
 
-	// Switch簡略文
-	void SwitchDraw(const int& objNum, ID3D11DeviceContext* context, DirectX::CommonStates& states,
-		DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-
-	// 終了処理
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize() override;
 
-	// 画面依存の初期化
+	/// <summary>
+	/// 画面依存、デバイス依存の初期化
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CreateWindowDependentResources() override;
 
 private:
 
-	// シーン内の変数初期化関数
+	/// <summary>
+	/// シーン変数初期化関数
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void SetSceneValues() override;
 
 private:
 
-	// マップを編集
+	/// <summary>
+	/// 描画オブジェクト切り替え
+	/// </summary>
+	/// <param name="objNum">オブジェクト番号</param>
+	/// <param name="context">デバイスコンテキスト</param>
+	/// <param name="states">コモンステート</param>
+	/// <param name="world">ワールド行列</param>
+	/// <param name="view">ビュー行列</param>
+	/// <param name="proj">射影行列</param>
+	/// <returns>なし</returns>
+	void SwitchDraw(const int& objNum, ID3D11DeviceContext* context, DirectX::CommonStates& states,
+		DirectX::SimpleMath::Matrix world, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+
+	/// <summary>
+	/// マップの編集
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void EditMap();
 
-	// マップ読み込み
+	/// <summary>
+	/// マップ読み込み
+	/// </summary>
+	/// <param name="filename">ファイルパス</param>
+	/// <returns>なし</returns>
 	void LoadMap(std::wstring filename);
 
-	// ファイルをセーブする
+	/// <summary>
+	/// マップ書き出し
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void SaveFile();
-
-	// 要素チェック
+	/// <summary>
+	/// セーブ可能かを確認する
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	bool IsCanSave();
 
 private:
 
-	// UndoRedoの実行をする
+	/// <summary>
+	/// UndoRedoを実行する
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void DoUndoRedo();
 
-	// 変更があればUndoRedo用に一時保存する
+	/// <summary>
+	/// UndoRedo用に保存する
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void SaveModification();
 
-	// UndoRedoを適用する
+	/// <summary>
+	/// UndoRedoを適用する
+	/// </summary>
+	/// <param name="mement"></param>
+	/// <returns>なし</returns>
 	void RestoreHistory(MementoMap mement);
 };
 

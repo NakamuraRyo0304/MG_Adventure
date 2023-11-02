@@ -154,7 +154,6 @@ void ResultScene::Update()
 void ResultScene::Draw()
 {
 	// 描画関連
-	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& _states = *GetSystemManager()->GetCommonStates();
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
@@ -172,7 +171,7 @@ void ResultScene::Draw()
 	_projection = GetSystemManager()->GetCamera()->GetProjection();
 
 	// マップの描画
-	m_blocks->Render(_context, _states, _view, _projection, _timer, SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f });
+	m_blocks->Render(_states, _view, _projection, _timer, SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f });
 
 	// UIの表示
 	m_resultUI->Render(GetFadeValue());
@@ -200,9 +199,8 @@ void ResultScene::Finalize()
 /// <returns>なし</returns>
 void ResultScene::CreateWindowDependentResources()
 {
-	// デバイスとデバイスコンテキストの取得
+	// デバイスの取得
 	auto _device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
 	GetSystemManager()->CreateUnique();

@@ -23,12 +23,35 @@ private:
 	DirectX::SimpleMath::Vector2 m_cursorPos;
 
 public:
-	MouseCursor(ID3D11DeviceContext1* context);
+	MouseCursor();
 	~MouseCursor();
 
-	void Initialize(const wchar_t* filename, ID3D11Device* device);
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="filename">マウスポインタの画像パス</param>
+	/// <returns>なし</returns>
+	void Initialize(const wchar_t* filename);
+
+	/// <summary>
+	/// マウス位置の更新
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update();
+
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Render();
+
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize();
 };
 

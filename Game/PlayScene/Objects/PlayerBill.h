@@ -25,8 +25,6 @@ public:
 		DirectX::SimpleMath::Vector4 Diffuse;
 	};
 private:
-	// デバイスリソース
-	DX::DeviceResources* m_pDR;
 
 	// プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
@@ -73,27 +71,56 @@ public:
 	PlayerBill();
 	~PlayerBill();
 
-	// リソースの作成
-	void Create(DX::DeviceResources* pDR);
+	/// <summary>
+	/// リソースの作成
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void Create();
 
-	// 画像読み込み
+	/// <summary>
+	/// 画像読み込み
+	/// </summary>
+	/// <param name="path">画像パス</param>
+	/// <returns>なし</returns>
 	void LoadTexture(const wchar_t* path);
 
-	// ビルボード作成
+	/// <summary>
+	/// ビルボード作成関数
+	/// </summary>
+	/// <param name="target">カメラターゲット（注視点）</param>
+	/// <param name="eye">カメラアイ（カメラ座標）</param>
+	/// <param name="up">上向きベクトル（基本はYのみ１のベクトル）</param>
+	/// <returns>なし</returns>
 	void CreateBillboard(DirectX::SimpleMath::Vector3 target,DirectX::SimpleMath::Vector3 eye,DirectX::SimpleMath::Vector3 up);
 
-	// 表示座標設定
-	void SetVertexMovePos(DirectX::SimpleMath::Vector3 movePos) { m_defaultPos = movePos; }
-
-	// 描画
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name="playerPos">プレイヤの座標</param>
+	/// <param name="timer">タイマーSinfで使う</param>
+	/// <param name="view">ビュー行列</param>
+	/// <param name="proj">射影行列</param>
+	/// <returns>なし</returns>
 	void Render(DirectX::SimpleMath::Vector3 playerPos, float timer, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+
+	// 表示座標を設定
+	void SetVertexMovePos(DirectX::SimpleMath::Vector3 movePos) { m_defaultPos = movePos; }
 
 private:
 
-	// シェーダーの作成
+	/// <summary>
+	/// シェーダーの作成
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CreateShader();
 
-	// コンスタントバッファの作成
+	/// <summary>
+	/// コンスタントバッファ作成
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CreateConstBuffer(ID3D11Device1*& device);
 };
 

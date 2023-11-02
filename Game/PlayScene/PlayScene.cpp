@@ -33,11 +33,8 @@
 
 #include "PlayScene.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+
+// コンストラクタ
 PlayScene::PlayScene()
 	: IScene()						// 基底クラスの初期化
 	, m_startTimer{0.0f}			// 開始時間
@@ -59,21 +56,13 @@ PlayScene::PlayScene()
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 PlayScene::~PlayScene()
 {
 	Finalize();
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 初期化処理
 void PlayScene::Initialize()
 {
 	// 画面依存の初期化
@@ -90,11 +79,7 @@ void PlayScene::Initialize()
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_PLAY, true);
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void PlayScene::Update()
 {
 	// インプットの更新
@@ -247,11 +232,7 @@ void PlayScene::Update()
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 描画処理
 void PlayScene::Draw()
 {
 	// 描画関連
@@ -286,10 +267,10 @@ void PlayScene::Draw()
 	InitializeLighting();
 
 	// マップの描画
-	m_blocks->Render(_context, _states, _view, _projection, _timer, m_lighting);
+	m_blocks->Render(_states, _view, _projection, _timer, m_lighting);
 
 	// プレイヤの描画
-	m_player->Render(_context, _states, _view, _projection, m_lighting);
+	m_player->Render(_states, _view, _projection, m_lighting);
 
 	// スカイドームの描画
 	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(_timer * SKY_ROT_SPEED);
@@ -340,11 +321,7 @@ void PlayScene::Draw()
 	}
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void PlayScene::Finalize()
 {
 	// プレイヤの後処理
@@ -357,16 +334,11 @@ void PlayScene::Finalize()
 	m_hitObj.clear();
 }
 
-/// <summary>
-/// 画面依存、デバイス依存の初期化
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 画面依存、デバイス依存の初期化
 void PlayScene::CreateWindowDependentResources()
 {
-	// デバイスとデバイスコンテキストの取得
+	// デバイスの取得
 	auto _device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
 	GetSystemManager()->CreateUnique();
@@ -375,7 +347,7 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
 
 	// サードパーソンカメラの作成
-	m_thirdCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager(), _context, _device);
+	m_thirdCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager());
 	m_thirdCamera->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
 
 	// スタート用カメラの作成
@@ -414,19 +386,15 @@ void PlayScene::CreateWindowDependentResources()
 
 	// 位置情報のシェーダーの作成
 	m_playerBill = std::make_unique<PlayerBill>();
-	m_playerBill->Create(GetSystemManager()->GetDeviceResources());
+	m_playerBill->Create();
 
 	// UIの作成
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
 	m_playUI = std::make_unique<PlayUI>();
-	m_playUI->Create(GetSystemManager(), _device, GetScreenSize());
+	m_playUI->Create(GetSystemManager(), GetScreenSize());
 }
 
-/// <summary>
-/// シーン内の変数初期化関数
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// シーン変数初期化関数
 void PlayScene::SetSceneValues()
 {
 	// 判定の初期化
@@ -467,22 +435,14 @@ void PlayScene::SetSceneValues()
 	m_lighting = -SimpleMath::Vector3::One;
 }
 
-/// <summary>
-/// ライティングの更新
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// ライティングの設定
 void PlayScene::InitializeLighting()
 {
 	m_player->InitializeLighting(m_lighting);
 	m_blocks->InitializeLighting(m_lighting);
 }
 
-/// <summary>
-/// プレイヤーの作成
-/// </summary>
-/// <param name="device">デバイスポインタ</param>
-/// <returns>なし</returns>
+// プレイヤー作成関数
 void PlayScene::MakePlayer(ID3D11Device1* device)
 {
 	// ファクトリーからモデルをもらう
@@ -502,15 +462,11 @@ void PlayScene::MakePlayer(ID3D11Device1* device)
 	);
 }
 
-/// <summary>
-/// ブロックの作成
-/// </summary>
-/// <param name="device">デバイスポインタ</param>
-/// <returns>なし</returns>
+// ブロック作成関数
 void PlayScene::MakeBlocks(ID3D11Device1* device)
 {
 	m_blocks = std::make_unique<Blocks>();
-	m_blocks->CreateShader(device);
+	m_blocks->CreateShader();
 
 	// ファクトリーからモデルをもらう
 	auto _grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
@@ -525,11 +481,7 @@ void PlayScene::MakeBlocks(ID3D11Device1* device)
 	m_blocks->CreateModels(std::move(_gravity), m_blocks->GRAVITY);
 }
 
-/// <summary>
-/// スタートのカウントダウン
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>終わっていたらTrueを返す</returns>
+// カウントダウン
 bool PlayScene::StartTimer()
 {
 	m_startTimer -= COUNT_SPEED;
@@ -543,11 +495,7 @@ bool PlayScene::StartTimer()
 	return false;
 }
 
-/// <summary>
-/// スタート演出
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// スタートの動き
 void PlayScene::MoveStart()
 {
 	auto& _cam = GetSystemManager()->GetCamera();
@@ -575,11 +523,7 @@ void PlayScene::MoveStart()
 	);
 }
 
-/// <summary>
-/// 空の更新
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 空の更新
 void PlayScene::UpdateSky()
 {
 	m_skyColor =
@@ -590,11 +534,7 @@ void PlayScene::UpdateSky()
 	};
 }
 
-/// <summary>
-/// UIの更新
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>ヘルプフラグ</returns>
+// UIの更新
 bool PlayScene::UpdateUI()
 {
 	auto& _input = Input::GetInstance();
@@ -658,11 +598,7 @@ bool PlayScene::UpdateUI()
 	return is_helpFlag;
 }
 
-/// <summary>
-/// ヘルプシーンで選択されたシーンへの遷移
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// ヘルプからシーン遷移
 void PlayScene::HelpNext()
 {
 	switch (m_playUI->GetTransNum())
@@ -684,11 +620,7 @@ void PlayScene::HelpNext()
 	}
 }
 
-/// <summary>
-/// 当たり判定処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 判定処理
 void PlayScene::Judgement()
 {
 	// 衝突したオブジェクトリストを初期化
@@ -721,11 +653,7 @@ void PlayScene::Judgement()
 	}
 }
 
-/// <summary>
-/// 押し戻し処理
-/// </summary>
-/// <param name="obj">当たったオブジェクト</param>
-/// <returns>なし</returns>
+// 押し戻し処理
 void PlayScene::ApplyPushBack(Object& obj)
 {
 	// 当っているオブジェがなしの場合は処理しない
@@ -786,7 +714,6 @@ void PlayScene::ApplyPushBack(Object& obj)
 		m_blocks->CallGravity();
 	}
 
-	//-------------------------------------------------------------------------------------//
 	// 直前のプレイヤのポジションを保存
 	SimpleMath::Vector3 _playerPos = m_player->GetPosition();
 
@@ -810,21 +737,13 @@ void PlayScene::ApplyPushBack(Object& obj)
 	m_hitObj.pop_back();
 }
 
-/// <summary>
-/// 獲得したコインゲッター
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>獲得したコインの枚数</returns>
+// 獲得コイン数
 const int& PlayScene::GetCoinNum()
 {
 	return m_blocks->GetCoinCount();
 }
 
-/// <summary>
-/// ステージの最大コインゲッター
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>ステージの最大コインの枚数</returns>
+// ステージ内合計コイン数
 const int& PlayScene::GetMaxCoinCount()
 {
 	return m_blocks->GetMaxCoinCount();

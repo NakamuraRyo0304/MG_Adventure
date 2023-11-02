@@ -9,11 +9,7 @@
 
 #include "PlayCamera.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 PlayCamera::PlayCamera(const SimpleMath::Vector2& screenSize)
 	: m_view{}						// ビュー行列
 	, m_projection{}				// プロジェクション行列
@@ -24,20 +20,12 @@ PlayCamera::PlayCamera(const SimpleMath::Vector2& screenSize)
 	CreateProjection();
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 PlayCamera::~PlayCamera()
 {
 }
 
-/// <summary>
-/// ビューを作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>ビュー行列</returns>
+// ビュー行列を作成
 const SimpleMath::Matrix& PlayCamera::CreateView()
 {
 	m_view = SimpleMath::Matrix::CreateLookAt(
@@ -49,11 +37,7 @@ const SimpleMath::Matrix& PlayCamera::CreateView()
 	return m_view;
 }
 
-/// <summary>
-/// プロジェクションを作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 射影行列を作成
 void PlayCamera::CreateProjection()
 {
 	// 画角

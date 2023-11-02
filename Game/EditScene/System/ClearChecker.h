@@ -54,16 +54,25 @@ public:
 	ClearChecker();
 	~ClearChecker() = default;
 
-	// マップセッター
+	/// <summary>
+	/// マップのセットとその他設定
+	/// </summary>
+	/// <param name="map">チェック対象のマップ</param>
+	/// <returns>なし</returns>
 	void SetMap(const std::vector<Object>& map);
 
-	// クリアチェックを実行
+
+	/// <summary>
+	 /// クリアチェックを実行
+	 /// </summary>
+	 /// <param name="引数無し"></param>
+	 /// <returns>成功でTrue：失敗でFalse</returns>
 	bool RunCheck();
 
-	// プレイヤーの数
+	// プレイヤーの数を取得
 	const int& GetPlayerNum() { return m_playerNum; }
 
-	// コインの数
+	// コインの数の数を取得
 	const int& GetCoinNum() { return m_coinNum; }
 
 	// 雲の位置が乗れる位置か判定
@@ -73,7 +82,7 @@ public:
 	const bool& GetCanStart() { return is_startCheck; }
 
 	// クリアできる可能性が高ければTrueを返す
-	const bool& GetClearPossibility();
+	const bool& GetClearPossibility() { return is_clearPossibility; }
 
 private:
 

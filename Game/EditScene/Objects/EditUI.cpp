@@ -15,11 +15,7 @@
 
 #include "EditUI.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 EditUI::EditUI()
 	: m_system{}					// システムマネージャ
 	, m_windowSize{}				// 画面サイズ
@@ -38,24 +34,14 @@ EditUI::EditUI()
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 EditUI::~EditUI()
 {
 	Finalize();
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="shareSystem">システムデータ</param>
-/// <param name="device">デバイスポインタ</param>
-/// <param name="windowSize">ウィンドウサイズ</param>
-/// <returns>なし</returns>
-void EditUI::Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
+// 作成関数
+void EditUI::Create(const std::shared_ptr<SystemManager>& system, const SimpleMath::Vector2& windowSize)
 {
 	m_system = system;
 	m_windowSize = windowSize;
@@ -120,11 +106,7 @@ void EditUI::Create(const std::shared_ptr<SystemManager>& system, ID3D11Device1*
 	is_anyHitFlag = false;
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void EditUI::Update()
 {
 	auto& _input = Input::GetInstance();
@@ -147,7 +129,7 @@ void EditUI::Update()
 	if (!is_toolFlag) return;
 
 	// ボックスのアイコン
-	ChangeState(_mouse);
+	ChangeState();
 
 	// セレクトに戻るボタンをクリック
 	bool _back = m_imageHitter.IsHitAABB2D(
@@ -191,11 +173,7 @@ void EditUI::Update()
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 描画処理
 void EditUI::Render()
 {
 	// 画像の拡大率をウィンドウをもとに計算
@@ -264,20 +242,12 @@ void EditUI::Render()
 		SimpleMath::Vector4::One, _doRate, SimpleMath::Vector2::Zero, DO_BAR_RECT);
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void EditUI::Finalize()
 {
 }
 
-/// <summary>
-/// アイコンの描画
-/// </summary>
-/// <param name="imageScale">拡大率</param>
-/// <returns>なし</returns>
+// アイコン描画
 void EditUI::DrawIcon(const SimpleMath::Vector2& imageScale)
 {
 	for (int i = 0; i < MAPSTATE::LENGTH; ++i)
@@ -307,15 +277,13 @@ void EditUI::DrawIcon(const SimpleMath::Vector2& imageScale)
 	}
 }
 
-/// <summary>
-/// ステータスの変更
-/// </summary>
-/// <param name="mouseState">マウス</param>
-/// <returns>なし</returns>
-void EditUI::ChangeState(DirectX::Mouse::State& mouseState)
+// ステータス変更
+void EditUI::ChangeState()
 {
+	auto _mouse = Mouse::Get().GetState();
+
 	// マウスがUIエリア以外なら処理しない
-	if (mouseState.y > BAR_HEIGHT * (m_windowSize.y / FULL_SCREEN_SIZE.y)) return;
+	if (_mouse.y > BAR_HEIGHT * (m_windowSize.y / FULL_SCREEN_SIZE.y)) return;
 
 	// アイコンごとの初期値
 	bool _iconFlags[MAPSTATE::LENGTH] = { false };
@@ -324,7 +292,7 @@ void EditUI::ChangeState(DirectX::Mouse::State& mouseState)
 	for (int i = 0; i < MAPSTATE::LENGTH; ++i)
 	{
 		_iconFlags[i] = m_imageHitter.IsHitAABB2D(
-			{ (float)mouseState.x,(float)mouseState.y },// マウスの位置
+			{ (float)_mouse.x,(float)_mouse.y },		// マウスの位置
 			m_imagePos[i],                              // 画像の位置
 			SimpleMath::Vector2{ 5.0f },                // 最小サイズ
 			SimpleMath::Vector2{ 100.0f });             // 最大サイズ
@@ -347,7 +315,7 @@ void EditUI::ChangeState(DirectX::Mouse::State& mouseState)
 		// 当たっていなければ処理しない
 		if (not is_anyHitFlag) return;
 
-		if (not mouseState.leftButton) return;
+		if (not _mouse.leftButton) return;
 
 		// クリック音
 		auto& _sound = m_system->GetSoundManager();
