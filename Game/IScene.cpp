@@ -9,11 +9,7 @@
 
 #include "IScene.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 IScene::IScene()
 	: m_system{std::make_shared<SystemManager>()}	// システムマネージャ
 	, m_nextScene{SCENE::NONE}						// 次のシーン

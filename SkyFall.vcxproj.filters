@@ -364,6 +364,7 @@
     <ClInclude Include="Libraries\SystemDatas\Input.h">
       <Filter>Common\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\Button.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -483,6 +484,7 @@
     <ClCompile Include="Libraries\SystemDatas\Input.cpp">
       <Filter>Common\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Icon\Icon.rc">
@@ -755,5 +757,10 @@
     <Font Include="Resources\Fonts\myfile.spritefont">
       <Filter>Assets</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="..\EditSky.fbx">
+      <Filter>Resources\Models\SkyDome</Filter>
+    </MeshContentTask>
   </ItemGroup>
 </Project>
