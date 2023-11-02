@@ -24,9 +24,6 @@ private:
 
 private:
 
-	// タイマー
-	float m_timer;
-
 	// キー判定
 	float m_rightAlpha;
 	float m_leftAlpha;
@@ -60,31 +57,71 @@ public:
 	SelectUI();
 	~SelectUI();
 
-	// 作成関数
-	void Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const DirectX::SimpleMath::Vector2& windowSize);
+	/// <summary>
+	/// 作成関数
+	/// </summary>
+	 /// <param name="system">システムマネージャ</param>
+	/// <param name="windowSize">画面サイズ</param>
+	/// <returns>なし</returns>
+	void Create(std::shared_ptr<SystemManager> system, const DirectX::SimpleMath::Vector2& windowSize);
 
-	// 更新処理
-	void Update(const float& timer, const bool& rightFlag, const bool& leftFlag);
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="rightFlag">右キーを押した判定</param>
+	/// <param name="leftFlag">左キーを押した判定</param>
+	/// <returns>なし</returns>
+	void Update(const bool& rightFlag, const bool& leftFlag);
 
-	// 描画処理
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="fadeValue">フェードの値</param>
+	/// <param name="selectNum">選択中のステージ番号</param>
+	/// <param name="maxNum">最大のステージ番号</param>
+	/// <returns>なし</returns>
 	void Render(const float& fadeValue, const int& selectNum , const int& maxNum);
 
-	// 終了処理
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize();
 
 private:
 
-	// 矢印の描画
+	/// <summary>
+	/// 矢印を描画する
+	/// </summary>
+	/// <param name="windowRate">ウィンドウ比率</param>
+	/// <param name="selectNum">選択中のステージ番号</param>
+	/// <param name="maxNum">ステージ最大数</param>
+	/// <returns>なし</returns>
 	void DrawArrow(DirectX::SimpleMath::Vector2 windowRate, const int& selectNum, const int& maxNum);
 
-	// 数字の描画
+	/// <summary>
+	/// 数字の描画
+	/// </summary>
+	/// <param name="windowRate">ウィンドウ比率</param>
+	/// <param name="texScale">テクスチャのスケール</param>
+	/// <returns>なし</returns>
 	void DrawNumber(DirectX::SimpleMath::Vector2 windowRate, DirectX::SimpleMath::Vector2 texScale);
 
-	// 選択画面に枠をつける
+	/// <summary>
+	/// 外枠フレーム
+	/// </summary>
+	/// <param name="windowRate">ウィンドウ比率</param>
+	/// <returns>なし</returns>
 	void DrawFrame(DirectX::SimpleMath::Vector2 windowRate);
 
 public:
-	// コイン数セッター
+
+	/// <summary>
+	/// 合計コイン数をセットして計算
+	/// </summary>
+	/// <param name="totalCoinNum">コイン数</param>
+	/// <returns>なし</returns>
 	void SetAllCoins(const int& totalCoinNum);
 
 	// コイン使用中の演出

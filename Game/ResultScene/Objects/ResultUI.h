@@ -74,42 +74,83 @@ public:
 	ResultUI();
 	~ResultUI();
 
-	// 作成関数
-	void Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const DirectX::SimpleMath::Vector2& windowSize);
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="system">システムマネージャ</param>
+	/// <param name="windowSize">ウィンドウサイズ</param>
+	/// <returns>なし</returns>
+	void Create(std::shared_ptr<SystemManager> system, const DirectX::SimpleMath::Vector2& windowSize);
 
-	// 更新処理
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="clearTime">クリアタイム</param>
+	/// <returns>なし</returns>
 	void Update(const int& clearTime);
 
-	// 描画処理
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name = "fadeValue">フェードの値</param>
+	/// <returns>なし</returns>
 	void Render(const float& fadeValue);
 
-	// 終了処理
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize();
 
 private:
 
-	// 数字の描画
+	/// <summary>
+	/// 数字の描画
+	/// </summary>
+	/// <param name="texScale">テクスチャのスケール</param>
+	/// <param name="windowRate">画面の拡大率</param>
+	/// <returns>なし</returns>
 	void DrawNumber(DirectX::SimpleMath::Vector2 texScale, const DirectX::SimpleMath::Vector2& windowRate);
 
-	// 背景とレイアウトの描画
-	void DrawBack(const DirectX::SimpleMath::Vector2& windowRate);
+	/// <summary>
+	/// レイアウトの描画
+	/// </summary>
+	/// <param name="windowRate">画面の拡大率</param>
+	/// <returns>なし</returns>
+	void DrawLayout(const DirectX::SimpleMath::Vector2& windowRate);
 
-	// 選択文字の描画
+	/// <summary>
+	/// 選択文字の描画
+	/// </summary>
+	/// <param name="windowRate">画面の拡大率</param>
+	/// <returns>なし</returns>
 	void DrawFonts(const DirectX::SimpleMath::Vector2& windowRate);
 
-	// 各選択項目の変更
+	/// <summary>
+	/// リトライを選択中のテクスチャの状態
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CaseRetry();
+	/// <summary>
+	/// セレクトを選択中のテクスチャの状態
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CaseSelect();
+	/// <summary>
+	/// タイトルを選択中のテクスチャの状態
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CaseTitle();
 
 public:
-	// コイン数セッター
+	/// 合計コイン数の設定
 	void SetCoins(const int& coinNum);
-
-	// 選択中の項目のセット
+	// 選択中の項目の設定
 	void SetSelecting(const int& select) { m_selectingScene = select; }
-
-
 };
 
 #endif // RESULTUI

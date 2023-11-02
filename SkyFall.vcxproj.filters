@@ -233,6 +233,9 @@
     <Filter Include="Common\Button">
       <UniqueIdentifier>{1434c8ff-58f3-468d-b023-84a92efdee68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\SelectScene\Objects\FontObject">
+      <UniqueIdentifier>{8c55365a-a4ed-4e68-8d22-97264a98932b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -370,6 +373,9 @@
     <ClInclude Include="Libraries\SystemDatas\Button.h">
       <Filter>Common\Button</Filter>
     </ClInclude>
+    <ClInclude Include="Game\SelectScene\Objects\FontObject.h">
+      <Filter>Scenes\SelectScene\Objects\FontObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -491,6 +497,9 @@
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\Button.cpp">
       <Filter>Common\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\SelectScene\Objects\FontObject.cpp">
+      <Filter>Scenes\SelectScene\Objects\FontObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

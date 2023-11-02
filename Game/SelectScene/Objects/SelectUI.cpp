@@ -12,14 +12,9 @@
 
 #include "SelectUI.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 SelectUI::SelectUI()
-	: m_timer{}				// タイマー
-	, m_rightAlpha{}		// 右矢印の透明度
+	: m_rightAlpha{}		// 右矢印の透明度
 	, m_leftAlpha{}			// 左矢印の透明度
 	, m_oneCoins{}			//   1の位のコイン数
 	, m_tenCoins{}			//  10の位のコイン数
@@ -29,24 +24,14 @@ SelectUI::SelectUI()
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 SelectUI::~SelectUI()
 {
 	Finalize();
 }
 
-/// <summary>
-/// 作成関数
-/// </summary>
- /// <param name="system">システムマネージャ</param>
- /// <param name="device">デバイスポインタ</param>
-/// <param name="windowSize">画面サイズ</param>
-/// <returns>なし</returns>
-void SelectUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
+// 作成関数
+void SelectUI::Create(std::shared_ptr<SystemManager> system, const SimpleMath::Vector2& windowSize)
 {
 	m_system = system;
 	m_windowSize = windowSize;
@@ -60,29 +45,15 @@ void SelectUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* devi
 	m_system->GetDrawSprite()->AddTextureData(L"OutsideFrame",	L"Resources/Textures/SELECT_INFO/OutFrame.dds");
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="timer">タイマー</param>
-/// <param name="rightFlag">右キーを押した判定</param>
-/// <param name="leftFlag">左キーを押した判定</param>
-/// <returns>なし</returns>
-void SelectUI::Update(const float& timer, const bool& rightFlag, const bool& leftFlag)
+// 更新処理
+void SelectUI::Update(const bool& rightFlag, const bool& leftFlag)
 {
-	m_timer = timer;
-
 	// フラグによって透明度を変える
 	m_rightAlpha = !rightFlag ? 0.5f : 1.0f;
 	m_leftAlpha  = !leftFlag  ? 0.5f : 1.0f;
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="fadeValue">フェードの値</param>
-/// <param name="selectNum">選択中のステージ番号</param>
-/// <param name="maxNum">最大のステージ番号</param>
-/// <returns>なし</returns>
+// 描画処理
 void SelectUI::Render(const float& fadeValue, const int& selectNum, const int& maxNum)
 {
 	// 画面比率を計算
@@ -120,23 +91,13 @@ void SelectUI::Render(const float& fadeValue, const int& selectNum, const int& m
 	);
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void SelectUI::Finalize()
 {
 	m_system.reset();
 }
 
-/// <summary>
-/// 矢印を描画する
-/// </summary>
-/// <param name="windowRate">ウィンドウ比率</param>
-/// <param name="selectNum">選択中のステージ番号</param>
-/// <param name="maxNum">ステージ最大数</param>
-/// <returns>なし</returns>
+// 矢印描画
 void SelectUI::DrawArrow(SimpleMath::Vector2 windowRate, const int& selectNum, const int& maxNum)
 {
 	if (selectNum != 0) // 左矢印を表示
@@ -161,12 +122,7 @@ void SelectUI::DrawArrow(SimpleMath::Vector2 windowRate, const int& selectNum, c
 	}
 }
 
-/// <summary>
-/// 数字の描画
-/// </summary>
-/// <param name="windowRate">ウィンドウ比率</param>
-/// <param name="texScale">テクスチャのスケール</param>
-/// <returns>なし</returns>
+// 数字の描画
 void SelectUI::DrawNumber(SimpleMath::Vector2 windowRate, SimpleMath::Vector2 texScale)
 {
 	// 切り取り位置設定
@@ -202,14 +158,9 @@ void SelectUI::DrawNumber(SimpleMath::Vector2 windowRate, SimpleMath::Vector2 te
 		SimpleMath::Vector2::Zero,
 		_oneRec
 	);
-
 }
 
-/// <summary>
-/// 外枠フレーム
-/// </summary>
-/// <param name="windowRate">ウィンドウ比率</param>
-/// <returns>なし</returns>
+// 外枠フレーム
 void SelectUI::DrawFrame(SimpleMath::Vector2 windowRate)
 {
 	m_system->GetDrawSprite()->DrawTexture(
@@ -221,11 +172,7 @@ void SelectUI::DrawFrame(SimpleMath::Vector2 windowRate)
 	);
 }
 
-/// <summary>
-/// 合計コイン数の計算
-/// </summary>
-/// <param name="totalCoinNum">コイン数</param>
-/// <returns>なし</returns>
+// コイン数を各桁に変換
 void SelectUI::SetAllCoins(const int& totalCoinNum)
 {
 	m_oneCoins = totalCoinNum % 10;

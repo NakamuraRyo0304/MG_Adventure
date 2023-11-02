@@ -22,11 +22,7 @@
 
 #include "ResultScene.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 ResultScene::ResultScene()
 	: IScene()					// 基底クラスの初期化
 	, m_coinNum{}				// コインの数
@@ -40,20 +36,12 @@ ResultScene::ResultScene()
 	srand(unsigned int(time(0)));
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 ResultScene::~ResultScene()
 {
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 初期化処理
 void ResultScene::Initialize()
 {
 	// 画面依存の初期化
@@ -69,11 +57,7 @@ void ResultScene::Initialize()
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_RESULT, true);
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void ResultScene::Update()
 {
 	// インプットの更新
@@ -146,11 +130,7 @@ void ResultScene::Update()
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 描画関数
 void ResultScene::Draw()
 {
 	// 描画関連
@@ -178,11 +158,7 @@ void ResultScene::Draw()
 }
 
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void ResultScene::Finalize()
 {
 	// マップの後処理
@@ -192,11 +168,7 @@ void ResultScene::Finalize()
 	m_resultUI->Finalize();
 }
 
-/// <summary>
-/// 画面依存、デバイス依存の初期化
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 画面、デバイス依存の初期化
 void ResultScene::CreateWindowDependentResources()
 {
 	// デバイスの取得
@@ -211,7 +183,7 @@ void ResultScene::CreateWindowDependentResources()
 	// UIの作成
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
 	m_resultUI = std::make_unique<ResultUI>();
-	m_resultUI->Create(GetSystemManager(), _device, GetScreenSize());
+	m_resultUI->Create(GetSystemManager(), GetScreenSize());
 
 	// ブロックの作成
 	m_blocks = std::make_unique<Blocks>();
@@ -238,11 +210,7 @@ void ResultScene::CreateWindowDependentResources()
 	);
 }
 
-/// <summary>
-/// シーン内の変数初期化関数
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// シーン変数初期化関数
 void ResultScene::SetSceneValues()
 {
 	// タイマーの保存
@@ -255,11 +223,7 @@ void ResultScene::SetSceneValues()
 	m_blocks->Initialize(m_stageNum);
 }
 
-/// <summary>
-/// 数字のアニメーション
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>終わったらTrue</returns>
+// 数字のアニメーション
 bool ResultScene::AnimationValue()
 {
 	// 演出時間をカウント
@@ -280,14 +244,4 @@ bool ResultScene::AnimationValue()
 	}
 
 	return false;
-}
-
-/// <summary>
-/// コインのセッター
-/// </summary>
-/// <param name="coinNum">コイン数</param>
-/// <returns>なし</returns>
-void ResultScene::SetCoinNum(const int& coinNum)
-{
-	m_coinNum = coinNum;
 }

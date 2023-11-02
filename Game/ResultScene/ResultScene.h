@@ -46,45 +46,68 @@ private:
 
 public:
 
-	// コンストラクタ
 	ResultScene();
-
-	// デストラクタ
 	~ResultScene();
 
-	// 初期化
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Initialize() override;
 
-	// 更新
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update() override;
 
-	// 描画
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Draw() override;
 
-	// 終了処理
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize() override;
 
-	// 画面依存の初期化
+	/// <summary>
+	/// 画面依存、デバイス依存の初期化
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CreateWindowDependentResources() override;
 
 private:
 
-	// シーン内の変数初期化関数
+	/// <summary>
+	/// シーン内の変数初期化関数
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void SetSceneValues() override;
 
-	// 数値演出
+	/// <summary>
+	/// 数字のアニメーション
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>終わったらTrue</returns>
 	bool AnimationValue();
 
 public:
 
-	// クリアタイムセッター
+	// クリアタイムの設定
 	void SetClearTime(const float& clearTime) { m_clearTime = clearTime; }
-
-	// マップ番号セッター
+	// マップ番号の設定
 	void SetStageNum(const int& num) { m_stageNum = num; }
-
-	// コインセッター
-	void SetCoinNum(const int& coinNum);
+	// コインの設定
+	void SetCoinNum(const int& coinNum) { m_coinNum = coinNum; }
 };
 
 #endif // RESULTSCENE

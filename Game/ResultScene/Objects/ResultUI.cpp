@@ -16,11 +16,7 @@
 
 #include "ResultUI.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 ResultUI::ResultUI()
 	: m_selectingScene{ RETRY }	// 現在選択中のシーン
 	, m_oneCoins{}				//  1の位のコイン数
@@ -30,28 +26,18 @@ ResultUI::ResultUI()
 	, m_retryInfo{}				// リトライフォントの情報
 	, m_selectInfo{}			// セレクトフォントの情報
 	, m_titleInfo{}				// タイトルフォントの情報
-	, m_coinNum{ 0 }			// 枚数
+	, m_coinNum{ 0 }			// コインの枚数
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 ResultUI::~ResultUI()
 {
 	Finalize();
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="system">システムマネージャ</param>
-/// <param name="device">デバイスポインタ</param>
-/// <param name="windowSize">ウィンドウサイズ</param>
-/// <returns>なし</returns>
-void ResultUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* device, const SimpleMath::Vector2& windowSize)
+// 初期化処理
+void ResultUI::Create(std::shared_ptr<SystemManager> system, const SimpleMath::Vector2& windowSize)
 {
 	m_system = system;
 	m_windowSize = windowSize;
@@ -73,11 +59,7 @@ void ResultUI::Create(std::shared_ptr<SystemManager> system, ID3D11Device1* devi
 	m_titleInfo.pos  = SimpleMath::Vector2{ m_selectInfo.pos.x + FONT_WIDTH, _commonY };
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="clearTime">クリアタイム</param>
-/// <returns>なし</returns>
+// 更新処理
 void ResultUI::Update(const int& clearTime)
 {
 	// クリアタイムを保存
@@ -101,18 +83,14 @@ void ResultUI::Update(const int& clearTime)
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name = "fadeValue">フェードの値</param>
-/// <returns>なし</returns>
+// 描画処理
 void ResultUI::Render(const float& fadeValue)
 {
 	// 画面比率を計算
 	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
 
 	// レイアウトの描画
-	DrawBack(_rate);
+	DrawLayout(_rate);
 
 	// 数字を描画
 	DrawNumber(DRAW_NUM_SIZE, _rate);
@@ -124,22 +102,13 @@ void ResultUI::Render(const float& fadeValue)
 	DrawFonts(_rate);
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void ResultUI::Finalize()
 {
 	m_system.reset();
 }
 
-/// <summary>
-/// 数字の描画
-/// </summary>
-/// <param name="texScale">テクスチャのスケール</param>
-/// <param name="windowRate">画面の拡大率</param>
-/// <returns>なし</returns>
+// 数字の描画
 void ResultUI::DrawNumber(SimpleMath::Vector2 texScale, const SimpleMath::Vector2& windowRate)
 {
 	// クリア時間
@@ -190,12 +159,8 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 texScale, const SimpleMath::Vector
 	);
 }
 
-/// <summary>
-/// レイアウトの描画
-/// </summary>
-/// <param name="windowRate">画面の拡大率</param>
-/// <returns>なし</returns>
-void ResultUI::DrawBack(const SimpleMath::Vector2& windowRate)
+// レイアウトの描画
+void ResultUI::DrawLayout(const SimpleMath::Vector2& windowRate)
 {
 	// 画面を薄暗くする
 	m_system->GetDrawSprite()->DrawTexture(
@@ -216,12 +181,8 @@ void ResultUI::DrawBack(const SimpleMath::Vector2& windowRate)
 	);
 }
 
-/// <summary>
-/// 選択文字の描画
-/// </summary>
-/// <param name="windowRate">画面の拡大率</param>
-/// <returns>なし</returns>
-void ResultUI::DrawFonts(const DirectX::SimpleMath::Vector2& windowRate)
+// フォントの描画
+void ResultUI::DrawFonts(const SimpleMath::Vector2& windowRate)
 {
 	m_system->GetDrawSprite()->DrawTexture(
 		L"RETRY",
@@ -246,22 +207,14 @@ void ResultUI::DrawFonts(const DirectX::SimpleMath::Vector2& windowRate)
 	);
 }
 
-/// <summary>
-/// 合計コイン数の計算
-/// </summary>
-/// <param name="totalCoinNum">コイン数</param>
-/// <returns>なし</returns>
+// 合計コイン数の設定
 void ResultUI::SetCoins(const int& totalCoinNum)
 {
 	m_oneCoins = totalCoinNum % 10;
 	m_tenCoins = totalCoinNum / 10 % 10;
 }
 
-/// <summary>
-/// リトライを選択中のテクスチャの状態
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// リトライ選択時の値の遷移
 void ResultUI::CaseRetry()
 {
 	// 透明度
@@ -274,11 +227,7 @@ void ResultUI::CaseRetry()
 	m_titleInfo.scale = DEFAULT_FONT_SCALE;
 }
 
-/// <summary>
-/// セレクトを選択中のテクスチャの状態
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// セレクト選択時の値の遷移
 void ResultUI::CaseSelect()
 {
 	// 透明度
@@ -291,11 +240,7 @@ void ResultUI::CaseSelect()
 	m_titleInfo.scale = DEFAULT_FONT_SCALE;
 }
 
-/// <summary>
-/// タイトルを選択中のテクスチャの状態
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// タイトル選択時の値の遷移
 void ResultUI::CaseTitle()
 {
 	// 透明度

@@ -13,6 +13,7 @@
 #include "../IScene.h"
 
 class Blocks;
+class FontObject;
 class SelectUI;
 class SelectScene final : public IScene
 {
@@ -34,7 +35,6 @@ private:
 
 	// ブロックとステージ
 	std::unique_ptr<Blocks> m_blocks[6];
-	std::unique_ptr<DirectX::Model> m_stageModels[6];
 
 	// 切り替え時読み込み演出
 	float m_targetY;
@@ -45,6 +45,9 @@ private:
 
 	// UI
 	std::unique_ptr<SelectUI> m_selectUI;
+
+	// ステージ番号
+	std::unique_ptr<FontObject> m_fontObject;
 
 	// コイン使用演出
 	float m_useCoins;
@@ -82,57 +85,87 @@ private:
 
 public:
 
-	// コンストラクタ
 	SelectScene();
-
-	// デストラクタ
 	~SelectScene();
 
-	// 初期化
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Initialize() override;
 
-	// 更新
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update() override;
 
-	// 描画
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Draw() override;
 
-	// 終了処理
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize() override;
 
-	// 画面依存の初期化
+	/// <summary>
+	/// 画面依存、デバイス依存の初期化
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CreateWindowDependentResources() override;
 
 private:
 
-	// シーン内の変数初期化関数
+	/// <summary>
+	/// シーン内の変数初期化関数
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void SetSceneValues() override;
 
 private:
 
-	// ステージのローディング
-	void CreateStages(ID3D11Device1* device);
-	void CreateFirstStage(ID3D11Device1* device);
+	/// <summary>
+	/// ステージモデルのロード
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void CreateStages();
+	void CreateFirstStage();
 
-	// ステージ番号の変更
+	/// <summary>
+	/// ステージの選択
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void ChangeStageNumber();
 
-	// セレクト演出
+	/// <summary>
+	/// セレクト変更時の演出
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void DirectionSelectChange();
 
-	// テキストのマトリックス
-	DirectX::SimpleMath::Matrix CreateTextMatrix(const float& rotValue);
-
 public:
-	// ステージ番号のアクセサ
+	// ステージ番号の取得
 	const int& GetStageNum() { return m_stageNum; }
+	// ステージ番号の設定
 	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
-
-	// 未開放ステージセッター
+	// 未開放ステージの設定
 	void SetSafeStages(const int& stageNum) { m_safeStages = stageNum; }
-
-	// 合計コインアクセサ(全体コインー使用済みコイン)
+	// 合計コイン数の取得
 	const int& GetAllCoins() { return m_allCoins; }
+	// 合計コイン数の設定
 	void SetAllCoins(const int& num);
 };
 

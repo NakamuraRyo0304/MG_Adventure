@@ -19,13 +19,12 @@
 // UI
 #include "Objects/SelectUI.h"
 
+// フォントオブジェクト
+#include "Objects/FontObject.h"
+
 #include "SelectScene.h"
 
-/// <summary>
-/// コンストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// コンストラクタ
 SelectScene::SelectScene()
 	: IScene()					// 基底クラスの初期化
 	, m_flashCount{}			// 点滅のカウンタ
@@ -40,21 +39,13 @@ SelectScene::SelectScene()
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 SelectScene::~SelectScene()
 {
 	Finalize();
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 初期化処理
 void SelectScene::Initialize()
 {
 	// 画面依存の初期化
@@ -70,17 +61,12 @@ void SelectScene::Initialize()
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void SelectScene::Update()
 {
 	// インプットの更新
 	auto& _input = Input::GetInstance();
 	auto _key = Keyboard::Get().GetState();
-	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラの更新
 	GetSystemManager()->GetCamera()->Update();
@@ -95,7 +81,7 @@ void SelectScene::Update()
 	ChangeStageNumber();
 
 	// UIの更新
-	m_selectUI->Update(_timer, (_key.D || _key.Right), (_key.A || _key.Left));
+	m_selectUI->Update((_key.D || _key.Right), (_key.A || _key.Left));
 
 	// エスケープで終了
 	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME); }
@@ -150,11 +136,7 @@ void SelectScene::Update()
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 描画処理
 void SelectScene::Draw()
 {
 	// 描画関連
@@ -193,22 +175,14 @@ void SelectScene::Draw()
 	// 点滅させる
 	if (m_flashCount < MAX_FLASH * 0.5f)
 	{
-		// テキストの移動アニメーション
-		SimpleMath::Matrix stageMat = CreateTextMatrix(_rotValue);
-
-		// ステージ番号表示
-		m_stageModels[m_stageNum]->Draw(_context, _states, stageMat, _view, _proj);
+		m_fontObject->Render(_states, m_stageNum, _rotValue, _view, _proj);
 	}
 
 	// UIの描画
 	m_selectUI->Render(GetFadeValue(), m_stageNum, MAX_STAGE_NUM - 1);
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void SelectScene::Finalize()
 {
 	// モデル削除
@@ -219,16 +193,11 @@ void SelectScene::Finalize()
 	m_selectUI->Finalize();
 }
 
-/// <summary>
-/// 画面依存、デバイス依存の初期化
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 画面、デバイス依存の初期化
 void SelectScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
 	auto _device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// メイクユニーク
 	GetSystemManager()->CreateUnique();
@@ -239,60 +208,40 @@ void SelectScene::CreateWindowDependentResources()
 	// UIの作成
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
 	m_selectUI = std::make_unique<SelectUI>();
-	m_selectUI->Create(GetSystemManager(), _device, GetScreenSize());
+	m_selectUI->Create(GetSystemManager(),GetScreenSize());
+
+	// フォントオブジェクトの作成
+	m_fontObject = std::make_unique<FontObject>(m_safeStages, MAX_STAGE_NUM);
 
 	// スカイドームモデルを作成する
-	{
-		m_skyDomeModel = ModelFactory::GetCreateModel(_device, L"Resources/Models/ShineSky.cmo");
-		m_skyDomeModel->UpdateEffects([](IEffect* effect)
+	m_skyDomeModel = ModelFactory::GetCreateModel(_device, L"Resources/Models/ShineSky.cmo");
+	m_skyDomeModel->UpdateEffects([](IEffect* effect)
+		{
+			auto _lights = dynamic_cast<IEffectLights*>(effect);
+			if (_lights)
 			{
-				auto _lights = dynamic_cast<IEffectLights*>(effect);
-				if (_lights)
-				{
-					_lights->SetLightEnabled(0, false);
-					_lights->SetLightEnabled(1, false);
-					_lights->SetLightEnabled(2, false);
-				}
-				// 自己発光する
-				auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
-				if (_basicEffect)
-				{
-					_basicEffect->SetEmissiveColor(Colors::White);
-				}
+				_lights->SetLightEnabled(0, false);
+				_lights->SetLightEnabled(1, false);
+				_lights->SetLightEnabled(2, false);
 			}
-		);
-	}
+			// 自己発光する
+			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
+			if (_basicEffect)
+			{
+				_basicEffect->SetEmissiveColor(Colors::White);
+			}
+		}
+	);
 
 	// ブロックの作成を裏で処理
 	{
 		std::lock_guard<std::mutex>_guard(m_mutex);
 
-		m_loadTask = std::async(std::launch::async, [&]() { CreateStages(_device); });
-	}
-
-	// ステージ番号のモデルの作成
-	{
-		for (int i = 0; i < MAX_STAGE_NUM - m_safeStages; ++i)
-		{
-			// 0番目はエディタの文字
-			if (i == 0)
-			{
-				m_stageModels[0] = ModelFactory::GetCreateModel(_device, L"Resources/Models/StageEdit.cmo");
-			}
-			else
-			{
-				std::wstring _path = L"Resources/Models/Stage" + std::to_wstring(i) + L".cmo";
-				m_stageModels[i] = ModelFactory::GetCreateModel(_device, _path.c_str());
-			}
-		}
+		m_loadTask = std::async(std::launch::async, [&]() { CreateStages(); });
 	}
 }
 
-/// <summary>
-/// シーン内の変数初期化関数
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// シーン変数初期化関数
 void SelectScene::SetSceneValues()
 {
 	// 見上げ距離
@@ -314,23 +263,21 @@ void SelectScene::SetSceneValues()
 	is_selectEdit = false;
 }
 
-/// <summary>
-/// ステージモデルのロード
-/// </summary>
-/// <param name="device">デバイスポインタ</param>
-/// <returns>なし</returns>
-void SelectScene::CreateStages(ID3D11Device1* device)
+// ステージのロード
+void SelectScene::CreateStages()
 {
 	// 選択中のステージを先に作成
-	CreateFirstStage(device);
+	CreateFirstStage();
+
+	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
 
 	for (int i = 0; i < MAX_STAGE_NUM; ++i)
 	{
 		// ファクトリーで生成
-		auto _grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
-		auto _coin    = ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo");
-		auto _cloud   = ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo");
-		auto _gravity = ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo");
+		auto _grass   = ModelFactory::GetCreateModel(_device, L"Resources/Models/GrassBlock.cmo");
+		auto _coin    = ModelFactory::GetCreateModel(_device, L"Resources/Models/Coin.cmo");
+		auto _cloud   = ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo");
+		auto _gravity = ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo");
 
 		// 作成されていない場合は作成する
 		if (!m_blocks[i])
@@ -350,19 +297,14 @@ void SelectScene::CreateStages(ID3D11Device1* device)
 		}
 	}
 }
-
-/// <summary>
-/// 最初のステージだけ先に作成する(async用)
-/// </summary>
-/// <param name="device">デバイスポインタ</param>
-/// <returns>なし</returns>
-void SelectScene::CreateFirstStage(ID3D11Device1* device)
+void SelectScene::CreateFirstStage()
 {
+	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
 	// ファクトリーで生成
-	auto _grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
-	auto _coin    = ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo");
-	auto _cloud   = ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo");
-	auto _gravity = ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo");
+	auto _grass   = ModelFactory::GetCreateModel(_device, L"Resources/Models/GrassBlock.cmo");
+	auto _coin    = ModelFactory::GetCreateModel(_device, L"Resources/Models/Coin.cmo");
+	auto _cloud   = ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo");
+	auto _gravity = ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo");
 
 	// ブロックの作成
 	m_blocks[m_stageNum] = std::make_unique<Blocks>();
@@ -378,11 +320,7 @@ void SelectScene::CreateFirstStage(ID3D11Device1* device)
 	m_blocks[m_stageNum]->Initialize(m_stageNum);
 }
 
-/// <summary>
-/// ステージの選択
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// ステージ選択
 void SelectScene::ChangeStageNumber()
 {
 	// 切り替え可能なタイミングはここで変更
@@ -417,11 +355,7 @@ void SelectScene::ChangeStageNumber()
 	}
 }
 
-/// <summary>
-/// セレクト変更時の演出
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// ステージセレクト演出
 void SelectScene::DirectionSelectChange()
 {
 	// 動きが終わっていなければ見下げる
@@ -441,21 +375,6 @@ void SelectScene::DirectionSelectChange()
 	// フラッシュカウンタ
 	m_flashCount++;
 	m_flashCount = m_flashCount > MAX_FLASH * 0.75f ? 0.0f : m_flashCount;
-}
-
-/// <summary>
-///	テキストのマトリックスを作成
-/// </summary>
-/// <param name="rotValue">回転する値</param>
-/// <returns>なし</returns>
-SimpleMath::Matrix SelectScene::CreateTextMatrix(const float& rotValue)
-{
-	SimpleMath::Matrix _mat = SimpleMath::Matrix::Identity;
-	_mat *= SimpleMath::Matrix::CreateRotationY(rotValue);
-	_mat *= SimpleMath::Matrix::CreateScale(10.0f);
-	_mat *= SimpleMath::Matrix::CreateTranslation(sinf(rotValue), 10.0f, cosf(rotValue));
-
-	return _mat;
 }
 
 /// <summary>
