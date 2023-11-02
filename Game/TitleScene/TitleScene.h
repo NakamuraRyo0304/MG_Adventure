@@ -53,35 +53,60 @@ private:
 
 public:
 
-	// コンストラクタ
 	TitleScene();
-
-	// デストラクタ
 	~TitleScene();
 
-	// 初期化
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Initialize() override;
 
-	// 更新
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Update() override;
 
-	// 描画
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Draw() override;
 
-	// 終了処理
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize() override;
 
-	// 画面依存の初期化
+	/// <summary>
+	/// 画面依存、デバイス依存の初期化
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void CreateWindowDependentResources() override;
 
 private:
 
-	// シーン内の変数初期化関数
+	/// <summary>
+	/// シーン内の変数初期化関数
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void SetSceneValues() override;
 
 private:
 
-	// 画面演出
+	/// <summary>
+	/// スタートを押したときの演出
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>演出完了でTrueを返す</returns>
 	bool FlyStartObjects();
 };
 

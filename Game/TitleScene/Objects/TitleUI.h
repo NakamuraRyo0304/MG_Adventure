@@ -43,16 +43,34 @@ public:
 	TitleUI();
 	~TitleUI();
 
-	// 作成処理
+	/// <summary>
+	/// 作成関数
+	/// </summary>
+	/// <param name="system">システムマネージャ</param>
+	/// <param name="windowSize">ウィンドウサイズ</param>
+	/// <returns>なし</returns>
 	void Create(std::shared_ptr<SystemManager> system, const DirectX::SimpleMath::Vector2& windowSize);
 
-	// 更新処理
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	/// <param name="selectFlag">開始or終了フラグ</param>
+	/// <returns>なし</returns>
 	void Update(const bool& selectFlag);
 
-	// 描画処理
+	/// <summary>
+	/// 描画処理
+	/// </summary>
+	/// <param name="fadeValue">フェードの値</param>
+	/// <param name="endAnim"アニメーションの処理判定</param>
+	/// <returns>なし</returns>
 	void Render(const float& fadeValue, const bool& endAnim);
 
-	// 終了処理
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
 	void Finalize();
 
 };

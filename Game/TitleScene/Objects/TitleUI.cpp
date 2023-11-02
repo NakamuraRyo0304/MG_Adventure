@@ -15,11 +15,7 @@
 
 #include "TitleUI.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 TitleUI::TitleUI()
 	: is_selectFlag{}			// 選択フラグ
 	, m_windowSize{}			// ウィンドウサイズ
@@ -32,22 +28,13 @@ TitleUI::TitleUI()
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 TitleUI::~TitleUI()
 {
 	Finalize();
 }
 
-/// <summary>
-/// 作成関数
-/// </summary>
-/// <param name="system">システムマネージャ</param>
-/// <param name="windowSize">ウィンドウサイズ</param>
-/// <returns>なし</returns>
+// 作成関数
 void TitleUI::Create(std::shared_ptr<SystemManager> system, const SimpleMath::Vector2& windowSize)
 {
 	// システム
@@ -66,11 +53,7 @@ void TitleUI::Create(std::shared_ptr<SystemManager> system, const SimpleMath::Ve
 	m_eLineRate = SimpleMath::Vector2{ DEFAULT_FONT_RATE };
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="selectFlag">開始or終了フラグ</param>
-/// <returns>なし</returns>
+// 更新処理
 void TitleUI::Update(const bool& selectFlag)
 {
 	if (selectFlag) // Trueの時はStart
@@ -103,12 +86,7 @@ void TitleUI::Update(const bool& selectFlag)
 	}
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="fadeValue">フェードの値</param>
-/// <param name="endAnim"アニメーションの処理判定</param>
-/// <returns>なし</returns>
+// 描画処理
 void TitleUI::Render(const float& fadeValue, const bool& endAnim)
 {
 	// 画面比率
@@ -156,11 +134,7 @@ void TitleUI::Render(const float& fadeValue, const bool& endAnim)
 	);
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void TitleUI::Finalize()
 {
 	m_system.reset();

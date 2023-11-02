@@ -11,11 +11,7 @@
 
 #include "TitleScene.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 TitleScene::TitleScene()
 	: IScene()					// 基底クラスの初期化
 	, m_titleLogoModel{}		// タイトルロゴのモデル
@@ -30,21 +26,13 @@ TitleScene::TitleScene()
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 TitleScene::~TitleScene()
 {
 	Finalize();
 }
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 初期化処理
 void TitleScene::Initialize()
 {
 	// 画面依存の初期化
@@ -60,11 +48,7 @@ void TitleScene::Initialize()
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
 }
 
-/// <summary>
-/// 更新処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 更新処理
 void TitleScene::Update()
 {
 	// インプットの更新
@@ -122,11 +106,7 @@ void TitleScene::Update()
 
 }
 
-/// <summary>
-/// 描画処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 描画処理
 void TitleScene::Draw()
 {
 	// 描画関連
@@ -227,11 +207,7 @@ void TitleScene::Draw()
 	m_titleUI->Render(GetFadeValue(), static_cast<int>(m_logoMoveY) == static_cast<int>(END_MOVE_POS));
 }
 
-/// <summary>
-/// 終了処理
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 終了処理
 void TitleScene::Finalize()
 {
 	// モデルの解放
@@ -243,11 +219,7 @@ void TitleScene::Finalize()
 	m_titleUI->Finalize();
 }
 
-/// <summary>
-/// 画面依存、デバイス依存の初期化
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// 画面、デバイス依存の初期化
 void TitleScene::CreateWindowDependentResources()
 {
 	// デバイスとデバイスコンテキストの取得
@@ -312,11 +284,7 @@ void TitleScene::CreateWindowDependentResources()
 	);
 }
 
-/// <summary>
-/// シーン内の変数初期化関数
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// シーン変数初期化関数
 void TitleScene::SetSceneValues()
 {
 	// ロゴの大きさ
@@ -330,11 +298,7 @@ void TitleScene::SetSceneValues()
 	m_accelerate = 0.0f;
 }
 
-/// <summary>
-/// スタートを押したときの演出
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>演出完了でTrueを返す</returns>
+// スタート演出
 bool TitleScene::FlyStartObjects()
 {
 	if (is_startFlag)
