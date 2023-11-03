@@ -9,15 +9,10 @@
 
 #include "SystemManager.h"
 
- /// <summary>
- /// コンストラクタ
- /// </summary>
- /// <param name="引数無し"></param>
- /// <returns>なし</returns>
+// コンストラクタ
 SystemManager::SystemManager()
 	: m_commonState{nullptr}
 	, m_drawSprite{nullptr}
-	, m_effect{nullptr}
 	, m_camera{nullptr}
 	, m_pDR{nullptr}
 	, m_rayCast{nullptr}
@@ -26,71 +21,47 @@ SystemManager::SystemManager()
 {
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
+// デストラクタ
 SystemManager::~SystemManager()
 {
 
 }
 
 
-/// <summary>
-/// デバイスリソースの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>デバイスリソースの生ポインタ</returns>
-DX::DeviceResources*
-SystemManager::GetDeviceResources()
+// デバイスリソースの取得
+DX::DeviceResources* SystemManager::GetDeviceResources()
 {
-	if (!m_pDR)
+	if (not m_pDR)
 	{
 		m_pDR = DX::DeviceResources::GetInstance();
 	}
 	return m_pDR;
 }
 
-/// <summary>
-/// コモンステートの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>コモンステートのユニークポインタ</returns>
-const std::unique_ptr<CommonStates>&
-SystemManager::GetCommonStates()
+// コモンステートの取得
+const std::unique_ptr<CommonStates>& SystemManager::GetCommonStates()
 {
-	if (!m_commonState)
+	if (not m_commonState)
 	{
 		m_commonState = std::make_unique<CommonStates>(GetDeviceResources()->GetD3DDevice());
 	}
 	return m_commonState;
 }
 
-/// <summary>
-/// レイキャストの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>レイキャストのユニークポインタ</returns>
-const std::unique_ptr<RayCast>&
-SystemManager::GetRayCast()
+// レイキャストの取得
+const std::unique_ptr<RayCast>& SystemManager::GetRayCast()
 {
-	if (!m_rayCast)
+	if (not m_rayCast)
 	{
 		m_rayCast = std::make_unique<RayCast>();
 	}
 	return m_rayCast;
 }
 
-/// <summary>
-/// ドロースプライトの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>ドロースプライトのユニークポインタ</returns>
-const std::unique_ptr<DrawSprite>&
-SystemManager::GetDrawSprite()
+// ドロースプライトの取得
+const std::unique_ptr<DrawSprite>& SystemManager::GetDrawSprite()
 {
-	if (!m_drawSprite)
+	if (not m_drawSprite)
 	{
 		m_drawSprite = std::make_unique<DrawSprite>();
 		m_drawSprite->MakeSpriteBatch();
@@ -98,74 +69,41 @@ SystemManager::GetDrawSprite()
 	return m_drawSprite;
 }
 
-/// <summary>
-/// カメラの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>カメラのユニークポインタ</returns>
-const std::unique_ptr<Camera>&
-SystemManager::GetCamera()
+// カメラの取得
+const std::unique_ptr<Camera>& SystemManager::GetCamera()
 {
-	if (!m_camera)
+	if (not m_camera)
 	{
 		m_camera = std::make_unique<Camera>();
 	}
 	return m_camera;
 }
 
-/// <summary>
-/// ベーシックエフェクトの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>ベーシックエフェクトのユニークポインタ</returns>
-const std::unique_ptr<BasicEffect>&
-SystemManager::GetBasicEffect()
-{
-	if (!m_effect)
-	{
-		m_effect = std::make_unique<BasicEffect>(GetDeviceResources()->GetD3DDevice());
-	}
-	return m_effect;
-}
-
-/// <summary>
-/// サウンドマネージャの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>サウンドマネージャのユニークポインタ</returns>
+// サウンドマネージャの取得
 const std::unique_ptr<SoundManager>& SystemManager::GetSoundManager()
 {
-	if (!m_soundManager)
+	if (not m_soundManager)
 	{
 		m_soundManager = std::make_unique<SoundManager>();
 	}
 	return m_soundManager;
 }
 
-/// <summary>
-/// 文字描画クラスの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>文字描画クラスのユニークポインタ</returns>
-const std::unique_ptr<Debug::DrawString>&
-SystemManager::GetString()
+// ドローストリングの取得
+const std::unique_ptr<Debug::DrawString>& SystemManager::GetString()
 {
-	if (!m_drawString)
+	if (not m_drawString)
 	{
 		m_pDR = DX::DeviceResources::GetInstance();
 		m_drawString = std::make_unique<Debug::DrawString>(m_pDR->GetD3DDevice(), m_pDR->GetD3DDeviceContext());
 	}
 	return m_drawString;
 }
-/// <summary>
-/// ドローフロアの取得
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>ドローフロアのユニークポインタ</returns>
-const std::unique_ptr<Debug::GridFloor>&
-SystemManager::GetGridFloor()
+
+// グリッドフロアの取得
+const std::unique_ptr<Debug::GridFloor>& SystemManager::GetGridFloor()
 {
-	if (!m_gridFloor)
+	if (not m_gridFloor)
 	{
 		m_gridFloor = std::make_unique<Debug::GridFloor>(50, 50);
 	}
@@ -182,6 +120,7 @@ void SystemManager::CreateUnique()
 	// デバイスリソース
 	m_pDR = DX::DeviceResources::GetInstance();
 	auto _device = m_pDR->GetD3DDevice();
+	auto _context = m_pDR->GetD3DDeviceContext();
 
 	// ３Ｄレンダリング
 	m_commonState = std::make_unique<CommonStates>(_device);
@@ -195,13 +134,8 @@ void SystemManager::CreateUnique()
 	// 画像の描画
 	m_drawSprite = std::make_unique<DrawSprite>();
 
-	// ベーシックエフェクト
-	m_effect = std::make_unique<BasicEffect>(_device);
-
 	// サウンドマネージャ
 	m_soundManager = std::make_unique<SoundManager>();
-
-	auto _context = m_pDR->GetD3DDeviceContext();
 
 	// 文字の描画
 	m_drawString = std::make_unique<Debug::DrawString>(_device, _context);

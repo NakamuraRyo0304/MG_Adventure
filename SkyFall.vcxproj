@@ -200,6 +200,7 @@
     <ClInclude Include="Game\PlayScene\Objects\Blocks.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h" />
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
+    <ClInclude Include="Game\PlayScene\Objects\PlayerComponents\PlayerComponent.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h" />
     <ClInclude Include="Game\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\PlayScene\System\PlayCamera.h" />
@@ -217,7 +218,6 @@
     <ClInclude Include="Game\TitleScene\TitleScene.h" />
     <ClInclude Include="Libraries\Factories\ModelFactory.h" />
     <ClInclude Include="Libraries\Nlohmann\json.hpp" />
-    <ClInclude Include="Libraries\ReadData.h" />
     <ClInclude Include="Libraries\SystemDatas\Button.h" />
     <ClInclude Include="Libraries\SystemDatas\Collider.h" />
     <ClInclude Include="Libraries\SystemDatas\Camera.h" />
@@ -234,6 +234,7 @@
     <ClInclude Include="Libraries\SystemManager\SystemManager.h" />
     <ClInclude Include="Libraries\UserUtility.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ReadData.h" />
     <ClInclude Include="Resources\Icon\Icon.h" />
     <ClInclude Include="SoundList.h" />
     <ClInclude Include="StepTimer.h" />
@@ -400,14 +401,6 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PS_Select.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\PS_Transition.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

@@ -9,8 +9,6 @@
 #ifndef GAMEMAIN
 #define GAMEMAIN
 
-#include "StepTimer.h"
-
 // TODO: シーン１：シーンIDの追加
 enum class SCENE : int
 {

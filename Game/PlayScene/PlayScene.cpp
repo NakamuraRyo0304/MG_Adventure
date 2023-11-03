@@ -8,10 +8,10 @@
 #include "pch.h"
 
 // CSV読み込みクラス
-#include "../../Libraries/SystemDatas/MapLoad.h"
+#include "Libraries/SystemDatas/MapLoad.h"
 
 // コライダークラス
-#include "../../Libraries/SystemDatas/Collider.h"
+#include "Libraries/SystemDatas/Collider.h"
 
 // シェーダー位置情報クラス
 #include "Objects/PlayerBill.h"

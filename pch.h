@@ -83,6 +83,13 @@ namespace DX
     }
 }
 
+// C++
+#include <vector>
+#include <map>
+#include <deque>
+#include <list>
+#include <random>
+
 using namespace DirectX;
 #include "Keyboard.h"                   // キーボード
 #include "Mouse.h"                      // マウス
@@ -100,3 +107,4 @@ using namespace DirectX;
 #include "Effects.h"                    // エフェクトを使用可能にする
 #include "VertexTypes.h"                // 板ポリゴンを描画するのに使用
 #include "Audio.h"                      // サウンドで使用
+#include "ReadData.h"                   // バイナリデータ読み込み

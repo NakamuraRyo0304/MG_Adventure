@@ -9,9 +9,6 @@
 #ifndef PLAYERBILL
 #define PLAYERBILL
 
-#include <vector>
-#include <list>
-
 class ParticleUtility;
 class PlayerBill
 {

@@ -9,8 +9,6 @@
 #ifndef DRAWSPRITE
 #define DRAWSPRITE
 
-#include <map>
-
 // デフォルト引数設定用の継承
 struct RECT_U : public RECT
 {

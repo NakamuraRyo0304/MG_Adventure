@@ -9,8 +9,6 @@
 #ifndef TRANSITION
 #define TRANSITION
 
-#include <vector>
-
 class Transition
 {
 public:

@@ -9,8 +9,6 @@
 #ifndef COLLIDER
 #define COLLIDER
 
-#include "SimpleMath.h"
-
 namespace Collider
 {
 	// ボックスコライダークラス

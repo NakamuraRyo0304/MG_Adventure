@@ -8,8 +8,6 @@
 
 #include "pch.h"
 
-#include <vector>
-
 #include "ParticleUtility.h"
 
 static const float ENDLESS = -100.0f;

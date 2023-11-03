@@ -8,10 +8,10 @@
 #include "pch.h"
 
 // システムマネージャ
-#include "../../../Libraries/SystemManager/SystemManager.h"
+#include "Libraries/SystemManager/SystemManager.h"
 
 // ユーザーユーティリティ
-#include "../../../Libraries/UserUtility.h"
+#include "Libraries/UserUtility.h"
 
 #include "PlayUI.h"
 

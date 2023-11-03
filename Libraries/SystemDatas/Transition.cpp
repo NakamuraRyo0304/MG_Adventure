@@ -7,12 +7,6 @@
 
 #include "pch.h"
 
-// ランダムの追加
-#include <random>
-
-// ファイル読み込み
-#include "../ReadData.h"
-
 #include "Transition.h"
 
 /// インプットレイアウトの設定
@@ -228,7 +222,7 @@ void Transition::CycleTextures()
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dist(1,4);
 
-	// ランダムな浮動小数点数を生成
+	// ランダムな整数を生成
 	int randomValue = dist(gen);
 
 	// 文字列変換

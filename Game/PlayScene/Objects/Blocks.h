@@ -5,9 +5,6 @@
  *  @Author NakamuraRyo
  */
 
-// マップの使用
-#include <map>
-
 // エイリアス
 using MAPSTATE = MapLoad::BOXSTATE;
 

@@ -254,6 +254,9 @@
     <Filter Include="Resources\Shaders\PS_Select">
       <UniqueIdentifier>{bf52ecb1-6e74-4713-a1d9-80856558fa29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\Player\PlayerComponents">
+      <UniqueIdentifier>{54560327-7ac1-4702-b69f-18ab9b15b4de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -361,9 +364,6 @@
     <ClInclude Include="Game\EditScene\System\ClearChecker.h">
       <Filter>Scenes\EditScene\System\ClearChecker</Filter>
     </ClInclude>
-    <ClInclude Include="Libraries\ReadData.h">
-      <Filter>Common\HeaderOnly</Filter>
-    </ClInclude>
     <ClInclude Include="Libraries\Nlohmann\json.hpp">
       <Filter>Nlohmann</Filter>
     </ClInclude>
@@ -405,6 +405,12 @@
     </ClInclude>
     <ClInclude Include="Game\TitleScene\Objects\ITitleObject.h">
       <Filter>Scenes\TitleScene\Objects\ITitleObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\PlayerComponents\PlayerComponent.h">
+      <Filter>Scenes\PlayScene\Objects\Player\PlayerComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadData.h">
+      <Filter>Common\HeaderOnly</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -809,9 +815,6 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\GS_Transition.hlsl">
       <Filter>Resources\Shaders\Transition</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PS_Select.hlsl">
-      <Filter>Resources\Shaders\PS_Select</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

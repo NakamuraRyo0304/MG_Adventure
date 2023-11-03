@@ -9,8 +9,6 @@
 #ifndef BUTTON
 #define BUTTON
 
-#include <map>
-
 // ƒ{ƒ^ƒ“‚ÌÚ×İ’è
 struct ButtonParameters
 {

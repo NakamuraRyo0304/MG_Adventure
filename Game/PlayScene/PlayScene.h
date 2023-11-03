@@ -11,9 +11,6 @@
 
 #include "../IScene.h"
 
-// “–‚½‚è”»’è—p
-#include <deque>
-
 class Blocks;
 class Player;
 class PlayerBill;

@@ -33,8 +33,6 @@ private:
 	std::unique_ptr<RayCast>									m_rayCast;
 	// ドロースプライト
 	std::unique_ptr<DrawSprite>									m_drawSprite;
-	// ベーシックエフェクト
-	std::unique_ptr<DirectX::BasicEffect>						m_effect;
 	// カメラ
 	std::unique_ptr<Camera>										m_camera;
 	// サウンド
@@ -65,9 +63,6 @@ public: // ゲッター、セッター、ファクトリー
 
 	// カメラの取得
 	const std::unique_ptr<Camera>& GetCamera();
-
-	// エフェクトの取得
-	const std::unique_ptr<DirectX::BasicEffect>& GetBasicEffect();
 
 	// サウンドマネージャの取得
 	const std::unique_ptr<SoundManager>& GetSoundManager();

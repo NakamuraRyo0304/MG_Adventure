@@ -8,17 +8,13 @@
 #include "pch.h"
 
  // CSV読み込み
-#include "../../Libraries/SystemDatas/MapLoad.h"
+#include "Libraries/SystemDatas/MapLoad.h"
 
 // ブロック
 #include "../PlayScene/Objects/Blocks.h"
 
 // UI
 #include "Objects/ResultUI.h"
-
-// ランダム(演出用なのでランダムデバイスは使わない)
-#include <random>
-#include <time.h>
 
 #include "ResultScene.h"
 
@@ -32,8 +28,7 @@ ResultScene::ResultScene()
 	, m_stageNum{1}				// 背景のステージ番号(初期化で1)
 	, m_selectingScene{ 0 }		// 現在選択中のシーン
 {
-	// ランダムの生成
-	srand(unsigned int(time(0)));
+
 }
 
 // デストラクタ
@@ -229,6 +224,14 @@ bool ResultScene::AnimationValue()
 	// 演出時間をカウント
 	m_directionTime--;
 
+	// ランダムの値を生成
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dist(0, 69);
+
+	// ランダムな整数を生成
+	int randomValue = dist(gen);
+
 	// 演出をする
 	if (m_directionTime < 0.0f)
 	{
@@ -240,7 +243,7 @@ bool ResultScene::AnimationValue()
 	else
 	{
 		// ランダムな値を入れる
-		m_clearTime = static_cast<float>(rand() % 60 + 1);
+		m_clearTime = static_cast<float>(randomValue);
 	}
 
 	return false;

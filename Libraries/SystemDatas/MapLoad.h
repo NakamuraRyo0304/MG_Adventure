@@ -9,8 +9,6 @@
 #ifndef MAPLOAD
 #define MAPLOAD
 
-#include <vector>
-
 // マップブロックの構造体
 struct Object
 {
