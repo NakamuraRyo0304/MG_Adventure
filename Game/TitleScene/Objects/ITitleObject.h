@@ -26,6 +26,7 @@ public:
 	virtual void Update() = 0;
 	virtual void Render(DirectX::CommonStates& states,
 		const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) = 0;
+	virtual void Finalize() = 0;
 };
 
 #endif // ITITLEOBJECT

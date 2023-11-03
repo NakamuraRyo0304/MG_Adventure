@@ -21,10 +21,6 @@ private:
 	// カメラアングル
 	const float CAMERA_ANGLE = 45.0f;
 
-	// カメラ演出
-	float m_cameraMoveY;
-	const float MAX_HEIGHT = 10.0f;
-
 private:
 
 	// UI
@@ -94,14 +90,6 @@ private:
 	/// <returns>なし</returns>
 	void SetSceneValues() override;
 
-private:
-
-	/// <summary>
-	/// スタートを押したときの演出
-	/// </summary>
-	/// <param name="引数無し"></param>
-	/// <returns>演出完了でTrueを返す</returns>
-	bool FlyStartObjects();
 };
 
 #endif // TITLESCENE

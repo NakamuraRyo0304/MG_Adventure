@@ -22,7 +22,7 @@ Stage::Stage(const wchar_t* path)
 // デストラクタ
 Stage::~Stage()
 {
-	m_model.reset();
+
 }
 
 // 更新処理
@@ -77,4 +77,10 @@ void Stage::Render(CommonStates& states, const SimpleMath::Matrix& view, const S
 			}
 		});
 	m_model->Draw(_context, states, _world, view, proj);
+}
+
+// 終了処理
+void Stage::Finalize()
+{
+	m_model.reset();
 }

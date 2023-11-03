@@ -248,6 +248,9 @@
     <Filter Include="Scenes\TitleScene\Objects\ITitleObject">
       <UniqueIdentifier>{a59ea26f-ed06-4b1b-a45c-38083278ff6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Datas\Maps">
+      <UniqueIdentifier>{6ec896aa-6999-4ce1-be9c-9921b424a5a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -746,24 +749,6 @@
     <None Include="Datas\Progress.json">
       <Filter>Datas</Filter>
     </None>
-    <None Include="Datas\Maps\Stage1.csv">
-      <Filter>Datas</Filter>
-    </None>
-    <None Include="Datas\Maps\Stage2.csv">
-      <Filter>Datas</Filter>
-    </None>
-    <None Include="Datas\Maps\Stage3.csv">
-      <Filter>Datas</Filter>
-    </None>
-    <None Include="Datas\Maps\Stage4.csv">
-      <Filter>Datas</Filter>
-    </None>
-    <None Include="Datas\Maps\Stage5.csv">
-      <Filter>Datas</Filter>
-    </None>
-    <None Include="Datas\Maps\StageEdit.csv">
-      <Filter>Datas</Filter>
-    </None>
     <None Include="Resources\Models\Head_w.cmo">
       <Filter>Resources\Models\Player</Filter>
     </None>
@@ -772,6 +757,24 @@
     </None>
     <None Include="Resources\Shaders\Transition.hlsli">
       <Filter>Resources\Shaders\Transition</Filter>
+    </None>
+    <None Include="Datas\Maps\Stage1.csv">
+      <Filter>Datas\Maps</Filter>
+    </None>
+    <None Include="Datas\Maps\Stage2.csv">
+      <Filter>Datas\Maps</Filter>
+    </None>
+    <None Include="Datas\Maps\Stage3.csv">
+      <Filter>Datas\Maps</Filter>
+    </None>
+    <None Include="Datas\Maps\Stage4.csv">
+      <Filter>Datas\Maps</Filter>
+    </None>
+    <None Include="Datas\Maps\Stage5.csv">
+      <Filter>Datas\Maps</Filter>
+    </None>
+    <None Include="Datas\Maps\StageEdit.csv">
+      <Filter>Datas\Maps</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

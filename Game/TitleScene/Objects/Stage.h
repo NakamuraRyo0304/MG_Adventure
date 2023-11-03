@@ -49,6 +49,12 @@ public:
 	void Render(DirectX::CommonStates& states,
 		const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;
 
+	/// <summary>
+	/// I—¹ˆ—
+	/// </summary>
+	/// <param name="ˆø”–³‚µ"></param>
+	/// <returns>‚È‚µ</returns>
+	void Finalize() override;
 public:
 
 	// ‰Á‘¬‚³‚¹‚é

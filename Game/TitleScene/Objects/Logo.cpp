@@ -11,12 +11,15 @@
 
 // コンストラクタ
 Logo::Logo(const wchar_t* path)
-	: m_logoMoveScale{}		// 拡大率
+	: m_position{}			// 座標
+	, m_logoMoveScale{}		// 拡大率
 	, m_logoMoveY{}			// 移動量
 	, is_startFlag{ false } // スタートしたかどうか
-	, is_endFlag{ false }   // 目的地を越えたらTrue
+	, is_endFlag{ false }   // 目的地を越えたらＵＩを表示する
+	, is_nextFlag{ false }  // 次のシーンに行くフラグ
 {
-	// ロゴの大きさ
+	// 位置情報など初期化
+	m_position = { 0.0f,0.1f,0.0f };
 	m_logoMoveY = 10.0f;
 	m_logoMoveScale = 1.0f;
 
@@ -46,7 +49,6 @@ Logo::Logo(const wchar_t* path)
 // デストラクタ
 Logo::~Logo()
 {
-	m_model.reset();
 }
 
 // 更新処理
@@ -59,6 +61,18 @@ void Logo::Update()
 	if (static_cast<int>(m_logoMoveY) == static_cast<int>(END_MOVE_POS))
 	{
 		is_endFlag = true;
+	}
+
+	// スタート演出
+	if (is_startFlag)
+	{
+		m_position.y++;
+
+		// 演出が終わったら遷移
+		if (m_position.y > MAX_HEIGHT)
+		{
+			is_nextFlag = true;
+		}
 	}
 }
 
@@ -84,4 +98,10 @@ void Logo::Render(CommonStates& states, const SimpleMath::Matrix& view, const Si
 	_world *= _rotMat * _transMat;
 
 	m_model->Draw(_context, states, _world, view, proj);
+}
+
+// 終了処理
+void Logo::Finalize()
+{
+	m_model.reset();
 }

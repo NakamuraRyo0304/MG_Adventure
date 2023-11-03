@@ -50,6 +50,13 @@ public:
 	void Render(DirectX::CommonStates& states,
 		const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;
 
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void Finalize() override;
+
 	// スタートフラグを設定
 	void SetStartFlag(const bool& flag) { is_startFlag = flag; }
 

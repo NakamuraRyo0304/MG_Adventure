@@ -24,7 +24,6 @@
 // コンストラクタ
 TitleScene::TitleScene()
 	: IScene()					// 基底クラスの初期化
-	, m_cameraMoveY{0.0f}		// カメラ演出(スタート時)
 	, is_startFlag{ false }		// 開始フラグ
 	, is_menuFlag{ true }		// 選択フラグ
 {
@@ -65,7 +64,7 @@ void TitleScene::Update()
 	GetSystemManager()->GetSoundManager()->Update();
 
 	// エスケープで終了
-	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)){ ChangeScene(SCENE::ENDGAME);}
+	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME); }
 
 	// ロゴの更新
 	m_logo->Update();
@@ -73,7 +72,7 @@ void TitleScene::Update()
 	// 選択項目を変更する
 	if (!is_startFlag)
 	{
-		if (GetFadeValue() >= 0.7f) return;
+		if (GetFadeValue() >= 0.7f && is_startFlag) return;
 
 		if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Left) ||
 			_input.GetKeyTrack()->IsKeyReleased(Keyboard::Right) ||
@@ -94,8 +93,8 @@ void TitleScene::Update()
 		is_startFlag = true;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
-	// セレクト
-	if (FlyStartObjects())
+	// 移動が終わったら処理をする
+	if (m_logo->IsCanNextFlag())
 	{
 		ChangeScene(is_menuFlag ? SCENE::SELECT : SCENE::ENDGAME);
 	}
@@ -125,7 +124,7 @@ void TitleScene::Draw()
 	}
 
 	// ビュー行列
-	SimpleMath::Vector3 eye(0.0f, 0.1f + m_cameraMoveY, 8.0f);
+	SimpleMath::Vector3 eye(0.0f, m_logo->GetPosition().y, 8.0f);
 	m_titleSky->SetPositionY(eye.y);
 	_view = SimpleMath::Matrix::CreateLookAt(eye, SimpleMath::Vector3::Zero, SimpleMath::Vector3::Up);
 
@@ -148,6 +147,12 @@ void TitleScene::Draw()
 // 終了処理
 void TitleScene::Finalize()
 {
+	// UIの終了処理
+	m_stage->Finalize();
+	// UIの終了処理
+	m_logo->Finalize();
+	// UIの終了処理
+	m_titleSky->Finalize();
 	// UIの終了処理
 	m_titleUI->Finalize();
 }
@@ -183,19 +188,3 @@ void TitleScene::SetSceneValues()
 	is_menuFlag = true;
 }
 
-// スタート演出
-bool TitleScene::FlyStartObjects()
-{
-	if (is_startFlag)
-	{
-		m_cameraMoveY++;
-
-		// 演出が終わったら遷移
-		if (m_cameraMoveY > MAX_HEIGHT)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
