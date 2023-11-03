@@ -251,6 +251,9 @@
     <Filter Include="Datas\Maps">
       <UniqueIdentifier>{6ec896aa-6999-4ce1-be9c-9921b424a5a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\PS_Select">
+      <UniqueIdentifier>{bf52ecb1-6e74-4713-a1d9-80856558fa29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -806,6 +809,9 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\GS_Transition.hlsl">
       <Filter>Resources\Shaders\Transition</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PS_Select.hlsl">
+      <Filter>Resources\Shaders\PS_Select</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

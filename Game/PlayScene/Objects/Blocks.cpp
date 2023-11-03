@@ -230,7 +230,7 @@ void Blocks::Render(CommonStates& states,SimpleMath::Matrix view, SimpleMath::Ma
 				_fog->SetFogEnabled(true);
 
 				// フォグの色を決める
-				_fog->SetFogColor(Colors::White);
+				_fog->SetFogColor(Colors::LightGray);
 
 				// スタート
 				_fog->SetFogStart(-50.0f);
