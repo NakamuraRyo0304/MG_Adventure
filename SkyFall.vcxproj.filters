@@ -11,9 +11,6 @@
     <Filter Include="GameLoop">
       <UniqueIdentifier>{8a1eb1ff-b944-4453-9ebd-b07a051aeadc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="IScene">
-      <UniqueIdentifier>{972675d9-5a97-4792-95b5-af7e631221f2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameMain">
       <UniqueIdentifier>{941c7117-b2d9-4102-8ce2-6aca54491ae6}</UniqueIdentifier>
     </Filter>
@@ -257,6 +254,9 @@
     <Filter Include="Scenes\PlayScene\Objects\Player\PlayerComponents">
       <UniqueIdentifier>{54560327-7ac1-4702-b69f-18ab9b15b4de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\IScene">
+      <UniqueIdentifier>{972675d9-5a97-4792-95b5-af7e631221f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -269,7 +269,7 @@
       <Filter>GameMain</Filter>
     </ClInclude>
     <ClInclude Include="Game\IScene.h">
-      <Filter>IScene</Filter>
+      <Filter>Scenes\IScene</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>pch</Filter>
@@ -424,7 +424,7 @@
       <Filter>GameMain</Filter>
     </ClCompile>
     <ClCompile Include="Game\IScene.cpp">
-      <Filter>IScene</Filter>
+      <Filter>Scenes\IScene</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>pch</Filter>
