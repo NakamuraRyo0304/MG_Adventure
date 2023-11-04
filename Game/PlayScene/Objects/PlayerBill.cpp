@@ -8,6 +8,7 @@
 #include "pch.h"
 
 #include "Libraries/SystemDatas/ParticleUtility.h"
+#include "Libraries/Factories/ShaderFactory.h"
 
 #include "PlayerBill.h"
 
@@ -74,30 +75,11 @@ void PlayerBill::CreateShader()
 {
 	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
 
-	//-------------------------------------------------------------------------------------//
 	// シェーダーファイルの読み込み
-
-	// バーテックスシェーダー
 	std::vector<uint8_t> _VSData = DX::ReadData(L"Resources/Shaders/VS_PlayerPoint.cso");
-	DX::ThrowIfFailed(
-		_device->CreateVertexShader(_VSData.data(), _VSData.size(), nullptr,
-			m_verShader.ReleaseAndGetAddressOf())
-	);
-	// ジオメトリシェーダー
 	std::vector<uint8_t> _GSData = DX::ReadData(L"Resources/Shaders/GS_PlayerPoint.cso");
-	DX::ThrowIfFailed(
-		_device->CreateGeometryShader(_GSData.data(), _GSData.size(), nullptr,
-			m_geoShader.ReleaseAndGetAddressOf())
-	);
-	// ピクセルシェーダー
 	std::vector<uint8_t> _PSData = DX::ReadData(L"Resources/Shaders/PS_PlayerPoint.cso");
-	DX::ThrowIfFailed(_device->CreatePixelShader(_PSData.data(), _PSData.size(), nullptr,
-			m_pixShader.ReleaseAndGetAddressOf())
-	);
-
-	//-------------------------------------------------------------------------------------//
 	// シェーダーの作成
-
 	// インプットレイアウト
 	DX::ThrowIfFailed(
 		_device->CreateInputLayout(

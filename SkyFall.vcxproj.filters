@@ -56,9 +56,6 @@
     <Filter Include="Scenes\TitleScene">
       <UniqueIdentifier>{8893bd6f-1e61-4c48-ad02-79cb383339e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SystemManager">
-      <UniqueIdentifier>{7f1eb7c5-76c0-4700-81fe-b6cfd2ba3176}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Factories">
       <UniqueIdentifier>{a396931d-e107-4640-a03e-917f27bce54c}</UniqueIdentifier>
     </Filter>
@@ -257,6 +254,15 @@
     <Filter Include="Scenes\IScene">
       <UniqueIdentifier>{972675d9-5a97-4792-95b5-af7e631221f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{9169995d-8fac-41f1-8df7-bc1583ae821a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\FactoryManager">
+      <UniqueIdentifier>{27be56c7-5003-4c9a-95b8-9981e2e44ada}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\SystemManager">
+      <UniqueIdentifier>{7f1eb7c5-76c0-4700-81fe-b6cfd2ba3176}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -311,7 +317,7 @@
       <Filter>Common\HeaderOnly</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemManager\SystemManager.h">
-      <Filter>SystemManager</Filter>
+      <Filter>Managers\SystemManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\PlayScene\PlayScene.h">
       <Filter>Scenes\PlayScene</Filter>
@@ -412,6 +418,12 @@
     <ClInclude Include="ReadData.h">
       <Filter>Common\HeaderOnly</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\Factories\ShaderFactory.h">
+      <Filter>Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\FactoryManager\FactoryManager.h">
+      <Filter>Managers\FactoryManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -460,10 +472,7 @@
       <Filter>Common\RayCast</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemManager\SystemManager.cpp">
-      <Filter>SystemManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\PlayScene\PlayScene.cpp">
-      <Filter>Scenes\PlayScene</Filter>
+      <Filter>Managers\SystemManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\EditScene\EditScene.cpp">
       <Filter>Scenes\EditScene</Filter>
@@ -548,6 +557,15 @@
     </ClCompile>
     <ClCompile Include="Game\TitleScene\Objects\ITitleObject.cpp">
       <Filter>Scenes\TitleScene\Objects\ITitleObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Factories\ShaderFactory.cpp">
+      <Filter>Factories</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\PlayScene.cpp">
+      <Filter>Scenes\PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\FactoryManager\FactoryManager.cpp">
+      <Filter>Managers\FactoryManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -785,6 +803,9 @@
     <None Include="Datas\Maps\StageEdit.csv">
       <Filter>Datas\Maps</Filter>
     </None>
+    <None Include="Resources\Shaders\Cloud.hlsli">
+      <Filter>Resources\Shaders\Block</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -815,6 +836,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\GS_Transition.hlsl">
       <Filter>Resources\Shaders\Transition</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\VS_Cloud.hlsl">
+      <Filter>Resources\Shaders\Block</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\GS_Cloud.hlsl">
+      <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

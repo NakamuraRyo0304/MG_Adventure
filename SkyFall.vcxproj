@@ -217,6 +217,8 @@
     <ClInclude Include="Game\TitleScene\Objects\TitleUI.h" />
     <ClInclude Include="Game\TitleScene\TitleScene.h" />
     <ClInclude Include="Libraries\Factories\ModelFactory.h" />
+    <ClInclude Include="Libraries\Factories\ShaderFactory.h" />
+    <ClInclude Include="Libraries\FactoryManager\FactoryManager.h" />
     <ClInclude Include="Libraries\Nlohmann\json.hpp" />
     <ClInclude Include="Libraries\SystemDatas\Button.h" />
     <ClInclude Include="Libraries\SystemDatas\Collider.h" />
@@ -269,6 +271,8 @@
     <ClCompile Include="Game\TitleScene\Objects\TitleUI.cpp" />
     <ClCompile Include="Game\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Libraries\Factories\ModelFactory.cpp" />
+    <ClCompile Include="Libraries\Factories\ShaderFactory.cpp" />
+    <ClCompile Include="Libraries\FactoryManager\FactoryManager.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Button.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Collider.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Camera.cpp" />
@@ -375,6 +379,7 @@
     <None Include="Resources\Models\StageEdit.cmo" />
     <None Include="Resources\Models\TitleLogoVer2.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
+    <None Include="Resources\Shaders\Cloud.hlsli" />
     <None Include="Resources\Shaders\PlayerPoint.hlsli" />
     <None Include="Resources\Shaders\Transition.hlsli" />
   </ItemGroup>
@@ -383,6 +388,16 @@
     <Text Include="説明書.txt" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Resources\Shaders\GS_Cloud.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\GS_PlayerPoint.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
@@ -408,6 +423,16 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\VS_Cloud.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\VS_PlayerPoint.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
