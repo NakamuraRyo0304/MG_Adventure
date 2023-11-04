@@ -13,15 +13,18 @@
 
  // ライブラリ
 #include "../Libraries/SystemManager/SystemManager.h"
+#include "../Libraries/FactoryManager/FactoryManager.h"
 #include "../Libraries/UserUtility.h"
 #include "../Libraries/SystemDatas/Input.h"
-#include "../Libraries/Factories/ModelFactory.h"
 
 class IScene
 {
 private:
 	// システムマネージャ
 	std::shared_ptr<SystemManager> m_system;
+
+	// ファクトリマネージャ
+	std::shared_ptr<FactoryManager> m_factory;
 
 	// 次のシーンを指定する
 	SCENE m_nextScene;
@@ -81,6 +84,8 @@ public:
 
 	// システムマネージャを取得する
 	inline const std::shared_ptr<SystemManager>& GetSystemManager() { return m_system; }
+	// ファクトリマネージャを取得する
+	inline const std::shared_ptr<FactoryManager>& GetFactoryManager() { return m_factory; }
 
 	// 遷移先のシーン設定
 	inline void ChangeScene(const SCENE& nextScene)

@@ -6,16 +6,17 @@
  */
 
  『実装済み』
- 〇ModelFactory/ParticleFactoryの作成
+ 〇SystemManager/FactoryManagerのアクセスを簡単に
+ 　　使用したデザインパターン：Facadeパターン
+ 〇StepTimer/DeviceResourcesを単一オブジェクトに
+ 　　使用したデザインパターン：Singletonパターン
+ 〇ModelFactory/ShaderFactoryの生産工場
  　　使用したデザインパターン：Factoryパターン
-
- 〇ステージエディタ・UndoRedoの作成
+ 〇MementoMap/EditLogでUndoRedo機能で取り消し可能に
  　　使用したデザインパターン：Mementoパターン
 
  〇フェードインフェードアウトをシェーダーに変更
  　　ルール画像変更でフェードが変化
-
- 〇
 
 
 【実装すること】

@@ -10,8 +10,9 @@
 #include "Logo.h"
 
 // コンストラクタ
-Logo::Logo(const wchar_t* path)
-	: m_position{}			// 座標
+Logo::Logo(std::shared_ptr<FactoryManager> factory, const wchar_t* path)
+	: ITitleObject()
+	, m_position{}			// 座標
 	, m_logoMoveScale{}		// 拡大率
 	, m_logoMoveY{}			// 移動量
 	, is_startFlag{ false } // スタートしたかどうか
@@ -23,9 +24,14 @@ Logo::Logo(const wchar_t* path)
 	m_logoMoveY = 10.0f;
 	m_logoMoveScale = 1.0f;
 
-	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+	auto& _mf = factory;
+	_mf->BuildModelFactory();
 
-	m_model = std::move(ModelFactory::GetCreateModel(_device, path));
+	auto _model = _mf->VisitModelFactory()->GetCreateModel(path);
+
+	_mf->LeaveModelFactory();
+
+	m_model = std::move(_model);
 	m_model->UpdateEffects([](IEffect* effect)
 		{
 			// ライティング

@@ -10,13 +10,20 @@
 #include "TitleSky.h"
 
 // コンストラクタ
-TitleSky::TitleSky(const wchar_t* path)
-	: m_posY{0.0f}				// Y座標
+TitleSky::TitleSky(std::shared_ptr<FactoryManager> factory, const wchar_t* path)
+	: ITitleObject()
+	, m_posY{0.0f}				// Y座標
 	, is_startFlag{ false }		// 開始フラグ
 {
-	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+	auto _mf = factory;
+	_mf->BuildModelFactory();
 
-	m_model = ModelFactory::GetCreateModel(_device, path);
+	auto _model = _mf->VisitModelFactory()->GetCreateModel(path);
+	m_model = std::move(_model);
+
+	_mf->LeaveModelFactory();
+
+
 	m_model->UpdateEffects([](IEffect* effect)
 		{
 			// ライティング

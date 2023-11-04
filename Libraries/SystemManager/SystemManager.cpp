@@ -110,12 +110,8 @@ const std::unique_ptr<Debug::GridFloor>& SystemManager::GetGridFloor()
 	return m_gridFloor;
 }
 
-/// <summary>
-/// 一括でシステムのリソースを作成
-/// </summary>
-/// <param name="引数無し"></param>
-/// <returns>なし</returns>
-void SystemManager::CreateUnique()
+// 全てのリソースを作成
+void SystemManager::CreateSystem()
 {
 	// デバイスリソース
 	m_pDR = DX::DeviceResources::GetInstance();

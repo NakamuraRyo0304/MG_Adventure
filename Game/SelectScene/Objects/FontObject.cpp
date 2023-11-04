@@ -8,37 +8,44 @@
 #include "pch.h"
 
 // モデルファクトリー
-#include "Libraries/Factories/ModelFactory.h"
+#include "Libraries/FactoryManager/FactoryManager.h"
 
 #include "FontObject.h"
 
 // コンストラクタ
-FontObject::FontObject(const int& safeStage, const int& maxStage)
+FontObject::FontObject(std::shared_ptr<FactoryManager> factory, const int& safeStage, const int& maxStage)
+	: m_factory{ factory }
 {
-	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+	m_factory->BuildModelFactory();
 
 	for (int i = 0; i < maxStage - safeStage; ++i)
 	{
+		std::unique_ptr<Model> _m;
 		// 0番目はエディタの文字
 		if (i == 0)
 		{
-			m_fonts[0] = std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/StageEdit.cmo"));
+			_m = std::move(m_factory->VisitModelFactory()->GetCreateModel(L"Resources/Models/StageEdit.cmo"));
 		}
 		else
 		{
 			std::wstring _path = L"Resources/Models/Stage" + std::to_wstring(i) + L".cmo";
-			m_fonts[i] = std::move(ModelFactory::GetCreateModel(_device, _path.c_str()));
+			_m = std::move(m_factory->VisitModelFactory()->GetCreateModel(_path.c_str()));
 		}
+		m_fonts[i] = std::move(_m);
 	}
+
+	m_factory->LeaveModelFactory();
 }
 
 // デストラクタ
 FontObject::~FontObject()
 {
+	m_factory->BuildModelFactory();
 	for (int i = 0; i < 6; ++i)
 	{
-		m_fonts[i].reset();
+		m_factory->VisitModelFactory()->DeleteModel(m_fonts[i]);
 	}
+	m_factory->LeaveModelFactory();
 }
 
 // 描画処理

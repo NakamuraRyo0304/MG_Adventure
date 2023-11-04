@@ -25,11 +25,12 @@ private:
 public:
 
 	/// <summary>
-	///	コンストラクタ
+	/// コンストラクタ
 	/// </summary>
-	/// <param name="path">モデルパス</param>
+	/// <param name="factory">ファクトリマネージャ</param>
+	/// <param name="path">タイトルロゴモデルのパス</param>
 	/// <returns>なし</returns>
-	Stage(const wchar_t* path);
+	Stage(std::shared_ptr<FactoryManager> factory, const wchar_t* path);
 	~Stage();
 
 	/// <summary>

@@ -189,16 +189,16 @@ private:
 	/// <summary>
 	/// プレイヤーの作成
 	/// </summary>
-	/// <param name="device">デバイスポインタ</param>
+	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
-	void MakePlayer(ID3D11Device1* device);
+	void MakePlayer();
 
 	/// <summary>
 	/// ブロックの作成
 	/// </summary>
-	/// <param name="device">デバイスポインタ</param>
+	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
-	void MakeBlocks(ID3D11Device1* device);
+	void MakeBlocks();
 
 	/// <summary>
 	/// スタートのカウントダウン

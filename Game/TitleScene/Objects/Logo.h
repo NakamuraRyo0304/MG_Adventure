@@ -42,9 +42,10 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="factory">ファクトリマネージャ</param>
 	/// <param name="path">タイトルロゴモデルのパス</param>
 	/// <returns>なし</returns>
-	Logo(const wchar_t* path);
+	Logo(std::shared_ptr<FactoryManager> factory, const wchar_t* path);
 	~Logo();
 
 	/// <summary>

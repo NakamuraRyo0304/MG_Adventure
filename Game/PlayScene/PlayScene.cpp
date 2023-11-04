@@ -337,11 +337,9 @@ void PlayScene::Finalize()
 // 画面依存、デバイス依存の初期化
 void PlayScene::CreateWindowDependentResources()
 {
-	// デバイスの取得
-	auto _device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-
-	// メイクユニーク
-	GetSystemManager()->CreateUnique();
+	// システムの作成
+	GetSystemManager()->CreateSystem();
+	GetFactoryManager()->CreateFactory();
 
 	// デフォルトカメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
@@ -354,12 +352,15 @@ void PlayScene::CreateWindowDependentResources()
 	m_playCamera = std::make_unique<PlayCamera>(SimpleMath::Vector2(GetScreenSize().x, GetScreenSize().y));
 	m_playCamera->SetPosition(START_CAMERA_POS);
 
-	//-------------------------------------------------------------------------------------//
-	// スカイドームモデルを作成する
-	m_skyDomeModel = ModelFactory::GetCreateModel(
-		_device,
-		L"Resources/Models/ShineSky.cmo"
-	);
+	// モデルの作成
+	auto _mf = GetFactoryManager();
+	_mf->BuildModelFactory();
+
+	m_skyDomeModel = // スカイドームの作成
+	std::move(_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/ShineSky.cmo"));
+
+	_mf->LeaveModelFactory();
+
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
 			auto _lights = dynamic_cast<IEffectLights*>(effect);
@@ -379,10 +380,10 @@ void PlayScene::CreateWindowDependentResources()
 	);
 
 	// プレイヤーの作成
-	MakePlayer(_device);
+	MakePlayer();
 
 	// ブロックの作成
-	MakeBlocks(_device);
+	MakeBlocks();
 
 	// 位置情報のシェーダーの作成
 	m_playerBill = std::make_unique<PlayerBill>();
@@ -443,15 +444,20 @@ void PlayScene::InitializeLighting()
 }
 
 // プレイヤー作成関数
-void PlayScene::MakePlayer(ID3D11Device1* device)
+void PlayScene::MakePlayer()
 {
-	// ファクトリーからモデルをもらう
-	auto _head = ModelFactory::GetCreateModel(device, L"Resources/Models/Head.cmo");
-	auto _body = ModelFactory::GetCreateModel(device, L"Resources/Models/Body.cmo");
-	auto _legR = ModelFactory::GetCreateModel(device, L"Resources/Models/LegR.cmo");
-	auto _legL = ModelFactory::GetCreateModel(device, L"Resources/Models/LegL.cmo");
-	auto _wink = ModelFactory::GetCreateModel(device, L"Resources/Models/Head_w.cmo");
+	// ファクトリマネージャ
+	auto _fm = GetFactoryManager();
+	_fm->BuildModelFactory();
 
+	// ファクトリーからモデルをもらう
+	auto _head = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Head.cmo");
+	auto _body = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Body.cmo");
+	auto _legR = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/LegR.cmo");
+	auto _legL = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/LegL.cmo");
+	auto _wink = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Head_w.cmo");
+
+	_fm->LeaveModelFactory();
 	// プレイヤーを作成する
 	m_player = std::make_unique<Player>(
 		std::move(_head),			// 頭のモデル
@@ -463,16 +469,22 @@ void PlayScene::MakePlayer(ID3D11Device1* device)
 }
 
 // ブロック作成関数
-void PlayScene::MakeBlocks(ID3D11Device1* device)
+void PlayScene::MakeBlocks()
 {
-	m_blocks = std::make_unique<Blocks>();
+	m_blocks = std::make_unique<Blocks>(GetFactoryManager());
 	m_blocks->CreateShader();
 
+	// ファクトリマネージャ
+	auto _fm = GetFactoryManager();
+	_fm->BuildModelFactory();
+
 	// ファクトリーからモデルをもらう
-	auto _grass   = ModelFactory::GetCreateModel(device, L"Resources/Models/GrassBlock.cmo");
-	auto _coin    = ModelFactory::GetCreateModel(device, L"Resources/Models/Coin.cmo");
-	auto _cloud   = ModelFactory::GetCreateModel(device, L"Resources/Models/Cloud.cmo");
-	auto _gravity = ModelFactory::GetCreateModel(device, L"Resources/Models/ResetPt.cmo");
+	auto _grass   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
+	auto _coin    = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
+	auto _cloud   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+	auto _gravity = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
+
+	_fm->LeaveModelFactory();
 
 	// モデルの受け渡し
 	m_blocks->CreateModels(std::move(_grass),   m_blocks->GRASS);

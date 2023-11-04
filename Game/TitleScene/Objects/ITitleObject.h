@@ -10,7 +10,7 @@
 #define ITITLEOBJECT
 
  // モデルファクトリー
-#include "Libraries/Factories/ModelFactory.h"
+#include "Libraries/FactoryManager/FactoryManager.h"
 
 // ユーザーユーティリティ
 #include "Libraries/UserUtility.h"
@@ -18,6 +18,7 @@
 class ITitleObject
 {
 private:
+
 
 public:
 	ITitleObject();

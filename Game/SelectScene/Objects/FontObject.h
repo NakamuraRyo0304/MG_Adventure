@@ -9,6 +9,7 @@
 #ifndef FONTOBJECT
 #define FONTOBJECT
 
+class FactoryManager;
 class FontObject
 {
 private:
@@ -16,15 +17,19 @@ private:
 	// フォントのモデル
 	std::unique_ptr<DirectX::Model> m_fonts[6];
 
+	// ファクトリマネージャ
+	std::shared_ptr<FactoryManager> m_factory;
+
 public:
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
+	/// <param name="factory">ファクトリマネージャ</param>
 	/// <param name="safeStage">未開放ステージ数</param>
 	/// <param name="maxStage">最大ステージ数</param>
 	/// <returns>なし</returns>
-	FontObject(const int& safeStage, const int& maxStage);
+	FontObject(std::shared_ptr<FactoryManager> factory,const int& safeStage, const int& maxStage);
 	~FontObject();
 
 	/// <summary>

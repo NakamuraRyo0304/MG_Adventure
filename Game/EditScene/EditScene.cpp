@@ -256,23 +256,26 @@ void EditScene::Finalize()
 	m_mapObj.clear();
 
 	// モデルの破棄
-	ModelFactory::DeleteModel(m_grassModel);
-	ModelFactory::DeleteModel(m_coinModel);
-	ModelFactory::DeleteModel(m_cloudModel);
-	ModelFactory::DeleteModel(m_gravityModel);
-	ModelFactory::DeleteModel(m_playerModel);
-	ModelFactory::DeleteModel(m_skyDomeModel);
-	ModelFactory::DeleteModel(m_noneModel);
+	auto& _mf = GetFactoryManager();
+	_mf->BuildModelFactory();
+
+	_mf->VisitModelFactory()->DeleteModel(m_grassModel);
+	_mf->VisitModelFactory()->DeleteModel(m_coinModel);
+	_mf->VisitModelFactory()->DeleteModel(m_cloudModel);
+	_mf->VisitModelFactory()->DeleteModel(m_gravityModel);
+	_mf->VisitModelFactory()->DeleteModel(m_playerModel);
+	_mf->VisitModelFactory()->DeleteModel(m_skyDomeModel);
+	_mf->VisitModelFactory()->DeleteModel(m_noneModel);
+
+	_mf->LeaveModelFactory();
 }
 
 // 画面依存、デバイス依存の初期化
 void EditScene::CreateWindowDependentResources()
 {
-	// デバイスの取得
-	auto _device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-
-	// メイクユニーク
-	GetSystemManager()->CreateUnique();
+	// システムの作成
+	GetSystemManager()->CreateSystem();
+	GetFactoryManager()->CreateFactory();
 
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
@@ -286,34 +289,32 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(GetScreenSize().x, GetScreenSize().y);
 
 	// モデルを作成する
-	m_grassModel = ModelFactory::GetCreateModel(		// 草ブロック
-		_device,
-		L"Resources/Models/GrassBlock.cmo"
-	);
-	m_coinModel = ModelFactory::GetCreateModel(			// コインブロック
-		_device,
-		L"Resources/Models/Coin.cmo"
-	);
-	m_cloudModel = ModelFactory::GetCreateModel(		// 雲ブロック
-		_device,
-		L"Resources/Models/Cloud.cmo"
-	);
-	m_gravityModel = ModelFactory::GetCreateModel(		// 重力ブロック
-		_device,
-		L"Resources/Models/ResetPt.cmo"
-	);
-	m_playerModel = ModelFactory::GetCreateModel(		// プレイヤブロック
-		_device,
-		L"Resources/Models/Bird.cmo"
-	);
-	m_noneModel = ModelFactory::GetCreateModel(			// 消しゴムブロック
-		_device,
-		L"Resources/Models/Eraser.cmo"
-	);
-	m_skyDomeModel = ModelFactory::GetCreateModel(		// スカイドーム
-		_device,
-		L"Resources/Models/EditSky.cmo"
-	);
+	auto _mf = GetFactoryManager();
+	_mf->BuildModelFactory();
+
+	m_grassModel = // 草ブロック
+	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
+
+	m_coinModel = // コインブロック
+	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
+
+	m_cloudModel = // 雲ブロック
+	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+
+	m_gravityModel = // 重力ブロック
+	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
+
+	m_playerModel = // プレイヤモデル
+	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/Bird.cmo");
+
+	m_noneModel = // 消しゴムモデル
+	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/Eraser.cmo");
+
+	m_skyDomeModel = // スカイドーム
+	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/EditSky.cmo");
+
+	_mf->LeaveModelFactory();
+
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
 			auto _lights = dynamic_cast<IEffectLights*>(effect);

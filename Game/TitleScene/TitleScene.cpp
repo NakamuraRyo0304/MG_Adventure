@@ -160,8 +160,9 @@ void TitleScene::Finalize()
 // 画面、デバイス依存の初期化
 void TitleScene::CreateWindowDependentResources()
 {
-	// メイクユニーク
-	GetSystemManager()->CreateUnique();
+	// システムの作成
+	GetSystemManager()->CreateSystem();
+	GetFactoryManager()->CreateFactory();
 
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
@@ -172,13 +173,13 @@ void TitleScene::CreateWindowDependentResources()
 	m_titleUI->Create(GetSystemManager(), GetScreenSize());
 
 	// タイトルロゴの設定
-	m_logo = std::make_unique<Logo>(L"Resources/Models/TitleLogoVer2.cmo");
+	m_logo = std::make_unique<Logo>(GetFactoryManager(),L"Resources/Models/TitleLogoVer2.cmo");
 
 	// ステージの設定
-	m_stage = std::make_unique<Stage>(L"Resources/Models/TitleStage.cmo");
+	m_stage = std::make_unique<Stage>(GetFactoryManager(), L"Resources/Models/TitleStage.cmo");
 
 	// スカイドームの設定
-	m_titleSky = std::make_unique<TitleSky>(L"Resources/Models/ShineSky.cmo");
+	m_titleSky = std::make_unique<TitleSky>(GetFactoryManager(),L"Resources/Models/ShineSky.cmo");
 }
 
 // シーン変数初期化関数

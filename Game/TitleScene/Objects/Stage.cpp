@@ -10,13 +10,19 @@
 #include "Stage.h"
 
 // コンストラクタ
-Stage::Stage(const wchar_t* path)
-	: m_accelerate{ 0.0f }		// 選択変更時のステージの回転加速
+Stage::Stage(std::shared_ptr<FactoryManager> factory,const wchar_t* path)
+	: ITitleObject()
+	, m_accelerate{ 0.0f }		// 選択変更時のステージの回転加速
 	, is_accelerateFlag{ false }// 回転加速しているかの判定フラグ
 {
-	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+	auto _mf = factory;
+	_mf->BuildModelFactory();
 
-	m_model = ModelFactory::GetCreateModel(_device, path);
+	auto _model = _mf->VisitModelFactory()->GetCreateModel(path);
+
+	_mf->LeaveModelFactory();
+
+	m_model = std::move(_model);
 }
 
 // デストラクタ

@@ -8,9 +8,13 @@
 // エイリアス
 using MAPSTATE = MapLoad::BOXSTATE;
 
+class FactoryManager;
 class Blocks
 {
 private:
+
+	// ファクトリマネージャ
+	std::shared_ptr<FactoryManager> m_factory;
 
 	// マップローダー
 	std::unique_ptr<MapLoad> m_mapLoad;
@@ -80,7 +84,7 @@ public:
 
 public:
 
-	Blocks();
+	Blocks(std::shared_ptr<FactoryManager> factory);
 	~Blocks();
 
 	/// <summary>

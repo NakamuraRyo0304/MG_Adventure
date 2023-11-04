@@ -26,11 +26,12 @@ private:
 public:
 
 	/// <summary>
-	///	コンストラクタ
+	/// コンストラクタ
 	/// </summary>
-	/// <param name="path">モデルパス</param>
+	/// <param name="factory">ファクトリマネージャ</param>
+	/// <param name="path">タイトルロゴモデルのパス</param>
 	/// <returns>なし</returns>
-	TitleSky(const wchar_t* path);
+	TitleSky(std::shared_ptr<FactoryManager> factory, const wchar_t* path);
 	~TitleSky();
 
 	/// <summary>

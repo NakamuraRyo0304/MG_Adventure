@@ -196,11 +196,9 @@ void SelectScene::Finalize()
 // 画面、デバイス依存の初期化
 void SelectScene::CreateWindowDependentResources()
 {
-	// デバイスとデバイスコンテキストの取得
-	auto _device = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-
-	// メイクユニーク
-	GetSystemManager()->CreateUnique();
+	// システムの作成
+	GetSystemManager()->CreateSystem();
+	GetFactoryManager()->CreateFactory();
 
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
@@ -211,10 +209,16 @@ void SelectScene::CreateWindowDependentResources()
 	m_selectUI->Create(GetSystemManager(),GetScreenSize());
 
 	// フォントオブジェクトの作成
-	m_fontObject = std::make_unique<FontObject>(m_safeStages, MAX_STAGE_NUM);
+	m_fontObject = std::make_unique<FontObject>(GetFactoryManager(),m_safeStages, MAX_STAGE_NUM);
 
 	// スカイドームモデルを作成する
-	m_skyDomeModel = ModelFactory::GetCreateModel(_device, L"Resources/Models/ShineSky.cmo");
+	auto _mf = GetFactoryManager();
+	_mf->BuildModelFactory();
+
+	m_skyDomeModel = // スカイドームモデルを作成
+	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/ShineSky.cmo");
+
+	_mf->LeaveModelFactory();
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
 			auto _lights = dynamic_cast<IEffectLights*>(effect);
@@ -269,21 +273,23 @@ void SelectScene::CreateStages()
 	// 選択中のステージを先に作成
 	CreateFirstStage();
 
-	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+	// ファクトリマネージャ
+	auto _fm = GetFactoryManager();
+	_fm->BuildModelFactory();
 
 	for (int i = 0; i < MAX_STAGE_NUM; ++i)
 	{
-		// ファクトリーで生成
-		auto _grass   = ModelFactory::GetCreateModel(_device, L"Resources/Models/GrassBlock.cmo");
-		auto _coin    = ModelFactory::GetCreateModel(_device, L"Resources/Models/Coin.cmo");
-		auto _cloud   = ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo");
-		auto _gravity = ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo");
+		// ファクトリーからモデルをもらう
+		auto _grass   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
+		auto _coin    = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
+		auto _cloud   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+		auto _gravity = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
 
 		// 作成されていない場合は作成する
 		if (!m_blocks[i])
 		{
 			// ブロックの作成
-			m_blocks[i] = std::make_unique<Blocks>();
+			m_blocks[i] = std::make_unique<Blocks>(GetFactoryManager());
 			m_blocks[i]->CreateShader();
 
 			// モデルの受け渡し
@@ -296,19 +302,25 @@ void SelectScene::CreateStages()
 			m_blocks[i]->Initialize(i);
 		}
 	}
+
+	_fm->LeaveModelFactory();
 }
 void SelectScene::CreateFirstStage()
 {
-	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
-	// ファクトリーで生成
-	auto _grass   = ModelFactory::GetCreateModel(_device, L"Resources/Models/GrassBlock.cmo");
-	auto _coin    = ModelFactory::GetCreateModel(_device, L"Resources/Models/Coin.cmo");
-	auto _cloud   = ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo");
-	auto _gravity = ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo");
-
 	// ブロックの作成
-	m_blocks[m_stageNum] = std::make_unique<Blocks>();
+	m_blocks[m_stageNum] = std::make_unique<Blocks>(GetFactoryManager());
 	m_blocks[m_stageNum]->CreateShader();
+
+	// ファクトリマネージャ
+	auto _fm = GetFactoryManager();
+	_fm->BuildModelFactory();
+
+	auto _grass   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
+	auto _coin    = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
+	auto _cloud   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+	auto _gravity = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
+
+	_fm->LeaveModelFactory();
 
 	// モデルの受け渡し
 	m_blocks[m_stageNum]->CreateModels(std::move(_grass),   m_blocks[m_stageNum]->GRASS);

@@ -166,11 +166,9 @@ void ResultScene::Finalize()
 // 画面、デバイス依存の初期化
 void ResultScene::CreateWindowDependentResources()
 {
-	// デバイスの取得
-	auto _device  = GetSystemManager()->GetDeviceResources()->GetD3DDevice();
-
-	// メイクユニーク
-	GetSystemManager()->CreateUnique();
+	// システムの作成
+	GetSystemManager()->CreateSystem();
+	GetFactoryManager()->CreateFactory();
 
 	// カメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, 45.0f);
@@ -181,28 +179,25 @@ void ResultScene::CreateWindowDependentResources()
 	m_resultUI->Create(GetSystemManager(), GetScreenSize());
 
 	// ブロックの作成
-	m_blocks = std::make_unique<Blocks>();
+	m_blocks = std::make_unique<Blocks>(GetFactoryManager());
 
-	// 草ブロックの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/GrassBlock.cmo")),
-		m_blocks->GRASS
-	);
-	// コインの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/Coin.cmo")),
-		m_blocks->COIN
-	);
-	// 雲ブロックの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/Cloud.cmo")),
-		m_blocks->CLOWD
-	);
-	// 重力ブロックの作成
-	m_blocks->CreateModels(
-		std::move(ModelFactory::GetCreateModel(_device, L"Resources/Models/ResetPt.cmo")),
-		m_blocks->GRAVITY
-	);
+	// ファクトリマネージャ
+	auto _fm = GetFactoryManager();
+	_fm->BuildModelFactory();
+
+	// ファクトリーからモデルをもらう
+	auto _grass = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
+	auto _coin = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
+	auto _cloud = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+	auto _gravity = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
+
+	_fm->LeaveModelFactory();
+
+	// モデルの受け渡し
+	m_blocks->CreateModels(std::move(_grass),	m_blocks->GRASS);
+	m_blocks->CreateModels(std::move(_coin),	m_blocks->COIN);
+	m_blocks->CreateModels(std::move(_cloud),	m_blocks->CLOWD);
+	m_blocks->CreateModels(std::move(_gravity), m_blocks->GRAVITY);
 }
 
 // シーン変数初期化関数

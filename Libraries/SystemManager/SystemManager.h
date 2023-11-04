@@ -43,11 +43,9 @@ private:
 	std::unique_ptr<Debug::GridFloor>                           m_gridFloor;
 
 
-public: // ゲッター、セッター、ファクトリー
-	// 共通のメイクユニーク
-	void CreateUnique();
-
-	// unique_ptrのアクセサ
+public:
+	// 全てのシステムを作成
+	void CreateSystem();
 
 	// デバイスリソースの取得
 	DX::DeviceResources* GetDeviceResources();

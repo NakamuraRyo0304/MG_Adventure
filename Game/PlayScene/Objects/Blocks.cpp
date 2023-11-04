@@ -8,19 +8,20 @@
 #include "pch.h"
 
 // CSV読み込み
-#include "../../../Libraries/SystemDatas/MapLoad.h"
+#include "Libraries/SystemDatas/MapLoad.h"
 
 // モデルファクトリ
-#include "../../../Libraries/Factories/ModelFactory.h"
+#include "Libraries/FactoryManager/FactoryManager.h"
 
 // ユーザーユーティリティ
-#include "../../../Libraries/UserUtility.h"
+#include "Libraries/UserUtility.h"
 
 #include "Blocks.h"
 
 // コンストラクタ
-Blocks::Blocks()
-	: m_coinCount{0}							// コインカウンタ
+Blocks::Blocks(std::shared_ptr<FactoryManager> factory)
+	: m_factory{factory}						// ファクトリマネージャ
+	, m_coinCount{0}							// コインカウンタ
 	, m_maxCoins{0}								// コイン最大値
 	, m_playerPos{ SimpleMath::Vector3::Zero }	// プレイヤーポジション
 	, m_grassModel{ nullptr }					// 草ブロックのモデル
@@ -286,10 +287,15 @@ void Blocks::Finalize()
 	// 最後までリセットされていたらスキップ
 	if (!m_gravityModel) return;
 
-	ModelFactory::DeleteModel(m_grassModel);
-	ModelFactory::DeleteModel(m_coinModel);
-	ModelFactory::DeleteModel(m_cloudModel);
-	ModelFactory::DeleteModel(m_gravityModel);
+	m_factory->BuildModelFactory();
+
+	m_factory->VisitModelFactory()->DeleteModel(m_grassModel);
+	m_factory->VisitModelFactory()->DeleteModel(m_coinModel);
+	m_factory->VisitModelFactory()->DeleteModel(m_cloudModel);
+	m_factory->VisitModelFactory()->DeleteModel(m_gravityModel);
+
+	m_factory->LeaveModelFactory();
+	m_factory.reset();
 }
 
 // モデル作成関数

@@ -803,9 +803,6 @@
     <None Include="Datas\Maps\StageEdit.csv">
       <Filter>Datas\Maps</Filter>
     </None>
-    <None Include="Resources\Shaders\Cloud.hlsli">
-      <Filter>Resources\Shaders\Block</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -836,12 +833,6 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\GS_Transition.hlsl">
       <Filter>Resources\Shaders\Transition</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\VS_Cloud.hlsl">
-      <Filter>Resources\Shaders\Block</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\GS_Cloud.hlsl">
-      <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
