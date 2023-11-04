@@ -5,7 +5,8 @@
  *  @Author NakamuraRyo
  */
 
-float4 main() : SV_TARGET
+float4 main(float4 color : COLOR0) : SV_TARGET
 {
-	return float4(0.95f, 0.95f, 1.0f, 0.95f);
+    color.a = 0.95f;
+    return color;
 }

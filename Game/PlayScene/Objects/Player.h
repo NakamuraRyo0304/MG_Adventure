@@ -11,12 +11,14 @@
 
 struct Parameter
 {
+	DirectX::SimpleMath::Vector3 position;		// 座標
 	DirectX::SimpleMath::Vector3 velocity;		// 移動量
 	DirectX::SimpleMath::Quaternion rotate;		// 向いている方向
 	float gravity;								// 重力
 	float accelerate;							// 加速度
 	void reset()								// リセット関数
 	{
+		position = DirectX::SimpleMath::Vector3::Zero;
 		velocity = DirectX::SimpleMath::Vector3::Zero;
 		gravity = 0.0f;
 		accelerate = 0.0f;
@@ -29,8 +31,8 @@ class Player
 {
 private:
 
-	// 時間
-	float _timer;
+	// プレイヤのパラメータ
+	Parameter m_parameter;
 
 	// セレクトから受け取ったコイン数
 	int m_coinNum;
@@ -40,12 +42,6 @@ private:
 
 	// 脚の動きに使う変数
 	float m_footMove;
-
-	// 座標
-	DirectX::SimpleMath::Vector3 m_position;
-
-	// プレイヤのパラメータ
-	Parameter m_parameter;
 
 	// 首の動き
 	DirectX::SimpleMath::Quaternion m_neckQuaternion;
@@ -65,7 +61,7 @@ private:
 	bool is_deathFlag;
 
 	// ライティング
-	DirectX::SimpleMath::Vector3 m_lighting;
+	DirectX::SimpleMath::Vector3 m_lightDirection;
 
 private:
 
@@ -87,6 +83,8 @@ private:
 	const float DEATH_LINE = -10.0f;
 	// ウインクスパン
 	const float WINK_SPAN = 0.95f;
+	// ライトの変換速度
+	const float LIGHT_SPEED = 0.1f;
 
 
 public:
@@ -144,6 +142,12 @@ private:
 	/// <returns>なし</returns>
 	void UpdateGravity();
 
+	/// <summary>
+	/// ライティングを更新する
+	/// </summary>
+	/// <param name="dir">ライトの方向</param>
+	/// <returns>ライトの計算結果</returns>
+	std::function<void(IEffect* effect)> UpdateLighting(DirectX::SimpleMath::Vector3 dir);
 public:
 
 	/// <summary>
@@ -156,11 +160,11 @@ public:
 	// アクセサ----------------------------------------------------------------------------//
 
 	// ライティング設定
-	void InitializeLighting(const DirectX::SimpleMath::Vector3& lightDir) { m_lighting = lightDir; }
+	void InitializeLighting(const DirectX::SimpleMath::Vector3& lightDir) { m_lightDirection = lightDir; }
 	// ポジションを取得
-	DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
+	DirectX::SimpleMath::Vector3& GetPosition() { return m_parameter.position; }
 	// ポジションを設定
-	void SetPosition(const DirectX::SimpleMath::Vector3& position) { m_position = position; }
+	void SetPosition(const DirectX::SimpleMath::Vector3& position) { m_parameter.position = position; }
 	// 重力リセット
 	void ResetGravity() { m_parameter.gravity = 0.0f; }
 	// 重力を取得
