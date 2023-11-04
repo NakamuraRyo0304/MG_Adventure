@@ -267,7 +267,6 @@ void Blocks::Render(CommonStates& states,SimpleMath::Matrix view, SimpleMath::Ma
 		// ˆÚ“®s—ñ
 		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
-		m_cloudModel->UpdateEffects(_lightSetting);
 		m_cloudModel->Draw(_context, states, _rotMat * _world, view, proj, false, [&]()
 			{
 				_context->OMSetBlendState(states.NonPremultiplied(), nullptr, 0xffffffff);

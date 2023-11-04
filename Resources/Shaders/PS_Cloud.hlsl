@@ -7,6 +7,5 @@
 
 float4 main(float4 color : COLOR0) : SV_TARGET
 {
-    color.a = 0.95f;
-    return color;
+	return float4(0.95f, 0.95f, 1.0f, 0.95f);
 }
