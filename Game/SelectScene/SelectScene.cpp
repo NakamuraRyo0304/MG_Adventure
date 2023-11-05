@@ -8,7 +8,6 @@
 #include "pch.h"
 
 #include <thread>
-#include <mutex>
 
 // マップローダー
 #include "Libraries/SystemDatas/MapLoad.h"
@@ -22,6 +21,9 @@
 // フォントオブジェクト
 #include "Objects/FontObject.h"
 
+// スカイドーム
+#include "Objects/SelectSky.h"
+
 #include "SelectScene.h"
 
 // コンストラクタ
@@ -34,7 +36,6 @@ SelectScene::SelectScene()
 	, m_useCoins{}				// 使用コイン数
 	, m_initCoins{}				// 開始コイン数
 	, m_targetY{}				// カメラのターゲットのY座標
-	, m_mutex{}					// アシンクロック
 	, is_selectEdit{false}		// ステージエディットを選択
 {
 }
@@ -93,7 +94,7 @@ void SelectScene::Update()
 	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		// フェード中は処理しない
-		if (GetFadeValue() >= 0.7f) return;
+		if (GetFadeValue() >= 0.5f) return;
 
 		// ステージ番号が0ならエディタに、それ以外はプレイへ
 		if (m_stageNum == 0)
@@ -125,14 +126,8 @@ void SelectScene::Update()
 		m_selectUI->MoveCoins(m_useCoins);
 
 		// 使用料を支払ったら遷移する
-		if (static_cast<int>(m_useCoins) == STAGE_CREATE_PRICE)
-		{
-			ChangeScene(SCENE::EDIT);
-		}
-		else
-		{
-			m_useCoins += COUNT_SPEED;
-		}
+		if (static_cast<int>(m_useCoins) == STAGE_CREATE_PRICE) { ChangeScene(SCENE::EDIT);	}
+		else { m_useCoins += COUNT_SPEED; }
 	}
 }
 
@@ -140,7 +135,6 @@ void SelectScene::Update()
 void SelectScene::Draw()
 {
 	// 描画関連
-	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& _states = *GetSystemManager()->GetCommonStates();
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
@@ -148,16 +142,15 @@ void SelectScene::Draw()
 	SimpleMath::Matrix _view, _proj;
 
 	// 回転量を計算
-	float _rotValue = _timer * 0.5f;
+	float _rotValueX = sinf(_timer * 0.5f);
+	float _rotValueZ = cosf(_timer * 0.5f);
 	// 上下移動量を計算
-	float _verticalValue = sinf(_timer * 1.5f) * 1.5f;
+	float _sinValue = (sinf(_timer) + 1.0f) * 1.5f;
 
 	// ビュー行列
-	SimpleMath::Vector3 _eye(CAMERA_RADIUS * sinf(_rotValue),		// X:回転(ステージと逆回転)
-							 CAMERA_POS_Y + _verticalValue,			// Y:移動(上下)
-							 CAMERA_RADIUS * cosf(_rotValue));		// Z:回転(ステージと逆回転)
+	SimpleMath::Vector3 _eye(CAMERA_RADIUS * _rotValueX,
+		CAMERA_POS_Y + _sinValue, CAMERA_RADIUS * _rotValueZ);
 	SimpleMath::Vector3 _target(0.0f, m_targetY, 0.0f);
-
 	_view = SimpleMath::Matrix::CreateLookAt(_eye, _target, SimpleMath::Vector3::Up);
 
 	// プロジェクション行列
@@ -169,13 +162,12 @@ void SelectScene::Draw()
 			SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f }) : void();
 
 	// スカイドームの描画
-	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(_timer * SKY_ROT_SPEED);
-	m_skyDomeModel->Draw(_context, _states, skyMat, _view, _proj);
+	m_selectSky->Draw(_states, _view, _proj, _timer);
 
 	// 点滅させる
 	if (m_flashCount < MAX_FLASH * 0.5f)
 	{
-		m_fontObject->Render(_states, m_stageNum, _rotValue, _view, _proj);
+		m_fontObject->Render(_states, m_stageNum, _timer * 0.5f, _view, _proj);
 	}
 
 	// UIの描画
@@ -212,37 +204,11 @@ void SelectScene::CreateWindowDependentResources()
 	m_fontObject = std::make_unique<FontObject>(GetFactoryManager(),m_safeStages, MAX_STAGE_NUM);
 
 	// スカイドームモデルを作成する
-	auto _mf = GetFactoryManager();
-	_mf->BuildModelFactory();
+	m_selectSky = std::make_unique<SelectSky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
 
-	m_skyDomeModel = // スカイドームモデルを作成
-	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/ShineSky.cmo");
-
-	_mf->LeaveModelFactory();
-	m_skyDomeModel->UpdateEffects([](IEffect* effect)
-		{
-			auto _lights = dynamic_cast<IEffectLights*>(effect);
-			if (_lights)
-			{
-				_lights->SetLightEnabled(0, false);
-				_lights->SetLightEnabled(1, false);
-				_lights->SetLightEnabled(2, false);
-			}
-			// 自己発光する
-			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (_basicEffect)
-			{
-				_basicEffect->SetEmissiveColor(Colors::White);
-			}
-		}
-	);
-
-	// ブロックの作成を裏で処理
-	{
-		std::lock_guard<std::mutex>_guard(m_mutex);
-
-		m_loadTask = std::async(std::launch::async, [&]() { CreateStages(); });
-	}
+	// 先に描画対象を作成し、他を裏で処理
+	CreateFirstStage();
+	m_loadTask = std::async(std::launch::async, [&]() { CreateStages(); });
 }
 
 // シーン変数初期化関数
@@ -257,7 +223,7 @@ void SelectScene::SetSceneValues()
 	// コイン数をセット
 	m_selectUI->SetAllCoins(m_allCoins);
 
-	// 使用コイン数をリセット
+	// 使用コイン数をリセット(floatなのはコインが減る演出用)
 	m_useCoins = 0.0f;
 
 	// 開始コイン数を保存
@@ -270,9 +236,6 @@ void SelectScene::SetSceneValues()
 // ステージのロード
 void SelectScene::CreateStages()
 {
-	// 選択中のステージを先に作成
-	CreateFirstStage();
-
 	// ファクトリマネージャ
 	auto _fm = GetFactoryManager();
 	_fm->BuildModelFactory();
@@ -336,7 +299,7 @@ void SelectScene::CreateFirstStage()
 void SelectScene::ChangeStageNumber()
 {
 	// 切り替え可能なタイミングはここで変更
-	if (m_targetY >= UP_VALUE * 0.25f) return;
+	if (m_targetY >= UP_VALUE * UP_SPAN) return;
 
 	// インプットの更新
 	auto _input = Keyboard::Get().GetState();
@@ -349,7 +312,7 @@ void SelectScene::ChangeStageNumber()
 		// 選択音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 
-		m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, 0.8f);
+		m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, UP_SPEED);
 		m_stageNum++;
 		m_flashCount = 0.0f;
 	}
@@ -361,7 +324,7 @@ void SelectScene::ChangeStageNumber()
 		// 選択音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 
-		m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, 0.8f);
+		m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, UP_SPEED);
 		m_stageNum--;
 		m_flashCount = 0.0f;
 	}
@@ -371,30 +334,11 @@ void SelectScene::ChangeStageNumber()
 void SelectScene::DirectionSelectChange()
 {
 	// 動きが終わっていなければ見下げる
-	if (m_targetY > 1.0f)
-	{
-		m_targetY -= DOWN_SPEED;
-	}
-	else if (m_targetY > 0.0f)
-	{
-		m_targetY -= DOWN_SPEED * 0.5f;
-	}
-	else
-	{
-		m_targetY = 0.0f;
-	}
+	if (m_targetY > 1.0f) {	m_targetY -= DOWN_SPEED; }
+	else if (m_targetY > 0.0f) { m_targetY -= DOWN_SPEED * 0.5f; }
+	else { m_targetY = 0.0f; }
 
 	// フラッシュカウンタ
 	m_flashCount++;
 	m_flashCount = m_flashCount > MAX_FLASH * 0.75f ? 0.0f : m_flashCount;
-}
-
-/// <summary>
-/// コインセッター
-/// </summary>
-/// <param name="num">合計コイン数</param>
-/// <returns>なし</returns>
-void SelectScene::SetAllCoins(const int& num)
-{
-	m_allCoins = num;
 }

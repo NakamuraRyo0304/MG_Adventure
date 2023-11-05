@@ -34,19 +34,17 @@ void DrawSprite::MakeSpriteBatch()
 //  画像を登録する関数
 void DrawSprite::AddTextureData(const wchar_t* key, const wchar_t* path)
 {
-	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
-
 	// 画像の追加
 	m_textures.emplace(key, path);
 
-	for (std::map<const wchar_t*, const wchar_t*>::const_iterator _it = m_textures.begin(); _it != m_textures.end(); ++_it)
+	for (std::map<const wchar_t*, const wchar_t*>::const_iterator i = m_textures.begin(); i != m_textures.end(); ++i)
 	{
 		// 画像の登録
 		CreateDDSTextureFromFile(
-			_device,										// デバイスポインタ
-			_it->second,								// テクスチャのパス
-			nullptr,									// 特性は識別しない
-			m_SRV[_it->first].ReleaseAndGetAddressOf()	// 対応するキー番号に登録
+			DX::DeviceResources::GetInstance()->GetD3DDevice(),	// デバイスポインタ
+			i->second,											// テクスチャのパス
+			nullptr,											// 特性は識別しない
+			m_SRV[i->first].ReleaseAndGetAddressOf()			// 対応するキー番号に登録
 		);
 	}
 

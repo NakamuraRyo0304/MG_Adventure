@@ -353,13 +353,12 @@ void PlayScene::CreateWindowDependentResources()
 	m_playCamera->SetPosition(START_CAMERA_POS);
 
 	// モデルの作成
-	auto _mf = GetFactoryManager();
-	_mf->BuildModelFactory();
+	GetFactoryManager()->BuildModelFactory();
 
-	m_skyDomeModel = // スカイドームの作成
-	std::move(_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/ShineSky.cmo"));
-
-	_mf->LeaveModelFactory();
+	// スカイドームの作成
+	m_skyDomeModel =
+	std::move(GetFactoryManager()->VisitModelFactory()->GetCreateModel(L"Resources/Models/ShineSky.cmo"));
+	GetFactoryManager()->LeaveModelFactory();
 
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
@@ -646,7 +645,7 @@ void PlayScene::Judgement()
 
 		// プレイヤの判定範囲外は処理しない
 		// 引数（基準点、検索範囲、検索点）
-		if (!UserUtility::CheckPointInSphere(
+		if (not UserUtility::CheckPointInSphere(
 			m_player->GetPosition(), JUDGE_AREA, i.position)) continue;
 
 		// 判定を取る
@@ -739,7 +738,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	// 変更後のプレイヤのポジションを反映
 	m_player->SetPosition(_playerPos);
 
-	// ブロックの上に乗っていたら重力をなくす
+	// ブロックの上に乗っていたら着地判定
 	if (is_hitCol.GetHitFace() == Collider::BoxCollider::HIT_FACE::UP)
 	{
 		m_player->ResetGravity();

@@ -208,6 +208,7 @@
     <ClInclude Include="Game\ResultScene\Objects\ResultUI.h" />
     <ClInclude Include="Game\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\SelectScene\Objects\FontObject.h" />
+    <ClInclude Include="Game\SelectScene\Objects\SelectSky.h" />
     <ClInclude Include="Game\SelectScene\Objects\SelectUI.h" />
     <ClInclude Include="Game\SelectScene\SelectScene.h" />
     <ClInclude Include="Game\TitleScene\Objects\ITitleObject.h" />
@@ -262,6 +263,7 @@
     <ClCompile Include="Game\ResultScene\Objects\ResultUI.cpp" />
     <ClCompile Include="Game\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Game\SelectScene\Objects\FontObject.cpp" />
+    <ClCompile Include="Game\SelectScene\Objects\SelectSky.cpp" />
     <ClCompile Include="Game\SelectScene\Objects\SelectUI.cpp" />
     <ClCompile Include="Game\SelectScene\SelectScene.cpp" />
     <ClCompile Include="Game\TitleScene\Objects\ITitleObject.cpp" />

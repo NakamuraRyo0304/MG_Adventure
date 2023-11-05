@@ -149,6 +149,13 @@ private:
 	/// <returns>なし</returns>
 	void SetSceneValues() override;
 
+	/// <summary>
+	/// モデル作成を行う関数
+	/// </summary>
+	/// <param name="fm">ファクトリマネージャのポインタ</param>
+	/// <returns>なし</returns>
+	void CreateModels(std::shared_ptr<FactoryManager> fm);
+
 private:
 
 	/// <summary>

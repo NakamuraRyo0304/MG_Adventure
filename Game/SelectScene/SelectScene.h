@@ -14,6 +14,7 @@
 
 class Blocks;
 class FontObject;
+class SelectSky;
 class SelectUI;
 class SelectScene final : public IScene
 {
@@ -21,9 +22,6 @@ private:
 
 	// 点滅カウンタ
 	float m_flashCount;
-
-	// スカイドーム
-	std::unique_ptr<DirectX::Model> m_skyDomeModel;
 
 	// ステージ番号
 	int m_stageNum;
@@ -41,13 +39,15 @@ private:
 
 	// ブロックのローディング
 	std::future<void> m_loadTask;
-	std::mutex m_mutex;
 
 	// UI
 	std::unique_ptr<SelectUI> m_selectUI;
 
 	// ステージ番号
 	std::unique_ptr<FontObject> m_fontObject;
+
+	// スカイドーム
+	std::unique_ptr<SelectSky> m_selectSky;
 
 	// コイン使用演出
 	float m_useCoins;
@@ -69,12 +69,10 @@ private:
 	// カメラの回転半径
 	const float CAMERA_RADIUS = 4.0f;
 
-	// スカイドームの回転速度
-	const float SKY_ROT_SPEED = 2.0f;
-
-	// 見上げ値
+	// 視点の動作速度
 	const float UP_VALUE = 60.0f;
-	// 見下げ速度
+	const float UP_SPAN = 0.25f;
+	const float UP_SPEED = 0.8f;
 	const float DOWN_SPEED = 0.7f;
 
 	// ステージ制作価格
@@ -166,7 +164,7 @@ public:
 	// 合計コイン数の取得
 	const int& GetAllCoins() { return m_allCoins; }
 	// 合計コイン数の設定
-	void SetAllCoins(const int& num);
+	void SetAllCoins(const int& num) { m_allCoins = num; }
 };
 
 #endif // SELECTSCENE

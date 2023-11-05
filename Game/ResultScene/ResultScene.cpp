@@ -105,20 +105,8 @@ void ResultScene::Update()
 		// フェード中は処理しない
 		if (static_cast<int>(GetFadeValue()) != 0) return;
 
-		switch (m_selectingScene)
-		{
-		case RETRY:
-			ChangeScene(SCENE::PLAY);
-			break;
-		case SELECT:
-			ChangeScene(SCENE::SELECT);
-			break;
-		case TITLE:
-			ChangeScene(SCENE::TITLE);
-			break;
-		default:
-			break;
-		}
+		// シーン分岐
+		NextScene();
 
 		// 決定音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
@@ -181,23 +169,10 @@ void ResultScene::CreateWindowDependentResources()
 	// ブロックの作成
 	m_blocks = std::make_unique<Blocks>(GetFactoryManager());
 
-	// ファクトリマネージャ
-	auto _fm = GetFactoryManager();
-	_fm->BuildModelFactory();
-
-	// ファクトリーからモデルをもらう
-	auto _grass = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
-	auto _coin = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
-	auto _cloud = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
-	auto _gravity = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
-
-	_fm->LeaveModelFactory();
-
-	// モデルの受け渡し
-	m_blocks->CreateModels(std::move(_grass),	m_blocks->GRASS);
-	m_blocks->CreateModels(std::move(_coin),	m_blocks->COIN);
-	m_blocks->CreateModels(std::move(_cloud),	m_blocks->CLOWD);
-	m_blocks->CreateModels(std::move(_gravity), m_blocks->GRAVITY);
+	// モデルの作成
+	GetFactoryManager()->BuildModelFactory();
+	CreateModels(GetFactoryManager());
+	GetFactoryManager()->LeaveModelFactory();
 }
 
 // シーン変数初期化関数
@@ -211,6 +186,21 @@ void ResultScene::SetSceneValues()
 
 	// マップ読み込み
 	m_blocks->Initialize(m_stageNum);
+}
+
+// モデルの作成
+void ResultScene::CreateModels(std::shared_ptr<FactoryManager> fm)
+{
+	auto _grass = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
+	auto _coin = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
+	auto _cloud = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+	auto _gravity = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
+
+	// モデルの受け渡し
+	m_blocks->CreateModels(std::move(_grass), m_blocks->GRASS);
+	m_blocks->CreateModels(std::move(_coin), m_blocks->COIN);
+	m_blocks->CreateModels(std::move(_cloud), m_blocks->CLOWD);
+	m_blocks->CreateModels(std::move(_gravity), m_blocks->GRAVITY);
 }
 
 // 数字のアニメーション
@@ -242,4 +232,23 @@ bool ResultScene::AnimationValue()
 	}
 
 	return false;
+}
+
+// シーン切り替え
+void ResultScene::NextScene()
+{
+	switch (m_selectingScene)
+	{
+	case RETRY:
+		ChangeScene(SCENE::PLAY);
+		break;
+	case SELECT:
+		ChangeScene(SCENE::SELECT);
+		break;
+	case TITLE:
+		ChangeScene(SCENE::TITLE);
+		break;
+	default:
+		break;
+	}
 }

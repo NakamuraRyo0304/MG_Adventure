@@ -162,7 +162,7 @@ public:
 	// ライティング設定
 	void InitializeLighting(const DirectX::SimpleMath::Vector3& lightDir) { m_lightDirection = lightDir; }
 	// ポジションを取得
-	DirectX::SimpleMath::Vector3& GetPosition() { return m_parameter.position; }
+	const DirectX::SimpleMath::Vector3& GetPosition() { return m_parameter.position; }
 	// ポジションを設定
 	void SetPosition(const DirectX::SimpleMath::Vector3& position) { m_parameter.position = position; }
 	// 重力リセット

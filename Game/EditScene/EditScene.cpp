@@ -289,31 +289,9 @@ void EditScene::CreateWindowDependentResources()
 	GetSystemManager()->GetRayCast()->SetScreenSize(GetScreenSize().x, GetScreenSize().y);
 
 	// モデルを作成する
-	auto _mf = GetFactoryManager();
-	_mf->BuildModelFactory();
-
-	m_grassModel = // 草ブロック
-	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
-
-	m_coinModel = // コインブロック
-	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
-
-	m_cloudModel = // 雲ブロック
-	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
-
-	m_gravityModel = // 重力ブロック
-	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
-
-	m_playerModel = // プレイヤモデル
-	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/Bird.cmo");
-
-	m_noneModel = // 消しゴムモデル
-	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/Eraser.cmo");
-
-	m_skyDomeModel = // スカイドーム
-	_mf->VisitModelFactory()->GetCreateModel(L"Resources/Models/EditSky.cmo");
-
-	_mf->LeaveModelFactory();
+	GetFactoryManager()->BuildModelFactory();
+	CreateModels(GetFactoryManager());
+	GetFactoryManager()->LeaveModelFactory();
 
 	m_skyDomeModel->UpdateEffects([](IEffect* effect)
 		{
@@ -361,6 +339,31 @@ void EditScene::SetSceneValues()
 	// カメラの位置をマップの中心にする
 	SimpleMath::Vector2 _XZ = { m_mapLoader.MAP_COLUMN,m_mapLoader.MAP_RAW };
 	GetSystemManager()->GetCamera()->AddEyePosition(SimpleMath::Vector3{ _XZ.x / 2,4.0f,_XZ.y / 2 });
+}
+
+// モデルの作成
+void EditScene::CreateModels(std::shared_ptr<FactoryManager> fm)
+{
+	m_grassModel = // 草ブロック
+		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
+
+	m_coinModel = // コインブロック
+		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
+
+	m_cloudModel = // 雲ブロック
+		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+
+	m_gravityModel = // 重力ブロック
+		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
+
+	m_playerModel = // プレイヤモデル
+		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Bird.cmo");
+
+	m_noneModel = // 消しゴムモデル
+		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Eraser.cmo");
+
+	m_skyDomeModel = // スカイドーム
+		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/EditSky.cmo");
 }
 
 // マップの編集

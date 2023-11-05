@@ -263,6 +263,9 @@
     <Filter Include="Managers\SystemManager">
       <UniqueIdentifier>{7f1eb7c5-76c0-4700-81fe-b6cfd2ba3176}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\SelectScene\Objects\SelectSky">
+      <UniqueIdentifier>{dad7376a-06e4-41c2-8870-f549a95ca659}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -424,6 +427,9 @@
     <ClInclude Include="Libraries\FactoryManager\FactoryManager.h">
       <Filter>Managers\FactoryManager</Filter>
     </ClInclude>
+    <ClInclude Include="Game\SelectScene\Objects\SelectSky.h">
+      <Filter>Scenes\SelectScene\Objects\SelectSky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -566,6 +572,9 @@
     </ClCompile>
     <ClCompile Include="Libraries\FactoryManager\FactoryManager.cpp">
       <Filter>Managers\FactoryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\SelectScene\Objects\SelectSky.cpp">
+      <Filter>Scenes\SelectScene\Objects\SelectSky</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
