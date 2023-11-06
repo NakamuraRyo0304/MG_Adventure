@@ -66,7 +66,7 @@ private:
 private:
 
 	// 画像の中心位置
-	const float	IMAGE_CENTER = 128.0f;
+	const float	FONT_HEIGHT = 128.0f;
 
 	// 画像サイズ
 	const float IMAGE_RATE = 0.55f;

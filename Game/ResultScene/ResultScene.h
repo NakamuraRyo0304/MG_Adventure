@@ -118,6 +118,8 @@ public:
 
 	// クリアタイムの設定
 	void SetClearTime(const float& clearTime) { m_clearTime = clearTime; }
+	// マップ番号の取得
+	const int& GetStageNum() { return m_stageNum; }
 	// マップ番号の設定
 	void SetStageNum(const int& num) { m_stageNum = num; }
 	// コインの設定

@@ -304,19 +304,12 @@
   <ItemGroup>
     <Image Include="AppIcon.ico" />
     <Image Include="Resources\Textures\BLOCK\IconPack.dds" />
-    <Image Include="Resources\Textures\Clock.dds" />
     <Image Include="Resources\Textures\DeathEffect.dds" />
     <Image Include="Resources\Textures\EDITS\MouseCursor.dds" />
     <Image Include="Resources\Textures\EDITS\SavePack.dds" />
     <Image Include="Resources\Textures\EDITS\ToolBar.dds" />
     <Image Include="Resources\Textures\EDITS\ToolModes.dds" />
     <Image Include="Resources\Textures\EDITS\UnderInfo.dds" />
-    <Image Include="Resources\Textures\FONT\CLEAR.dds" />
-    <Image Include="Resources\Textures\FONT\COINS.dds" />
-    <Image Include="Resources\Textures\FONT\GETCOINS.dds" />
-    <Image Include="Resources\Textures\FONT\RETRY.dds" />
-    <Image Include="Resources\Textures\FONT\SELECT.dds" />
-    <Image Include="Resources\Textures\FONT\TITLE.dds" />
     <Image Include="Resources\Textures\Number.dds" />
     <Image Include="Resources\Textures\PlayerPoint.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\Adhesion.dds" />
@@ -327,8 +320,11 @@
     <Image Include="Resources\Textures\PLAY_HELP\Help.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\HelpBack.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds" />
-    <Image Include="Resources\Textures\ResultBack.dds" />
-    <Image Include="Resources\Textures\ResultFonts.dds" />
+    <Image Include="Resources\Textures\RESULT_INFO\CLEAR.dds" />
+    <Image Include="Resources\Textures\RESULT_INFO\GETCOINS.dds" />
+    <Image Include="Resources\Textures\RESULT_INFO\ResultBack.dds" />
+    <Image Include="Resources\Textures\RESULT_INFO\ResultFonts.dds" />
+    <Image Include="Resources\Textures\RESULT_INFO\ResultSelectPack.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\LeftArrow.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\OutFrame.dds" />
     <Image Include="Resources\Textures\SELECT_INFO\RightArrow.dds" />

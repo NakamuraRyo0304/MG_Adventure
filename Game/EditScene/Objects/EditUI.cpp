@@ -191,41 +191,41 @@ void EditUI::Render()
 		{
 			// アイコン　キー：座標：色：拡大率：中心位置：画像サイズ
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[0],
-				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { IMAGE_CENTER,IMAGE_CENTER }, m_saveRect[0]);
+				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[0]);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[0],
-				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { IMAGE_CENTER,IMAGE_CENTER }, m_saveRect[0]);
+				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[0]);
 		}
 
 		// セーブアイコン
 		if (is_saveFlag)
 		{
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[1],
-				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { IMAGE_CENTER,IMAGE_CENTER }, m_saveRect[1]);
+				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[1]);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[1],
-				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { IMAGE_CENTER,IMAGE_CENTER }, m_saveRect[1]);
+				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[1]);
 		}
 
 		// カメラアイコン
 		if (is_cameraFlag)
 		{
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[2],
-				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { IMAGE_CENTER,IMAGE_CENTER }, m_saveRect[2]);
+				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[2]);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[2],
-				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { IMAGE_CENTER,IMAGE_CENTER }, m_saveRect[3]);
+				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[3]);
 		}
 
 		// セレクトに戻るボタン
 		m_system->GetDrawSprite()->DrawTexture(L"ModePack", m_backTexPos,
-			SimpleMath::Vector4::One, IMAGE_RATE * _rate, { IMAGE_CENTER,IMAGE_CENTER }, m_modeRect[2]);
+			SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_modeRect[2]);
 
 		// ブロックのアイコン
 		DrawIcon(_rate);
@@ -233,7 +233,7 @@ void EditUI::Render()
 
 	// ツールバーボタン表示
 	m_system->GetDrawSprite()->DrawTexture(L"ModePack", m_toolButtonTexPos,
-		SimpleMath::Vector4::One, IMAGE_RATE * _rate, { IMAGE_CENTER,IMAGE_CENTER }, m_modeRect[is_toolFlag ? 0 : 1]);
+		SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_modeRect[is_toolFlag ? 0 : 1]);
 
 	// 操作説明表示
 	SimpleMath::Vector2 _doRate = _rate * 0.5f;
@@ -259,7 +259,7 @@ void EditUI::DrawIcon(const SimpleMath::Vector2& imageScale)
 				SimpleMath::Vector2{ m_imagePos[i].x,m_imagePos[i].y + IMAGE_RATE },
 				SimpleMath::Vector4::One,
 				IMAGE_RATE * imageScale,
-				SimpleMath::Vector2{ IMAGE_CENTER },
+				SimpleMath::Vector2{ FONT_HEIGHT },
 				m_texRect[i]
 			);
 		}
@@ -270,7 +270,7 @@ void EditUI::DrawIcon(const SimpleMath::Vector2& imageScale)
 				m_imagePos[i],
 				{ 1.0f,1.0f,1.0f,HALF },
 				(HALF + m_boxHover[i]) * imageScale,
-				SimpleMath::Vector2{ IMAGE_CENTER },
+				SimpleMath::Vector2{ FONT_HEIGHT },
 				m_texRect[i]
 			);
 		}

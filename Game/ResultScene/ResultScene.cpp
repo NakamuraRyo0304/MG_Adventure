@@ -78,7 +78,7 @@ void ResultScene::Update()
 		if (GetFadeValue() >= 0.7f) return;
 
 		m_selectingScene++;
-		m_selectingScene = m_selectingScene ==  3 ? RETRY : m_selectingScene;
+		m_selectingScene = m_selectingScene ==  3 ? SELECTION::NEXT : m_selectingScene;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 	}
 	else if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Left) ||
@@ -88,7 +88,7 @@ void ResultScene::Update()
 		if (static_cast<int>(GetFadeValue()) != 0) return;
 
 		m_selectingScene--;
-		m_selectingScene = m_selectingScene == -1 ? TITLE : m_selectingScene;
+		m_selectingScene = m_selectingScene == -1 ? SELECTION::SELECT : m_selectingScene;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 	}
 
@@ -239,14 +239,15 @@ void ResultScene::NextScene()
 {
 	switch (m_selectingScene)
 	{
-	case RETRY:
+	case SELECTION::NEXT:
+		m_stageNum < 5 ? m_stageNum++ : 0;
 		ChangeScene(SCENE::PLAY);
 		break;
-	case SELECT:
-		ChangeScene(SCENE::SELECT);
+	case SELECTION::RETRY:
+		ChangeScene(SCENE::PLAY);
 		break;
-	case TITLE:
-		ChangeScene(SCENE::TITLE);
+	case SELECTION::SELECT:
+		ChangeScene(SCENE::SELECT);
 		break;
 	default:
 		break;

@@ -9,8 +9,10 @@
 #ifndef RESULTUI
 #define RESULTUI
 
+#include "Libraries/SystemDatas/DrawSprite.h"
+
  // モード
-enum { RETRY, SELECT, TITLE };
+enum SELECTION{ NEXT, RETRY, SELECT, LENGTH };
 
 class SystemManager;
 class ResultUI
@@ -23,7 +25,7 @@ private:
 	DirectX::SimpleMath::Vector2 m_windowSize;
 
 	// セレクト
-	int m_selectingScene;
+	SELECTION m_selectingScene;
 
 	// コインの枚数
 	int m_coinNum;
@@ -38,34 +40,28 @@ private:
 
 	// 描画で使う情報
 	struct TexInfo { DirectX::SimpleMath::Vector2 pos; float alpha; float scale; };
-	TexInfo m_retryInfo;
-	TexInfo m_selectInfo;
-	TexInfo m_titleInfo;
+	TexInfo m_texInfo[LENGTH];
+	RECT m_rect[LENGTH];
 
 private:
 	// 画像拡大率
 	const float IMAGE_RATE = 0.55f;
 	const float DEFAULT_RATE = 1.0f;
 	// 画像の中心位置
-	const float	IMAGE_CENTER = 128.0f;
+	const float	FONT_HEIGHT = 128.0f;
 	const float FONT_WIDTH = 512.0f;
 
 	// 画像の１スプライトサイズ
 	const float NUM_SIZE = 100.0f;
 
-	// フォントサイズ
-	const float DEFAULT_FONT_SCALE = 2.0f;
-	const float SELECT_FONT_SCALE = 2.1f;
-
-	// フォント透明度
+	// フォントサイズ/透明度
+	const float DEFAULT_FONT_SCALE = 1.85f;
 	const float DEFAULT_FONT_ALPHA = 0.5f;
+	const float SELECT_FONT_SCALE = 2.1f;
 	const float SELECT_FONT_ALPHA = 1.0f;
 
 	// フォントの選択変更時の動き
 	const float SELECT_CHANGE_FADE = 0.45f;
-
-	// 数字のデフォルトサイズ
-	const DirectX::SimpleMath::Vector2 DRAW_NUM_SIZE = SimpleMath::Vector2{ 1.0f };
 
 	// フルスクサイズ
 	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
@@ -128,29 +124,17 @@ private:
 	void DrawFonts(const DirectX::SimpleMath::Vector2& windowRate);
 
 	/// <summary>
-	/// リトライを選択中のテクスチャの状態
+	/// テクスチャの状態を変更
 	/// </summary>
-	/// <param name="引数無し"></param>
+	/// <param name="which">選択項目</param>
 	/// <returns>なし</returns>
-	void CaseRetry();
-	/// <summary>
-	/// セレクトを選択中のテクスチャの状態
-	/// </summary>
-	/// <param name="引数無し"></param>
-	/// <returns>なし</returns>
-	void CaseSelect();
-	/// <summary>
-	/// タイトルを選択中のテクスチャの状態
-	/// </summary>
-	/// <param name="引数無し"></param>
-	/// <returns>なし</returns>
-	void CaseTitle();
+	void UpdateTexture(SELECTION which);
 
 public:
 	/// 合計コイン数の設定
 	void SetCoins(const int& coinNum);
 	// 選択中の項目の設定
-	void SetSelecting(const int& select) { m_selectingScene = select; }
+	void SetSelecting(const int& select) { m_selectingScene = SELECTION(select); }
 };
 
 #endif // RESULTUI

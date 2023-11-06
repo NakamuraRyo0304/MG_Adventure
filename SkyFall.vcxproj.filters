@@ -77,9 +77,6 @@
     <Filter Include="Common\ParticleUtility">
       <UniqueIdentifier>{834a3b38-b4e4-4766-bd4c-ab0f49ad1554}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Textures\FONT">
-      <UniqueIdentifier>{509dc2a6-c44e-4a81-8770-7f94b47d8711}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Models\Player">
       <UniqueIdentifier>{09819858-83fe-49c8-8e09-d95745ece799}</UniqueIdentifier>
     </Filter>
@@ -103,9 +100,6 @@
     </Filter>
     <Filter Include="Scenes\TitleScene\Objects\TitleUI">
       <UniqueIdentifier>{b0719780-d5f7-4350-a413-edae7b8899c7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Textures\ResultScene">
-      <UniqueIdentifier>{ce8e8b18-cb64-4c58-9c1a-17335cc519ae}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Textures\Common">
       <UniqueIdentifier>{4126d17c-f051-4be2-ac0c-55f8ae1682ff}</UniqueIdentifier>
@@ -265,6 +259,9 @@
     </Filter>
     <Filter Include="Scenes\SelectScene\Objects\SelectSky">
       <UniqueIdentifier>{dad7376a-06e4-41c2-8870-f549a95ca659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures\RESULT_INFO">
+      <UniqueIdentifier>{ce8e8b18-cb64-4c58-9c1a-17335cc519ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -586,18 +583,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Textures\FONT\SELECT.dds">
-      <Filter>Resources\Textures\FONT</Filter>
-    </Image>
-    <Image Include="Resources\Textures\FONT\TITLE.dds">
-      <Filter>Resources\Textures\FONT</Filter>
-    </Image>
-    <Image Include="Resources\Textures\FONT\RETRY.dds">
-      <Filter>Resources\Textures\FONT</Filter>
-    </Image>
-    <Image Include="Resources\Textures\FONT\COINS.dds">
-      <Filter>Resources\Textures\FONT</Filter>
-    </Image>
     <Image Include="Resources\Textures\TITLE_BUTTON\Exit.dds">
       <Filter>Resources\Textures\TITLE_BUTTON</Filter>
     </Image>
@@ -606,12 +591,6 @@
     </Image>
     <Image Include="Resources\Textures\TITLE_BUTTON\UnderLine.dds">
       <Filter>Resources\Textures\TITLE_BUTTON</Filter>
-    </Image>
-    <Image Include="Resources\Textures\Clock.dds">
-      <Filter>Resources\Textures\ResultScene</Filter>
-    </Image>
-    <Image Include="Resources\Textures\ResultBack.dds">
-      <Filter>Resources\Textures\ResultScene</Filter>
     </Image>
     <Image Include="Resources\Textures\Number.dds">
       <Filter>Resources\Textures\Common</Filter>
@@ -633,15 +612,6 @@
     </Image>
     <Image Include="Resources\Textures\SELECT_INFO\TotalCoins.dds">
       <Filter>Resources\Textures\SELECT_INFO</Filter>
-    </Image>
-    <Image Include="Resources\Textures\FONT\CLEAR.dds">
-      <Filter>Resources\Textures\ResultScene</Filter>
-    </Image>
-    <Image Include="Resources\Textures\FONT\GETCOINS.dds">
-      <Filter>Resources\Textures\ResultScene</Filter>
-    </Image>
-    <Image Include="Resources\Textures\ResultFonts.dds">
-      <Filter>Resources\Textures\ResultScene</Filter>
     </Image>
     <Image Include="Resources\Textures\UnderFont.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
@@ -708,6 +678,21 @@
     </Image>
     <Image Include="Resources\Textures\TRANSITION\Cloud1Rule.png">
       <Filter>Resources\Shaders\Transition\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\RESULT_INFO\ResultFonts.dds">
+      <Filter>Resources\Textures\RESULT_INFO</Filter>
+    </Image>
+    <Image Include="Resources\Textures\RESULT_INFO\ResultSelectPack.dds">
+      <Filter>Resources\Textures\RESULT_INFO</Filter>
+    </Image>
+    <Image Include="Resources\Textures\RESULT_INFO\CLEAR.dds">
+      <Filter>Resources\Textures\RESULT_INFO</Filter>
+    </Image>
+    <Image Include="Resources\Textures\RESULT_INFO\GETCOINS.dds">
+      <Filter>Resources\Textures\RESULT_INFO</Filter>
+    </Image>
+    <Image Include="Resources\Textures\RESULT_INFO\ResultBack.dds">
+      <Filter>Resources\Textures\RESULT_INFO</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

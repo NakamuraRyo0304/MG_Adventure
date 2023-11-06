@@ -241,6 +241,10 @@ void GameMain::DeleteScene()
 			// ステージ番号を保持
 			m_num = CastSceneType<SelectScene>(m_nowScene)->GetStageNum();
 		}
+		else if(m_nextScene != m_prevScene && m_prevScene == SCENE::RESULT)
+		{
+			m_num = CastSceneType<ResultScene>(m_nowScene)->GetStageNum();
+		}
 		break;
 	case SCENE::RESULT:
 		if (CastSceneType<ResultScene>(m_nowScene) == nullptr)

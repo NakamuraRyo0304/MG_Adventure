@@ -67,7 +67,7 @@ public:
 	/// <returns>‚È‚µ</returns>
 	void DrawTexture(const wchar_t* key, DirectX::SimpleMath::Vector2 pos,
 						DirectX::SimpleMath::Vector4 color, DirectX::SimpleMath::Vector2 rate,
-						DirectX::SimpleMath::Vector2 origin, RECT_U rect = RECT_U());
+						DirectX::SimpleMath::Vector2 origin, RECT rect = RECT_U());
 
 
 	/// <summary>

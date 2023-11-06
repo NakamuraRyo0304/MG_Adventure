@@ -5,7 +5,6 @@
  *  @Author NakamuraRyo
  */
 
-
 #include "pch.h"
 
  // システムマネージャ
@@ -18,14 +17,13 @@
 
 // コンストラクタ
 ResultUI::ResultUI()
-	: m_selectingScene{ RETRY }	// 現在選択中のシーン
+	: m_selectingScene{ NEXT }	// 現在選択中のシーン
 	, m_oneCoins{}				//  1の位のコイン数
 	, m_tenCoins{}				// 10の位のコイン数
 	, m_oneTime{}				//  1の位のクリアタイム
 	, m_tenTime{}				// 10の位のクリアタイム
-	, m_retryInfo{}				// リトライフォントの情報
-	, m_selectInfo{}			// セレクトフォントの情報
-	, m_titleInfo{}				// タイトルフォントの情報
+	, m_texInfo{}				// フォントの情報
+	, m_rect{}					// 切り取り位置
 	, m_coinNum{ 0 }			// コインの枚数
 {
 }
@@ -43,20 +41,20 @@ void ResultUI::Create(std::shared_ptr<SystemManager> system, const SimpleMath::V
 	m_windowSize = windowSize;
 
 	// 画像を登録
-	m_system->GetDrawSprite()->AddTextureData(L"Number", L"Resources/Textures/Number.dds");
-	m_system->GetDrawSprite()->AddTextureData(L"RFont",  L"Resources/Textures/ResultFonts.dds");
-	m_system->GetDrawSprite()->AddTextureData(L"BLIND",  L"Resources/Textures/ResultBack.dds");
-	m_system->GetDrawSprite()->AddTextureData(L"RETRY",  L"Resources/Textures/FONT/RETRY.dds");
-	m_system->GetDrawSprite()->AddTextureData(L"SELECT", L"Resources/Textures/FONT/SELECT.dds");
-	m_system->GetDrawSprite()->AddTextureData(L"TITLE",  L"Resources/Textures/FONT/TITLE.dds");
-
-	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
+	m_system->GetDrawSprite()->AddTextureData(L"Number",L"Resources/Textures/Number.dds");
+	m_system->GetDrawSprite()->AddTextureData(L"RFont", L"Resources/Textures/RESULT_INFO/ResultFonts.dds");
+	m_system->GetDrawSprite()->AddTextureData(L"BLIND", L"Resources/Textures/RESULT_INFO/ResultBack.dds");
+	m_system->GetDrawSprite()->AddTextureData(L"PACK",  L"Resources/Textures/RESULT_INFO/ResultSelectPack.dds");
 
 	// 文字の座標の初期化
 	float _commonY = FULL_SCREEN_SIZE.y - NUM_SIZE * 2;
-	m_retryInfo.pos  = SimpleMath::Vector2{ FONT_WIDTH / 2,					 _commonY };
-	m_selectInfo.pos = SimpleMath::Vector2{ m_retryInfo.pos.x  + FONT_WIDTH, _commonY };
-	m_titleInfo.pos  = SimpleMath::Vector2{ m_selectInfo.pos.x + FONT_WIDTH, _commonY };
+	m_texInfo[NEXT].pos = SimpleMath::Vector2{FONT_WIDTH * 0.9f, _commonY};
+	m_texInfo[RETRY].pos = SimpleMath::Vector2{ m_texInfo[NEXT].pos.x + FONT_WIDTH, _commonY};
+	m_texInfo[SELECT].pos = SimpleMath::Vector2{ m_texInfo[RETRY].pos.x + FONT_WIDTH, _commonY};
+	// 画像の切り取り位置
+	m_rect[NEXT] = {0L,0L,512L, 128L};
+	m_rect[RETRY] = {0L,128L,512L, 256L};
+	m_rect[SELECT] = {0L,256L,512L, 384L};
 }
 
 // 更新処理
@@ -67,20 +65,7 @@ void ResultUI::Update(const int& clearTime)
 	m_tenTime = clearTime / 10 % 10;
 
 	// アルファ値とスケールの変更
-	switch (m_selectingScene)
-	{
-	case RETRY:
-		CaseRetry();
-		break;
-	case SELECT:
-		CaseSelect();
-		break;
-	case TITLE:
-		CaseTitle();
-		break;
-	default:
-		break;
-	}
+	UpdateTexture(m_selectingScene);
 }
 
 // 描画処理
@@ -93,12 +78,12 @@ void ResultUI::Render(const float& fadeValue)
 	DrawLayout(_rate);
 
 	// 数字を描画
-	DrawNumber(DRAW_NUM_SIZE, _rate);
+	DrawNumber(SimpleMath::Vector2::One, _rate);
 
 	// フェード中は処理しない
 	if (fadeValue >= 0.7f) return;
 
-	// シーン選択文字(リトライ、セレクト、タイトル)
+	// シーン選択文字(ネクスト、リトライ、セレクト)
 	DrawFonts(_rate);
 }
 
@@ -134,7 +119,6 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 texScale, const SimpleMath::Vector
 		_tenRec
 	);
 
-	//-------------------------------------------------------------------------------------//
 	// コインの数
 	// 切り取り位置設定
 	_oneRec = { m_oneCoins * 100, 0,m_oneCoins * 100 + 100, 100 };
@@ -184,27 +168,36 @@ void ResultUI::DrawLayout(const SimpleMath::Vector2& windowRate)
 // フォントの描画
 void ResultUI::DrawFonts(const SimpleMath::Vector2& windowRate)
 {
-	m_system->GetDrawSprite()->DrawTexture(
-		L"RETRY",
-		m_retryInfo.pos * windowRate,
-		{ 1.0f, 1.0f, 1.0f, m_retryInfo.alpha },
-		IMAGE_RATE * windowRate * m_retryInfo.scale,
-		SimpleMath::Vector2::Zero
-	);
-	m_system->GetDrawSprite()->DrawTexture(
-		L"SELECT",
-		m_selectInfo.pos * windowRate,
-		{ 1.0f, 1.0f, 1.0f, m_selectInfo.alpha },
-		IMAGE_RATE * windowRate * m_selectInfo.scale,
-		SimpleMath::Vector2::Zero
-	);
-	m_system->GetDrawSprite()->DrawTexture(
-		L"TITLE",
-		m_titleInfo.pos * windowRate,
-		{ 1.0f, 1.0f, 1.0f, m_titleInfo.alpha },
-		IMAGE_RATE * windowRate * m_titleInfo.scale,
-		SimpleMath::Vector2::Zero
-	);
+	for (int i = 0; i < SELECTION::LENGTH; ++i)
+	{
+		m_system->GetDrawSprite()->DrawTexture(
+			L"PACK",
+			m_texInfo[i].pos * windowRate,
+			{ 1.0f, 1.0f, 1.0f, m_texInfo[i].alpha },
+			IMAGE_RATE * windowRate * m_texInfo[i].scale,
+			{ FONT_WIDTH / 2,FONT_HEIGHT / 2 },
+			m_rect[i]
+		);
+	}
+}
+
+// テクスチャの変更
+void ResultUI::UpdateTexture(SELECTION which)
+{
+	// 透明度とスケールの変更
+	for (int i = 0; i < SELECTION::LENGTH; ++i)
+	{
+		if (i == which)
+		{
+			m_texInfo[which].alpha = UserUtility::Lerp(m_texInfo[which].alpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
+			m_texInfo[which].scale = UserUtility::Lerp(m_texInfo[which].scale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
+		}
+		else
+		{
+			m_texInfo[i].alpha = DEFAULT_FONT_ALPHA;
+			m_texInfo[i].scale = DEFAULT_FONT_SCALE;
+		}
+	}
 }
 
 // 合計コイン数の設定
@@ -212,43 +205,4 @@ void ResultUI::SetCoins(const int& totalCoinNum)
 {
 	m_oneCoins = totalCoinNum % 10;
 	m_tenCoins = totalCoinNum / 10 % 10;
-}
-
-// リトライ選択時の値の遷移
-void ResultUI::CaseRetry()
-{
-	// 透明度
-	m_retryInfo.alpha = UserUtility::Lerp(m_retryInfo.alpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
-	m_selectInfo.alpha = DEFAULT_FONT_ALPHA;
-	m_titleInfo.alpha = DEFAULT_FONT_ALPHA;
-	// サイズ
-	m_retryInfo.scale = UserUtility::Lerp(m_retryInfo.scale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
-	m_selectInfo.scale = DEFAULT_FONT_SCALE;
-	m_titleInfo.scale = DEFAULT_FONT_SCALE;
-}
-
-// セレクト選択時の値の遷移
-void ResultUI::CaseSelect()
-{
-	// 透明度
-	m_retryInfo.alpha = DEFAULT_FONT_ALPHA;
-	m_selectInfo.alpha = UserUtility::Lerp(m_selectInfo.alpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
-	m_titleInfo.alpha = DEFAULT_FONT_ALPHA;
-	// サイズ
-	m_retryInfo.scale = DEFAULT_FONT_SCALE;
-	m_selectInfo.scale = UserUtility::Lerp(m_selectInfo.scale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
-	m_titleInfo.scale = DEFAULT_FONT_SCALE;
-}
-
-// タイトル選択時の値の遷移
-void ResultUI::CaseTitle()
-{
-	// 透明度
-	m_retryInfo.alpha = DEFAULT_FONT_ALPHA;
-	m_selectInfo.alpha = DEFAULT_FONT_ALPHA;
-	m_titleInfo.alpha = UserUtility::Lerp(m_titleInfo.alpha, SELECT_FONT_ALPHA, SELECT_CHANGE_FADE);
-	// サイズ
-	m_retryInfo.scale = DEFAULT_FONT_SCALE;
-	m_selectInfo.scale = DEFAULT_FONT_SCALE;
-	m_titleInfo.scale = UserUtility::Lerp(m_titleInfo.scale, SELECT_FONT_SCALE, SELECT_CHANGE_FADE);
 }
