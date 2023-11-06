@@ -122,19 +122,12 @@ void Player::Update(bool lookFlag)
 
 	// ‘OŒãˆÚ“®‚ð‚·‚é
 	SimpleMath::Vector3 _moveDirection(0.0f, 0.0f, 0.0f);
-	_moveDirection.z = _key.W ? -m_parameter.accelerate : _key.S ? m_parameter.accelerate / 2 : 0.0f;
+	_moveDirection.z = _key.W ? -m_parameter.accelerate : _key.S ? m_parameter.accelerate * 0.5f: 0.0f;
 	_moveDirection = SimpleMath::Vector3::Transform(_moveDirection, m_parameter.rotate);
 	m_parameter.velocity += _moveDirection;
 
 	// ‹r‚Ì“®‚«
-	if (_key.W || _key.A || _key.S || _key.D)
-	{
-		m_footMove++;
-	}
-	else
-	{
-		m_footMove = 0.0f;
-	}
+	(_key.W || _key.A || _key.S || _key.D) ? m_footMove++ : m_footMove = 0.0f;
 
 	// “ª‚à“®‚©‚·
 	m_headMove = m_footMove;

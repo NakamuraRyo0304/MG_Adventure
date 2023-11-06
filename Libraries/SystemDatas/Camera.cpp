@@ -34,6 +34,7 @@ Camera::Camera()
 	, m_view{}					// ビュー行列
 	, m_projection{}			// プロジェクション行列
 	, m_rotateMatrix{}			// 回転量
+	, m_quaternion{}			// クォータニオン
 	, is_allowMode{ false }		// カメラの視点移動フラグ(十字操作)
 	, is_eagleMode{ false }		// カメラの視点移動フラグ(マウス操作)
 {
@@ -200,6 +201,7 @@ void Camera::CalculateViewMatrix()
 	// デフォルトの初期位置
 	m_position = _eye;
 	m_target = _target;
+	m_quaternion = SimpleMath::Quaternion::CreateFromYawPitchRoll(-m_angle.y, m_angle.x, 0.0f);
 	m_view = SimpleMath::Matrix::CreateLookAt(_eye + m_addPos, _target + m_addPos, _up);
 
 	// 上下回転のみ制限

@@ -52,6 +52,9 @@ private: //---------------------------------------------------------------------
 	// カメラの座標・加算用座標・注視点
 	DirectX::SimpleMath::Vector3 m_position, m_addPos, m_target;
 
+	// カメラのクォータニオン
+	DirectX::SimpleMath::Quaternion m_quaternion;
+
 	// 視点移動モード
 	bool is_eagleMode, is_allowMode;
 
@@ -130,6 +133,13 @@ public:
 	/// <param name="引数無し"></param>
 	/// <returns>注視点</returns>
 	const DirectX::SimpleMath::Vector3& GetTarget() { return m_target; }
+
+	/// <summary>
+	/// カメラのクォータニオンを取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	const DirectX::SimpleMath::Quaternion& GetYawPitchRoll() { return m_quaternion;	}
 
 	/// <summary>
 	/// 射影行列を作成
