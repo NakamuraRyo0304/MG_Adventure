@@ -40,6 +40,7 @@ EditScene::EditScene()
 	, m_skyDomeModel{ nullptr }					// モデル＿スカイドーム
 	, m_cursorPos{ SimpleMath::Vector3::Zero }	// カーソルの位置
 	, m_history{}								// ログ管理
+	, m_XZCheck{}								// XZのブロックの位置を求める
 	, is_hitCol{}								// 立方体当たり判定
 {
 	ShowCursor(false);
@@ -189,7 +190,7 @@ void EditScene::Draw()
 
 		if (m_mapObj[i].hit) // 選択中のマスにオブジェクトを描画
 		{
-			SwitchDraw(m_nowState, _context, _states, _boxMat, _view, _projection);
+			SwitchDraw(m_nowState, _context, _states, _rotateY * _boxMat, _view, _projection);
 		}
 		else				 // 該当オブジェクトの描画
 		{
@@ -222,18 +223,13 @@ void EditScene::Draw()
 void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	CommonStates& states,
 	SimpleMath::Matrix world, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
-	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
-
-	// 行列計算
-	SimpleMath::Matrix _rotateY = SimpleMath::Matrix::CreateRotationY(_timer);
-
 	switch (objNum)
 	{
 	case MAPSTATE::GRASS:	// 草
 		m_grassModel->Draw(context, states, world, view, proj);
 		break;
 	case MAPSTATE::COIN:	// コイン
-		m_coinModel->Draw(context, states, _rotateY * world, view, proj);
+		m_coinModel->Draw(context, states, world, view, proj);
 		break;
 	case MAPSTATE::CLOUD:	// 雲
 		m_cloudModel->Draw(context, states, world, view, proj);
@@ -242,7 +238,7 @@ void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	Comm
 		m_gravityModel->Draw(context, states, world, view, proj);
 		break;
 	case MAPSTATE::PLAYER:	// プレイヤー
-		m_playerModel->Draw(context, states, _rotateY * world, view, proj);
+		m_playerModel->Draw(context, states, world, view, proj);
 		break;
 	default:
 		break;
@@ -339,6 +335,9 @@ void EditScene::SetSceneValues()
 	// カメラの位置をマップの中心にする
 	SimpleMath::Vector2 _XZ = { m_mapLoader.MAP_COLUMN,m_mapLoader.MAP_RAW };
 	GetSystemManager()->GetCamera()->AddEyePosition(SimpleMath::Vector3{ _XZ.x / 2,4.0f,_XZ.y / 2 });
+
+	// XZ保存変数を初期化
+	m_XZCheck = SimpleMath::Vector3::Zero;
 }
 
 // モデルの作成
@@ -364,6 +363,7 @@ void EditScene::CreateModels(std::shared_ptr<FactoryManager> fm)
 
 	m_skyDomeModel = // スカイドーム
 		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/EditSky.cmo");
+
 }
 
 // マップの編集
@@ -381,6 +381,9 @@ void EditScene::EditMap()
 		static_cast<float>((_mouse.scrollWheelValue) / WHEEL_SPAWN),// 終了地点
 		CURSOR_MOVE_SPEED											// 速度
 	);
+
+	// 選択行を保存
+	m_XZCheck = m_cursorPos;
 
 	// 制限をつける
 	m_cursorPos.y = UserUtility::Clamp(m_cursorPos.y, CURSOR_MIN, CURSOR_MAX);

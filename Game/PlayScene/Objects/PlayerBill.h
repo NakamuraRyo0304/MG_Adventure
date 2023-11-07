@@ -10,6 +10,7 @@
 #define PLAYERBILL
 
 class ParticleUtility;
+class FactoryManager;
 class PlayerBill
 {
 public:
@@ -34,6 +35,9 @@ private:
 
 	// テクスチャハンドル
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
+
+	// ファクトリマネージャ
+	std::shared_ptr<FactoryManager> m_factory;
 
 	// インプットレイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
@@ -65,7 +69,7 @@ public:
 	// インプットレイアウトの設定
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
-	PlayerBill();
+	PlayerBill(std::shared_ptr<FactoryManager>factory);
 	~PlayerBill();
 
 	/// <summary>
@@ -118,7 +122,7 @@ private:
 	/// </summary>
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
-	void CreateConstBuffer(ID3D11Device1*& device);
+	void CreateConstBuffer();
 };
 
 #endif // PLAYERBILL

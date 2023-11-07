@@ -52,7 +52,7 @@ private:
 	const float FONT_WIDTH = 512.0f;
 
 	// 画像の１スプライトサイズ
-	const float NUM_SIZE = 100.0f;
+	const int NUM_SIZE = 100;
 
 	// フォントサイズ/透明度
 	const float DEFAULT_FONT_SCALE = 1.85f;
@@ -62,6 +62,7 @@ private:
 
 	// フォントの選択変更時の動き
 	const float SELECT_CHANGE_FADE = 0.45f;
+	const float NO_SELECT_TIME = 0.2f;
 
 	// フルスクサイズ
 	const DirectX::SimpleMath::Vector2 FULL_SCREEN_SIZE = { 1920.0f,1080.0f };
@@ -88,9 +89,9 @@ public:
 	/// <summary>
 	/// 描画処理
 	/// </summary>
-	/// <param name = "fadeValue">フェードの値</param>
+	/// <param name = "drawSelect">セレクトを描画するフラグ</param>
 	/// <returns>なし</returns>
-	void Render(const float& fadeValue);
+	void Render(const bool& drawSelect);
 
 	/// <summary>
 	/// 終了処理

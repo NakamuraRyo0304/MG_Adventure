@@ -59,56 +59,8 @@ void Blocks::Initialize(int stageNum)
 	// メモリの解放
 	m_mapLoad->ReleaseMemory();
 
-	// 座標補正
-	for (int i = 0; i < m_mapObj.size(); i++)
-	{
-		// インデックス番号の格納
-		m_mapObj[i].index = i;
-
-		// ブロックがないときは処理しない
-		if (m_mapObj[i].id == MAPSTATE::NONE) continue;
-
-		// マップの座標設定
-		m_mapObj[i].position.x -= static_cast<float>(m_mapLoad->MAP_COLUMN) / 2 * COMMON_SIZE;
-		m_mapObj[i].position.y += static_cast<float>(COMMON_LOW);
-		m_mapObj[i].position.z -= static_cast<float>(m_mapLoad->MAP_COLUMN) / 2 * COMMON_SIZE;
-
-		// コインの枚数のカウント
-		if (m_mapObj[i].id == MAPSTATE::COIN)
-		{
-			m_maxCoins++;
-		}
-		// 雲フラグ登録
-		if (m_mapObj[i].id == MAPSTATE::CLOUD)
-		{
-			// ステータス登録
-			m_cloudState[i].moveFlag = false;
-
-			// 始発点を保存
-			m_cloudState[i].initPosition = m_mapObj[i].position;
-
-			// 終着点を保存
-			m_cloudState[i].endPosition = SimpleMath::Vector3
-			{
-				m_mapObj[i].position.x,
-				m_mapObj[i].position.y + COMMON_SIZE + CLOUD_SIZE,
-				m_mapObj[i].position.z
-			};
-		}
-		// プレイヤの座標を代入
-		if (m_mapObj[i].id == MAPSTATE::PLAYER)
-		{
-			m_playerPos = SimpleMath::Vector3
-			{
-				m_mapObj[i].position.x,
-				m_mapObj[i].position.y + COMMON_SIZE / 2,
-				m_mapObj[i].position.z
-			};
-
-			// 代入後に該当マスをなしに変える(判定除去)
-			m_mapObj[i].id = MAPSTATE::NONE;
-		}
-	}
+	// 座標を補正する
+	MapSwipe();
 
 	// コイン回収済みフラグをFalseにする
 	is_collectedFlag = false;
@@ -117,27 +69,36 @@ void Blocks::Initialize(int stageNum)
 
 	// ライティングのリセット
 	m_lighting = SimpleMath::Vector3::Zero;
+
+	// コンスタントバッファの作成
+	CreateConstBuffer();
 }
 
 // 更新処理
 void Blocks::Update()
 {
+	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
+
 	// 雲は上下移動する
-	for(int i = 0; i < m_mapObj.size();++i)
+	for (int i = 0; i < m_mapObj.size(); ++i)
 	{
 		if (m_mapObj[i].id == MAPSTATE::CLOUD)
 		{
 			// 触れているときは終点まで
-			if (m_cloudState[i].moveFlag)
-			{
-				// Y座標を終点まで動かす
-				m_mapObj[i].position.y = UserUtility::Lerp
-				(
-					m_mapObj[i].position.y,
-					m_cloudState[i].endPosition.y,
-					CLOUD_SPEED
-				);
-			}
+			if (not m_cloudState[i].moveFlag) continue;
+
+			// Y座標を終点まで動かす
+			m_mapObj[i].position.y = UserUtility::Lerp
+			(
+				m_mapObj[i].position.y,
+				m_cloudState[i].endPosition.y,
+				CLOUD_SPEED
+			);
+		}
+		// 重力ブロックの位置を上下させる
+		if (m_mapObj[i].id == MAPSTATE::GRAVITY)
+		{
+			m_mapObj[i].position.y += sinf(_timer) * 0.5f * GRAVITY_MOVE_Y;
 		}
 	}
 
@@ -146,6 +107,7 @@ void Blocks::Update()
 	{
 		is_collectedFlag = true;
 	}
+
 }
 
 // 描画関数
@@ -155,7 +117,7 @@ void Blocks::Render(CommonStates& states,SimpleMath::Matrix view, SimpleMath::Ma
 	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
 
 	// ワールド座標
-	SimpleMath::Matrix _world, _rotMat, _verticle;
+	SimpleMath::Matrix _world, _rotate, _verticle;
 
 	// ライティング設定
 	std::function<void(IEffect* effect)> _lightSetting;
@@ -169,7 +131,7 @@ void Blocks::Render(CommonStates& states,SimpleMath::Matrix view, SimpleMath::Ma
 		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
 		// 回転行列
-		_rotMat = SimpleMath::Matrix::CreateRotationY(timer);
+		_rotate = SimpleMath::Matrix::CreateRotationY(timer) * CLOUD_ROT_SPEED;
 
 		// ビュー行列からカメラの回転を取得
 		SimpleMath::Matrix _cameraRot;
@@ -244,20 +206,40 @@ void Blocks::Render(CommonStates& states,SimpleMath::Matrix view, SimpleMath::Ma
 			m_grassModel->UpdateEffects(_lightSetting);
 			m_grassModel->Draw(_context, states, _world, view, proj);
 		}
+	}
 
-		// コインブロック
-		if (m_mapObj[i].id == MAPSTATE::COIN)
-		{
-			m_coinModel->UpdateEffects(_lightSetting);
-			m_coinModel->Draw(_context, states, _rotMat * _world, view, proj);
-		}
+	// コイン
+	for (int i = 0; i < m_mapObj.size(); i++)
+	{
+		if (m_mapObj[i].id != MAPSTATE::COIN) continue;
 
-		// 重力ブロック
-		if (m_mapObj[i].id == MAPSTATE::GRAVITY)
-		{
-			m_gravityModel->UpdateEffects(_lightSetting);
-			m_gravityModel->Draw(_context, states, _world, view, proj);
-		}
+		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+		m_coinModel->Draw(_context, states, _rotate * _world, view, proj, false, [&]()
+			{
+				// 定数バッファを更新
+				D3D11_MAPPED_SUBRESOURCE mappedResource;
+
+				// GPUが定数バッファに対してアクセスを行わないようにする
+				_context->Map(m_coinBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
+				// 定数バッファを更新
+				CoinBuffer cb = {};
+				cb.timer.x = timer; // ダミーデータ
+				cb.d1 = cb.d2 = cb.d3 = SimpleMath::Vector4::Zero;
+
+				*static_cast<CoinBuffer*>(mappedResource.pData) = cb;
+
+				// GPUが定数バッファに対してのアクセスを許可する
+				_context->Unmap(m_coinBuffer.Get(), 0);
+
+				// ピクセルシェーダ使用する定数バッファを設定
+				ID3D11Buffer* cbuf_ps[] = { m_coinBuffer.Get() };
+				_context->PSSetConstantBuffers(1, 1, cbuf_ps);
+
+				// オリジナルピクセルシェーダーの設定
+				_context->PSSetShader(m_psCoin.Get(), nullptr, 0);
+			}
+		);
 	}
 
 	// 雲ブロック
@@ -265,14 +247,26 @@ void Blocks::Render(CommonStates& states,SimpleMath::Matrix view, SimpleMath::Ma
 	{
 		if (m_mapObj[i].id != MAPSTATE::CLOUD) continue;
 
-		// 移動行列
 		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
-
-		m_cloudModel->Draw(_context, states, _rotMat * _world, view, proj, false, [&]()
+		m_cloudModel->Draw(_context, states, _rotate * _world, view, proj, false, [&]()
 			{
 				_context->OMSetBlendState(states.NonPremultiplied(), nullptr, 0xffffffff);
 				_context->OMSetDepthStencilState(states.DepthDefault(), 0);
 				_context->PSSetShader(m_psCloud.Get(), nullptr, 0);
+			}
+		);
+	}
+	// 重力ブロック
+	for (int i = 0; i < m_mapObj.size(); i++)
+	{
+		if (m_mapObj[i].id != MAPSTATE::GRAVITY) continue;
+
+		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+		m_gravityModel->Draw(_context, states, (_rotate * 2.0f) * _world, view, proj, false, [&]()
+			{
+				_context->OMSetBlendState(states.NonPremultiplied(), nullptr, 0xffffffff);
+				_context->OMSetDepthStencilState(states.DepthDefault(), 0);
+				_context->PSSetShader(m_psGravity.Get(), nullptr, 0);
 			}
 		);
 	}
@@ -285,7 +279,7 @@ void Blocks::Finalize()
 	m_mapObj.clear();
 
 	// 最後までリセットされていたらスキップ
-	if (!m_gravityModel) return;
+	if (not m_gravityModel) return;
 
 	m_factory->BuildModelFactory();
 
@@ -323,13 +317,14 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 // シェーダー作成
 void Blocks::CreateShader()
 {
-	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+	// ファクトリでシェーダーを生成
+	m_factory->BuildShaderFactory();
 
-	// ピクセルシェーダー
-	std::vector<uint8_t> _psCloud = DX::ReadData(L"Resources/Shaders/PS_Cloud.cso");
-	DX::ThrowIfFailed(
-		_device->CreatePixelShader(_psCloud.data(), _psCloud.size(), nullptr,
-			m_psCloud.ReleaseAndGetAddressOf()));
+	m_factory->VisitShaderFactory()->CreatePixelShader(L"Resources/Shaders/PS_Coin.cso", &m_psCoin);
+	m_factory->VisitShaderFactory()->CreatePixelShader(L"Resources/Shaders/PS_Cloud.cso", &m_psCloud);
+	m_factory->VisitShaderFactory()->CreatePixelShader(L"Resources/Shaders/PS_Gravity.cso", &m_psGravity);
+
+	m_factory->LeaveShaderFactory();
 }
 
 // コインのカウントアップ
@@ -418,4 +413,74 @@ std::wstring Blocks::MapSelect(int num)
 	}
 
 	return _filePath;
+}
+
+// マップの座標補正
+void Blocks::MapSwipe()
+{
+	// 座標補正
+	for (int i = 0; i < m_mapObj.size(); i++)
+	{
+		// インデックス番号の格納
+		m_mapObj[i].index = i;
+
+		// ブロックがないときは処理しない
+		if (m_mapObj[i].id == MAPSTATE::NONE) continue;
+
+		// マップの座標設定
+		m_mapObj[i].position.x -= static_cast<float>(m_mapLoad->MAP_COLUMN) / 2 * COMMON_SIZE;
+		m_mapObj[i].position.y += static_cast<float>(COMMON_LOW);
+		m_mapObj[i].position.z -= static_cast<float>(m_mapLoad->MAP_COLUMN) / 2 * COMMON_SIZE;
+
+		// コインの枚数のカウント
+		if (m_mapObj[i].id == MAPSTATE::COIN)
+		{
+			m_maxCoins++;
+		}
+		// 雲フラグ登録
+		if (m_mapObj[i].id == MAPSTATE::CLOUD)
+		{
+			// ステータス登録
+			m_cloudState[i].moveFlag = false;
+
+			// 始発点を保存
+			m_cloudState[i].initPosition = m_mapObj[i].position;
+
+			// 終着点を保存
+			m_cloudState[i].endPosition = SimpleMath::Vector3
+			{
+				m_mapObj[i].position.x,
+				m_mapObj[i].position.y + COMMON_SIZE + CLOUD_SIZE,
+				m_mapObj[i].position.z
+			};
+		}
+		// プレイヤの座標を代入
+		if (m_mapObj[i].id == MAPSTATE::PLAYER)
+		{
+			m_playerPos = SimpleMath::Vector3
+			{
+				m_mapObj[i].position.x,
+				m_mapObj[i].position.y + COMMON_SIZE / 2,
+				m_mapObj[i].position.z
+			};
+
+			// 代入後に該当マスをなしに変える(判定除去)
+			m_mapObj[i].id = MAPSTATE::NONE;
+		}
+	}
+}
+
+// コンスタントバッファの作成
+void Blocks::CreateConstBuffer()
+{
+	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+	// 定数バッファの作成
+	D3D11_BUFFER_DESC bufferDesc = {};
+	// 注意：コンスタントバッファは１６の倍数であること
+	bufferDesc.ByteWidth = static_cast<UINT>(sizeof(CoinBuffer));
+	// GPU (読み取り専用) と CPU (書き込み専用) の両方からアクセスできるリソース
+	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;	// 定数バッファとして扱う
+	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	// CPUが内容を変更できるようにする
+	DX::ThrowIfFailed(_device->CreateBuffer(&bufferDesc, nullptr, m_coinBuffer.ReleaseAndGetAddressOf()));
 }

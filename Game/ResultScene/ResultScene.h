@@ -29,6 +29,9 @@ private:
 	// 演出時間
 	float m_directionTime;
 
+	// アニメーションフラグ
+	bool is_animEnd;
+
 	// ブロック
 	std::unique_ptr<Blocks> m_blocks;
 

@@ -23,45 +23,44 @@ ShaderFactory::~ShaderFactory()
 }
 
 // インプットレイアウトを作成
-void ShaderFactory::CreateInputLayout(std::vector<uint8_t> size,Microsoft::WRL::ComPtr<ID3D11InputLayout>* inputLayout)
+void ShaderFactory::CreateInputLayout(Microsoft::WRL::ComPtr<ID3D11InputLayout>* inputLayout)
 {
 	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
 	DX::ThrowIfFailed(
 		_device->CreateInputLayout(
 			&INPUT_LAYOUT[0],
 			static_cast<UINT>(INPUT_LAYOUT.size()),
-			size.data(),
-			size.size(),
+			m_vertexSize.data(),
+			m_vertexSize.size(),
 			(*inputLayout).GetAddressOf())
 	);
 }
 
 // コンスタントバッファを作成
 template<typename T>
-void ShaderFactory::CreateConstBuffer(T* constantBuffer)
+void ShaderFactory::CreateConstBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer>& constBuffer)
 {
 	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
 
 	// コンスタントバッファ定義
-	D3D11_BUFFER_DESC _buffer = {};
-
-	// 中身を空にする
-	ZeroMemory(&_buffer, sizeof(_buffer));
+	D3D11_BUFFER_DESC bufferDesc = {};
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 
 	// 読み書きのモードをデフォルトにする
-	_buffer.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
 	// シェーダーで使うデータ構造体のサイズを格納
-	_buffer.ByteWidth = sizeof(T);
+	bufferDesc.ByteWidth = sizeof(T);
 
 	// バッファーを定数バッファーとして紐づける
-	_buffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	// CPUから書き換えをできなくする
-	_buffer.CPUAccessFlags = NULL;
+	bufferDesc.CPUAccessFlags = 0;
 
 	// 作成したバッファを格納
-	_device->CreateBuffer(&_buffer, nullptr, &constantBuffer);
+	 _device->CreateBuffer(&bufferDesc, nullptr, constBuffer.GetAddressOf());
+
 }
 // 頂点シェーダーを作成
 void ShaderFactory::CreateVertexShader(const wchar_t* shaderPath,

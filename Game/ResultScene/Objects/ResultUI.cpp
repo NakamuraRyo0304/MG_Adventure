@@ -47,7 +47,7 @@ void ResultUI::Create(std::shared_ptr<SystemManager> system, const SimpleMath::V
 	m_system->GetDrawSprite()->AddTextureData(L"PACK",  L"Resources/Textures/RESULT_INFO/ResultSelectPack.dds");
 
 	// 文字の座標の初期化
-	float _commonY = FULL_SCREEN_SIZE.y - NUM_SIZE * 2;
+	float _commonY = FULL_SCREEN_SIZE.y - static_cast<float>(NUM_SIZE * 2);
 	m_texInfo[NEXT].pos = SimpleMath::Vector2{FONT_WIDTH * 0.9f, _commonY};
 	m_texInfo[RETRY].pos = SimpleMath::Vector2{ m_texInfo[NEXT].pos.x + FONT_WIDTH, _commonY};
 	m_texInfo[SELECT].pos = SimpleMath::Vector2{ m_texInfo[RETRY].pos.x + FONT_WIDTH, _commonY};
@@ -69,7 +69,7 @@ void ResultUI::Update(const int& clearTime)
 }
 
 // 描画処理
-void ResultUI::Render(const float& fadeValue)
+void ResultUI::Render(const bool& drawSelect)
 {
 	// 画面比率を計算
 	SimpleMath::Vector2 _rate = m_windowSize / FULL_SCREEN_SIZE;
@@ -81,7 +81,7 @@ void ResultUI::Render(const float& fadeValue)
 	DrawNumber(SimpleMath::Vector2::One, _rate);
 
 	// フェード中は処理しない
-	if (fadeValue >= 0.7f) return;
+	if (not drawSelect) return;
 
 	// シーン選択文字(ネクスト、リトライ、セレクト)
 	DrawFonts(_rate);
@@ -98,8 +98,8 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 texScale, const SimpleMath::Vector
 {
 	// クリア時間
 	// 切り取り位置設定
-	RECT_U _oneRec = { m_oneTime * 100, 0,m_oneTime * 100 + 100, 100 };
-	RECT_U _tenRec = { m_tenTime * 100, 0,m_tenTime * 100 + 100, 100 };
+	RECT_U _oneRec = { m_oneTime * NUM_SIZE, 0,m_oneTime * NUM_SIZE + NUM_SIZE, NUM_SIZE };
+	RECT_U _tenRec = { m_tenTime * NUM_SIZE, 0,m_tenTime * NUM_SIZE + NUM_SIZE, NUM_SIZE };
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",
@@ -121,8 +121,8 @@ void ResultUI::DrawNumber(SimpleMath::Vector2 texScale, const SimpleMath::Vector
 
 	// コインの数
 	// 切り取り位置設定
-	_oneRec = { m_oneCoins * 100, 0,m_oneCoins * 100 + 100, 100 };
-	_tenRec = { m_tenCoins * 100, 0,m_tenCoins * 100 + 100, 100 };
+	_oneRec = { m_oneCoins * NUM_SIZE, 0,m_oneCoins * NUM_SIZE + NUM_SIZE, NUM_SIZE };
+	_tenRec = { m_tenCoins * NUM_SIZE, 0,m_tenCoins * NUM_SIZE + NUM_SIZE, NUM_SIZE };
 
 	m_system->GetDrawSprite()->DrawTexture(
 		L"Number",

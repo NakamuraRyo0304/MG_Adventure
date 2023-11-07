@@ -239,9 +239,6 @@
     <Filter Include="Datas\Maps">
       <UniqueIdentifier>{6ec896aa-6999-4ce1-be9c-9921b424a5a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Shaders\PS_Select">
-      <UniqueIdentifier>{bf52ecb1-6e74-4713-a1d9-80856558fa29}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scenes\PlayScene\Objects\Player\PlayerComponents">
       <UniqueIdentifier>{54560327-7ac1-4702-b69f-18ab9b15b4de}</UniqueIdentifier>
     </Filter>
@@ -827,6 +824,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\GS_Transition.hlsl">
       <Filter>Resources\Shaders\Transition</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PS_Gravity.hlsl">
+      <Filter>Resources\Shaders\Block</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PS_Coin.hlsl">
+      <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

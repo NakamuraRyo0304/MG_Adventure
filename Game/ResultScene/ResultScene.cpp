@@ -27,6 +27,7 @@ ResultScene::ResultScene()
 	, m_directionTime{0.0f}		// 演出する時間
 	, m_stageNum{1}				// 背景のステージ番号(初期化で1)
 	, m_selectingScene{ 0 }		// 現在選択中のシーン
+	, is_animEnd{false}			// アニメーションの終了フラグ
 {
 
 }
@@ -65,7 +66,7 @@ void ResultScene::Update()
 	GetSystemManager()->GetSoundManager()->Update();
 
 	// 数字のアニメーション
-	AnimationValue();
+	is_animEnd = AnimationValue();
 
 	// エスケープで終了
 	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME); }
@@ -137,7 +138,7 @@ void ResultScene::Draw()
 	m_blocks->Render(_states, _view, _projection, _timer, SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f });
 
 	// UIの表示
-	m_resultUI->Render(GetFadeValue());
+	m_resultUI->Render(is_animEnd);
 }
 
 
@@ -186,6 +187,9 @@ void ResultScene::SetSceneValues()
 
 	// マップ読み込み
 	m_blocks->Initialize(m_stageNum);
+
+	// アニメーションのフラグ
+	is_animEnd = false;
 }
 
 // モデルの作成
@@ -221,7 +225,7 @@ bool ResultScene::AnimationValue()
 	if (m_directionTime < 0.0f)
 	{
 		m_directionTime = 0.0f;
-		m_clearTime = MAX_TIME - m_saveTime;
+		m_clearTime = static_cast<float>(MAX_TIME) - m_saveTime;
 
 		return true;
 	}

@@ -63,6 +63,8 @@ private:
 	// マウスカーソル
 	std::unique_ptr<MouseCursor> m_mouseCursor;
 
+	// XZ判定
+	DirectX::SimpleMath::Vector3 m_XZCheck;
 private:
 
 	// UndoRedo

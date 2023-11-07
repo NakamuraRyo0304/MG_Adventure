@@ -47,11 +47,23 @@ private:
 	// 当たったかどうかの判定
 	bool is_hitCoinFlag;
 
-	// 雲のシェーダー
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_psCloud;
+	// オブジェクトのシェーダー
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_psCoin, m_psCloud, m_psGravity;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+
+	// コンスタントバッファ
+	struct CoinBuffer
+	{
+		DirectX::SimpleMath::Vector4 timer;
+		DirectX::SimpleMath::Vector4 d1;
+		DirectX::SimpleMath::Vector4 d2;
+		DirectX::SimpleMath::Vector4 d3;
+	};
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_coinBuffer;
 
 	// ライティング
 	DirectX::SimpleMath::Vector3 m_lighting;
+
 
 private:
 	// マップサイズ
@@ -63,9 +75,11 @@ private:
 	// 雲のサイズ
 	const float CLOUD_SIZE = COMMON_SIZE / 1.7f;
 	const float CLOUD_SPEED = 0.1f;
+	const float CLOUD_ROT_SPEED = 5.0f;
 
 	// 雲リセットエリアサイズ
 	const float GRAVITY_SIZE = 0.85f;
+	const float GRAVITY_MOVE_Y = 0.002f;
 
 	// 最低高度
 	const float	COMMON_LOW = COMMON_SIZE / 2;
@@ -193,4 +207,18 @@ private:
 	/// <param name="num">ステージ番号</param>
 	/// <returns>ファイルパス</returns>
 	std::wstring MapSelect(int num);
+
+	/// <summary>
+	/// マップの座標補正
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void MapSwipe();
+
+	/// <summary>
+	/// コンスタントバッファの作成
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void CreateConstBuffer();
 };

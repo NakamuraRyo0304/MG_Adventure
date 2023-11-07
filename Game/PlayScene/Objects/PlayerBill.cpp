@@ -8,7 +8,7 @@
 #include "pch.h"
 
 #include "Libraries/SystemDatas/ParticleUtility.h"
-#include "Libraries/Factories/ShaderFactory.h"
+#include "Libraries/FactoryManager/FactoryManager.h"
 
 #include "PlayerBill.h"
 
@@ -21,10 +21,12 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerBill::INPUT_LAYOUT =
 };
 
 // コンストラクタ
-PlayerBill::PlayerBill()
+PlayerBill::PlayerBill(std::shared_ptr<FactoryManager>factory)
 	: m_defaultPos{SimpleMath::Vector3::Zero}
 	, m_vertice{}
+	, m_factory{factory}
 {
+	m_factory->CreateFactory();
 }
 
 // デストラクタ
@@ -73,60 +75,25 @@ void PlayerBill::LoadTexture(const wchar_t* path)
 // シェーダー作成
 void PlayerBill::CreateShader()
 {
-	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+	m_factory->BuildShaderFactory();
 
 	// シェーダーファイルの読み込み
-	std::vector<uint8_t> _VSData = DX::ReadData(L"Resources/Shaders/VS_PlayerPoint.cso");
-	std::vector<uint8_t> _GSData = DX::ReadData(L"Resources/Shaders/GS_PlayerPoint.cso");
-	std::vector<uint8_t> _PSData = DX::ReadData(L"Resources/Shaders/PS_PlayerPoint.cso");
-	// シェーダーの作成
-	// インプットレイアウト
-	DX::ThrowIfFailed(
-		_device->CreateInputLayout(
-			&INPUT_LAYOUT[0],
-			static_cast<UINT>(INPUT_LAYOUT.size()),
-			_VSData.data(),
-			_VSData.size(),
-			m_inputLayout.GetAddressOf())
-	);
+	m_factory->VisitShaderFactory()->CreateVertexShader(L"Resources/Shaders/VS_PlayerPoint.cso", &m_verShader);
+	m_factory->VisitShaderFactory()->CreateGeometryShader(L"Resources/Shaders/GS_PlayerPoint.cso", &m_geoShader);
+	m_factory->VisitShaderFactory()->CreatePixelShader(L"Resources/Shaders/PS_PlayerPoint.cso", &m_pixShader);
+	m_factory->VisitShaderFactory()->CreateInputLayout(&m_inputLayout);
 
-	// バーテックスシェーダー
-	DX::ThrowIfFailed(
-		_device->CreateVertexShader(
-			_VSData.data(),
-			_VSData.size(),
-			nullptr,
-			m_verShader.ReleaseAndGetAddressOf()
-		)
-	);
-
-	// ジオメトリシェーダー
-	DX::ThrowIfFailed(
-		_device->CreateGeometryShader(
-			_GSData.data(),
-			_GSData.size(),
-			nullptr,
-			m_geoShader.ReleaseAndGetAddressOf()
-		)
-	);
-
-	// ピクセルシェーダー
-	DX::ThrowIfFailed(
-		_device->CreatePixelShader(
-			_PSData.data(),
-			_PSData.size(),
-			nullptr,
-			m_pixShader.ReleaseAndGetAddressOf()
-		)
-	);
+	m_factory->LeaveShaderFactory();
 
 	// コンスタントバッファ作成
-	CreateConstBuffer(_device);
+	CreateConstBuffer();
 }
 
 // コンスタントバッファを作成
-void PlayerBill::CreateConstBuffer(ID3D11Device1*& device)
+void PlayerBill::CreateConstBuffer()
 {
+	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
+
 	// コンスタントバッファ定義
 	D3D11_BUFFER_DESC _buffer = {};
 
@@ -146,7 +113,7 @@ void PlayerBill::CreateConstBuffer(ID3D11Device1*& device)
 	_buffer.CPUAccessFlags = NULL;
 
 	// 作成したバッファを格納
-	device->CreateBuffer(&_buffer, nullptr, &m_constBuffer);
+	_device->CreateBuffer(&_buffer, nullptr, &m_constBuffer);
 }
 
 // ビルボード作成関数

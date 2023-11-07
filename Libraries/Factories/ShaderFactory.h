@@ -35,7 +35,7 @@ public:
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
 	template<typename T>
-	void CreateConstBuffer(T* constantBuffer);
+	void CreateConstBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer>& constBuffer);
 
 	/// <summary>
 	/// インプットレイアウトの作成
@@ -43,7 +43,7 @@ public:
 	/// <param name="size">頂点シェーダのサイズ</param>
 	/// <param name="inputLayout">インプットレイアウト</param>
 	/// <returns>なし</returns>
-	void CreateInputLayout(std::vector<uint8_t> size,Microsoft::WRL::ComPtr<ID3D11InputLayout>* inputLayout);
+	void CreateInputLayout(Microsoft::WRL::ComPtr<ID3D11InputLayout>* inputLayout);
 
 	/// <summary>
 	/// 頂点シェーダーの作成
@@ -68,9 +68,6 @@ public:
 	/// <param name="geometryShader">ジオメトリシェーダーのポインタ</param>
 	/// <returns>なし</returns>
 	void CreateGeometryShader(const wchar_t* shaderPath, Microsoft::WRL::ComPtr<ID3D11GeometryShader>* shader);
-
-	// 頂点シェーダーのサイズを取得
-	std::vector<uint8_t> GetVertexSize() { return m_vertexSize; }
 };
 
 #endif // SHADERFACTORY

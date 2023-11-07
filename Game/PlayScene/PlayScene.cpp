@@ -385,7 +385,7 @@ void PlayScene::CreateWindowDependentResources()
 	MakeBlocks();
 
 	// 位置情報のシェーダーの作成
-	m_playerBill = std::make_unique<PlayerBill>();
+	m_playerBill = std::make_unique<PlayerBill>(GetFactoryManager());
 	m_playerBill->Create();
 
 	// UIの作成
@@ -446,7 +446,7 @@ void PlayScene::InitializeLighting()
 void PlayScene::MakePlayer()
 {
 	// ファクトリマネージャ
-	auto _fm = GetFactoryManager();
+	auto& _fm = GetFactoryManager();
 	_fm->BuildModelFactory();
 
 	// ファクトリーからモデルをもらう
@@ -474,7 +474,7 @@ void PlayScene::MakeBlocks()
 	m_blocks->CreateShader();
 
 	// ファクトリマネージャ
-	auto _fm = GetFactoryManager();
+	auto& _fm = GetFactoryManager();
 	_fm->BuildModelFactory();
 
 	// ファクトリーからモデルをもらう
