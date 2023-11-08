@@ -29,7 +29,6 @@
 // コンストラクタ
 SelectScene::SelectScene()
 	: IScene()					// 基底クラスの初期化
-	, m_flashCount{}			// 点滅のカウンタ
 	, m_stageNum{1}				// ステージ番号
 	, m_safeStages{}			// 未開放ステージ番号
 	, m_allCoins{}				// 合計コイン数
@@ -118,6 +117,13 @@ void SelectScene::Update()
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
 
+#ifdef _DEBUG	// デバッグ中はコインを増やせる
+	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Enter))
+	{
+		m_allCoins = 999;
+		m_initCoins = m_allCoins;
+	}
+#endif
 	// コイン演出
 	if (is_selectEdit)
 	{
@@ -165,10 +171,7 @@ void SelectScene::Draw()
 	m_selectSky->Draw(_states, _view, _proj, _timer);
 
 	// 点滅させる
-	if (m_flashCount < MAX_FLASH * 0.5f)
-	{
-		m_fontObject->Render(_states, m_stageNum, _timer * 0.5f, _view, _proj);
-	}
+	m_fontObject->Render(_states, m_stageNum, _timer * 0.5f, _view, _proj);
 
 	// UIの描画
 	m_selectUI->Render(GetFadeValue(), m_stageNum, MAX_STAGE_NUM - 1);
@@ -217,9 +220,6 @@ void SelectScene::SetSceneValues()
 	// 見上げ距離
 	m_targetY = UP_VALUE;
 
-	// スタートが0
-	m_flashCount = 0.0f;
-
 	// コイン数をセット
 	m_selectUI->SetAllCoins(m_allCoins);
 
@@ -237,7 +237,7 @@ void SelectScene::SetSceneValues()
 void SelectScene::CreateStages()
 {
 	// ファクトリマネージャ
-	auto _fm = GetFactoryManager();
+	auto& _fm = GetFactoryManager();
 	_fm->BuildModelFactory();
 
 	for (int i = 0; i < MAX_STAGE_NUM; ++i)
@@ -275,7 +275,7 @@ void SelectScene::CreateFirstStage()
 	m_blocks[m_stageNum]->CreateShader();
 
 	// ファクトリマネージャ
-	auto _fm = GetFactoryManager();
+	auto& _fm = GetFactoryManager();
 	_fm->BuildModelFactory();
 
 	auto _grass   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
@@ -314,7 +314,6 @@ void SelectScene::ChangeStageNumber()
 
 		m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, UP_SPEED);
 		m_stageNum++;
-		m_flashCount = 0.0f;
 	}
 	if (_input.Left || _input.A)
 	{
@@ -326,7 +325,6 @@ void SelectScene::ChangeStageNumber()
 
 		m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, UP_SPEED);
 		m_stageNum--;
-		m_flashCount = 0.0f;
 	}
 }
 
@@ -334,11 +332,7 @@ void SelectScene::ChangeStageNumber()
 void SelectScene::DirectionSelectChange()
 {
 	// 動きが終わっていなければ見下げる
-	if (m_targetY > 1.0f) {	m_targetY -= DOWN_SPEED; }
+	if (m_targetY > 1.0f) { m_targetY -= DOWN_SPEED; }
 	else if (m_targetY > 0.0f) { m_targetY -= DOWN_SPEED * 0.5f; }
 	else { m_targetY = 0.0f; }
-
-	// フラッシュカウンタ
-	m_flashCount++;
-	m_flashCount = m_flashCount > MAX_FLASH * 0.75f ? 0.0f : m_flashCount;
 }

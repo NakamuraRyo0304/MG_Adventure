@@ -29,6 +29,7 @@ EditUI::EditUI()
 	, is_saveFlag{ false }			// 保存フラグ
 	, is_openFlag{ false }			// 開くフラグ
 	, is_cameraFlag{ true }			// カメラモードONでスタート
+	, is_goPlayFlag{ false }		// テストプレイフラグ
 	, is_backFlag{ false }			// セレクトに戻るフラグ
 	, is_toolFlag{ true }			// ツールバーを表示するフラグ
 {
@@ -72,38 +73,36 @@ void EditUI::Create(const std::shared_ptr<SystemManager>& system, const SimpleMa
 	m_modeRect[0] = { _0,_0,_1,_1 };					// 表示切替・戻るアイコン
 	m_modeRect[1] = { _1,_0,_2,_1 };
 	m_modeRect[2] = { _2,_0,_3,_1 };
-	m_saveRect[0] = { _0,_0,_1,_1 };					// カメラとファイルアイコン
-	m_saveRect[1] = { _1,_0,_2,_1 };
-	m_saveRect[2] = { _2,_0,_3,_1 };
-	m_saveRect[3] = { _3,_0,_4,_1 };
+	m_toolRect[0] = { _0,_0,_1,_1 };					// カメラとファイルアイコン
+	m_toolRect[1] = { _1,_0,_2,_1 };
+	m_toolRect[2] = { _2,_0,_3,_1 };
+	m_toolRect[3] = { _3,_0,_4,_1 };
+	m_toolRect[4] = { _4,_0,_5,_1 };					// テストプレイアイコン
 
 	// 比率を計算
 	float _span = static_cast<float>(m_windowSize.x) / FULL_SCREEN_SIZE.x;
 
 	// 座標情報
-	m_toolTexPos[0] = {80 * _span , 80 * _span};
-	m_toolTexPos[1] = {218 * _span , 80 * _span};
-	m_toolTexPos[2] = {356 * _span , 80 * _span};
-	m_backTexPos	   = { m_windowSize.x - (244 * _span)  ,80 * _span};
-	m_toolButtonTexPos = { m_windowSize.x - (96 * _span)  ,80 * _span};
+	m_toolTexPos[0] = { 80 * _span , 80 * _span };
+	m_toolTexPos[1] = { 218 * _span , 80 * _span };
+	m_toolTexPos[2] = { 356 * _span , 80 * _span };
+	m_toolTexPos[3] = { 494 * _span , 80 * _span };
 
 	// 設置ブロックアイコン
 	for (int i = 0; i < MAPSTATE::LENGTH; i++)
 	{
-		m_imagePos[i] = { 545 * _span + (192 * _span * i) , 80 * _span};
+		m_imagePos[i] = { 632 * _span + (176 * _span * i) , 80 * _span};
 		is_boxState[i] = false;
 		m_boxHover[i] = 0.0f;
 	}
+
+	m_backTexPos = { m_windowSize.x - (244 * _span)  ,80 * _span };
+	m_toolButtonTexPos = { m_windowSize.x - (96 * _span)  ,80 * _span };
 
 	// ステータスの初期値は草ブロック
 	m_nowState = MAPSTATE::GRASS;
 	is_boxState[MAPSTATE::GRASS] = true;
 
-	// ツールバーを表示
-	is_toolFlag = true;
-
-	// ホバーフラグをリセット
-	is_anyHitFlag = false;
 }
 
 // 更新処理
@@ -114,10 +113,8 @@ void EditUI::Update()
 
 	// ツールバー表示切り替えアイコンをクリック
 	bool _tool = m_imageHitter.IsHitAABB2D(
-		{ (float)_mouse.x,(float)_mouse.y },				 // マウスの位置
-		{ m_toolButtonTexPos.x,m_toolButtonTexPos.y },	 	 // 画像の位置
-		SimpleMath::Vector2{ 5.0f }, 						 // サイズ
-		SimpleMath::Vector2{ 80.0f });						 // サイズ
+		{ (float)_mouse.x,(float)_mouse.y },
+		m_toolButtonTexPos, MOUSE_SIZE, BACK_SIZE);
 
 	// ツールを表示するフラグを切り替え
 	if (_tool && _input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
@@ -133,10 +130,8 @@ void EditUI::Update()
 
 	// セレクトに戻るボタンをクリック
 	bool _back = m_imageHitter.IsHitAABB2D(
-		{ (float)_mouse.x,(float)_mouse.y },		 // マウスの位置
-		{ m_backTexPos.x,m_backTexPos.y },	 		 // 画像の位置
-		SimpleMath::Vector2{ 5.0f }, 				 // サイズ
-		SimpleMath::Vector2{ 80.0f });				 // サイズ
+		{ (float)_mouse.x,(float)_mouse.y },
+		m_backTexPos, MOUSE_SIZE, BACK_SIZE);
 
 	// ツールを表示するフラグを切り替え
 	if (_back && _input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
@@ -146,24 +141,23 @@ void EditUI::Update()
 
 	// ファイルを開くアイコン
 	is_openFlag = m_imageHitter.IsHitAABB2D(
-		{ (float)_mouse.x,(float)_mouse.y },// マウスの位置
-		m_toolTexPos[0],							// 画像の位置
-		SimpleMath::Vector2{ 5.0f },			    // サイズ
-		SimpleMath::Vector2{ 100.0f });				// サイズ
+		{ (float)_mouse.x,(float)_mouse.y },
+		m_toolTexPos[0],MOUSE_SIZE,	ICON_SIZE);
 
 	// ファイルを保存するアイコン
 	is_saveFlag = m_imageHitter.IsHitAABB2D(
-		{ (float)_mouse.x,(float)_mouse.y },// マウスの位置
-		m_toolTexPos[1],							// 画像の位置
-		SimpleMath::Vector2{ 5.0f },				// サイズ
-		SimpleMath::Vector2{ 100.0f });				// サイズ
+		{ (float)_mouse.x,(float)_mouse.y },
+		m_toolTexPos[1],MOUSE_SIZE,	ICON_SIZE);
 
-	// カメラアイコンをクリック
+	// カメラアイコン
 	bool _camera = m_imageHitter.IsHitAABB2D(
-		{ (float)_mouse.x,(float)_mouse.y }, // マウスの位置
-		m_toolTexPos[2],						 	 // 画像の位置
-		SimpleMath::Vector2{ 5.0f }, 				 // サイズ
-		SimpleMath::Vector2{ 100.0f });				 // サイズ
+		{ (float)_mouse.x,(float)_mouse.y },
+		m_toolTexPos[2],MOUSE_SIZE,	ICON_SIZE);
+
+	// プレイシーンに行くアイコン
+	is_goPlayFlag = m_imageHitter.IsHitAABB2D(
+		{ (float)_mouse.x,(float)_mouse.y },
+		m_toolTexPos[3],MOUSE_SIZE,	ICON_SIZE);
 
 	// カメラ移動モード切り替え
 	if (_camera && _input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::PRESSED)
@@ -191,36 +185,48 @@ void EditUI::Render()
 		{
 			// アイコン　キー：座標：色：拡大率：中心位置：画像サイズ
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[0],
-				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[0]);
+				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_toolRect[0]);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[0],
-				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[0]);
+				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_toolRect[0]);
 		}
 
 		// セーブアイコン
 		if (is_saveFlag)
 		{
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[1],
-				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[1]);
+				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_toolRect[1]);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[1],
-				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[1]);
+				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_toolRect[1]);
 		}
 
 		// カメラアイコン
 		if (is_cameraFlag)
 		{
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[2],
-				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[2]);
+				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_toolRect[2]);
 		}
 		else
 		{
 			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[2],
-				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_saveRect[3]);
+				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_toolRect[3]);
+		}
+
+		// テストプレイアイコン
+		if (is_goPlayFlag)
+		{
+			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[3],
+				SimpleMath::Vector4::One, IMAGE_RATE * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_toolRect[4]);
+		}
+		else
+		{
+			m_system->GetDrawSprite()->DrawTexture(L"SavePack", m_toolTexPos[3],
+				{ 1.0f,1.0f,1.0f,0.2f }, 0.5f * _rate, { FONT_HEIGHT,FONT_HEIGHT }, m_toolRect[4]);
 		}
 
 		// セレクトに戻るボタン
@@ -292,10 +298,8 @@ void EditUI::ChangeState()
 	for (int i = 0; i < MAPSTATE::LENGTH; ++i)
 	{
 		_iconFlags[i] = m_imageHitter.IsHitAABB2D(
-			{ (float)_mouse.x,(float)_mouse.y },		// マウスの位置
-			m_imagePos[i],                              // 画像の位置
-			SimpleMath::Vector2{ 5.0f },                // 最小サイズ
-			SimpleMath::Vector2{ 100.0f });             // 最大サイズ
+			{ (float)_mouse.x,(float)_mouse.y },
+			m_imagePos[i], MOUSE_SIZE, ICON_SIZE);
 
 		// 当たっていたらサイズを大きくする(ホバー)
 		m_boxHover[i] = _iconFlags[i] == true ? 0.1f : 0.0f;

@@ -45,7 +45,8 @@ private:
 	// パスの格納
 	std::wstring m_filePath;
 
-
+	// ブロックの数を保存する
+	int m_blockNum[MAPSTATE::LENGTH];
 private:
 
 	// マップ
@@ -158,7 +159,25 @@ private:
 	/// <returns>なし</returns>
 	void CreateModels(std::shared_ptr<FactoryManager> fm);
 
+	/// <summary>
+	/// モデルの数をリセット
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void ResetObjNum();
+	/// <summary>
+	/// モデルの数を数える
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void CountObjNum();
 private:
+	/// <summary>
+	/// アイコンをクリック
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void ClickIcons();
 
 	/// <summary>
 	/// 描画オブジェクト切り替え
@@ -199,6 +218,12 @@ private:
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
 	bool IsCanSave();
+	/// <summary>
+	/// ファイルパスを取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	const std::wstring& GetFilePath();
 
 private:
 

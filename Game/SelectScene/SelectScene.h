@@ -20,13 +20,8 @@ class SelectScene final : public IScene
 {
 private:
 
-	// 点滅カウンタ
-	float m_flashCount;
-
-	// ステージ番号
-	int m_stageNum;
-	// 未開放ステージ数
-	int m_safeStages;
+	// ステージ番号/未開放ステージ数
+	int m_stageNum, m_safeStages;
 
 	// 合計コイン数
 	int m_allCoins;

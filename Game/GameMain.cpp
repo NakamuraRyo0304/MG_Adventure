@@ -235,8 +235,13 @@ void GameMain::DeleteScene()
 		m_allCoins = CastSceneType<SelectScene>(m_nowScene)->GetAllCoins();
 		break;
 	case SCENE::PLAY:
+		// エディタで作ったステージをセットする
+		if (m_prevScene == SCENE::EDIT)
+		{
+			m_num = 0;
+		}
 		// 再読み込みでなければ処理する
-		if (m_nextScene != m_prevScene && m_prevScene != SCENE::RESULT)
+		else if (m_nextScene != m_prevScene && m_prevScene != SCENE::RESULT)
 		{
 			// ステージ番号を保持
 			m_num = CastSceneType<SelectScene>(m_nowScene)->GetStageNum();

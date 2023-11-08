@@ -32,11 +32,12 @@ EditScene::EditScene()
 	, m_mapLoader{}								// マップローダー
 	, m_mapObj{0}								// 格納配列
 	, m_nowState{}								// 現在のブロックの種類
-	, m_grassModel{ nullptr }					// モデル＿草
-	, m_noneModel{ nullptr }					// モデル＿消しゴム
-	, m_coinModel{ nullptr }					// モデル＿コイン
-	, m_cloudModel{ nullptr }					// モデル＿雲
-	, m_gravityModel{ nullptr }					// モデル＿重力
+	, m_blockNum{0}								// オブジェクトの数
+	, m_grassModel{ nullptr }					// 草
+	, m_noneModel{ nullptr }					// 消しゴム
+	, m_coinModel{ nullptr }					// コイン
+	, m_cloudModel{ nullptr }					// 雲
+	, m_gravityModel{ nullptr }					// 重力
 	, m_skyDomeModel{ nullptr }					// モデル＿スカイドーム
 	, m_cursorPos{ SimpleMath::Vector3::Zero }	// カーソルの位置
 	, m_history{}								// ログ管理
@@ -96,29 +97,15 @@ void EditScene::Update()
 	// 編集の取り消し等処理
 	DoUndoRedo();
 
-	// セーブフラグがたったらファイルを保存
-	if (m_editUI->GetSaveFlag() &&
-		_input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+	// モデルのカウント
+	if (_input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
-		// 要素チェックして保存可能なら実行
-		if (IsCanSave())
-		{
-			_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
-			SaveFile();
-		}
+		ResetObjNum();
+		CountObjNum();
 	}
 
-	// オープンフラグがたったらファイルを開く
-	if (m_editUI->GetOpenFlag() &&
-		_input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
-	{
-		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
-		if (!m_mapLoader.LoadMap(L""))
-		{
-			return;
-		}
-		m_mapObj = m_mapLoader.GetMapData();	// 読み込み
-	}
+	// アイコンクリックの更新
+	ClickIcons();
 
 	// Cキーを押したら、カメラモードを反転する
 	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::C))
@@ -127,19 +114,6 @@ void EditScene::Update()
 		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
 		m_editUI->SetCameraFlag(!m_editUI->GetCameraFlag());
 		GetSystemManager()->GetCamera()->SetEagleMode(m_editUI->GetCameraFlag());
-	}
-
-	// カメラモードじゃなければ編集できる
-	if (not m_editUI->GetCameraFlag())
-	{
-		EditMap();
-	}
-
-	// ボタンクリックでセレクトに戻る
-	if (m_editUI->GetBackSelectFlag())
-	{
-		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
-		ChangeScene(SCENE::SELECT);
 	}
 }
 
@@ -214,6 +188,17 @@ void EditScene::Draw()
 
 	// 画像の描画
 	m_editUI->Render();
+
+	// デバッグ情報を表示
+	GetSystemManager()->GetString()->DrawFormatString(
+		_states, { 25,200 }, Colors::Yellow,SimpleMath::Vector2(1.5f),
+		L"Grass:%d\nCoin:%d\nCloud:%d\nGravity:%d\nPlayer:%d",
+		m_blockNum[MAPSTATE::GRASS],
+		m_blockNum[MAPSTATE::COIN],
+		m_blockNum[MAPSTATE::CLOUD],
+		m_blockNum[MAPSTATE::GRAVITY],
+		m_blockNum[MAPSTATE::PLAYER]
+	);
 
 	// マウスカーソルの描画
 	m_mouseCursor->Render();
@@ -366,6 +351,76 @@ void EditScene::CreateModels(std::shared_ptr<FactoryManager> fm)
 
 }
 
+// モデルの数をリセットする
+void EditScene::ResetObjNum()
+{
+	for (int i = 0; i < m_mapObj.size(); i++)
+	{
+		m_blockNum[m_mapObj[i].id] = 0;
+	}
+}
+
+// モデルの数をカウントする
+void EditScene::CountObjNum()
+{
+	for (int i = 0; i < m_mapObj.size(); i++)
+	{
+		m_blockNum[m_mapObj[i].id]++;
+	}
+}
+
+// アイコンをクリックする
+void EditScene::ClickIcons()
+{
+	auto& _input = Input::GetInstance();
+	auto& _sound = GetSystemManager()->GetSoundManager();
+
+	// セーブフラグがたったらファイルを保存
+	if (m_editUI->GetSaveFlag() &&
+		_input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+	{
+		// 要素チェックして保存可能なら実行
+		if (IsCanSave())
+		{
+			_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+			SaveFile();
+		}
+	}
+
+	// オープンフラグがたったらファイルを開く
+	if (m_editUI->GetOpenFlag() &&
+		_input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+	{
+		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+		if (!m_mapLoader.LoadMap(L""))
+		{
+			return;
+		}
+		m_mapObj = m_mapLoader.GetMapData();	// 読み込み
+	}
+
+	// プレイシーンに行く
+	if (m_editUI->GetGoPlayFlag() &&
+		_input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
+	{
+		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+		ChangeScene(SCENE::PLAY);
+	}
+
+	// カメラモードじゃなければ編集できる
+	if (not m_editUI->GetCameraFlag())
+	{
+		EditMap();
+	}
+
+	// ボタンクリックでセレクトに戻る
+	if (m_editUI->GetBackSelectFlag())
+	{
+		_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
+		ChangeScene(SCENE::SELECT);
+	}
+}
+
 // マップの編集
 void EditScene::EditMap()
 {
@@ -430,6 +485,10 @@ void EditScene::LoadMap(std::wstring filename)
 
 	// マップを格納する
 	m_mapObj = m_mapLoader.GetMapData();
+
+	// モデルの数を数える
+	ResetObjNum();
+	CountObjNum();
 }
 
 // ファイル書き出し
@@ -501,6 +560,12 @@ bool EditScene::IsCanSave()
 	}
 }
 
+// ファイルパスを取得
+const std::wstring& EditScene::GetFilePath()
+{
+	return m_mapLoader.GetFilePath();
+}
+
 // UndoRedoを実行
 void EditScene::DoUndoRedo()
 {
@@ -510,11 +575,15 @@ void EditScene::DoUndoRedo()
 	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Z))
 	{
 		RestoreHistory(m_history.GetUndo());
+		ResetObjNum();
+		CountObjNum();
 	}
 	// Undoを取り消す
 	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::X))
 	{
 		RestoreHistory(m_history.GetRedo());
+		ResetObjNum();
+		CountObjNum();
 	}
 }
 

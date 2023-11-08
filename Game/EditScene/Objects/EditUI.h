@@ -41,24 +41,25 @@ private:
 	bool is_saveFlag;
 	bool is_openFlag;
 	bool is_cameraFlag;
+	bool is_goPlayFlag;
 	bool is_toolFlag;
 	bool is_backFlag;
 	bool is_boxState[MAPSTATE::LENGTH];
 private:
 
 	// 画像の座標
-	DirectX::SimpleMath::Vector2 m_toolTexPos[3];
+	DirectX::SimpleMath::Vector2 m_toolTexPos[4];
 	DirectX::SimpleMath::Vector2 m_toolButtonTexPos;
 	DirectX::SimpleMath::Vector2 m_backTexPos;
 	DirectX::SimpleMath::Vector2 m_imagePos[MAPSTATE::LENGTH];
 
 	// テクスチャの切り取りパス
-	enum Cut256 { _0 = 0, _1 = 256, _2 = 512, _3 = 768, _4 = 1024 };
+	enum Cut256 { _0 = 0, _1 = 256, _2 = 512, _3 = 768, _4 = 1024, _5 = 1280 };
 
 	// 画像切り取り位置
 	RECT_U m_texRect[MAPSTATE::LENGTH];
 	RECT_U m_modeRect[3];
-	RECT_U m_saveRect[4];
+	RECT_U m_toolRect[5];
 
 	// 拡大
 	float m_boxHover[MAPSTATE::LENGTH];
@@ -76,6 +77,11 @@ private:
 
 	// 当たり判定オブジェクト
 	Collider::AABBCollider m_imageHitter;
+
+	// 判定サイズ
+	const DirectX::SimpleMath::Vector2 MOUSE_SIZE = { 5.0f,5.0f };
+	const DirectX::SimpleMath::Vector2 BACK_SIZE = { 80.0f,80.0f };
+	const DirectX::SimpleMath::Vector2 ICON_SIZE = { 100.0f,100.0f };
 
 public:
 
@@ -136,6 +142,8 @@ public:
 	void SetOpenFlag(const bool flag) { is_openFlag = flag; }
 	// 保存フラグの取得
 	const bool& GetSaveFlag() { return is_saveFlag; }
+	// プレイシーンに行くフラグの取得
+	const bool& GetGoPlayFlag() { return is_goPlayFlag; }
 	// 保存フラグの設定
 	void SetSaveFlag(const bool flag) { is_saveFlag = flag; }
 	// セレクトへ戻るフラグの設定

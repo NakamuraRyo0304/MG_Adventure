@@ -33,11 +33,12 @@ namespace Debug
 		template <class... Args>
 		inline void DrawFormatString(const DirectX::CommonStates& states,
 			const DirectX::SimpleMath::Vector2& pos, const DirectX::XMVECTORF32& font_color,
+			const DirectX::SimpleMath::Vector2& font_size,
 			const wchar_t* format, const Args&... args) noexcept(false)
 		{
 			// 文字列のサイズを計算
 			int _textLength = std::swprintf(nullptr, 0, format, args...);
-			size_t _bufferSize = _textLength + 1;
+			size_t _bufferSize = static_cast<size_t>(_textLength) + 1;
 
 			// 文字列バッファを作成
 			std::unique_ptr<wchar_t[]> _buffer = std::make_unique<wchar_t[]>(_bufferSize);
@@ -45,7 +46,8 @@ namespace Debug
 
 			// 文字列の描画
 			m_spriteBatch->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
-			m_spriteFont->DrawString(m_spriteBatch.get(), _buffer.get(), pos, font_color);
+			m_spriteFont->DrawString(m_spriteBatch.get(), _buffer.get(), pos, font_color,0.0f,
+				DirectX::SimpleMath::Vector2::Zero, font_size);
 			m_spriteBatch->End();
 		}
 
