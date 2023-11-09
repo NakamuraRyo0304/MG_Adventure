@@ -6,34 +6,15 @@
  */
 
 #include "pch.h"
-
-// CSV読み込みクラス
 #include "Libraries/SystemDatas/MapLoad.h"
-
-// コライダークラス
 #include "Libraries/SystemDatas/Collider.h"
-
-// シェーダー位置情報クラス
 #include "Objects/PlayerBill.h"
-
-// プレイヤクラス
 #include "Objects/Player.h"
-
-// ブロッククラス
 #include "Objects/Blocks.h"
-
-// インターフェース
 #include "Objects/PlayUI.h"
-
-// サードパーソンカメラクラス
-#include "System/ThirdPersonCamera.h"
-
-// プレイカメラクラス(スタート演出用)
-#include "System/PlayCamera.h"
-
-// スカイドーム
 #include "Objects/PlaySky.h"
-
+#include "System/ThirdPersonCamera.h"
+#include "System/PlayCamera.h"
 #include "PlayScene.h"
 
 
