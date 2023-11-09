@@ -19,13 +19,13 @@
 #include "ResultScene.h"
 
 // コンストラクタ
-ResultScene::ResultScene()
+ResultScene::ResultScene(const int& stageNum, const int& coins, const float& clearTime)
 	: IScene()					// 基底クラスの初期化
-	, m_coinNum{}				// コインの数
-	, m_clearTime{0.0f}			// クリアタイムを格納
+	, m_stageNum{ stageNum }	// 背景のステージ番号
+	, m_coinNum{ coins }		// コインの数
+	, m_clearTime{ clearTime }	// クリアタイムを格納
 	, m_saveTime{0.0f}			// クリアタイムを保存する変数
 	, m_directionTime{0.0f}		// 演出する時間
-	, m_stageNum{1}				// 背景のステージ番号(初期化で1)
 	, m_selectingScene{ 0 }		// 現在選択中のシーン
 	, is_animEnd{false}			// アニメーションの終了フラグ
 {

@@ -21,7 +21,7 @@ class SelectScene final : public IScene
 private:
 
 	// ステージ番号/未開放ステージ数
-	int m_stageNum, m_safeStages;
+	int m_stageNum, m_safeNum;
 
 	// 合計コイン数
 	int m_allCoins;
@@ -78,7 +78,14 @@ private:
 
 public:
 
-	SelectScene();
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="stageNum">ステージ番号</param>
+	/// <param name="safeNum">未開放ステージ数</param>
+	/// <param name="coins">コインの数</param>
+	/// <returns>なし</returns>
+	SelectScene(const int& stageNum,const int& safeNum,const int& coins);
 	~SelectScene();
 
 	/// <summary>
@@ -155,7 +162,7 @@ public:
 	// ステージ番号の設定
 	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
 	// 未開放ステージの設定
-	void SetSafeStages(const int& stageNum) { m_safeStages = stageNum; }
+	void SetSafeStages(const int& stageNum) { m_safeNum = stageNum; }
 	// 合計コイン数の取得
 	const int& GetAllCoins() { return m_allCoins; }
 	// 合計コイン数の設定

@@ -218,12 +218,6 @@ private:
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
 	bool IsCanSave();
-	/// <summary>
-	/// ファイルパスを取得
-	/// </summary>
-	/// <param name="引数無し"></param>
-	/// <returns>なし</returns>
-	const std::wstring& GetFilePath();
 
 private:
 

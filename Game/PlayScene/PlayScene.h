@@ -130,7 +130,13 @@ private:
 
 public:
 
-	PlayScene();
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="stageNum">ステージ番号</param>
+	/// <param name="coins">コインの数</param>
+	/// <returns>なし</returns>
+	PlayScene(const int& stageNum,const int& coins);
 	~PlayScene();
 
 	/// <summary>
@@ -259,10 +265,6 @@ public:
 	const int& GetMaxCoinCount();
 	// マップ番号の取得
 	const int& GetStageNum() { return m_stageNum; }
-	// マップ番号の設定
-	void SetStageNum(const int& stageNum) { m_stageNum = stageNum; }
-	// 合計コイン数の設定
-	void SetAllCoinNum(const int& allCoins) { m_allCoins = allCoins; }
 
 };
 

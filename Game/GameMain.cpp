@@ -45,7 +45,7 @@ GameMain::GameMain()
 	, m_screenWidth{}					// スクリーンサイズ(横)
 	, m_screenHeight{}					// スクリーンサイズ(縦)
 	//以下はセーブデータ対応------------------------------------------------------------------------//
-	, m_safeStages{}					// 未開放ステージ
+	, m_safeNum{}						// 未開放ステージ
 	, m_allCoins{}						// 累計コイン枚数
 	, is_saveOnce{false}				// セーブ済みか確認するフラグ
 {
@@ -149,49 +149,29 @@ void GameMain::CreateScene()
 		}
 		case SCENE::SELECT:		// ステージセレクトシーン
 		{
-			m_nowScene = std::make_unique<SelectScene>();
-
-			//-------------------------------------------------------------------------------------//
 			// 合計コイン数を999で上限止め
 			m_allCoins = UserUtility::Clamp(m_allCoins, 0, 999);
 
-			// ステージ番号、未開放ステージ番号、合計コイン数を渡す
-			CastSceneType<SelectScene>(m_nowScene)->SetStageNum(m_num);
-			CastSceneType<SelectScene>(m_nowScene)->SetSafeStages(m_safeStages);
-			CastSceneType<SelectScene>(m_nowScene)->SetAllCoins(m_allCoins);
-			//-------------------------------------------------------------------------------------//
+			m_nowScene = std::make_unique<SelectScene>(m_num, m_safeNum, m_allCoins);
 
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
 		case SCENE::PLAY:		// ゲームシーン
 		{
-			m_nowScene = std::make_unique<PlayScene>();
-
-			//-------------------------------------------------------------------------------------//
-			// 選択したステージを渡す
-			CastSceneType<PlayScene>(m_nowScene)->SetAllCoinNum(m_allCoins);
-			CastSceneType<PlayScene>(m_nowScene)->SetStageNum(m_num);
-			//-------------------------------------------------------------------------------------//
+			m_nowScene = std::make_unique<PlayScene>(m_num, m_allCoins);
 
 			m_fade->SetFadeSpeed(PLAY_FADE_SPEED);
 			break;
 		}
 		case SCENE::RESULT:		// リザルトシーン
 		{
-			m_nowScene = std::make_unique<ResultScene>();
-
-			//-------------------------------------------------------------------------------------//
-			// ステージ番号、クリアタイム、獲得コイン数を渡す
-			CastSceneType<ResultScene>(m_nowScene)->SetStageNum(m_num);
-			CastSceneType<ResultScene>(m_nowScene)->SetClearTime(m_clearTime);
-			CastSceneType<ResultScene>(m_nowScene)->SetCoinNum(m_coinNum);
-			//-------------------------------------------------------------------------------------//
+			m_nowScene = std::make_unique<ResultScene>(m_num, m_coinNum, m_clearTime);
 
 			m_fade->SetFadeSpeed(DEFAULT_FADE_SPEED);
 			break;
 		}
-		case SCENE::EDIT:		// ステージエディットシーン
+		case SCENE::EDIT:		// ステージエディタ
 		{
 			m_nowScene = std::make_unique<EditScene>();
 
@@ -236,23 +216,20 @@ void GameMain::DeleteScene()
 		break;
 	case SCENE::PLAY:
 		// エディタで作ったステージをセットする
-		if (m_prevScene == SCENE::EDIT)
-		{
-			m_num = 0;
-		}
+		if (m_prevScene == SCENE::EDIT)	{ m_num = 0; }
 		// 再読み込みでなければ処理する
-		else if (m_nextScene != m_prevScene && m_prevScene != SCENE::RESULT)
+		else if (m_prevScene != m_nextScene && m_prevScene != SCENE::RESULT)
 		{
 			// ステージ番号を保持
 			m_num = CastSceneType<SelectScene>(m_nowScene)->GetStageNum();
 		}
-		else if(m_nextScene != m_prevScene && m_prevScene == SCENE::RESULT)
+		else if(m_prevScene != m_nextScene && m_prevScene == SCENE::RESULT)
 		{
 			m_num = CastSceneType<ResultScene>(m_nowScene)->GetStageNum();
 		}
 		break;
 	case SCENE::RESULT:
-		if (CastSceneType<ResultScene>(m_nowScene) == nullptr)
+		if (not CastSceneType<ResultScene>(m_nowScene))
 		{
 			// クリアタイムと獲得コイン数を保持
 			m_clearTime = CastSceneType<PlayScene>(m_nowScene)->GetClearTime();
@@ -307,7 +284,7 @@ void GameMain::LoadSaveData()
 
 		// データを格納する
 		m_allCoins   = _input["CoinNum"];	// 所有コイン数
-		m_safeStages = _input["SafeStage"];	//未開放ステージ数
+		m_safeNum = _input["SafeStage"];	//未開放ステージ数
 
 		_file.close();
 	}
@@ -330,7 +307,7 @@ void GameMain::WriteSaveData()
 		_output =
 		{
 			 {"CoinNum", m_allCoins},		// 所有コイン数
-			 {"SafeStage",m_safeStages}		//未開放ステージ数
+			 {"SafeStage",m_safeNum}		//未開放ステージ数
 		};
 
 		// インデントを揃えて書き出し
@@ -346,10 +323,11 @@ void GameMain::OpenNewStage()
 	if (m_nextScene != SCENE::RESULT || is_saveOnce) return;
 
 	// プレイ中のステージのコイン数をすべて獲得したら開く
-	if (CastSceneType<PlayScene>(m_nowScene)->GetCoinNum() == CastSceneType<PlayScene>(m_nowScene)->GetMaxCoinCount())
+	if (CastSceneType<PlayScene>(m_nowScene)->GetCoinNum() ==
+		CastSceneType<PlayScene>(m_nowScene)->GetMaxCoinCount())
 	{
 		// 全て解放していたら処理しない
-		m_safeStages -= m_safeStages > 0 ? 1 : 0;
+		m_safeNum -= m_safeNum > 0 ? 1 : 0;
 	}
 
 	// コイン数を加算

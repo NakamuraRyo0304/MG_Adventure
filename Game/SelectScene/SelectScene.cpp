@@ -27,11 +27,11 @@
 #include "SelectScene.h"
 
 // コンストラクタ
-SelectScene::SelectScene()
+SelectScene::SelectScene(const int& stageNum, const int& safeNum, const int& coins)
 	: IScene()					// 基底クラスの初期化
-	, m_stageNum{1}				// ステージ番号
-	, m_safeStages{}			// 未開放ステージ番号
-	, m_allCoins{}				// 合計コイン数
+	, m_stageNum{ stageNum }	// ステージ番号
+	, m_safeNum{ safeNum }		// 未開放ステージ番号
+	, m_allCoins{ coins }		// 合計コイン数
 	, m_useCoins{}				// 使用コイン数
 	, m_initCoins{}				// 開始コイン数
 	, m_targetY{}				// カメラのターゲットのY座標
@@ -204,7 +204,7 @@ void SelectScene::CreateWindowDependentResources()
 	m_selectUI->Create(GetSystemManager(),GetScreenSize());
 
 	// フォントオブジェクトの作成
-	m_fontObject = std::make_unique<FontObject>(GetFactoryManager(),m_safeStages, MAX_STAGE_NUM);
+	m_fontObject = std::make_unique<FontObject>(GetFactoryManager(),m_safeNum, MAX_STAGE_NUM);
 
 	// スカイドームモデルを作成する
 	m_selectSky = std::make_unique<SelectSky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
@@ -307,7 +307,7 @@ void SelectScene::ChangeStageNumber()
 	if (_input.Right || _input.D)
 	{
 		// ステージ番号が最大なら処理しない
-		if (m_stageNum == MAX_STAGE_NUM - 1 - m_safeStages) return;
+		if (m_stageNum == MAX_STAGE_NUM - 1 - m_safeNum) return;
 
 		// 選択音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);

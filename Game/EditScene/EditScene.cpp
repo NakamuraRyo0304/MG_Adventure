@@ -560,12 +560,6 @@ bool EditScene::IsCanSave()
 	}
 }
 
-// ファイルパスを取得
-const std::wstring& EditScene::GetFilePath()
-{
-	return m_mapLoader.GetFilePath();
-}
-
 // UndoRedoを実行
 void EditScene::DoUndoRedo()
 {

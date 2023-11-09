@@ -49,7 +49,7 @@ private:
 
 public:
 
-	ResultScene();
+	ResultScene(const int& stageNum, const int& coins, const float& clearTime);
 	~ResultScene();
 
 	/// <summary>
@@ -118,15 +118,8 @@ private:
 	void NextScene();
 
 public:
-
-	// クリアタイムの設定
-	void SetClearTime(const float& clearTime) { m_clearTime = clearTime; }
 	// マップ番号の取得
 	const int& GetStageNum() { return m_stageNum; }
-	// マップ番号の設定
-	void SetStageNum(const int& num) { m_stageNum = num; }
-	// コインの設定
-	void SetCoinNum(const int& coinNum) { m_coinNum = coinNum; }
 };
 
 #endif // RESULTSCENE

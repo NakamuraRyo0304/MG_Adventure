@@ -48,7 +48,7 @@ private: //---------------------------------------------------------------------
     int m_num;
 
     // 未開放ステージ番号を保存する
-    int m_safeStages;
+    int m_safeNum;
 
     // クリア時間を保存する
     float m_clearTime;

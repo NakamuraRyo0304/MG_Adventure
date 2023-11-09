@@ -35,14 +35,14 @@
 
 
 // コンストラクタ
-PlayScene::PlayScene()
+PlayScene::PlayScene(const int& stageNum, const int& coins)
 	: IScene()						// 基底クラスの初期化
+	, m_stageNum{ stageNum }		// ステージ番号
+	, m_allCoins{ coins }			// 保有コイン数
 	, m_startTimer{0.0f}			// 開始時間
 	, m_gameTimer{0.0f}				// 制限時間
 	, m_clearTime{0.0f}				// クリア時間
-	, m_allCoins{0}					// 保有コイン数
 	, m_mapLoad{}					// マップ
-	, m_stageNum{1}					// ステージ番号
 	, m_fallValue{0.0f}				// 落下用変数
 	, m_prevIndex{}					// 過去に当たったインデックス番号
 	, m_hitObj{}					// 当っているオブジェクトの格納
