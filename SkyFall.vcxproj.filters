@@ -260,6 +260,12 @@
     <Filter Include="Resources\Textures\RESULT_INFO">
       <UniqueIdentifier>{ce8e8b18-cb64-4c58-9c1a-17335cc519ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\PlaySky">
+      <UniqueIdentifier>{54b4c66c-8836-4749-803e-5bdcd6323ee7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\EditScene\Objects\EditSky">
+      <UniqueIdentifier>{555c8084-695c-419e-a637-9a374698df29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -424,6 +430,12 @@
     <ClInclude Include="Game\SelectScene\Objects\SelectSky.h">
       <Filter>Scenes\SelectScene\Objects\SelectSky</Filter>
     </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\PlaySky.h">
+      <Filter>Scenes\PlayScene\Objects\PlaySky</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\EditScene\Objects\EditSky.h">
+      <Filter>Scenes\EditScene\Objects\EditSky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -569,6 +581,12 @@
     </ClCompile>
     <ClCompile Include="Game\SelectScene\Objects\SelectSky.cpp">
       <Filter>Scenes\SelectScene\Objects\SelectSky</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\Objects\PlaySky.cpp">
+      <Filter>Scenes\PlayScene\Objects\PlaySky</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\EditScene\Objects\EditSky.cpp">
+      <Filter>Scenes\EditScene\Objects\EditSky</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

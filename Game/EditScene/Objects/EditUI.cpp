@@ -6,13 +6,9 @@
  */
 
 #include "pch.h"
-
 #include "../../../Libraries/SystemDatas/Input.h"
 #include "../../../Libraries/SystemManager/SystemManager.h"
-
-// ユーザーユーティリティ
 #include "Libraries/UserUtility.h"
-
 #include "EditUI.h"
 
 // コンストラクタ

@@ -6,25 +6,19 @@
  */
 
 #include "pch.h"
-
- // MementPatternの参考サイト
- //-------------------------------------------------------------------------------------//
- // 　REFACTORING・GURU様
- //   https://refactoring.guru/ja/design-patterns/memento
- //   shiraberu.tech様
- //   https://shiraberu.tech/2021/11/19/memento-patten/
- //-------------------------------------------------------------------------------------//
-
-// UI
 #include "Objects/EditUI.h"
-
-// マウスカーソル
+#include "Objects/EditSky.h"
 #include "System/MouseCursor.h"
-
-// クリア難易度チェッカー
 #include "System/ClearChecker.h"
-
 #include "EditScene.h"
+
+// MementPatternの参考サイト
+//-------------------------------------------------------------------------------------//
+// 　REFACTORING・GURU様
+//   https://refactoring.guru/ja/design-patterns/memento
+//   shiraberu.tech様
+//   https://shiraberu.tech/2021/11/19/memento-patten/
+//-------------------------------------------------------------------------------------//
 
 // コンストラクタ
 EditScene::EditScene()
@@ -38,7 +32,6 @@ EditScene::EditScene()
 	, m_coinModel{ nullptr }					// コイン
 	, m_cloudModel{ nullptr }					// 雲
 	, m_gravityModel{ nullptr }					// 重力
-	, m_skyDomeModel{ nullptr }					// モデル＿スカイドーム
 	, m_cursorPos{ SimpleMath::Vector3::Zero }	// カーソルの位置
 	, m_history{}								// ログ管理
 	, m_XZCheck{}								// XZのブロックの位置を求める
@@ -183,8 +176,7 @@ void EditScene::Draw()
 	}
 
 	// スカイドームの描画
-	SimpleMath::Matrix _skyMat = SimpleMath::Matrix::CreateRotationY(_timer * SKY_ROTATE_RATE);
-	m_skyDomeModel->Draw(_context, _states, _skyMat, _view, _projection);
+	m_skyDome->Draw(_states, _view, _projection, _timer);
 
 	// 画像の描画
 	m_editUI->Render();
@@ -245,7 +237,6 @@ void EditScene::Finalize()
 	_mf->VisitModelFactory()->DeleteModel(m_cloudModel);
 	_mf->VisitModelFactory()->DeleteModel(m_gravityModel);
 	_mf->VisitModelFactory()->DeleteModel(m_playerModel);
-	_mf->VisitModelFactory()->DeleteModel(m_skyDomeModel);
 	_mf->VisitModelFactory()->DeleteModel(m_noneModel);
 
 	_mf->LeaveModelFactory();
@@ -274,25 +265,8 @@ void EditScene::CreateWindowDependentResources()
 	CreateModels(GetFactoryManager());
 	GetFactoryManager()->LeaveModelFactory();
 
-	m_skyDomeModel->UpdateEffects([](IEffect* effect)
-		{
-			auto _lights = dynamic_cast<IEffectLights*>(effect);
-			if (_lights)
-			{
-				// ライトの数分回す
-				for (int i = 0; i < 3; ++i)
-				{
-					_lights->SetLightEnabled(i, false);
-				}
-			}
-			// 自己発光する
-			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (_basicEffect)
-			{
-				_basicEffect->SetEmissiveColor(Colors::White);
-			}
-		}
-	);
+	// スカイドームの作成
+	m_skyDome = std::make_unique<EditSky>(GetFactoryManager(), L"Resources/Models/EditSky.cmo");
 
 	// マウスカーソルの作成
 	m_mouseCursor = std::make_unique<MouseCursor>();
@@ -345,10 +319,6 @@ void EditScene::CreateModels(std::shared_ptr<FactoryManager> fm)
 
 	m_noneModel = // 消しゴムモデル
 		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Eraser.cmo");
-
-	m_skyDomeModel = // スカイドーム
-		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/EditSky.cmo");
-
 }
 
 // モデルの数をリセットする

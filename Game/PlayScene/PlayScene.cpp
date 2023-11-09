@@ -31,6 +31,9 @@
 // プレイカメラクラス(スタート演出用)
 #include "System/PlayCamera.h"
 
+// スカイドーム
+#include "Objects/PlaySky.h"
+
 #include "PlayScene.h"
 
 
@@ -47,9 +50,7 @@ PlayScene::PlayScene(const int& stageNum, const int& coins)
 	, m_prevIndex{}					// 過去に当たったインデックス番号
 	, m_hitObj{}					// 当っているオブジェクトの格納
 	, m_lastObj{}					// 最後に当たったオブジェクトを保存
-	, m_skyDomeModel{nullptr}		// スカイドームモデル
 	, m_lighting{}					// ライティング設定
-	, m_skyColor{}					// 空の変化
 	, is_hitCol{}					// 立方体当たり判定
 	, is_thirdPersonMode{false}		// サードパーソンモード
 	, is_helpFlag{false}			// ヘルプ表示フラグ
@@ -141,7 +142,7 @@ void PlayScene::Update()
 		m_gameTimer--;
 
 		// 空の処理
-		UpdateSky();
+		m_skyDome->Update(m_gameTimer / (TIME_LIMIT * FLAME_RATE));
 
 		// 時間が半分になったら合図を鳴らす
 		if (static_cast<int>(m_gameTimer / FLAME_RATE) == TIME_LIMIT / 2)
@@ -236,7 +237,6 @@ void PlayScene::Update()
 void PlayScene::Draw()
 {
 	// 描画関連
-	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
 	auto& _states = *GetSystemManager()->GetCommonStates();
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
@@ -273,26 +273,7 @@ void PlayScene::Draw()
 	m_player->Render(_states, _view, _projection, m_lighting);
 
 	// スカイドームの描画
-	SimpleMath::Matrix skyMat = SimpleMath::Matrix::CreateRotationY(_timer * SKY_ROT_SPEED);
-	m_skyDomeModel->Draw(_context, _states, skyMat, _view, _projection);
-	m_skyDomeModel->UpdateEffects([&](IEffect* effect)
-		{
-			// 色を徐々に暗くする
-			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (_basicEffect)
-			{
-				// 徐々に暗くなっていく
-				_basicEffect->SetEmissiveColor(
-					SimpleMath::Color{
-						m_skyColor.red,		 // 赤
-						m_skyColor.green,	 // 緑
-						m_skyColor.blue,	 // 青
-						1.0f				 // 透明度
-					}
-				);
-			}
-		}
-	);
+	m_skyDome->Draw(_states, _view, _projection, _timer);
 
 	// ビルボードの描画
 	if (!is_thirdPersonMode)
@@ -352,31 +333,8 @@ void PlayScene::CreateWindowDependentResources()
 	m_playCamera = std::make_unique<PlayCamera>(SimpleMath::Vector2(GetScreenSize().x, GetScreenSize().y));
 	m_playCamera->SetPosition(START_CAMERA_POS);
 
-	// モデルの作成
-	GetFactoryManager()->BuildModelFactory();
-
 	// スカイドームの作成
-	m_skyDomeModel =
-	std::move(GetFactoryManager()->VisitModelFactory()->GetCreateModel(L"Resources/Models/ShineSky.cmo"));
-	GetFactoryManager()->LeaveModelFactory();
-
-	m_skyDomeModel->UpdateEffects([](IEffect* effect)
-		{
-			auto _lights = dynamic_cast<IEffectLights*>(effect);
-			if (_lights)
-			{
-				_lights->SetLightEnabled(0, false);
-				_lights->SetLightEnabled(1, false);
-				_lights->SetLightEnabled(2, false);
-			}
-			// 自己発光する
-			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (_basicEffect)
-			{
-				_basicEffect->SetEmissiveColor(Colors::White);
-			}
-		}
-	);
+	m_skyDome = std::make_unique<PlaySky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
 
 	// プレイヤーの作成
 	MakePlayer();
@@ -411,9 +369,6 @@ void PlayScene::SetSceneValues()
 
 	// 死亡エフェクトを切る
 	m_playUI->SetEffectFlag(false);
-
-	// 空の色の初期化
-	m_skyColor = { 1.0f,1.0f,1.0f };
 
 	// サードパーソンモードを切る
 	is_thirdPersonMode = false;
@@ -532,17 +487,6 @@ void PlayScene::MoveStart()
 			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
 		)
 	);
-}
-
-// 空の更新
-void PlayScene::UpdateSky()
-{
-	m_skyColor =
-	{
-		m_gameTimer / (TIME_LIMIT * FLAME_RATE), // 赤
-		m_gameTimer / (TIME_LIMIT * FLAME_RATE), // 緑
-		m_gameTimer / (TIME_LIMIT * FLAME_RATE)  // 青
-	};
 }
 
 // UIの更新

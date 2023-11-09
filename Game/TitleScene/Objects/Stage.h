@@ -28,7 +28,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="factory">ファクトリマネージャ</param>
-	/// <param name="path">タイトルロゴモデルのパス</param>
+	/// <param name="path">ステージのモデルパス</param>
 	/// <returns>なし</returns>
 	Stage(std::shared_ptr<FactoryManager> factory, const wchar_t* path);
 	~Stage();

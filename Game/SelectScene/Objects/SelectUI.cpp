@@ -6,10 +6,7 @@
  */
 
 #include "pch.h"
-
-// システムマネージャ
 #include "Libraries/SystemManager/SystemManager.h"
-
 #include "SelectUI.h"
 
 // コンストラクタ

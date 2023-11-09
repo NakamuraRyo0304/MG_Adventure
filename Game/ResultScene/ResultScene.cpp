@@ -6,16 +6,9 @@
  */
 
 #include "pch.h"
-
- // CSV読み込み
 #include "Libraries/SystemDatas/MapLoad.h"
-
-// ブロック
 #include "../PlayScene/Objects/Blocks.h"
-
-// UI
 #include "Objects/ResultUI.h"
-
 #include "ResultScene.h"
 
 // コンストラクタ

@@ -6,9 +6,7 @@
  */
 
 #include "pch.h"
-
 #include "Libraries/SystemManager/SystemManager.h"
-
 #include "ThirdPersonCamera.h"
 
 // コンストラクタ

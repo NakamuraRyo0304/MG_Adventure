@@ -6,11 +6,11 @@
  */
 
 #include "pch.h"
-
 #include<regex>       // 文字列の置換に使用
 #include<sstream>     // ファイルの保存に使用
 #include<fstream>     // ファイルの保存に使用
 #include<shobjidl.h>  // ダイアログ操作に使用
+#include "MapLoad.h"
 
 // <shobjidl.h>の参考文献
 //-------------------------------------------------------------------------------------//
@@ -19,8 +19,6 @@
 //   https://learn.microsoft.com/ja-jp/windows/win32/api/shobjidl/
 // 　※ページ内リンク省略
 //-------------------------------------------------------------------------------------//
-
-#include "MapLoad.h"
 
 // コンストラクタ
 MapLoad::MapLoad()

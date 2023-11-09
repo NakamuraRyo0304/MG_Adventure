@@ -6,7 +6,6 @@
  */
 
 #include "pch.h"
-
 #include "FactoryManager.h"
 
 // コンストラクタ

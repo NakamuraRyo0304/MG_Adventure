@@ -6,10 +6,7 @@
  */
 
 #include "pch.h"
-
- // メメント
 #include "MementoMap.h"
-
 #include "EditorLog.h"
 
 // コンストラクタ

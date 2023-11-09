@@ -6,24 +6,12 @@
  */
 
 #include "pch.h"
-
 #include <thread>
-
-// マップローダー
 #include "Libraries/SystemDatas/MapLoad.h"
-
-// ブロックの作成
 #include "../PlayScene/Objects/Blocks.h"
-
-// UI
 #include "Objects/SelectUI.h"
-
-// フォントオブジェクト
 #include "Objects/FontObject.h"
-
-// スカイドーム
 #include "Objects/SelectSky.h"
-
 #include "SelectScene.h"
 
 // コンストラクタ

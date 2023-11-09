@@ -6,7 +6,6 @@
  */
 
 #include "pch.h"
-
 #include "TitleSky.h"
 
 // コンストラクタ

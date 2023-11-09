@@ -6,10 +6,8 @@
  */
 
 #include "pch.h"
-
 #include "Libraries/SystemDatas/ParticleUtility.h"
 #include "Libraries/FactoryManager/FactoryManager.h"
-
 #include "PlayerBill.h"
 
 // インプットレイアウトの設定

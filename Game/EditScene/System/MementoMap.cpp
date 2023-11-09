@@ -6,7 +6,6 @@
  */
 
 #include "pch.h"
-
 #include "MementoMap.h"
 
 // コンストラクタ

@@ -6,13 +6,10 @@
  */
 
 #include "pch.h"
-
-// 使用するライブラリ
 #include "Libraries/SystemManager/SystemManager.h"
 #include "Libraries/UserUtility.h"
 #include "Libraries/SystemDatas/Input.h"
 #include "Libraries/Factories/ModelFactory.h"
-
 #include "Player.h"
 
 // コンストラクタ

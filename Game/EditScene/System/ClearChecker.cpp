@@ -6,10 +6,7 @@
  */
 
 #include "pch.h"
-
-// ユーザユーティリティ
 #include "../../../Libraries/UserUtility.h"
-
 #include "ClearChecker.h"
 
 // コンストラクタ

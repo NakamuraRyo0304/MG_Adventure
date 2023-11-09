@@ -6,10 +6,7 @@
  */
 
 #include "pch.h"
-
-// ユーザーユーティリティ
 #include "../UserUtility.h"
-
 #include "Camera.h"
 
  // 定数の初期化

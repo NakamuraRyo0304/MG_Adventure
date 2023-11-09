@@ -16,6 +16,7 @@ class Player;
 class PlayerBill;
 class PlayUI;
 class PlayCamera;
+class PlaySky;
 class ThirdPersonCamera;
 class PlayScene final : public IScene
 {
@@ -27,15 +28,6 @@ private:
 	// 制限時間
 	float m_gameTimer;
 	float m_clearTime;
-
-	// 空の色遷移
-	struct Color
-	{
-		float red = 0.0f;
-		float green = 0.0f;
-		float blue = 0.0f;
-	};
-	Color m_skyColor;
 
 	// マップ
 	MapLoad m_mapLoad;
@@ -73,9 +65,6 @@ private:
 	// ブロック
 	std::unique_ptr<Blocks> m_blocks;
 
-	// モデル
-	std::unique_ptr<DirectX::Model> m_skyDomeModel;
-
 	// プレイヤーの目印（ビルボード）
 	std::unique_ptr<PlayerBill> m_playerBill;
 
@@ -88,6 +77,9 @@ private:
 	// スタートカメラ
 	std::unique_ptr<PlayCamera> m_playCamera;
 
+	// スカイドーム
+	std::unique_ptr<PlaySky> m_skyDome;
+
 private:
 
 	// 制限時間(秒数)
@@ -95,9 +87,6 @@ private:
 
 	// フレームレート
 	const float FLAME_RATE = 60.0f;
-
-	// スカイドームの回転速度
-	const float SKY_ROT_SPEED = 0.02f;
 
 	// マップサイズ(Stage)
 	const float COMMON_SIZE = 0.9f;
@@ -219,13 +208,6 @@ private:
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
 	void MoveStart();
-
-	/// <summary>
-	/// 空の更新
-	/// </summary>
-	/// <param name="引数無し"></param>
-	/// <returns>なし</returns>
-	void UpdateSky();
 
 	/// <summary>
 	/// UIの更新

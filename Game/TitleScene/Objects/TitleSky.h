@@ -29,7 +29,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="factory">ファクトリマネージャ</param>
-	/// <param name="path">タイトルロゴモデルのパス</param>
+	/// <param name="path">タイトルのスカイパス</param>
 	/// <returns>なし</returns>
 	TitleSky(std::shared_ptr<FactoryManager> factory, const wchar_t* path);
 	~TitleSky();

@@ -6,19 +6,10 @@
  */
 
 #include "pch.h"
-
-// タイトルロゴ
 #include "Objects/Logo.h"
-
-// ステージ
 #include "Objects/Stage.h"
-
-// スカイドーム
 #include "Objects/TitleSky.h"
-
-// UI
 #include "Objects/TitleUI.h"
-
 #include "TitleScene.h"
 
 // コンストラクタ

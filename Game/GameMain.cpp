@@ -6,15 +6,14 @@
  */
 
 #include "pch.h"
-
 #include "GameMain.h"
+#include "Libraries/Nlohmann/json.hpp" // Jsonファイルの入出力に使用
 
-// Jsonファイルの入出力に使用
-#include "Libraries/Nlohmann/json.hpp"
+// JSON for Modern C++
 //------------------------------------------------------------------------//
 // Jsonファイルのダウンロード先						                      //
 //																		  //
-// nlohmann/jsonを使用													  //
+// JSON for Modern C++(nlohmann/json)を使用								  //
 // https://github.com/nlohmann/json										  //
 //------------------------------------------------------------------------//
 

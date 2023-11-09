@@ -6,10 +6,7 @@
  */
 
 #include "pch.h"
-
-// モデルファクトリー
 #include "Libraries/FactoryManager/FactoryManager.h"
-
 #include "FontObject.h"
 
 // コンストラクタ

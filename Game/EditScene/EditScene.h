@@ -27,6 +27,7 @@
 using MAPSTATE = MapLoad::BOXSTATE;
 
 class ClearChecker;
+class EditSky;
 class EditUI;
 class MouseCursor;
 class EditScene final : public IScene
@@ -64,6 +65,9 @@ private:
 	// マウスカーソル
 	std::unique_ptr<MouseCursor> m_mouseCursor;
 
+	// スカイドーム
+	std::unique_ptr<EditSky> m_skyDome;
+
 	// XZ判定
 	DirectX::SimpleMath::Vector3 m_XZCheck;
 private:
@@ -78,7 +82,6 @@ private:
 	std::unique_ptr<DirectX::Model>m_coinModel;			// コインモデル
 	std::unique_ptr<DirectX::Model>m_cloudModel;		// 雲モデル
 	std::unique_ptr<DirectX::Model>m_gravityModel;		// 雲リセットモデル
-	std::unique_ptr<DirectX::Model>m_skyDomeModel;		// スカイドームモデル
 	std::unique_ptr<DirectX::Model>m_playerModel;		// プレイヤモデル
 
 private:

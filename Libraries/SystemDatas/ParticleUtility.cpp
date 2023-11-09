@@ -7,7 +7,6 @@
  */
 
 #include "pch.h"
-
 #include "ParticleUtility.h"
 
 static const float ENDLESS = -100.0f;

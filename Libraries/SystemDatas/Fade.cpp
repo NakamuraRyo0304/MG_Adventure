@@ -6,9 +6,7 @@
  */
 
 #include "pch.h"
-
 #include "Transition.h"
-
 #include "Fade.h"
 
 // コンストラクタ
