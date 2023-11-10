@@ -8,22 +8,8 @@
 #include "pch.h"
 #include "GameMain.h"
 #include "Libraries/Nlohmann/json.hpp" // Jsonファイルの入出力に使用
-
-// JSON for Modern C++
-//------------------------------------------------------------------------//
-// Jsonファイルのダウンロード先						                      //
-//																		  //
-// JSON for Modern C++(nlohmann/json)を使用								  //
-// https://github.com/nlohmann/json										  //
-//------------------------------------------------------------------------//
-
-// ファイル入出力に使用
-#include <fstream>
-
-// フェードオブジェクト
+#include <fstream>					   // ファイル入出力に使用
 #include "Libraries/SystemDatas/Fade.h"
-
-// ユーザーユーティリティ
 #include "Libraries/UserUtility.h"
 
 // TODO: シーン２：シーンのインクルード
@@ -32,6 +18,14 @@
 #include "Game/EditScene/EditScene.h"
 #include "Game/PlayScene/PlayScene.h"
 #include "Game/ResultScene/ResultScene.h"
+
+// JSON for Modern C++
+//------------------------------------------------------------------------//
+// Jsonファイルのダウンロード先						                      //
+//																		  //
+// JSON for Modern C++(nlohmann/json)を使用								  //
+// https://github.com/nlohmann/json										  //
+//------------------------------------------------------------------------//
 
 // コンストラクタ
 GameMain::GameMain()
@@ -115,7 +109,7 @@ void GameMain::Update()
 void GameMain::Draw()
 {
 	// 実態があれば描画
-	if (m_nowScene != nullptr)
+	if (m_nowScene)
 	{
 		m_nowScene->Draw();
 	}
@@ -134,7 +128,7 @@ void GameMain::Finalize()
 void GameMain::CreateScene()
 {
 	// シーンが作成されているときは処理しない
-	if (m_nowScene != nullptr) return;
+	if (m_nowScene) return;
 
 	// TODO: シーン３：シーンはここから追加
 	switch (m_nextScene)
@@ -205,7 +199,7 @@ void GameMain::CreateScene()
 void GameMain::DeleteScene()
 {
 	// シーンが作成されていなければ処理しない
-	if (!m_nowScene) return;
+	if (not m_nowScene) return;
 
 	switch (m_nextScene)
 	{

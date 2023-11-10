@@ -8,10 +8,10 @@
 #include "pch.h"
 #include <thread>
 #include "Libraries/SystemDatas/MapLoad.h"
-#include "../PlayScene/Objects/Blocks.h"
 #include "Objects/SelectUI.h"
 #include "Objects/FontObject.h"
 #include "Objects/SelectSky.h"
+#include "../CommonObjects/Blocks.h"
 #include "SelectScene.h"
 
 // コンストラクタ
@@ -39,14 +39,8 @@ void SelectScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	// カメラ視点移動を切る
-	GetSystemManager()->GetCamera()->SetEagleMode(false);
-
 	// 変数の初期化
 	SetSceneValues();
-
-	// BGMを鳴らす
-	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
 }
 
 // 更新処理
@@ -71,8 +65,8 @@ void SelectScene::Update()
 	// UIの更新
 	m_selectUI->Update((_key.D || _key.Right), (_key.A || _key.Left));
 
-	// エスケープで終了
-	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME); }
+	// エスケープでタイトルに戻る
+	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::TITLE); }
 
 	// コインの数を保存
 	m_allCoins = m_initCoins - static_cast<int>(m_useCoins);
@@ -205,6 +199,12 @@ void SelectScene::CreateWindowDependentResources()
 // シーン変数初期化関数
 void SelectScene::SetSceneValues()
 {
+	// カメラ視点移動を切る
+	GetSystemManager()->GetCamera()->SetEagleMode(false);
+
+	// BGMを鳴らす
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
+
 	// 見上げ距離
 	m_targetY = UP_VALUE;
 

@@ -7,8 +7,8 @@
 
 #include "pch.h"
 #include "Libraries/SystemDatas/MapLoad.h"
-#include "../PlayScene/Objects/Blocks.h"
 #include "Objects/ResultUI.h"
+#include "../CommonObjects/Blocks.h"
 #include "ResultScene.h"
 
 // コンストラクタ
@@ -36,14 +36,8 @@ void ResultScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	// カメラ視点移動
-	GetSystemManager()->GetCamera()->SetEagleMode(false);
-
 	// 変数の初期化
 	SetSceneValues();
-
-	// BGMを鳴らす
-	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_RESULT, true);
 }
 
 // 更新処理
@@ -88,9 +82,7 @@ void ResultScene::Update()
 
 	// UIの更新
 	m_resultUI->Update(static_cast<int>(m_clearTime));
-	// 現在選択中のシーンをセット
 	m_resultUI->SetSelecting(m_selectingScene);
-	// 獲得コイン数をセット
 	m_resultUI->SetCoins(m_coinNum);
 
 	// Spaceキーでシーン切り替え
@@ -172,6 +164,12 @@ void ResultScene::CreateWindowDependentResources()
 // シーン変数初期化関数
 void ResultScene::SetSceneValues()
 {
+	// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetEagleMode(false);
+
+	// BGMを鳴らす
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_RESULT, true);
+
 	// タイマーの保存
 	m_saveTime = m_clearTime;
 

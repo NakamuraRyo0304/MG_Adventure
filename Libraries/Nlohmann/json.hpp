@@ -17,7 +17,9 @@
 
 #ifndef INCLUDE_NLOHMANN_JSON_HPP_
 #define INCLUDE_NLOHMANN_JSON_HPP_
-#pragma warning(disable : 4061)
+#pragma warning(push)
+#pragma warning(disable:28020)
+#pragma warning(disable:26495)
 #include <algorithm> // all_of, find, for_each
 #include <cstddef> // nullptr_t, ptrdiff_t, size_t
 #include <functional> // hash, less
@@ -24673,5 +24675,5 @@ inline void swap(nlohmann::NLOHMANN_BASIC_JSON_TPL& j1, nlohmann::NLOHMANN_BASIC
 #undef JSON_HEDLEY_FALL_THROUGH
 
 
-
+#pragma warning(pop)
 #endif  // INCLUDE_NLOHMANN_JSON_HPP_

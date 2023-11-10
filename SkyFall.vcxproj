@@ -189,6 +189,7 @@
   <ItemGroup>
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Game\CommonObjects\Blocks.h" />
     <ClInclude Include="Game\EditScene\EditScene.h" />
     <ClInclude Include="Game\EditScene\Objects\EditSky.h" />
     <ClInclude Include="Game\EditScene\Objects\EditUI.h" />
@@ -198,10 +199,8 @@
     <ClInclude Include="Game\EditScene\System\MouseCursor.h" />
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
-    <ClInclude Include="Game\PlayScene\Objects\Blocks.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h" />
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
-    <ClInclude Include="Game\PlayScene\Objects\PlayerComponents\PlayerComponent.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlaySky.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h" />
     <ClInclude Include="Game\PlayScene\PlayScene.h" />
@@ -247,6 +246,7 @@
   <ItemGroup>
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game\CommonObjects\Blocks.cpp" />
     <ClCompile Include="Game\EditScene\EditScene.cpp" />
     <ClCompile Include="Game\EditScene\Objects\EditSky.cpp" />
     <ClCompile Include="Game\EditScene\Objects\EditUI.cpp" />
@@ -256,7 +256,6 @@
     <ClCompile Include="Game\EditScene\System\MouseCursor.cpp" />
     <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />
-    <ClCompile Include="Game\PlayScene\Objects\Blocks.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayerBill.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlaySky.cpp" />

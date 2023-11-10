@@ -155,9 +155,6 @@
     <Filter Include="Scenes\PlayScene\Objects\PlayerBill">
       <UniqueIdentifier>{4b2e6075-43f4-4486-91a2-c3f1622903f4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scenes\PlayScene\Objects\Blocks">
-      <UniqueIdentifier>{172a3131-3b9a-476c-9c20-86911f3cc348}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scenes\PlayScene\Objects\PlayUI">
       <UniqueIdentifier>{83720363-c958-4b84-8836-b0096f46d4f0}</UniqueIdentifier>
     </Filter>
@@ -239,9 +236,6 @@
     <Filter Include="Datas\Maps">
       <UniqueIdentifier>{6ec896aa-6999-4ce1-be9c-9921b424a5a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scenes\PlayScene\Objects\Player\PlayerComponents">
-      <UniqueIdentifier>{54560327-7ac1-4702-b69f-18ab9b15b4de}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scenes\IScene">
       <UniqueIdentifier>{972675d9-5a97-4792-95b5-af7e631221f2}</UniqueIdentifier>
     </Filter>
@@ -265,6 +259,21 @@
     </Filter>
     <Filter Include="Scenes\EditScene\Objects\EditSky">
       <UniqueIdentifier>{555c8084-695c-419e-a637-9a374698df29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CommonObjects">
+      <UniqueIdentifier>{a3624657-d825-4d67-913c-3e2173b8522b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\ResultScene\Objects\ResultUI">
+      <UniqueIdentifier>{de445229-722b-4e4a-888b-eccb73e41360}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\ResultScene\System">
+      <UniqueIdentifier>{70260c0c-8401-42f6-ad87-de9216bb0efb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\TitleScene\System">
+      <UniqueIdentifier>{c269dcae-0b1a-4ded-8c35-9557007b3493}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\SelectScene\System">
+      <UniqueIdentifier>{b68b386b-003b-4537-b5b7-5dcc4bd8ee0f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -349,9 +358,6 @@
     <ClInclude Include="Libraries\SystemDatas\ParticleUtility.h">
       <Filter>Common\ParticleUtility</Filter>
     </ClInclude>
-    <ClInclude Include="Game\PlayScene\Objects\Blocks.h">
-      <Filter>Scenes\PlayScene\Objects\Blocks</Filter>
-    </ClInclude>
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h">
       <Filter>Scenes\PlayScene\Objects\PlayUI</Filter>
     </ClInclude>
@@ -366,9 +372,6 @@
     </ClInclude>
     <ClInclude Include="SoundList.h">
       <Filter>Common\SoundEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\ResultScene\Objects\ResultUI.h">
-      <Filter>Scenes\ResultScene\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Game\EditScene\System\ClearChecker.h">
       <Filter>Scenes\EditScene\System\ClearChecker</Filter>
@@ -415,9 +418,6 @@
     <ClInclude Include="Game\TitleScene\Objects\ITitleObject.h">
       <Filter>Scenes\TitleScene\Objects\ITitleObject</Filter>
     </ClInclude>
-    <ClInclude Include="Game\PlayScene\Objects\PlayerComponents\PlayerComponent.h">
-      <Filter>Scenes\PlayScene\Objects\Player\PlayerComponents</Filter>
-    </ClInclude>
     <ClInclude Include="ReadData.h">
       <Filter>Common\HeaderOnly</Filter>
     </ClInclude>
@@ -435,6 +435,12 @@
     </ClInclude>
     <ClInclude Include="Game\EditScene\Objects\EditSky.h">
       <Filter>Scenes\EditScene\Objects\EditSky</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\CommonObjects\Blocks.h">
+      <Filter>CommonObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResultScene\Objects\ResultUI.h">
+      <Filter>Scenes\ResultScene\Objects\ResultUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -510,9 +516,6 @@
     <ClCompile Include="Libraries\SystemDatas\ParticleUtility.cpp">
       <Filter>Common\ParticleUtility</Filter>
     </ClCompile>
-    <ClCompile Include="Game\PlayScene\Objects\Blocks.cpp">
-      <Filter>Scenes\PlayScene\Objects\Blocks</Filter>
-    </ClCompile>
     <ClCompile Include="Game\PlayScene\Objects\PlayUI.cpp">
       <Filter>Scenes\PlayScene\Objects\PlayUI</Filter>
     </ClCompile>
@@ -524,9 +527,6 @@
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\SoundManager.cpp">
       <Filter>Common\SoundEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\ResultScene\Objects\ResultUI.cpp">
-      <Filter>Scenes\ResultScene\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Game\EditScene\System\ClearChecker.cpp">
       <Filter>Scenes\EditScene\System\ClearChecker</Filter>
@@ -587,6 +587,12 @@
     </ClCompile>
     <ClCompile Include="Game\EditScene\Objects\EditSky.cpp">
       <Filter>Scenes\EditScene\Objects\EditSky</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\CommonObjects\Blocks.cpp">
+      <Filter>CommonObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResultScene\Objects\ResultUI.cpp">
+      <Filter>Scenes\ResultScene\Objects\ResultUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

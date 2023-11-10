@@ -10,11 +10,11 @@
 #include "Libraries/SystemDatas/Collider.h"
 #include "Objects/PlayerBill.h"
 #include "Objects/Player.h"
-#include "Objects/Blocks.h"
 #include "Objects/PlayUI.h"
 #include "Objects/PlaySky.h"
 #include "System/ThirdPersonCamera.h"
 #include "System/PlayCamera.h"
+#include  "../CommonObjects/Blocks.h"
 #include "PlayScene.h"
 
 
@@ -50,15 +50,8 @@ void PlayScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	// カメラ視点移動
-	GetSystemManager()->GetCamera()->SetEagleMode(false);
-	GetSystemManager()->GetCamera()->SetArrowMode(false);
-
 	// 変数の初期化
 	SetSceneValues();
-
-	// BGMを鳴らす
-	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_PLAY, true);
 }
 
 // 更新処理
@@ -70,8 +63,8 @@ void PlayScene::Update()
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
 
-	// エスケープで終了
-	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
+	// エスケープでセレクトに戻る
+	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::SELECT);}
 
 	// UI表示中は以降処理しない
 	if (UpdateUI()) return;
@@ -257,7 +250,7 @@ void PlayScene::Draw()
 	m_skyDome->Draw(_states, _view, _projection, _timer);
 
 	// ビルボードの描画
-	if (!is_thirdPersonMode)
+	if (not is_thirdPersonMode)
 	{
 		m_playerBill->CreateBillboard(
 			GetSystemManager()->GetCamera()->GetTarget(),	// カメラの注視点
@@ -273,14 +266,7 @@ void PlayScene::Draw()
 	}
 
 	// UIの描画
-	if (m_playUI->IsCountDownEnd())
-	{
-		m_playUI->Render();
-	}
-	else
-	{
-		m_playUI->RenderCountDown(m_startTimer);
-	}
+	m_playUI->IsCountDownEnd() ? m_playUI->Render() : m_playUI->RenderCountDown(m_startTimer);
 }
 
 // 終了処理
@@ -336,6 +322,13 @@ void PlayScene::CreateWindowDependentResources()
 // シーン変数初期化関数
 void PlayScene::SetSceneValues()
 {
+	// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetEagleMode(false);
+	GetSystemManager()->GetCamera()->SetArrowMode(false);
+
+	// BGMを鳴らす
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_PLAY, true);
+
 	// 判定の初期化
 	m_hitObj.clear();
 

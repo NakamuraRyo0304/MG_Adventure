@@ -53,9 +53,6 @@ void EditScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	// カメラ視点移動を有効にする
-	GetSystemManager()->GetCamera()->SetEagleMode(m_editUI->GetCameraFlag());
-
 	// 変数の初期化
 	SetSceneValues();
 }
@@ -78,8 +75,8 @@ void EditScene::Update()
 	// マウスカーソルの位置を更新
 	m_mouseCursor->Update();
 
-	// エスケープで終了
-	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME);}
+	// エスケープでセレクトに戻る
+	if(_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::SELECT);}
 
 	// サウンド
 	auto& _sound = GetSystemManager()->GetSoundManager();
@@ -279,6 +276,9 @@ void EditScene::CreateWindowDependentResources()
 // シーン変数初期化関数
 void EditScene::SetSceneValues()
 {
+	// カメラ視点移動を有効にする
+	GetSystemManager()->GetCamera()->SetEagleMode(m_editUI->GetCameraFlag());
+
 	// 初期値は草ブロック
 	m_nowState = MAPSTATE::GRASS;
 
@@ -293,7 +293,7 @@ void EditScene::SetSceneValues()
 
 	// カメラの位置をマップの中心にする
 	SimpleMath::Vector2 _XZ = { m_mapLoader.MAP_COLUMN,m_mapLoader.MAP_RAW };
-	GetSystemManager()->GetCamera()->AddEyePosition(SimpleMath::Vector3{ _XZ.x / 2,4.0f,_XZ.y / 2 });
+	GetSystemManager()->GetCamera()->AddEyePosition(SimpleMath::Vector3{ _XZ.x / 2,3.0f,_XZ.y / 2 });
 
 	// XZ保存変数を初期化
 	m_XZCheck = SimpleMath::Vector3::Zero;

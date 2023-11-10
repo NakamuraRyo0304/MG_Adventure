@@ -32,14 +32,8 @@ void TitleScene::Initialize()
 	// 画面依存の初期化
 	CreateWindowDependentResources();
 
-	// カメラ視点移動
-	GetSystemManager()->GetCamera()->SetEagleMode(false);
-
 	// 変数の初期化
 	SetSceneValues();
-
-	// BGMを鳴らす
-	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
 }
 
 // 更新処理
@@ -138,13 +132,9 @@ void TitleScene::Draw()
 // 終了処理
 void TitleScene::Finalize()
 {
-	// UIの終了処理
 	m_stage->Finalize();
-	// UIの終了処理
 	m_logo->Finalize();
-	// UIの終了処理
 	m_titleSky->Finalize();
-	// UIの終了処理
 	m_titleUI->Finalize();
 }
 
@@ -176,6 +166,12 @@ void TitleScene::CreateWindowDependentResources()
 // シーン変数初期化関数
 void TitleScene::SetSceneValues()
 {
+	// カメラ視点移動
+	GetSystemManager()->GetCamera()->SetEagleMode(false);
+
+	// BGMを鳴らす
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
+
 	// ゲームを開始/ゲームを終了
 	is_menuFlag = true;
 }
