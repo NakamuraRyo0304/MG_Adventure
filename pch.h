@@ -89,6 +89,8 @@ namespace DX
 #include <deque>
 #include <list>
 #include <random>
+#include <future>
+#include <thread>
 
 using namespace DirectX;
 #include "Keyboard.h"                   // キーボード

@@ -26,7 +26,7 @@ EditScene::EditScene()
 	, m_mapLoader{}								// マップローダー
 	, m_mapObj{0}								// 格納配列
 	, m_nowState{}								// 現在のブロックの種類
-	, m_blockNum{0}								// オブジェクトの数
+	, m_blockCount{0}							// オブジェクトの数
 	, m_grassModel{ nullptr }					// 草
 	, m_noneModel{ nullptr }					// 消しゴム
 	, m_coinModel{ nullptr }					// コイン
@@ -182,11 +182,11 @@ void EditScene::Draw()
 	GetSystemManager()->GetString()->DrawFormatString(
 		_states, { 25,200 }, Colors::Yellow,SimpleMath::Vector2(1.5f),
 		L"Grass:%d\nCoin:%d\nCloud:%d\nGravity:%d\nPlayer:%d",
-		m_blockNum[MAPSTATE::GRASS],
-		m_blockNum[MAPSTATE::COIN],
-		m_blockNum[MAPSTATE::CLOUD],
-		m_blockNum[MAPSTATE::GRAVITY],
-		m_blockNum[MAPSTATE::PLAYER]
+		m_blockCount[MAPSTATE::GRASS],
+		m_blockCount[MAPSTATE::COIN],
+		m_blockCount[MAPSTATE::CLOUD],
+		m_blockCount[MAPSTATE::GRAVITY],
+		m_blockCount[MAPSTATE::PLAYER]
 	);
 
 	// マウスカーソルの描画
@@ -326,7 +326,7 @@ void EditScene::ResetObjNum()
 {
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		m_blockNum[m_mapObj[i].id] = 0;
+		m_blockCount[m_mapObj[i].id] = 0;
 	}
 }
 
@@ -335,7 +335,7 @@ void EditScene::CountObjNum()
 {
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		m_blockNum[m_mapObj[i].id]++;
+		m_blockCount[m_mapObj[i].id]++;
 	}
 }
 

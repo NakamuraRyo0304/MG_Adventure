@@ -52,6 +52,9 @@ private: //---------------------------------------------------------------------
 	// カメラの座標・加算用座標・注視点
 	DirectX::SimpleMath::Vector3 m_position, m_addPos, m_target;
 
+	// カメラの前方向
+	DirectX::SimpleMath::Vector3 m_forwardVector;
+
 	// カメラのクォータニオン
 	DirectX::SimpleMath::Quaternion m_quaternion;
 
@@ -133,6 +136,13 @@ public:
 	/// <param name="引数無し"></param>
 	/// <returns>注視点</returns>
 	const DirectX::SimpleMath::Vector3& GetTarget() { return m_target; }
+
+	/// <summary>
+	/// カメラの方向ベクトルを取得
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>向いている方向</returns>
+	const DirectX::SimpleMath::Vector3& GetForwardVector() { return m_forwardVector; }
 
 	/// <summary>
 	/// カメラのクォータニオンを取得

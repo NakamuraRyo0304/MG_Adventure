@@ -31,6 +31,7 @@ Camera::Camera()
 	, m_view{}					// ビュー行列
 	, m_projection{}			// プロジェクション行列
 	, m_rotateMatrix{}			// 回転量
+	, m_forwardVector{}			// カメラの前方向
 	, m_quaternion{}			// クォータニオン
 	, is_allowMode{ false }		// カメラの視点移動フラグ(十字操作)
 	, is_eagleMode{ false }		// カメラの視点移動フラグ(マウス操作)
@@ -203,6 +204,9 @@ void Camera::CalculateViewMatrix()
 
 	// 上下回転のみ制限
 	m_angle.x = UserUtility::Clamp(m_angle.x, ANGLE_X_MIN, ANGLE_X_MAX);
+
+	// カメラの前方向を計算
+	m_forwardVector = SimpleMath::Vector3::Transform(SimpleMath::Vector3::UnitZ, m_rotateMatrix.Invert());
 }
 
 // 拡大率変更

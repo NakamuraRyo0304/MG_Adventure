@@ -47,7 +47,7 @@ private:
 	std::wstring m_filePath;
 
 	// ブロックの数を保存する
-	int m_blockNum[MAPSTATE::LENGTH];
+	int m_blockCount[MAPSTATE::LENGTH];
 private:
 
 	// マップ

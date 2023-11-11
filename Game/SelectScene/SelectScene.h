@@ -9,11 +9,11 @@
 #ifndef SELECTSCENE
 #define	SELECTSCENE
 
-#include <future>
 #include "../IScene.h"
 
 class Blocks;
 class FontObject;
+class SelectCamera;
 class SelectSky;
 class SelectUI;
 class SelectScene final : public IScene
@@ -42,7 +42,10 @@ private:
 	std::unique_ptr<FontObject> m_fontObject;
 
 	// スカイドーム
-	std::unique_ptr<SelectSky> m_selectSky;
+	std::unique_ptr<SelectSky> m_skyDome;
+
+	// カメラ
+	std::unique_ptr<SelectCamera> m_selectCamera;
 
 	// コイン使用演出
 	float m_useCoins;
@@ -54,21 +57,8 @@ private:
 
 	const float MAX_FLASH = 180.0f;
 
-	// カメラアングル
-	const float CAMERA_ANGLE = 45.0f;
-	const float CAMERA_POS_Y = 30.0f;
-
 	// 最大ステージ数
 	const int MAX_STAGE_NUM = 6;
-
-	// カメラの回転半径
-	const float CAMERA_RADIUS = 4.0f;
-
-	// 視点の動作速度
-	const float UP_VALUE = 60.0f;
-	const float UP_SPAN = 0.25f;
-	const float UP_SPEED = 0.8f;
-	const float DOWN_SPEED = 0.7f;
 
 	// ステージ制作価格
 	const int STAGE_CREATE_PRICE = 10;
@@ -148,13 +138,6 @@ private:
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
 	void ChangeStageNumber();
-
-	/// <summary>
-	/// セレクト変更時の演出
-	/// </summary>
-	/// <param name="引数無し"></param>
-	/// <returns>なし</returns>
-	void DirectionSelectChange();
 
 public:
 	// ステージ番号の取得

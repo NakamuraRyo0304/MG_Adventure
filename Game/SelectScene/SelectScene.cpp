@@ -6,8 +6,8 @@
  */
 
 #include "pch.h"
-#include <thread>
 #include "Libraries/SystemDatas/MapLoad.h"
+#include "System/SelectCamera.h"
 #include "Objects/SelectUI.h"
 #include "Objects/FontObject.h"
 #include "Objects/SelectSky.h"
@@ -51,13 +51,10 @@ void SelectScene::Update()
 	auto _key = Keyboard::Get().GetState();
 
 	// カメラの更新
-	GetSystemManager()->GetCamera()->Update();
+	m_selectCamera->Update();
 
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
-
-	// 選択変更時の演出
-	DirectionSelectChange();
 
 	// ステージの変更
 	ChangeStageNumber();
@@ -129,20 +126,11 @@ void SelectScene::Draw()
 	// カメラ用行列
 	SimpleMath::Matrix _view, _proj;
 
-	// 回転量を計算
-	float _rotValueX = sinf(_timer * 0.5f);
-	float _rotValueZ = cosf(_timer * 0.5f);
-	// 上下移動量を計算
-	float _sinValue = (sinf(_timer) + 1.0f) * 1.5f;
-
 	// ビュー行列
-	SimpleMath::Vector3 _eye(CAMERA_RADIUS * _rotValueX,
-		CAMERA_POS_Y + _sinValue, CAMERA_RADIUS * _rotValueZ);
-	SimpleMath::Vector3 _target(0.0f, m_targetY, 0.0f);
-	_view = SimpleMath::Matrix::CreateLookAt(_eye, _target, SimpleMath::Vector3::Up);
+	_view = m_selectCamera->GetView();
 
 	// プロジェクション行列
-	_proj = GetSystemManager()->GetCamera()->GetProjection();
+	_proj = m_selectCamera->GetProjection();
 
 	// マップの描画
 	m_blocks[m_stageNum] != nullptr ? // 作成済みなら描画する
@@ -150,9 +138,9 @@ void SelectScene::Draw()
 			SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f }) : void();
 
 	// スカイドームの描画
-	m_selectSky->Draw(_states, _view, _proj, _timer);
+	m_skyDome->Draw(_states, _view, _proj, _timer);
 
-	// 点滅させる
+	// 文字の描画
 	m_fontObject->Render(_states, m_stageNum, _timer * 0.5f, _view, _proj);
 
 	// UIの描画
@@ -178,7 +166,7 @@ void SelectScene::CreateWindowDependentResources()
 	GetFactoryManager()->CreateFactory();
 
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
+	m_selectCamera = std::make_unique<SelectCamera>(GetScreenSize());
 
 	// UIの作成
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
@@ -189,7 +177,7 @@ void SelectScene::CreateWindowDependentResources()
 	m_fontObject = std::make_unique<FontObject>(GetFactoryManager(),m_safeNum, MAX_STAGE_NUM);
 
 	// スカイドームモデルを作成する
-	m_selectSky = std::make_unique<SelectSky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
+	m_skyDome = std::make_unique<SelectSky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
 
 	// 先に描画対象を作成し、他を裏で処理
 	CreateFirstStage();
@@ -204,9 +192,6 @@ void SelectScene::SetSceneValues()
 
 	// BGMを鳴らす
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
-
-	// 見上げ距離
-	m_targetY = UP_VALUE;
 
 	// コイン数をセット
 	m_selectUI->SetAllCoins(m_allCoins);
@@ -287,7 +272,7 @@ void SelectScene::CreateFirstStage()
 void SelectScene::ChangeStageNumber()
 {
 	// 切り替え可能なタイミングはここで変更
-	if (m_targetY >= UP_VALUE * UP_SPAN) return;
+	if (m_selectCamera->IsCanChange()) return;
 
 	// インプットの更新
 	auto _input = Keyboard::Get().GetState();
@@ -297,10 +282,12 @@ void SelectScene::ChangeStageNumber()
 		// ステージ番号が最大なら処理しない
 		if (m_stageNum == MAX_STAGE_NUM - 1 - m_safeNum) return;
 
+		// ターゲットの更新
+		m_selectCamera->MoveTarget();
+
 		// 選択音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 
-		m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, UP_SPEED);
 		m_stageNum++;
 	}
 	if (_input.Left || _input.A)
@@ -308,19 +295,12 @@ void SelectScene::ChangeStageNumber()
 		// ステージ番号が0なら処理しない
 		if (m_stageNum == 0) return;
 
+		// ターゲットの更新
+		m_selectCamera->MoveTarget();
+
 		// 選択音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 
-		m_targetY = UserUtility::Lerp(m_targetY, UP_VALUE, UP_SPEED);
 		m_stageNum--;
 	}
-}
-
-// ステージセレクト演出
-void SelectScene::DirectionSelectChange()
-{
-	// 動きが終わっていなければ見下げる
-	if (m_targetY > 1.0f) { m_targetY -= DOWN_SPEED; }
-	else if (m_targetY > 0.0f) { m_targetY -= DOWN_SPEED * 0.5f; }
-	else { m_targetY = 0.0f; }
 }

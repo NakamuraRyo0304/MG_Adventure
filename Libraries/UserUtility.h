@@ -10,6 +10,7 @@
 #define	USERUTILITY
 
 #include <iostream>
+#include <cmath>
 
 namespace UserUtility
 {
@@ -51,10 +52,14 @@ namespace UserUtility
 	template<typename T>
 	inline bool CheckPointInCircle(DirectX::SimpleMath::Vector2 center, T radius, DirectX::SimpleMath::Vector2 value)
 	{
-		T _distance = static_cast<T>(std::sqrt(std::pow(value.x - center.x, 2) +
-			std::pow(value.y - center.y, 2)));
+		// ベクトルの差分を計算
+		DirectX::SimpleMath::Vector2 diff = value - center;
 
-		return _distance <= radius;
+		// 距離の2乗を計算
+		T distanceSquared = static_cast<T>(diff.x * diff.x + diff.y * diff.y);
+
+		// 半径の2乗と比較
+		return distanceSquared <= (radius * radius);
 	}
 
 	/// <summary>
@@ -65,14 +70,40 @@ namespace UserUtility
 	/// <param name="value">判定したい点の位置</param>
 	/// <returns>範囲内でTrue</returns>
 	template<typename T>
-	inline bool CheckPointInSphere(DirectX::SimpleMath::Vector3 center, T radius, DirectX::SimpleMath::Vector3 value)
+	inline bool CheckPointInSphere(const DirectX::SimpleMath::Vector3& center, T radius, const DirectX::SimpleMath::Vector3& value)
 	{
-		T _distance = static_cast<T>(std::sqrt(std::pow(value.x - center.x, 2) +
-								    std::pow(value.y - center.y, 2) +
-								    std::pow(value.z - center.z, 2)));
-		return _distance <= radius;
+		// 距離の2乗を計算
+		T distanceSquared = static_cast<T>((value.x - center.x) * (value.x - center.x) +
+			(value.y - center.y) * (value.y - center.y) +
+			(value.z - center.z) * (value.z - center.z));
+
+		// 半径の2乗と比較
+		return distanceSquared <= (radius * radius);
 	}
 
+	/// <summary>
+	/// 2Dベクトルの方向を求める関数
+	/// </summary>
+	/// <param name="vector">求めたいベクトル</param>
+	/// <returns>方向ベクトル</returns>
+	template<typename T>
+	inline float GetVectorDirection(const DirectX::SimpleMath::Vector2& vector)
+	{
+		return std::atan2(vector.y, vector.x);
+	}
 
+	/// <summary>
+	/// 3Dベクトルの方向を求める関数
+	/// </summary>
+	/// <param name="vector">求めたいベクトル</param>
+	/// <returns>方向ベクトル</returns>
+	template<typename T>
+	inline DirectX::SimpleMath::Vector3 GetVectorDirection(const DirectX::SimpleMath::Vector3& vector)
+	{
+		float pitch = std::asin(vector.y);
+		float yaw = std::atan2(vector.x, vector.z);
+
+		return DirectX::SimpleMath::Vector3(pitch, yaw, 0.0f);
+	}
 }
 #endif // USERUTILITY

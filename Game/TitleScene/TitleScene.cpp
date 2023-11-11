@@ -109,9 +109,9 @@ void TitleScene::Draw()
 	}
 
 	// ビュー行列
-	SimpleMath::Vector3 eye(0.0f, m_logo->GetPosition().y, 8.0f);
-	m_titleSky->SetPositionY(eye.y);
-	_view = SimpleMath::Matrix::CreateLookAt(eye, SimpleMath::Vector3::Zero, SimpleMath::Vector3::Up);
+	SimpleMath::Vector3 _eye(0.0f, m_logo->GetPosition().y, 8.0f);
+	m_titleSky->SetPositionY(_eye.y);
+	_view = SimpleMath::Matrix::CreateLookAt(_eye, SimpleMath::Vector3::Zero, SimpleMath::Vector3::Up);
 
 	// プロジェクション行列
 	_projection = GetSystemManager()->GetCamera()->GetProjection();
