@@ -9,34 +9,16 @@
 #ifndef SELECTCAMERA
 #define SELECTCAMERA
 
-class SelectCamera
+#include "../../CommonObjects/IGameCamera.h"
+
+class SelectCamera : public IGameCamera
 {
 private:
-
-	// カメラ行列
-	DirectX::SimpleMath::Matrix m_view;
-	DirectX::SimpleMath::Matrix m_projection;
-
-	// カメラポジション
-	DirectX::SimpleMath::Vector3 m_position;
-	DirectX::SimpleMath::Vector3 m_target;
-
-	// スクリーンサイズ
-	DirectX::SimpleMath::Vector2 m_screenSize;
 
 	// 切り替え可能か判定する
 	bool is_canChangeFlag;
 
 private:
-
-	// カメラの最近距離
-	const float NEAR_PLANE = 0.1f;
-
-	// カメラの最遠距離
-	const float FAR_PLANE = 245.0f;
-
-	// カメラアングル
-	const float ANGLE = 45.0f;
 
 	// カメラのY座標
 	const float POS_Y = 30.0f;
@@ -69,7 +51,7 @@ public:
 	/// </summary>
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
-	void Update();
+	void Update() override;
 	/// <summary>
 	/// カメラのターゲットの更新
 	/// </summary>
@@ -78,27 +60,6 @@ public:
 	void MoveTarget();
 	// 切り替え可能か判定を返す
 	const bool& IsCanChange(){ return is_canChangeFlag;}
-	// ビュー行列を取得
-	const DirectX::SimpleMath::Matrix& GetView() { return m_view; }
-	// プロジェクション行列を取得
-	const DirectX::SimpleMath::Matrix& GetProjection() { return m_projection; }
-	// 座標を取得
-	const DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
-	// 座標を設定
-	void SetPosition(const DirectX::SimpleMath::Vector3& pos = { 0.f,1.f,1.f }) { m_position = pos; }
-	// 注視点を取得
-	const DirectX::SimpleMath::Vector3& GetTarget() { return m_target; }
-	// 注視点を設定
-	void SetTarget(const DirectX::SimpleMath::Vector3& target = DirectX::SimpleMath::Vector3::Zero) { m_target = target; }
-
-private:
-
-	/// <summary>
-	/// プロジェクションを作成
-	/// </summary>
-	/// <param name="引数無し"></param>
-	/// <returns>なし</returns>
-	void CreateProjection();
 
 };
 

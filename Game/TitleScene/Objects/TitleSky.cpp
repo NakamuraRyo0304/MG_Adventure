@@ -11,7 +11,8 @@
 // コンストラクタ
 TitleSky::TitleSky(std::shared_ptr<FactoryManager> factory, const wchar_t* path)
 	: ITitleObject()
-	, m_posY{0.0f}				// Y座標
+	, m_position{}				// 座標
+	, m_timer{}					// タイマー
 	, is_startFlag{ false }		// 開始フラグ
 {
 	auto _mf = factory;
@@ -52,7 +53,7 @@ TitleSky::~TitleSky()
 // 更新処理
 void TitleSky::Update()
 {
-
+	m_timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 }
 
 // 描画処理
@@ -60,19 +61,15 @@ void TitleSky::Render(CommonStates& states, const SimpleMath::Matrix& view, cons
 {
 	// コンテキストを取得
 	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
-	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// 行列を計算
 	SimpleMath::Matrix _world = SimpleMath::Matrix::Identity;
 
-	// 移動、回転行列
-	SimpleMath::Matrix _trans, _rotX;
-
 	// 回転行列
-	_rotX = SimpleMath::Matrix::CreateRotationX(_timer * 2.0f);
+	SimpleMath::Matrix _rotX = SimpleMath::Matrix::CreateRotationX(m_timer * 2.0f);
 
 	// 移動行列
-	_trans = SimpleMath::Matrix::CreateTranslation(0.0f, m_posY ,8.0f);
+	SimpleMath::Matrix _trans = SimpleMath::Matrix::CreateTranslation(0.0f, m_position.y ,8.0f);
 
 	// スカイドーム
 	_world *= _rotX;

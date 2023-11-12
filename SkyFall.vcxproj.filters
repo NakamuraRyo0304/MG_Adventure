@@ -448,6 +448,12 @@
     <ClInclude Include="Game\SelectScene\System\SelectCamera.h">
       <Filter>Scenes\SelectScene\System\SelectCamera</Filter>
     </ClInclude>
+    <ClInclude Include="Game\CommonObjects\IGameCamera.h">
+      <Filter>CommonObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\TitleScene\System\TitleCamera.h">
+      <Filter>Scenes\TitleScene\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -602,6 +608,12 @@
     </ClCompile>
     <ClCompile Include="Game\SelectScene\System\SelectCamera.cpp">
       <Filter>Scenes\SelectScene\System\SelectCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\CommonObjects\IGameCamera.cpp">
+      <Filter>CommonObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\TitleScene\System\TitleCamera.cpp">
+      <Filter>Scenes\TitleScene\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

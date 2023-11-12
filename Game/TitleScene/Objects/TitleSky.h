@@ -17,11 +17,14 @@ private:
 
 	std::unique_ptr<DirectX::Model> m_model;
 
+	// 座標
+	DirectX::SimpleMath::Vector3 m_position;
+
+	// タイマー
+	float m_timer;
+
 	// スタートフラグ
 	bool is_startFlag;
-
-	// Y座標
-	float m_posY;
 
 public:
 
@@ -61,8 +64,8 @@ public:
 	// スタートフラグを設定
 	void SetStartFlag(const bool& flag) { is_startFlag = flag; }
 
-	// Y座標を設定
-	void SetPositionY(const float& y) { m_posY = y; }
+	// 座標を設定
+	void SetPosition(const DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
 };
 
 #endif // TITLESKY

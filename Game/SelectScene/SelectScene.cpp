@@ -50,7 +50,7 @@ void SelectScene::Update()
 	auto& _input = Input::GetInstance();
 	auto _key = Keyboard::Get().GetState();
 
-	// カメラの更新
+	// セレクトカメラの更新
 	m_selectCamera->Update();
 
 	// サウンドの更新
@@ -96,13 +96,6 @@ void SelectScene::Update()
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
 
-#ifdef _DEBUG	// デバッグ中はコインを増やせる
-	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Enter))
-	{
-		m_allCoins = 999;
-		m_initCoins = m_allCoins;
-	}
-#endif
 	// コイン演出
 	if (is_selectEdit)
 	{
@@ -187,9 +180,6 @@ void SelectScene::CreateWindowDependentResources()
 // シーン変数初期化関数
 void SelectScene::SetSceneValues()
 {
-	// カメラ視点移動を切る
-	GetSystemManager()->GetCamera()->SetEagleMode(false);
-
 	// BGMを鳴らす
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_TITLESELECT, true);
 

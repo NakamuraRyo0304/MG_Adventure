@@ -13,14 +13,11 @@
 
 class Logo;
 class Stage;
+class TitleCamera;
 class TitleSky;
 class TitleUI;
 class TitleScene final : public IScene
 {
-private:
-	// カメラアングル
-	const float CAMERA_ANGLE = 45.0f;
-
 private:
 
 	// UI
@@ -34,6 +31,9 @@ private:
 
 	// スカイドーム
 	std::unique_ptr<TitleSky> m_titleSky;
+
+	// カメラ
+	std::unique_ptr<TitleCamera> m_camera;
 
 	// 決定判定
 	bool is_startFlag;

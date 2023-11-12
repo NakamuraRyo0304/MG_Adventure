@@ -10,6 +10,7 @@
 #include "Objects/Stage.h"
 #include "Objects/TitleSky.h"
 #include "Objects/TitleUI.h"
+#include "System/TitleCamera.h"
 #include "TitleScene.h"
 
 // コンストラクタ
@@ -42,8 +43,9 @@ void TitleScene::Update()
 	// インプットの更新
 	auto& _input = Input::GetInstance();
 
-	// カメラの更新
-	GetSystemManager()->GetCamera()->Update();
+	// タイトルカメラの更新
+	m_camera->Update();
+	m_camera->SetLogoPosition(m_logo->GetPosition());
 
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
@@ -90,6 +92,8 @@ void TitleScene::Update()
 	// UIの更新
 	m_titleUI->Update(is_menuFlag);
 
+	// スカイドームの更新
+	m_titleSky->SetPosition(m_camera->GetPosition());
 }
 
 // 描画処理
@@ -109,12 +113,10 @@ void TitleScene::Draw()
 	}
 
 	// ビュー行列
-	SimpleMath::Vector3 _eye(0.0f, m_logo->GetPosition().y, 8.0f);
-	m_titleSky->SetPositionY(_eye.y);
-	_view = SimpleMath::Matrix::CreateLookAt(_eye, SimpleMath::Vector3::Zero, SimpleMath::Vector3::Up);
+	_view = m_camera->GetView();
 
 	// プロジェクション行列
-	_projection = GetSystemManager()->GetCamera()->GetProjection();
+	_projection = m_camera->GetProjection();
 
 	// ステージを描画
 	m_stage->Render(_states, _view, _projection);
@@ -146,7 +148,7 @@ void TitleScene::CreateWindowDependentResources()
 	GetFactoryManager()->CreateFactory();
 
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
+	m_camera = std::make_unique<TitleCamera>(GetScreenSize());
 
 	// UIの初期化
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
@@ -175,4 +177,3 @@ void TitleScene::SetSceneValues()
 	// ゲームを開始/ゲームを終了
 	is_menuFlag = true;
 }
-
