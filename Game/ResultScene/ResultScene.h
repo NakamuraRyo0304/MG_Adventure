@@ -12,6 +12,7 @@
 #include "../IScene.h"
 
 class Blocks;
+class ResultCamera;
 class ResultUI;
 class ResultScene final : public IScene
 {
@@ -32,12 +33,6 @@ private:
 	// アニメーションフラグ
 	bool is_animEnd;
 
-	// ブロック
-	std::unique_ptr<Blocks> m_blocks;
-
-	// UI
-	std::unique_ptr<ResultUI> m_resultUI;
-
 	// マップ番号
 	int m_stageNum;
 
@@ -46,6 +41,17 @@ private:
 
 	// 最大秒数
 	const int MAX_TIME = 60;
+
+private:
+
+	// ブロック
+	std::unique_ptr<Blocks> m_blocks;
+
+	// UI
+	std::unique_ptr<ResultUI> m_resultUI;
+
+	// カメラ
+	std::unique_ptr<ResultCamera> m_camera;
 
 public:
 
@@ -116,6 +122,13 @@ private:
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
 	void NextScene();
+
+	/// <summary>
+	/// メニューセレクト
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void SelectMenu();
 
 public:
 	// マップ番号の取得

@@ -209,6 +209,7 @@
     <ClInclude Include="Game\PlayScene\System\ThirdPersonCamera.h" />
     <ClInclude Include="Game\ResultScene\Objects\ResultUI.h" />
     <ClInclude Include="Game\ResultScene\ResultScene.h" />
+    <ClInclude Include="Game\ResultScene\System\ResultCamera.h" />
     <ClInclude Include="Game\SelectScene\Objects\FontObject.h" />
     <ClInclude Include="Game\SelectScene\Objects\SelectSky.h" />
     <ClInclude Include="Game\SelectScene\Objects\SelectUI.h" />
@@ -269,6 +270,7 @@
     <ClCompile Include="Game\PlayScene\System\ThirdPersonCamera.cpp" />
     <ClCompile Include="Game\ResultScene\Objects\ResultUI.cpp" />
     <ClCompile Include="Game\ResultScene\ResultScene.cpp" />
+    <ClCompile Include="Game\ResultScene\System\ResultCamera.cpp" />
     <ClCompile Include="Game\SelectScene\Objects\FontObject.cpp" />
     <ClCompile Include="Game\SelectScene\Objects\SelectSky.cpp" />
     <ClCompile Include="Game\SelectScene\Objects\SelectUI.cpp" />

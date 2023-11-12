@@ -93,6 +93,7 @@ void TitleScene::Update()
 	m_titleUI->Update(is_menuFlag);
 
 	// スカイドームの更新
+	m_titleSky->Update();
 	m_titleSky->SetPosition(m_camera->GetPosition());
 }
 

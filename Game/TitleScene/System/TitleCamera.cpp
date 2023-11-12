@@ -1,5 +1,5 @@
 /*
- *	@File	TitleCamera.h
+ *	@File	TitleCamera.cpp
  *	@Brief	タイトルシーンのカメラクラス。
  *	@Date	2023-11-11
  *  @Author NakamuraRyo

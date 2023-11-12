@@ -454,6 +454,9 @@
     <ClInclude Include="Game\TitleScene\System\TitleCamera.h">
       <Filter>Scenes\TitleScene\System</Filter>
     </ClInclude>
+    <ClInclude Include="Game\ResultScene\System\ResultCamera.h">
+      <Filter>Scenes\ResultScene\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -614,6 +617,9 @@
     </ClCompile>
     <ClCompile Include="Game\TitleScene\System\TitleCamera.cpp">
       <Filter>Scenes\TitleScene\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\ResultScene\System\ResultCamera.cpp">
+      <Filter>Scenes\ResultScene\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

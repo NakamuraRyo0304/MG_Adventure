@@ -8,6 +8,7 @@
 #include "pch.h"
 #include "Libraries/SystemDatas/MapLoad.h"
 #include "Objects/ResultUI.h"
+#include "System/ResultCamera.h"
 #include "../CommonObjects/Blocks.h"
 #include "ResultScene.h"
 
@@ -46,8 +47,8 @@ void ResultScene::Update()
 	// インプットの更新
 	auto& _input = Input::GetInstance();
 
-	// カメラの更新
-	GetSystemManager()->GetCamera()->Update();
+	// リザルトカメラの更新
+	m_camera->Update();
 
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
@@ -59,31 +60,10 @@ void ResultScene::Update()
 	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Escape)) { ChangeScene(SCENE::ENDGAME); }
 
 	// メニューセレクト
-	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Right) ||
-	    _input.GetKeyTrack()->IsKeyReleased(Keyboard::D))
-	{
-		// フェード中は処理しない
-		if (GetFadeValue() >= 0.7f) return;
-
-		m_selectingScene++;
-		m_selectingScene = m_selectingScene ==  3 ? SELECTION::NEXT : m_selectingScene;
-		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
-	}
-	else if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Left) ||
-			 _input.GetKeyTrack()->IsKeyReleased(Keyboard::A))
-	{
-		// フェード中は処理しない
-		if (static_cast<int>(GetFadeValue()) != 0) return;
-
-		m_selectingScene--;
-		m_selectingScene = m_selectingScene == -1 ? SELECTION::SELECT : m_selectingScene;
-		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
-	}
+	SelectMenu();
 
 	// UIの更新
 	m_resultUI->Update(static_cast<int>(m_clearTime));
-	m_resultUI->SetSelecting(m_selectingScene);
-	m_resultUI->SetCoins(m_coinNum);
 
 	// Spaceキーでシーン切り替え
 	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Space))
@@ -110,14 +90,10 @@ void ResultScene::Draw()
 	SimpleMath::Matrix  _view, _projection;
 
 	// ビュー行列
-	SimpleMath::Vector3    _eye(cosf(_timer), 20.0f + sinf(_timer) * 2.0f, 10.0f);
-	SimpleMath::Vector3     _up(0.0f, 5.0f, 0.0f);
-	SimpleMath::Vector3 _target(0.0f, -10.0f, -5.0f);
-
-	_view = SimpleMath::Matrix::CreateLookAt(_eye, _target, _up);
+	_view = m_camera->GetView();
 
 	// プロジェクション行列
-	_projection = GetSystemManager()->GetCamera()->GetProjection();
+	_projection = m_camera->GetProjection();
 
 	// マップの描画
 	m_blocks->Render(_states, _view, _projection, _timer, SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f });
@@ -145,7 +121,7 @@ void ResultScene::CreateWindowDependentResources()
 	GetFactoryManager()->CreateFactory();
 
 	// カメラの設定
-	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, 45.0f);
+	m_camera = std::make_unique<ResultCamera>(GetScreenSize());
 
 	// UIの作成
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
@@ -181,6 +157,9 @@ void ResultScene::SetSceneValues()
 
 	// アニメーションのフラグ
 	is_animEnd = false;
+
+	// コインを設定
+	m_resultUI->SetCoins(m_coinNum);
 }
 
 // モデルの作成
@@ -247,4 +226,34 @@ void ResultScene::NextScene()
 	default:
 		break;
 	}
+}
+
+// メニュー選択
+void ResultScene::SelectMenu()
+{
+	// インプット取得
+	auto& _input = Input::GetInstance();
+	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Right) ||
+		_input.GetKeyTrack()->IsKeyReleased(Keyboard::D))
+	{
+		// フェード中は処理しない
+		if (GetFadeValue() >= 0.7f) return;
+
+		m_selectingScene++;
+		m_selectingScene = m_selectingScene == 3 ? SELECTION::NEXT : m_selectingScene;
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
+	}
+	else if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Left) ||
+		_input.GetKeyTrack()->IsKeyReleased(Keyboard::A))
+	{
+		// フェード中は処理しない
+		if (static_cast<int>(GetFadeValue()) != 0) return;
+
+		m_selectingScene--;
+		m_selectingScene = m_selectingScene == -1 ? SELECTION::SELECT : m_selectingScene;
+		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
+	}
+
+	// シーンを設定
+	m_resultUI->SetSelecting(m_selectingScene);
 }

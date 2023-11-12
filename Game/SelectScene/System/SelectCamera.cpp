@@ -15,7 +15,7 @@ SelectCamera::SelectCamera(const SimpleMath::Vector2& screenSize)
 	, is_canChangeFlag{ false }		// ‰æ–ÊØ‚è‘Ö‚¦‰Â”\‚©‚ð”»’è
 {
 	SetPosition(SimpleMath::Vector3(0.0f, POS_Y, 0.0f));
-	SetTarget(SimpleMath::Vector3(UP_VALUE, 0.0f, 0.0f));
+	SetTarget(SimpleMath::Vector3(LOOK_VALUE, 0.0f, 0.0f));
 	SetInitialPosition(GetPosition());
 }
 
@@ -28,7 +28,7 @@ SelectCamera::~SelectCamera()
 void SelectCamera::Update()
 {
 	// Ø‚è‘Ö‚¦‰Â”\‚È‚çTrue‚É‚·‚é
-	is_canChangeFlag = (GetTarget().x >= UP_VALUE * UP_SPAN);
+	is_canChangeFlag = (GetTarget().x >= LOOK_VALUE * LOOK_SPAN);
 
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
@@ -54,7 +54,7 @@ void SelectCamera::Update()
 void SelectCamera::MoveTarget()
 {
 	SetTarget(SimpleMath::Vector3(
-			UserUtility::Lerp(GetTarget().x, UP_VALUE, UP_SPEED),
+			UserUtility::Lerp(GetTarget().x, LOOK_VALUE, LOOK_SPEED),
 			0.0f,
 			0.0f
 	));
