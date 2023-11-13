@@ -11,9 +11,6 @@
 // インプットレイアウトの設定
 #pragma region INPUT_LAYOUT
 
-auto VDATA = D3D11_INPUT_PER_VERTEX_DATA; // 頂点データ
-using S3 = SimpleMath::Vector3;			   // Vector3
-using S4 = SimpleMath::Vector4;			   // Vector4
 const std::vector<D3D11_INPUT_ELEMENT_DESC> Transition::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,	 0, 0,						 VDATA, 0 },

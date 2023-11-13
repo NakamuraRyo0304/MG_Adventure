@@ -26,7 +26,16 @@ namespace UserUtility
 	{
 		return a + t * (b - a);
 	}
-
+	// イーズインアウト補完関数
+	inline float EaseInOut(float t)
+	{
+		return 1.0f - static_cast<float>(cos(t * M_PI));
+	}
+	// イーズインアウト補完を考慮したLerp関数
+	inline float EaseInOutLerp(float a, float b, float t)
+	{
+		return a + (b - a) * EaseInOut(t);
+	}
 	/// <summary>
 	/// クランプ関数
 	/// </summary>

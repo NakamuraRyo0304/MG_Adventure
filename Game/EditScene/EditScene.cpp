@@ -179,8 +179,9 @@ void EditScene::Draw()
 	m_editUI->Render();
 
 	// デバッグ情報を表示
+	SimpleMath::Vector2 _rate = GetScreenSize() / GetFullScreenSize();
 	GetSystemManager()->GetString()->DrawFormatString(
-		_states, { 25,200 }, Colors::Yellow,SimpleMath::Vector2(1.5f),
+		_states, { 25 * _rate.x,200 * _rate.y }, Colors::Yellow, SimpleMath::Vector2(1.5f * _rate),
 		L"Grass:%d\nCoin:%d\nCloud:%d\nGravity:%d\nPlayer:%d",
 		m_blockCount[MAPSTATE::GRASS],
 		m_blockCount[MAPSTATE::COIN],
@@ -349,7 +350,6 @@ void EditScene::ClickIcons()
 	if (m_editUI->GetSaveFlag() &&
 		_input.GetMouseTrack()->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
-		// 要素チェックして保存可能なら実行
 		if (IsCanSave())
 		{
 			_sound->PlaySound(XACT_WAVEBANK_SKBX_SE_ICONTAP, false);
@@ -464,7 +464,7 @@ void EditScene::LoadMap(std::wstring filename)
 // ファイル書き出し
 void EditScene::SaveFile()
 {
-	m_mapLoader.WriteMap(m_mapObj);		// ファイルの書き出し
+	m_mapLoader.WriteMap(m_mapObj);
 }
 
 // 要素チェック
@@ -478,7 +478,7 @@ bool EditScene::IsCanSave()
 	if (m_checker->RunCheck())
 	{
 		// クリアしやすいかチェックし、難しければ警告を出す
-		if (!m_checker->GetClearPossibility())
+		if (not m_checker->GetClearPossibility())
 		{
 			if (MessageBox(NULL,
 				TEXT("必要条件は満たしていますが、\nコインの数が多いか、離れているためクリアが困難な可能性があります。"),
@@ -511,12 +511,12 @@ bool EditScene::IsCanSave()
 			MessageBox(NULL, TEXT("コインを設置してください。"),
 				TEXT("報告"), MB_OK);
 		}
-		if (m_checker->GetCloudFlag() == false)
+		if (not m_checker->GetCloudFlag())
 		{
 			MessageBox(NULL, TEXT("全ての雲の位置がプレイヤーより高いです。\n上に上がるには下に設置する必要があります。"),
 				TEXT("報告"), MB_OK);
 		}
-		if (m_checker->GetCanStart() == false)
+		if (not m_checker->GetCanStart())
 		{
 			MessageBox(NULL, TEXT("プレイヤーの下にブロックがないため、スタートできません。"),
 				TEXT("報告"), MB_OK);

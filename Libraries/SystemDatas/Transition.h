@@ -47,6 +47,10 @@ private:
 	// コンスタントバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constBuffer;
 
+	// 頂点データ
+	static const D3D11_INPUT_CLASSIFICATION VDATA = D3D11_INPUT_PER_VERTEX_DATA;
+	using S3 = SimpleMath::Vector3;			   // Vector3
+	using S4 = SimpleMath::Vector4;			   // Vector4
 public:
 	// インプットレイアウトの設定
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;

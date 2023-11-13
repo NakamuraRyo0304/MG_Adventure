@@ -34,7 +34,7 @@ void SelectCamera::Update()
 
 	// ƒtƒHƒ“ƒg‚Ü‚ÅˆÚ“®‚·‚é
 	SetTarget(SimpleMath::Vector3(
-		UserUtility::Lerp(GetTarget().x, 0.0f, APPROACH_SPEED),
+		UserUtility::EaseInOutLerp(GetTarget().x, 0.0f, APPROACH_SPEED),
 		GetTarget().y,
 		GetTarget().z)
 	);
@@ -54,8 +54,6 @@ void SelectCamera::Update()
 void SelectCamera::MoveTarget()
 {
 	SetTarget(SimpleMath::Vector3(
-			UserUtility::Lerp(GetTarget().x, LOOK_VALUE, LOOK_SPEED),
-			0.0f,
-			0.0f
-	));
+		UserUtility::Lerp(GetTarget().x, LOOK_VALUE, LOOK_SPEED),
+		GetTarget().y, GetTarget().z));
 }

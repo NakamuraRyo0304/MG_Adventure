@@ -27,7 +27,7 @@ private:
 	const float CAMERA_RADIUS = 4.0f;
 
 	// ê⁄ãﬂë¨ìx
-	const float APPROACH_SPEED = 0.045f;
+	const float APPROACH_SPEED = 0.085f;
 
 	// è„â∫äÑçá
 	const float VERTICAL_MOTION = 1.5f;
