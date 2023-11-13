@@ -10,13 +10,20 @@
 #include "Libraries/FactoryManager/FactoryManager.h"
 #include "PlayerBill.h"
 
-// インプットレイアウトの設定
+ // インプットレイアウトの設定
+#pragma region INPUT_LAYOUT
+
+auto VDATA = D3D11_INPUT_PER_VERTEX_DATA; // 頂点データ
+using S3 = SimpleMath::Vector3;			   // Vector3
+using S4 = SimpleMath::Vector4;			   // Vector4
 const std::vector<D3D11_INPUT_ELEMENT_DESC> PlayerBill::INPUT_LAYOUT =
 {
-	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3) + sizeof(SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,	 0, 0,						 VDATA, 0 },
+	{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	 0, sizeof(S3),				 VDATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		 0, sizeof(S3) + sizeof(S4), VDATA, 0 },
 };
+
+#pragma endregion
 
 // コンストラクタ
 PlayerBill::PlayerBill(std::shared_ptr<FactoryManager>factory)
