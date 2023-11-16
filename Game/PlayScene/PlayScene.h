@@ -37,8 +37,7 @@ private:
 	// 落下演出変数
 	float m_fallValue;
 
-	// 当たり判定
-	Collider::BoxCollider is_hitCol;
+	// オブジェクトの判定
 	std::vector<Object> m_hitObj;
 	Object m_lastObj;
 
@@ -58,6 +57,9 @@ private:
 	DirectX::SimpleMath::Vector3 m_lighting;
 
 private:
+
+	// 当たり判定
+	std::unique_ptr<Collider::BoxCollider> m_boxCollider;
 
 	// プレイヤ
 	std::unique_ptr<Player> m_player;

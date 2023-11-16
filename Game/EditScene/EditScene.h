@@ -10,17 +10,9 @@
 #define EDITSCENE
 
 #include "../IScene.h"
-
- // CSV読み込み
-#include "../../Libraries/SystemDatas/MapLoad.h"
-
-// 当たり判定クラス
-#include "../../Libraries/SystemDatas/Collider.h"
-
-// ログ管理クラス
+#include "Libraries/SystemDatas/MapLoad.h"
+#include "Libraries/SystemDatas/Collider.h"
 #include "System/EditorLog.h"
-
-// メメント
 #include "System/MementoMap.h"
 
 // エイリアス
@@ -54,26 +46,22 @@ private:
 	MapLoad m_mapLoader;
 
 	// 当たり判定
-	Collider::BoxCollider is_hitCol;
+	std::unique_ptr<Collider::BoxCollider> m_boxCollider;
 
 	// UI
 	std::unique_ptr<EditUI> m_editUI;
+
+	// スカイドーム
+	std::unique_ptr<EditSky> m_editSky;
+
+	// UndoRedo
+	std::unique_ptr<EditorLog> m_editLog;
 
 	// クリアチェッカー
 	std::unique_ptr<ClearChecker> m_checker;
 
 	// マウスカーソル
 	std::unique_ptr<MouseCursor> m_mouseCursor;
-
-	// スカイドーム
-	std::unique_ptr<EditSky> m_skyDome;
-
-	// XZ判定
-	DirectX::SimpleMath::Vector3 m_XZCheck;
-private:
-
-	// UndoRedo
-	EditorLog m_history;
 
 private:
 	// モデル

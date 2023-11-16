@@ -34,7 +34,6 @@ PlayScene::PlayScene(const int& stageNum, const int& coins)
 	, m_hitObj{}					// 当っているオブジェクトの格納
 	, m_lastObj{}					// 最後に当たったオブジェクトを保存
 	, m_lighting{}					// ライティング設定
-	, is_hitCol{}					// 立方体当たり判定
 	, is_thirdPersonMode{false}		// サードパーソンモード
 	, is_helpFlag{false}			// ヘルプ表示フラグ
 {
@@ -50,6 +49,7 @@ PlayScene::~PlayScene()
 	m_thirdCamera.reset();
 	m_playSky.reset();
 	m_camera.reset();
+	m_boxCollider.reset();
 }
 
 // 初期化処理
@@ -157,7 +157,7 @@ void PlayScene::Update()
 			// 座標のセット
 			m_blocks->SetBlockPosition(
 				SimpleMath::Vector3(
-				i.position.x,							// X軸
+				i.position.x,						// X軸
 				i.position.y + m_fallValue,			// Y軸
 				i.position.z),						// Z軸
 				i.index								// 配列番号
@@ -322,6 +322,9 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
 	m_playUI = std::make_unique<PlayUI>();
 	m_playUI->Create(GetSystemManager(), GetScreenSize());
+
+	// 当たり判定の作成
+	m_boxCollider = std::make_unique<Collider::BoxCollider>();
 }
 
 // シーン変数初期化関数
@@ -572,14 +575,14 @@ void PlayScene::Judgement()
 			m_player->GetPosition(), JUDGE_AREA, i.position)) continue;
 
 		// 判定を取る
-		is_hitCol.PushBox(
+		m_boxCollider->PushBox(
 			m_player->GetPosition(), i.position,					// プレイヤ、オブジェクトの座標
 			SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
 			SimpleMath::Vector3{ m_blocks->GetObjSize(i.id) }		// ブロックサイズ
 		);
 
 		// 当たっていたら処理する
-		if (is_hitCol.IsHitBoxFlag())
+		if (m_boxCollider->IsHitBoxFlag())
 		{
 			// 衝突したオブジェクトをリストに追加
 			m_hitObj.push_back(i);
@@ -599,13 +602,13 @@ void PlayScene::ApplyPushBack(Object& obj)
 	}
 
 	// デフォルトで判定をつける
-	is_hitCol.SetPushMode(true);
+	m_boxCollider->SetPushMode(true);
 
 	// コインの獲得処理
 	if (obj.id == MAPSTATE::COIN)
 	{
 		// 押し戻ししない
-		is_hitCol.SetPushMode(false);
+		m_boxCollider->SetPushMode(false);
 
 		// コインカウントアップ
 		m_blocks->CountUpCoin(obj.index);
@@ -626,7 +629,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 		}
 
 		// 判定を有効化
-		is_hitCol.SetPushMode(true);
+		m_boxCollider->SetPushMode(true);
 
 		// インデックス番号を格納
 		m_prevIndex.push_back(obj.index);
@@ -644,20 +647,20 @@ void PlayScene::ApplyPushBack(Object& obj)
 	// 重力処理
 	if (obj.id == MAPSTATE::GRAVITY)
 	{
-		is_hitCol.SetPushMode(false);
+		m_boxCollider->SetPushMode(false);
 		m_blocks->CallGravity();
 	}
 
 	// プレイヤーの押し戻し
 	SimpleMath::Vector3 _playerPos = m_player->GetPosition();
-	is_hitCol.PushBox(
+	m_boxCollider->PushBox(
 		&_playerPos,obj.position,
 		SimpleMath::Vector3{ m_player->GetSize() },
 		SimpleMath::Vector3{ m_blocks->GetObjSize(obj.id)});
 	m_player->SetPosition(_playerPos);
 
 	// ブロックの上に乗っていたら着地判定
-	if (is_hitCol.GetHitFace() == BOXHIT::UP) { m_player->ResetGravity(); }
+	if (m_boxCollider->GetHitFace() == BOXHIT::UP) { m_player->ResetGravity(); }
 
 	// 要素を消して終了
 	m_hitObj.pop_back();

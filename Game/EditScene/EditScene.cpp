@@ -33,9 +33,6 @@ EditScene::EditScene()
 	, m_cloudModel{ nullptr }					// 雲
 	, m_gravityModel{ nullptr }					// 重力
 	, m_cursorPos{ SimpleMath::Vector3::Zero }	// カーソルの位置
-	, m_history{}								// ログ管理
-	, m_XZCheck{}								// XZのブロックの位置を求める
-	, is_hitCol{}								// 立方体当たり判定
 {
 	ShowCursor(false);
 }
@@ -43,8 +40,13 @@ EditScene::EditScene()
 // デストラクタ
 EditScene::~EditScene()
 {
-	Finalize();
 	ShowCursor(true);
+	m_checker.reset();
+	m_editUI.reset();
+	m_editSky.reset();
+	m_editLog.reset();
+	m_mouseCursor.reset();
+	m_boxCollider.reset();
 }
 
 // 初期化処理
@@ -142,15 +144,15 @@ void EditScene::Draw()
 			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
 
 		// 押し戻し処理を無効化
-		is_hitCol.SetPushMode(false);
+		m_boxCollider->SetPushMode(false);
 
 		// 当たり判定を取る
-		is_hitCol.PushBox(&m_cursorPos, m_mapObj[i].position,
+		m_boxCollider->PushBox(&m_cursorPos, m_mapObj[i].position,
 			SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			SimpleMath::Vector3{ COMMON_SIZE }
 		);
 
-		m_mapObj[i].hit = is_hitCol.IsHitBoxFlag();
+		m_mapObj[i].hit = m_boxCollider->IsHitBoxFlag();
 
 		if (m_mapObj[i].hit) // 選択中のマスにオブジェクトを描画
 		{
@@ -173,7 +175,7 @@ void EditScene::Draw()
 	}
 
 	// スカイドームの描画
-	m_skyDome->Draw(_states, _view, _projection, _timer);
+	m_editSky->Draw(_states, _view, _projection, _timer);
 
 	// 画像の描画
 	m_editUI->Render();
@@ -263,12 +265,17 @@ void EditScene::CreateWindowDependentResources()
 	CreateModels(GetFactoryManager());
 	GetFactoryManager()->LeaveModelFactory();
 
+	// ログ管理機能の作成
+	m_editLog = std::make_unique<EditorLog>();
+
+	// 当たり判定の作成
+	m_boxCollider = std::make_unique<Collider::BoxCollider>();
+
 	// スカイドームの作成
-	m_skyDome = std::make_unique<EditSky>(GetFactoryManager(), L"Resources/Models/EditSky.cmo");
+	m_editSky = std::make_unique<EditSky>(GetFactoryManager(), L"Resources/Models/EditSky.cmo");
 
 	// マウスカーソルの作成
-	m_mouseCursor = std::make_unique<MouseCursor>();
-	m_mouseCursor->Initialize(L"Resources/Textures/EDITS/MouseCursor.dds");
+	m_mouseCursor = std::make_unique<MouseCursor>(L"Resources/Textures/EDITS/MouseCursor.dds");
 
 	// クリアチェッカーの作成
 	m_checker = std::make_unique<ClearChecker>();
@@ -295,9 +302,6 @@ void EditScene::SetSceneValues()
 	// カメラの位置をマップの中心にする
 	SimpleMath::Vector2 _XZ = { m_mapLoader.MAP_COLUMN,m_mapLoader.MAP_RAW };
 	GetSystemManager()->GetCamera()->AddEyePosition(SimpleMath::Vector3{ _XZ.x / 2,3.0f,_XZ.y / 2 });
-
-	// XZ保存変数を初期化
-	m_XZCheck = SimpleMath::Vector3::Zero;
 }
 
 // モデルの作成
@@ -407,9 +411,6 @@ void EditScene::EditMap()
 		CURSOR_MOVE_SPEED											// 速度
 	);
 
-	// 選択行を保存
-	m_XZCheck = m_cursorPos;
-
 	// 制限をつける
 	m_cursorPos.y = UserUtility::Clamp(m_cursorPos.y, CURSOR_MIN, CURSOR_MAX);
 
@@ -417,16 +418,16 @@ void EditScene::EditMap()
 	for (auto& i : m_mapObj)
 	{
 		// 押し戻し処理を無効化
-		is_hitCol.SetPushMode(false);
+		m_boxCollider->SetPushMode(false);
 
 		// 当たり判定を取る
-		is_hitCol.PushBox(&m_cursorPos, i.position,
+		m_boxCollider->PushBox(&m_cursorPos, i.position,
 			SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			SimpleMath::Vector3{ COMMON_SIZE }
 		);
 
 		// 瞬間の当たり判定を取得
-		i.hit = is_hitCol.IsHitBoxFlag();
+		i.hit = m_boxCollider->IsHitBoxFlag();
 
 		// クリックでブロック設置
 		if (i.hit &&  _mouse.leftButton)
@@ -538,14 +539,14 @@ void EditScene::DoUndoRedo()
 	// 前に戻る
 	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Z))
 	{
-		RestoreHistory(m_history.GetUndo());
+		RestoreHistory(m_editLog->GetUndo());
 		ResetObjNum();
 		CountObjNum();
 	}
 	// Undoを取り消す
 	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::X))
 	{
-		RestoreHistory(m_history.GetRedo());
+		RestoreHistory(m_editLog->GetRedo());
 		ResetObjNum();
 		CountObjNum();
 	}
@@ -555,7 +556,7 @@ void EditScene::DoUndoRedo()
 void EditScene::SaveModification()
 {
 	// 状態を保存
-	m_history.AddHistory(MementoMap(m_mapObj));
+	m_editLog->AddHistory(MementoMap(m_mapObj));
 }
 
 // UndoRedoの適用
