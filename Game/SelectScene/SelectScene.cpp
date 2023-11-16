@@ -212,7 +212,7 @@ void SelectScene::CreateStages()
 		auto _gravity = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
 
 		// ì¬‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Íì¬‚·‚é
-		if (!m_blocks[i])
+		if (not m_blocks[i])
 		{
 			// ƒuƒƒbƒN‚Ìì¬
 			m_blocks[i] = std::make_unique<Blocks>(GetFactoryManager());

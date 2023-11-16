@@ -33,9 +33,9 @@ private:
 	const float VERTICAL_MOTION = 1.5f;
 
 	// ‹“_‚Ì“®ì‘¬“x
-	const float LOOK_VALUE = 60.0f;
+	const float LOOK_VALUE = 90.0f;
 	const float LOOK_SPAN = 0.25f;
-	const float LOOK_SPEED = 0.75f;
+	const float LOOK_SPEED = 1.5f;
 
 public:
 	/// <summary>

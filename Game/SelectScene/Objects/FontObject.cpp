@@ -53,19 +53,19 @@ void FontObject::Render(CommonStates& states, const int& selectNum, const float&
 	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
 
 	// テキストの移動アニメーション
-	SimpleMath::Matrix stageMat = CreateTextMatrix(rotate);
+	SimpleMath::Matrix _world = CreateTextMatrix(rotate);
 
 	// ステージ番号表示
-	m_fonts[selectNum]->Draw(_context, states, stageMat, view, proj);
+	m_fonts[selectNum]->Draw(_context, states, _world, view, proj);
 }
 
-// テキストの回転
-SimpleMath::Matrix FontObject::CreateTextMatrix(const float& rotValue)
+// テキストの行列計算
+SimpleMath::Matrix FontObject::CreateTextMatrix(const float& value)
 {
 	SimpleMath::Matrix _mat = SimpleMath::Matrix::Identity;
-	_mat *= SimpleMath::Matrix::CreateRotationY(rotValue);
+	_mat *= SimpleMath::Matrix::CreateRotationY(value);
 	_mat *= SimpleMath::Matrix::CreateScale(10.0f);
-	_mat *= SimpleMath::Matrix::CreateTranslation(sinf(rotValue), 10.0f, cosf(rotValue));
+	_mat *= SimpleMath::Matrix::CreateTranslation(sinf(value), 10.0f, cosf(value));
 
 	return _mat;
 }

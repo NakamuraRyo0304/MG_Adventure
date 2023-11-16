@@ -47,9 +47,9 @@ public:
 	/// <summary>
 	/// カメラと逆回転の行列
 	/// </summary>
-	/// <param name="rotValue">回転する値</param>
+	/// <param name="value">変異値</param>
 	/// <returns>作成した行列</returns>
-	DirectX::SimpleMath::Matrix CreateTextMatrix(const float& rotValue);
+	DirectX::SimpleMath::Matrix CreateTextMatrix(const float& value);
 };
 
 #endif // FONTOBJECT

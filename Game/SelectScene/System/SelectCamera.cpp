@@ -15,7 +15,7 @@ SelectCamera::SelectCamera(const SimpleMath::Vector2& screenSize)
 	, is_canChangeFlag{ false }		// 画面切り替え可能かを判定
 {
 	SetPosition(SimpleMath::Vector3(0.0f, POS_Y, 0.0f));
-	SetTarget(SimpleMath::Vector3(LOOK_VALUE, 0.0f, 0.0f));
+	SetTarget(SimpleMath::Vector3(0.0f, LOOK_VALUE, 0.0f));
 	SetInitialPosition(GetPosition());
 }
 
@@ -28,14 +28,14 @@ SelectCamera::~SelectCamera()
 void SelectCamera::Update()
 {
 	// 切り替え可能ならTrueにする
-	is_canChangeFlag = (GetTarget().x >= LOOK_VALUE * LOOK_SPAN);
+	is_canChangeFlag = (GetTarget().y >= LOOK_VALUE * LOOK_SPAN);
 
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// フォントまで移動する
 	SetTarget(SimpleMath::Vector3(
-		UserUtility::EaseInOutLerp(GetTarget().x, 0.0f, APPROACH_SPEED),
-		GetTarget().y,
+		GetTarget().x,
+		UserUtility::EaseInOutLerp(GetTarget().y, 0.0f, APPROACH_SPEED),
 		GetTarget().z)
 	);
 
@@ -54,6 +54,7 @@ void SelectCamera::Update()
 void SelectCamera::MoveTarget()
 {
 	SetTarget(SimpleMath::Vector3(
-		UserUtility::Lerp(GetTarget().x, LOOK_VALUE, LOOK_SPEED),
-		GetTarget().y, GetTarget().z));
+		GetTarget().x,
+		LOOK_VALUE,
+		GetTarget().z));
 }
