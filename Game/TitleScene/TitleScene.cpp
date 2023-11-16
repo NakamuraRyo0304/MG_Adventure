@@ -24,7 +24,11 @@ TitleScene::TitleScene()
 // デストラクタ
 TitleScene::~TitleScene()
 {
-	Finalize();
+	m_stage.reset();
+	m_logo.reset();
+	m_titleSky.reset();
+	m_titleUI.reset();
+	m_camera.reset();
 }
 
 // 初期化処理

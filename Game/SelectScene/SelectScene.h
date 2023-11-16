@@ -26,14 +26,14 @@ private:
 	// 合計コイン数
 	int m_allCoins;
 
-	// ブロックとステージ
-	std::unique_ptr<Blocks> m_blocks[6];
-
 	// 切り替え時読み込み演出
 	float m_targetY;
 
 	// ブロックのローディング
 	std::future<void> m_loadTask;
+
+	// ブロックとステージ
+	std::unique_ptr<Blocks> m_blocks[6];
 
 	// UI
 	std::unique_ptr<SelectUI> m_selectUI;
@@ -42,10 +42,10 @@ private:
 	std::unique_ptr<FontObject> m_fontObject;
 
 	// スカイドーム
-	std::unique_ptr<SelectSky> m_skyDome;
+	std::unique_ptr<SelectSky> m_selectSky;
 
 	// カメラ
-	std::unique_ptr<SelectCamera> m_selectCamera;
+	std::unique_ptr<SelectCamera> m_camera;
 
 	// コイン使用演出
 	float m_useCoins;
@@ -123,6 +123,13 @@ private:
 	void SetSceneValues() override;
 
 private:
+
+	/// <summary>
+	/// シーンを切り替える
+	/// </summary>
+	/// <param name="引数無し"></param>
+	/// <returns>なし</returns>
+	void GoNextScene();
 
 	/// <summary>
 	/// ステージモデルのロード

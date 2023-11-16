@@ -10,20 +10,9 @@
 
 
 // コンストラクタ
-MouseCursor::MouseCursor()
+MouseCursor::MouseCursor(const wchar_t* filename)
 {
 	m_spriteBatch = std::make_unique<SpriteBatch>(DX::DeviceResources::GetInstance()->GetD3DDeviceContext());
-}
-
-// デストラクタ
-MouseCursor::~MouseCursor()
-{
-	Finalize();
-}
-
-// 初期化処理
-void MouseCursor::Initialize(const wchar_t* filename)
-{
 	// 画像の登録
 	CreateDDSTextureFromFile(
 		DX::DeviceResources::GetInstance()->GetD3DDevice(),
@@ -31,6 +20,12 @@ void MouseCursor::Initialize(const wchar_t* filename)
 		nullptr,
 		m_SRV.ReleaseAndGetAddressOf()
 	);
+}
+
+// デストラクタ
+MouseCursor::~MouseCursor()
+{
+	Finalize();
 }
 
 // マウス位置の更新

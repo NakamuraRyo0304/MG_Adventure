@@ -28,7 +28,7 @@ private:
 	int m_selectingScene;
 
 	// 演出時間
-	float m_directionTime;
+	float m_directionalTime;
 
 	// アニメーションフラグ
 	bool is_animEnd;
@@ -41,6 +41,9 @@ private:
 
 	// 最大秒数
 	const int MAX_TIME = 60;
+
+	// ライトの向き
+	const DirectX::SimpleMath::Vector3 LIGHT_DIRECTION = DirectX::SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f };
 
 private:
 

@@ -17,6 +17,8 @@
 #include  "../CommonObjects/Blocks.h"
 #include "PlayScene.h"
 
+// エイリアス宣言
+using BOXHIT = Collider::BoxCollider::HIT_FACE;
 
 // コンストラクタ
 PlayScene::PlayScene(const int& stageNum, const int& coins)
@@ -41,7 +43,13 @@ PlayScene::PlayScene(const int& stageNum, const int& coins)
 // デストラクタ
 PlayScene::~PlayScene()
 {
-	Finalize();
+	m_player.reset();
+	m_blocks.reset();
+	m_playerBill.reset();
+	m_playUI.reset();
+	m_thirdCamera.reset();
+	m_playSky.reset();
+	m_camera.reset();
 }
 
 // 初期化処理
@@ -73,10 +81,7 @@ void PlayScene::Update()
 	if (is_thirdPersonMode) // 三人称カメラ
 	{
 		m_thirdCamera->UpdateFollow(
-			m_player->GetPosition(),				// ターゲット座標
-			m_player->GetNeckRotate(),				// 回転量
-			SimpleMath::Vector3(0.0f, 2.5f, 6.0f)	// ターゲットからの距離
-		);
+			m_player->GetPosition(), m_player->GetNeckRotate(), THIRD_DISTANCE);
 	}
 	else // 見下ろしカメラ
 	{
@@ -116,7 +121,7 @@ void PlayScene::Update()
 		m_gameTimer--;
 
 		// 空の処理
-		m_skyDome->Update(m_gameTimer / (TIME_LIMIT * FLAME_RATE));
+		m_playSky->Update(m_gameTimer / (TIME_LIMIT * FLAME_RATE));
 
 		// 時間が半分になったら合図を鳴らす
 		if (static_cast<int>(m_gameTimer / FLAME_RATE) == TIME_LIMIT / 2)
@@ -221,8 +226,8 @@ void PlayScene::Draw()
 	if (StartTimer() == false)
 	{
 		// スタート演出カメラ
-		_view = m_playCamera->CreateView();
-		_projection = m_playCamera->GetProjection();
+		_view = m_camera->CreateView();
+		_projection = m_camera->GetProjection();
 	}
 	else if (is_thirdPersonMode)
 	{
@@ -247,7 +252,7 @@ void PlayScene::Draw()
 	m_player->Render(_states, _view, _projection, m_lighting);
 
 	// スカイドームの描画
-	m_skyDome->Draw(_states, _view, _projection, _timer);
+	m_playSky->Draw(_states, _view, _projection, _timer);
 
 	// ビルボードの描画
 	if (not is_thirdPersonMode)
@@ -297,11 +302,11 @@ void PlayScene::CreateWindowDependentResources()
 	m_thirdCamera->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
 
 	// スタート用カメラの作成
-	m_playCamera = std::make_unique<PlayCamera>(SimpleMath::Vector2(GetScreenSize().x, GetScreenSize().y));
-	m_playCamera->SetPosition(START_CAMERA_POS);
+	m_camera = std::make_unique<PlayCamera>(SimpleMath::Vector2(GetScreenSize().x, GetScreenSize().y));
+	m_camera->SetPosition(START_CAMERA_POS);
 
 	// スカイドームの作成
-	m_skyDome = std::make_unique<PlaySky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
+	m_playSky = std::make_unique<PlaySky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
 
 	// プレイヤーの作成
 	MakePlayer();
@@ -447,16 +452,16 @@ void PlayScene::MoveStart()
 	//-------------------//
 
 	// カメラ座標の移動
-	m_playCamera->SetPosition(
+	m_camera->SetPosition(
 		UserUtility::Lerp(
-			m_playCamera->GetPosition(),
+			m_camera->GetPosition(),
 			_cam->GetPosition(),
 			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
 		)
 	);
-	m_playCamera->SetTarget(
+	m_camera->SetTarget(
 		UserUtility::Lerp(
-			m_playCamera->GetTarget(),
+			m_camera->GetTarget(),
 			_cam->GetTarget(),
 			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
 		)
@@ -643,37 +648,23 @@ void PlayScene::ApplyPushBack(Object& obj)
 		m_blocks->CallGravity();
 	}
 
-	// 直前のプレイヤのポジションを保存
+	// プレイヤーの押し戻し
 	SimpleMath::Vector3 _playerPos = m_player->GetPosition();
-
-	// 当たり判定を取って押し戻す
 	is_hitCol.PushBox(
-		&_playerPos,obj.position,								// プレイヤ、オブジェクトの座標
-		SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-		SimpleMath::Vector3{ m_blocks->GetObjSize(obj.id)}		// ブロックサイズ
-	);
-
-	// 変更後のプレイヤのポジションを反映
+		&_playerPos,obj.position,
+		SimpleMath::Vector3{ m_player->GetSize() },
+		SimpleMath::Vector3{ m_blocks->GetObjSize(obj.id)});
 	m_player->SetPosition(_playerPos);
 
 	// ブロックの上に乗っていたら着地判定
-	if (is_hitCol.GetHitFace() == Collider::BoxCollider::HIT_FACE::UP)
-	{
-		m_player->ResetGravity();
-	}
+	if (is_hitCol.GetHitFace() == BOXHIT::UP) { m_player->ResetGravity(); }
 
 	// 要素を消して終了
 	m_hitObj.pop_back();
 }
 
 // 獲得コイン数
-const int& PlayScene::GetCoinNum()
-{
-	return m_blocks->GetCoinCount();
-}
+const int& PlayScene::GetCoinNum() { return m_blocks->GetCoinCount(); }
 
 // ステージ内合計コイン数
-const int& PlayScene::GetMaxCoinCount()
-{
-	return m_blocks->GetMaxCoinCount();
-}
+const int& PlayScene::GetMaxCoinCount() { return m_blocks->GetMaxCoinCount(); }

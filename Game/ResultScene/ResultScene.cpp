@@ -19,7 +19,7 @@ ResultScene::ResultScene(const int& stageNum, const int& coins, const float& cle
 	, m_coinNum{ coins }		// コインの数
 	, m_clearTime{ clearTime }	// クリアタイムを格納
 	, m_saveTime{0.0f}			// クリアタイムを保存する変数
-	, m_directionTime{0.0f}		// 演出する時間
+	, m_directionalTime{0.0f}	// 演出する時間
 	, m_selectingScene{ 0 }		// 現在選択中のシーン
 	, is_animEnd{false}			// アニメーションの終了フラグ
 {
@@ -29,6 +29,9 @@ ResultScene::ResultScene(const int& stageNum, const int& coins, const float& cle
 // デストラクタ
 ResultScene::~ResultScene()
 {
+	m_blocks.reset();
+	m_resultUI.reset();
+	m_camera.reset();
 }
 
 // 初期化処理
@@ -96,12 +99,11 @@ void ResultScene::Draw()
 	_projection = m_camera->GetProjection();
 
 	// マップの描画
-	m_blocks->Render(_states, _view, _projection, _timer, SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f });
+	m_blocks->Render(_states, _view, _projection, _timer, LIGHT_DIRECTION);
 
 	// UIの表示
 	m_resultUI->Render(is_animEnd);
 }
-
 
 // 終了処理
 void ResultScene::Finalize()
@@ -150,7 +152,7 @@ void ResultScene::SetSceneValues()
 	m_saveTime = m_clearTime;
 
 	// 演出時間 最初のフェードも考慮して多めに取る
-	m_directionTime = 120.0f;
+	m_directionalTime = 120.0f;
 
 	// マップ読み込み
 	m_blocks->Initialize(m_stageNum);
@@ -181,7 +183,7 @@ void ResultScene::CreateModels(std::shared_ptr<FactoryManager> fm)
 bool ResultScene::AnimationValue()
 {
 	// 演出時間をカウント
-	m_directionTime--;
+	m_directionalTime--;
 
 	// ランダムの値を生成
 	std::random_device rd;
@@ -192,9 +194,9 @@ bool ResultScene::AnimationValue()
 	int randomValue = dist(gen);
 
 	// 演出をする
-	if (m_directionTime < 0.0f)
+	if (m_directionalTime < 0.0f)
 	{
-		m_directionTime = 0.0f;
+		m_directionalTime = 0.0f;
 		m_clearTime = static_cast<float>(MAX_TIME) - m_saveTime;
 
 		return true;

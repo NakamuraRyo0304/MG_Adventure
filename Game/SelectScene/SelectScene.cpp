@@ -30,7 +30,11 @@ SelectScene::SelectScene(const int& stageNum, const int& safeNum, const int& coi
 // デストラクタ
 SelectScene::~SelectScene()
 {
-	Finalize();
+	m_blocks->reset();
+	m_selectUI.reset();
+	m_selectSky.reset();
+	m_fontObject.reset();
+	m_camera.reset();
 }
 
 // 初期化処理
@@ -51,7 +55,7 @@ void SelectScene::Update()
 	auto _key = Keyboard::Get().GetState();
 
 	// セレクトカメラの更新
-	m_selectCamera->Update();
+	m_camera->Update();
 
 	// サウンドの更新
 	GetSystemManager()->GetSoundManager()->Update();
@@ -74,26 +78,8 @@ void SelectScene::Update()
 		// フェード中は処理しない
 		if (GetFadeValue() >= 0.5f) return;
 
-		// ステージ番号が0ならエディタに、それ以外はプレイへ
-		if (m_stageNum == 0)
-		{
-			is_selectEdit = m_allCoins >= STAGE_CREATE_PRICE;
-
-			// メッセージ
-			if(m_allCoins < STAGE_CREATE_PRICE)
-			{
-				MessageBox(NULL,
-					TEXT("コインを10枚以上取得していないため、この機能は使用できません。"),
-					TEXT("コイン不足"), MB_OK);
-			}
-		}
-		else
-		{
-			ChangeScene(SCENE::PLAY);
-		}
-
-		// 決定音を鳴らす
-		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
+		// シーン切り替え
+		GoNextScene();
 	}
 
 	// コイン演出
@@ -120,10 +106,10 @@ void SelectScene::Draw()
 	SimpleMath::Matrix _view, _proj;
 
 	// ビュー行列
-	_view = m_selectCamera->GetView();
+	_view = m_camera->GetView();
 
 	// プロジェクション行列
-	_proj = m_selectCamera->GetProjection();
+	_proj = m_camera->GetProjection();
 
 	// マップの描画
 	m_blocks[m_stageNum] != nullptr ? // 作成済みなら描画する
@@ -131,7 +117,7 @@ void SelectScene::Draw()
 			SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f }) : void();
 
 	// スカイドームの描画
-	m_skyDome->Draw(_states, _view, _proj, _timer);
+	m_selectSky->Draw(_states, _view, _proj, _timer);
 
 	// 文字の描画
 	m_fontObject->Render(_states, m_stageNum, _timer * 0.5f, _view, _proj);
@@ -159,7 +145,7 @@ void SelectScene::CreateWindowDependentResources()
 	GetFactoryManager()->CreateFactory();
 
 	// カメラの設定
-	m_selectCamera = std::make_unique<SelectCamera>(GetScreenSize());
+	m_camera = std::make_unique<SelectCamera>(GetScreenSize());
 
 	// UIの作成
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
@@ -170,7 +156,7 @@ void SelectScene::CreateWindowDependentResources()
 	m_fontObject = std::make_unique<FontObject>(GetFactoryManager(),m_safeNum, MAX_STAGE_NUM);
 
 	// スカイドームモデルを作成する
-	m_skyDome = std::make_unique<SelectSky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
+	m_selectSky = std::make_unique<SelectSky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
 
 	// 先に描画対象を作成し、他を裏で処理
 	CreateFirstStage();
@@ -194,6 +180,31 @@ void SelectScene::SetSceneValues()
 
 	// ステージエディットフラグを初期化
 	is_selectEdit = false;
+}
+
+// シーン切り替え
+void SelectScene::GoNextScene()
+{
+	// ステージ番号が0ならエディタに、それ以外はプレイへ
+	if (m_stageNum == 0)
+	{
+		is_selectEdit = m_allCoins >= STAGE_CREATE_PRICE;
+
+		// 不足の場合、メッセージ
+		if (m_allCoins < STAGE_CREATE_PRICE)
+		{
+			MessageBox(NULL,
+				TEXT("コインを10枚以上取得していないため、この機能は使用できません。"),
+				TEXT("コイン不足"), MB_OK);
+		}
+	}
+	else
+	{
+		ChangeScene(SCENE::PLAY);
+	}
+
+	// 決定音を鳴らす
+	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 }
 
 // ステージのロード
@@ -262,7 +273,7 @@ void SelectScene::CreateFirstStage()
 void SelectScene::ChangeStageNumber()
 {
 	// 切り替え可能なタイミングはここで変更
-	if (m_selectCamera->IsCanChange()) return;
+	if (m_camera->IsCanChange()) return;
 
 	// インプットの更新
 	auto _input = Keyboard::Get().GetState();
@@ -273,7 +284,7 @@ void SelectScene::ChangeStageNumber()
 		if (m_stageNum == MAX_STAGE_NUM - 1 - m_safeNum) return;
 
 		// ターゲットの更新
-		m_selectCamera->MoveTarget();
+		m_camera->MoveTarget();
 
 		// 選択音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
@@ -286,7 +297,7 @@ void SelectScene::ChangeStageNumber()
 		if (m_stageNum == 0) return;
 
 		// ターゲットの更新
-		m_selectCamera->MoveTarget();
+		m_camera->MoveTarget();
 
 		// 選択音を鳴らす
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);

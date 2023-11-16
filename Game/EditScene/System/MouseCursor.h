@@ -23,15 +23,14 @@ private:
 	DirectX::SimpleMath::Vector2 m_cursorPos;
 
 public:
-	MouseCursor();
-	~MouseCursor();
 
 	/// <summary>
-	/// 初期化処理
+	/// コンストラクタ
 	/// </summary>
-	/// <param name="filename">マウスポインタの画像パス</param>
+	/// <param name="filename">ファイルパス</param>
 	/// <returns>なし</returns>
-	void Initialize(const wchar_t* filename);
+	MouseCursor(const wchar_t* filename);
+	~MouseCursor();
 
 	/// <summary>
 	/// マウス位置の更新

@@ -75,10 +75,10 @@ private:
 	std::unique_ptr<ThirdPersonCamera> m_thirdCamera;
 
 	// スタートカメラ
-	std::unique_ptr<PlayCamera> m_playCamera;
+	std::unique_ptr<PlayCamera> m_camera;
 
 	// スカイドーム
-	std::unique_ptr<PlaySky> m_skyDome;
+	std::unique_ptr<PlaySky> m_playSky;
 
 private:
 
@@ -116,6 +116,9 @@ private:
 	// 最初のカメラ演出終点
 	const float MOVE_CAMERA_SPEED = 0.05f;
 	const DirectX::SimpleMath::Vector3 START_CAMERA_POS = { 0.0f,50.0f,40.0f };
+
+	// 三人称カメラの距離
+	const DirectX::SimpleMath::Vector3 THIRD_DISTANCE = DirectX::SimpleMath::Vector3(0.0f, 2.5f, 6.0f);
 
 public:
 

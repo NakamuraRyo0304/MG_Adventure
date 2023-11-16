@@ -26,7 +26,7 @@ ResultUI::ResultUI()
 // デストラクタ
 ResultUI::~ResultUI()
 {
-	Finalize();
+	m_system.reset();
 }
 
 // 初期化処理
@@ -85,7 +85,6 @@ void ResultUI::Render(const bool& drawSelect)
 // 終了処理
 void ResultUI::Finalize()
 {
-	m_system.reset();
 }
 
 // 数字の描画
