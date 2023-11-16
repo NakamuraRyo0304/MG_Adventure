@@ -31,7 +31,6 @@ PlayScene::PlayScene(const int& stageNum, const int& coins)
 	, m_fallValue{0.0f}				// 落下用変数
 	, m_prevIndex{}					// 過去に当たったインデックス番号
 	, m_hitObj{}					// 当っているオブジェクトの格納
-	, m_lastObj{}					// 最後に当たったオブジェクトを保存
 	, m_lighting{}					// ライティング設定
 	, is_thirdPersonMode{false}		// サードパーソンモード
 	, is_helpFlag{false}			// ヘルプ表示フラグ

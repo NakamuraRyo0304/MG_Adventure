@@ -37,7 +37,6 @@ private:
 
 	// オブジェクトの判定
 	std::vector<Object> m_hitObj;
-	Object m_lastObj;
 
 	// 前回のインデックス
 	std::deque<int> m_prevIndex;
