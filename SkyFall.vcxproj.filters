@@ -278,6 +278,9 @@
     <Filter Include="Scenes\SelectScene\System\SelectCamera">
       <UniqueIdentifier>{f0d22eae-eaa4-43c6-8a85-bbdc03c603da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\ResultScene\System\ResultCamera">
+      <UniqueIdentifier>{d49340a1-c506-4eb2-a5cf-2ac1cb1f313e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -455,7 +458,7 @@
       <Filter>Scenes\TitleScene\System</Filter>
     </ClInclude>
     <ClInclude Include="Game\ResultScene\System\ResultCamera.h">
-      <Filter>Scenes\ResultScene\System</Filter>
+      <Filter>Scenes\ResultScene\System\ResultCamera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -619,7 +622,7 @@
       <Filter>Scenes\TitleScene\System</Filter>
     </ClCompile>
     <ClCompile Include="Game\ResultScene\System\ResultCamera.cpp">
-      <Filter>Scenes\ResultScene\System</Filter>
+      <Filter>Scenes\ResultScene\System\ResultCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -237,7 +237,7 @@ void ResultScene::SelectMenu()
 		_input.GetKeyTrack()->IsKeyReleased(Keyboard::D))
 	{
 		// フェード中は処理しない
-		if (GetFadeValue() >= 0.7f) return;
+		if (static_cast<int>(GetFadeValue()) != 0) return;
 
 		m_selectingScene++;
 		m_selectingScene = m_selectingScene == 3 ? SELECTION::NEXT : m_selectingScene;
