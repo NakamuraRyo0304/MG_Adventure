@@ -28,7 +28,6 @@ PlayScene::PlayScene(const int& stageNum, const int& coins)
 	, m_startTimer{0.0f}			// 開始時間
 	, m_gameTimer{0.0f}				// 制限時間
 	, m_clearTime{0.0f}				// クリア時間
-	, m_mapLoad{}					// マップ
 	, m_fallValue{0.0f}				// 落下用変数
 	, m_prevIndex{}					// 過去に当たったインデックス番号
 	, m_hitObj{}					// 当っているオブジェクトの格納

@@ -39,6 +39,8 @@ private:
 	// ƒRƒCƒ“‚Ì–‡”
 	int m_coinNum;
 
+private:
+
 	// Å‘å•b”
 	const int MAX_TIME = 60;
 

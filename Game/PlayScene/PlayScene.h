@@ -29,8 +29,6 @@ private:
 	float m_gameTimer;
 	float m_clearTime;
 
-	// マップ
-	MapLoad m_mapLoad;
 	// マップ番号
 	int m_stageNum;
 
