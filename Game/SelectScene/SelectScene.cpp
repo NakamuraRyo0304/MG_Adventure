@@ -76,7 +76,7 @@ void SelectScene::Update()
 	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		// フェード中は処理しない
-		if (GetFadeValue() >= 0.5f) return;
+		if (GetFadeValue() >= FADE_START_VALUE) return;
 
 		// シーン切り替え
 		GoNextScene();
@@ -99,7 +99,7 @@ void SelectScene::Update()
 void SelectScene::Draw()
 {
 	// 描画関連
-	auto& _states = *GetSystemManager()->GetCommonStates();
+	auto& _states = GetSystemManager()->GetCommonStates();
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラ用行列
@@ -112,15 +112,16 @@ void SelectScene::Draw()
 	_proj = m_camera->GetProjection();
 
 	// マップの描画
-	m_blocks[m_stageNum] != nullptr ? // 作成済みなら描画する
-		m_blocks[m_stageNum]->Render(_states, _view, _proj, _timer,
-			SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f }) : void();
+	if (m_blocks[m_stageNum] != nullptr)
+	{
+		m_blocks[m_stageNum]->Render(*_states, _view, _proj, _timer, LIGHT_DIRECTION);
+	}
 
 	// スカイドームの描画
-	m_selectSky->Draw(_states, _view, _proj, _timer);
+	m_selectSky->Draw(*_states, _view, _proj, _timer);
 
 	// 文字の描画
-	m_fontObject->Render(_states, m_stageNum, _timer * 0.5f, _view, _proj);
+	m_fontObject->Render(*_states, m_stageNum, _timer * FLASH_COUNT, _view, _proj);
 
 	// UIの描画
 	m_selectUI->Render(GetFadeValue(), m_stageNum, MAX_STAGE_NUM - 1);

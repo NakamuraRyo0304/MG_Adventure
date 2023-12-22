@@ -41,6 +41,10 @@ private:
 	// 選択フラグ
 	bool is_menuFlag;
 
+private:
+
+	// 遷移を始める時間
+	const float FADE_START_VALUE = 0.7f;
 public:
 
 	TitleScene();

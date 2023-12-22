@@ -114,7 +114,7 @@ void EditScene::Draw()
 {
 	// 描画関連
 	auto _context = GetSystemManager()->GetDeviceResources()->GetD3DDeviceContext();
-	auto& _states = *GetSystemManager()->GetCommonStates();
+	auto& _states = GetSystemManager()->GetCommonStates();
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラ用行列
@@ -156,26 +156,26 @@ void EditScene::Draw()
 
 		if (m_mapObj[i].hit) // 選択中のマスにオブジェクトを描画
 		{
-			SwitchDraw(m_nowState, _context, _states, _rotateY * _boxMat, _view, _projection);
+			SwitchDraw(m_nowState, _context, *_states, _rotateY * _boxMat, _view, _projection);
 		}
 		else				 // 該当オブジェクトの描画
 		{
-			SwitchDraw(m_mapObj[i].id, _context, _states, _boxMat, _view, _projection);
+			SwitchDraw(m_mapObj[i].id, _context, *_states, _boxMat, _view, _projection);
 		}
 	}
 
 	// マウス位置に描画
 	if (m_nowState == MAPSTATE::NONE) // 削除時以外は通常の描画
 	{
-		m_noneModel->Draw(_context, _states, _cursorMat, _view, _projection);
+		m_noneModel->Draw(_context, *_states, _cursorMat, _view, _projection);
 	}
 	else
 	{
-		SwitchDraw(m_nowState, _context, _states, _cursorMat, _view, _projection);
+		SwitchDraw(m_nowState, _context, *_states, _cursorMat, _view, _projection);
 	}
 
 	// スカイドームの描画
-	m_editSky->Draw(_states, _view, _projection, _timer);
+	m_editSky->Draw(*_states, _view, _projection, _timer);
 
 	// 画像の描画
 	m_editUI->Render();
@@ -183,7 +183,8 @@ void EditScene::Draw()
 	// デバッグ情報を表示
 	SimpleMath::Vector2 _rate = GetScreenSize() / GetFullScreenSize();
 	GetSystemManager()->GetString()->DrawFormatString(
-		_states, { 25 * _rate.x,200 * _rate.y }, Colors::Yellow, SimpleMath::Vector2(1.5f * _rate),
+		*_states, { DEB_X * _rate.x, DEB_Y * _rate.y },
+		Colors::Yellow, DEB_SIZE * _rate,
 		L"Grass:%d\nCoin:%d\nCloud:%d\nGravity:%d\nPlayer:%d",
 		m_blockCount[MAPSTATE::GRASS],
 		m_blockCount[MAPSTATE::COIN],
@@ -301,7 +302,9 @@ void EditScene::SetSceneValues()
 
 	// カメラの位置をマップの中心にする
 	SimpleMath::Vector2 _XZ = { m_mapLoader.MAP_COLUMN,m_mapLoader.MAP_RAW };
-	GetSystemManager()->GetCamera()->AddEyePosition(SimpleMath::Vector3{ _XZ.x / 2,3.0f,_XZ.y / 2 });
+	GetSystemManager()->GetCamera()->AddEyePosition(
+		SimpleMath::Vector3{ _XZ.x / 2,CAMERA_HEIGHT,_XZ.y / 2 }
+	);
 }
 
 // モデルの作成

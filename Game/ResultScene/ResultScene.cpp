@@ -86,7 +86,7 @@ void ResultScene::Update()
 void ResultScene::Draw()
 {
 	// 描画関連
-	auto& _states = *GetSystemManager()->GetCommonStates();
+	auto& _states = GetSystemManager()->GetCommonStates();
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラ用行列
@@ -99,7 +99,7 @@ void ResultScene::Draw()
 	_projection = m_camera->GetProjection();
 
 	// マップの描画
-	m_blocks->Render(_states, _view, _projection, _timer, LIGHT_DIRECTION);
+	m_blocks->Render(*_states, _view, _projection, _timer, LIGHT_DIRECTION);
 
 	// UIの表示
 	m_resultUI->Render(is_animEnd);
@@ -188,7 +188,7 @@ bool ResultScene::AnimationValue()
 	// ランダムの値を生成
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dist(0, 69);
+	std::uniform_int_distribution<int> dist(0, MAX_COUNT);
 
 	// ランダムな整数を生成
 	int randomValue = dist(gen);
@@ -215,8 +215,8 @@ void ResultScene::NextScene()
 {
 	switch (m_selectingScene)
 	{
-	case SELECTION::NEXT:
-		m_stageNum < 5 ? m_stageNum++ : 0;
+	case SELECTION::NEXT:	// 最大ステージなら処理をしない
+		m_stageNum < 5 ? m_stageNum++ : NULL;
 		ChangeScene(SCENE::PLAY);
 		break;
 	case SELECTION::RETRY:

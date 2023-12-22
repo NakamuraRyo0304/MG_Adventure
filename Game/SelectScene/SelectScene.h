@@ -53,9 +53,6 @@ private:
 	bool is_selectEdit;
 
 private:
-	// 定数-----------------------------------------------------------------------------------
-
-	const float MAX_FLASH = 180.0f;
 
 	// 最大ステージ数
 	const int MAX_STAGE_NUM = 6;
@@ -65,6 +62,15 @@ private:
 
 	// カウントスピード
 	const float COUNT_SPEED = (10.0f / 60.0f);
+
+	// 遷移を始める時間
+	const float FADE_START_VALUE = 0.5f;
+
+	// 点滅カウント
+	const float FLASH_COUNT = 0.5f;
+
+	// ライトの向き
+	const DirectX::SimpleMath::Vector3 LIGHT_DIRECTION = DirectX::SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f };
 
 public:
 

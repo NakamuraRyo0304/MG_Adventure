@@ -109,6 +109,15 @@ private:
 	const float SHAKE_DURATION = 4.0f;		// 持続時間
 	const float SHAKE_TREMOR = 1.0f;		// 振動範囲
 
+	// オブジェクトが揺れる力
+	const float SHAKE_OBJ_POWER = 2.5f;
+
+	// 死亡エフェクトが出る場所
+	const float DEATH_EFFECT_LINE = DURATION_FLOOR_LINE / 1.5f;
+
+	// スタートカウント
+	const int START_COUNT = 4;
+
 	// カウントダウンの速度
 	const float COUNT_SPEED = 0.5f;
 

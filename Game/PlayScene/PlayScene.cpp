@@ -78,8 +78,7 @@ void PlayScene::Update()
 	// カメラの更新
 	if (is_thirdPersonMode) // 三人称カメラ
 	{
-		m_thirdCamera->UpdateFollow(
-			m_player->GetPosition(), m_player->GetNeckRotate(), THIRD_DISTANCE);
+		m_thirdCamera->UpdateFollow(m_player->GetPosition(), m_player->GetNeckRotate(), THIRD_DISTANCE);
 	}
 	else // 見下ろしカメラ
 	{
@@ -101,7 +100,7 @@ void PlayScene::Update()
 	// サードパーソンモードの切り替え
 	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Space))
 	{
-		is_thirdPersonMode = !is_thirdPersonMode;
+		is_thirdPersonMode = not is_thirdPersonMode;
 	}
 
 	// コインをすべて獲得かタイムアップでリザルト
@@ -148,7 +147,7 @@ void PlayScene::Update()
 			// オブジェクトの振動
 			GetSystemManager()->GetCamera()->ShakeObject(
 				SHAKE_DURATION,							// 振動時間
-				SHAKE_TREMOR * 2.5f,					// 振動範囲
+				SHAKE_TREMOR * SHAKE_OBJ_POWER,			// 振動範囲
 				&m_blocks->GetBlockPosition(i.index)	// 振動オブジェクト
 			);
 
@@ -163,7 +162,7 @@ void PlayScene::Update()
 		}
 	}
 	// 落下したら死亡エフェクトを出す
-	else if (m_player->GetPosition().y < DURATION_FLOOR_LINE / 1.5f)
+	else if (m_player->GetPosition().y < DEATH_EFFECT_LINE)
 	{
 		// オブジェクトの振動
 		for (auto& i : m_blocks->GetMapData())
@@ -214,7 +213,7 @@ void PlayScene::Update()
 void PlayScene::Draw()
 {
 	// 描画関連
-	auto& _states = *GetSystemManager()->GetCommonStates();
+	auto& _states = GetSystemManager()->GetCommonStates();
 	auto _timer = static_cast<float>(DX::StepTimer::GetInstance().GetTotalSeconds());
 
 	// カメラ用行列
@@ -244,13 +243,13 @@ void PlayScene::Draw()
 	InitializeLighting();
 
 	// マップの描画
-	m_blocks->Render(_states, _view, _projection, _timer, m_lighting);
+	m_blocks->Render(*_states, _view, _projection, _timer, m_lighting);
 
 	// プレイヤの描画
-	m_player->Render(_states, _view, _projection, m_lighting);
+	m_player->Render(*_states, _view, _projection, m_lighting);
 
 	// スカイドームの描画
-	m_playSky->Draw(_states, _view, _projection, _timer);
+	m_playSky->Draw(*_states, _view, _projection, _timer);
 
 	// ビルボードの描画
 	if (not is_thirdPersonMode)
@@ -345,7 +344,7 @@ void PlayScene::SetSceneValues()
 	m_clearTime = 0.0f;
 
 	// 開始カウントダウン(フェードも考慮)
-	m_startTimer = 4 * FLAME_RATE;
+	m_startTimer = START_COUNT * FLAME_RATE;
 
 	// 死亡エフェクトを切る
 	m_playUI->SetEffectFlag(false);

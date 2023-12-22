@@ -47,6 +47,9 @@ private:
 	// ライトの向き
 	const DirectX::SimpleMath::Vector3 LIGHT_DIRECTION = DirectX::SimpleMath::Vector3{ 1.0f,-1.0f,-1.0f };
 
+	// ランダム最大数
+	const int MAX_COUNT = 69;
+
 private:
 
 	// ブロック

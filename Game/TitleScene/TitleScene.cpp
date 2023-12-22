@@ -63,7 +63,7 @@ void TitleScene::Update()
 	// 選択項目を変更する
 	if (!is_startFlag)
 	{
-		if (GetFadeValue() >= 0.7f && is_startFlag) return;
+		if (GetFadeValue() >= FADE_START_VALUE && is_startFlag) return;
 
 		if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Left) ||
 			_input.GetKeyTrack()->IsKeyReleased(Keyboard::Right) ||
@@ -80,7 +80,7 @@ void TitleScene::Update()
 	if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Space))
 	{
 		// フェード中は処理しない
-		if (GetFadeValue() >= 0.7f) return;
+		if (GetFadeValue() >= FADE_START_VALUE) return;
 		is_startFlag = true;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
@@ -105,7 +105,7 @@ void TitleScene::Update()
 void TitleScene::Draw()
 {
 	// 描画関連
-	auto& _states = *GetSystemManager()->GetCommonStates();
+	auto& _states = GetSystemManager()->GetCommonStates();
 
 	// カメラ用行列
 	SimpleMath::Matrix _view, _projection;
@@ -124,13 +124,13 @@ void TitleScene::Draw()
 	_projection = m_camera->GetProjection();
 
 	// ステージを描画
-	m_stage->Render(_states, _view, _projection);
+	m_stage->Render(*_states, _view, _projection);
 
 	// ロゴを描画
-	m_logo->Render(_states, _view, _projection);
+	m_logo->Render(*_states, _view, _projection);
 
 	// スカイドームを描画
-	m_titleSky->Render(_states, _view, _projection);
+	m_titleSky->Render(*_states, _view, _projection);
 
 	// UIの描画
 	m_titleUI->Render(GetFadeValue(), m_logo->IsLogoEndFlag());

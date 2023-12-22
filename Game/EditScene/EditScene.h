@@ -82,6 +82,9 @@ private:
 	// カメラアングル
 	const float	CAMERA_ANGLE = 44.5f;
 
+	// カメラの高さ
+	const float CAMERA_HEIGHT = 3.0f;
+
 	// ホイールのスパン
 	const int WHEEL_SPAWN = 320;
 
@@ -94,6 +97,14 @@ private:
 
 	// スカイドームの回転量
 	const float SKY_ROTATE_RATE = 0.01f;
+
+	// デバッグ文字の位置
+	const int DEB_X = 25;
+	const int DEB_Y = 200;
+
+	// デバッグ文字サイズ
+	const DirectX::SimpleMath::Vector2 DEB_SIZE = DirectX::SimpleMath::Vector2{ 1.5f, 1.5f };
+
 public:
 
 	EditScene();
