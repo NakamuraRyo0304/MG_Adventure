@@ -36,7 +36,7 @@ private:
 	float m_fallValue;
 
 	// オブジェクトの判定
-	std::vector<Object> m_hitObj;
+	std::vector<Object> m_hittingObjects;
 
 	// 前回のインデックス
 	std::deque<int> m_prevIndex;

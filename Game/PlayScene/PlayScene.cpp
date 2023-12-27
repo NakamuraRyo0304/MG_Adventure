@@ -30,7 +30,7 @@ PlayScene::PlayScene(const int& stageNum, const int& coins)
 	, m_clearTime{0.0f}				// クリア時間
 	, m_fallValue{0.0f}				// 落下用変数
 	, m_prevIndex{}					// 過去に当たったインデックス番号
-	, m_hitObj{}					// 当っているオブジェクトの格納
+	, m_hittingObjects{}			// 当っているオブジェクトの格納
 	, m_lighting{}					// ライティング設定
 	, is_thirdPersonMode{false}		// サードパーソンモード
 	, is_helpFlag{false}			// ヘルプ表示フラグ
@@ -193,7 +193,7 @@ void PlayScene::Update()
 		Judgement();
 
 		// 衝突したオブジェクトごとに押し戻し処理を行う
-		for (auto& i : m_hitObj)
+		for (auto& i : m_hittingObjects)
 		{
 			ApplyPushBack(i);
 		}
@@ -281,7 +281,7 @@ void PlayScene::Finalize()
 	m_blocks->Finalize();
 
 	// 判定用配列を解放
-	m_hitObj.clear();
+	m_hittingObjects.clear();
 }
 
 // 画面依存、デバイス依存の初期化
@@ -335,7 +335,7 @@ void PlayScene::SetSceneValues()
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_PLAY, true);
 
 	// 判定の初期化
-	m_hitObj.clear();
+	m_hittingObjects.clear();
 
 	// 制限時間の初期化
 	// 時間　×　フレームレート
@@ -443,7 +443,7 @@ bool PlayScene::StartTimer()
 // スタートの動き
 void PlayScene::MoveStart()
 {
-	auto& _cam = GetSystemManager()->GetCamera();
+	auto& _camera = GetSystemManager()->GetCamera();
 
 	//-------------------//
 	// 現在位置
@@ -455,14 +455,14 @@ void PlayScene::MoveStart()
 	m_camera->SetPosition(
 		UserUtility::Lerp(
 			m_camera->GetPosition(),
-			_cam->GetPosition(),
+			_camera->GetPosition(),
 			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
 		)
 	);
 	m_camera->SetTarget(
 		UserUtility::Lerp(
 			m_camera->GetTarget(),
-			_cam->GetTarget(),
+			_camera->GetTarget(),
 			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
 		)
 	);
@@ -477,7 +477,7 @@ bool PlayScene::UpdateUI()
 	// ヘルプ表示を切り替える
 	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Enter) && StartTimer())
 	{
-		is_helpFlag = !is_helpFlag;
+		is_helpFlag = not is_helpFlag;
 		m_playUI->SetHelpFlag(is_helpFlag);
 		_se->PlaySound(XACT_WAVEBANK_SKBX_SE_DECISION, false);
 	}
@@ -486,16 +486,12 @@ bool PlayScene::UpdateUI()
 	{
 		// 表示切替
 		m_playUI->UpdatePage(
-			(_input.GetKeyTrack()->IsKeyPressed(Keyboard::A) ||  // 左
-		     _input.GetKeyTrack()->IsKeyPressed(Keyboard::Left)),
-			(_input.GetKeyTrack()->IsKeyPressed(Keyboard::D) ||  // 右
-		     _input.GetKeyTrack()->IsKeyPressed(Keyboard::Right)));
+			(_input.GetKeyTrack()->IsKeyPressed(Keyboard::A) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Left)),
+			(_input.GetKeyTrack()->IsKeyPressed(Keyboard::D) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Right)));
 
 		// ページをめくる音を鳴らす
-		if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::A)    ||
-			_input.GetKeyTrack()->IsKeyPressed(Keyboard::Left) ||
-			_input.GetKeyTrack()->IsKeyPressed(Keyboard::D)    ||
-			_input.GetKeyTrack()->IsKeyPressed(Keyboard::Right))
+		if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::A) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Left) ||
+			_input.GetKeyTrack()->IsKeyPressed(Keyboard::D) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Right))
 		{
 			_se->PlaySound(XACT_WAVEBANK_SKBX_SE_NEXTHELP, false);
 		}
@@ -535,18 +531,19 @@ bool PlayScene::UpdateUI()
 // ヘルプからシーン遷移
 void PlayScene::HelpNext()
 {
+	using NextScene = PlayUI::GO;
 	switch (m_playUI->GetTransNum())
 	{
-	case PlayUI::GO::RETRY:
+	case NextScene::RETRY:
 		ChangeScene(SCENE::PLAY);
 		break;
-	case PlayUI::GO::SELECT:
+	case NextScene::SELECT:
 		ChangeScene(SCENE::SELECT);
 		break;
-	case PlayUI::GO::TITLE:
+	case NextScene::TITLE:
 		ChangeScene(SCENE::TITLE);
 		break;
-	case PlayUI::GO::EXIT:
+	case NextScene::EXIT:
 		ChangeScene(SCENE::ENDGAME);
 		break;
 	default:
@@ -558,31 +555,30 @@ void PlayScene::HelpNext()
 void PlayScene::Judgement()
 {
 	// 衝突したオブジェクトリストを初期化
-	m_hitObj.clear();
+	m_hittingObjects.clear();
 
 	// 当たり判定を取る
-	for (auto& i : m_blocks->GetMapData())
+	for (auto& block : m_blocks->GetMapData())
 	{
 		// マップステータスがなしの時は飛ばす
-		if (i.id == MAPSTATE::NONE) continue;
+		if (block.id == MAPSTATE::NONE) continue;
 
 		// プレイヤの判定範囲外は処理しない
 		// 引数（基準点、検索範囲、検索点）
 		if (not UserUtility::CheckPointInSphere(
-			m_player->GetPosition(), JUDGE_AREA, i.position)) continue;
+			m_player->GetPosition(), JUDGE_AREA, block.position)) continue;
 
 		// 判定を取る
 		m_boxCollider->PushBox(
-			m_player->GetPosition(), i.position,					// プレイヤ、オブジェクトの座標
+			m_player->GetPosition(), block.position,				// プレイヤ、オブジェクトの座標
 			SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-			SimpleMath::Vector3{ m_blocks->GetObjSize(i.id) }		// ブロックサイズ
+			SimpleMath::Vector3{ m_blocks->GetObjSize(block.id) }	// ブロックサイズ
 		);
 
-		// 当たっていたら処理する
+		// 当たっていたらコリジョンリストに追加
 		if (m_boxCollider->IsHitBoxFlag())
 		{
-			// 衝突したオブジェクトをリストに追加
-			m_hitObj.push_back(i);
+			m_hittingObjects.push_back(block);
 		}
 	}
 }
@@ -594,7 +590,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	if (obj.id == MAPSTATE::NONE)
 	{
 		// 要素を消して終了
-		m_hitObj.pop_back();
+		m_hittingObjects.pop_back();
 		return;
 	}
 
@@ -621,7 +617,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(MAPSTATE::CLOUD))
 		{
 			// 要素を消して終了
-			m_hitObj.pop_back();
+			m_hittingObjects.pop_back();
 			return;
 		}
 
@@ -660,7 +656,7 @@ void PlayScene::ApplyPushBack(Object& obj)
 	if (m_boxCollider->GetHitFace() == BOXHIT::UP) { m_player->ResetGravity(); }
 
 	// 要素を消して終了
-	m_hitObj.pop_back();
+	m_hittingObjects.pop_back();
 }
 
 // 獲得コイン数
