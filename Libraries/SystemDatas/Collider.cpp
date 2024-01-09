@@ -17,10 +17,8 @@ Collider::BoxCollider::BoxCollider()
 }
 
 // ‰Ÿ‚µ–ß‚µ”»’è
-void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
-			                        const SimpleMath::Vector3& constObj,
-			                        const SimpleMath::Vector3& sz1,
-	                                const SimpleMath::Vector3& sz2)
+void Collider::BoxCollider::Judgement(SimpleMath::Vector3* moveObj, const SimpleMath::Vector3& constObj,
+	const SimpleMath::Vector3& sz1, const SimpleMath::Vector3& sz2)
 {
 	// “–‚Á‚Ä‚¢‚È‚¢
 	is_hitFlag = false;
@@ -83,10 +81,8 @@ void Collider::BoxCollider::PushBox(SimpleMath::Vector3* moveObj,
 }
 
 // ƒqƒbƒg”»’è‚Ì‚Ý•Ô‚·
-void Collider::BoxCollider::PushBox(const SimpleMath::Vector3& moveObj,
-									const SimpleMath::Vector3& constObj,
-									const SimpleMath::Vector3& sz1,
-									const SimpleMath::Vector3& sz2)
+void Collider::BoxCollider::Judgement(const SimpleMath::Vector3& moveObj, const SimpleMath::Vector3& constObj,
+	const SimpleMath::Vector3& sz1, const SimpleMath::Vector3& sz2)
 {
 	// “–‚Á‚Ä‚¢‚È‚¢
 	is_hitFlag = false;

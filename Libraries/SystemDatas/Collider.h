@@ -42,12 +42,12 @@ namespace Collider
 		/// <summary>
 		/// 押し戻し処理
 		/// </summary>
-		/// <param name= moveObj">押し戻したいオブジェ</param>
-		/// <param name= constObj">ぶつかる対象オブジェ</param>
-		/// <param name= sz1">大きさ</param>
-		/// <param name= sz2">大きさ</param>
+		/// <param name= "moveObj">押し戻したいオブジェ</param>
+		/// <param name= "constObj">ぶつかる対象オブジェ</param>
+		/// <param name= "sz1">大きさ</param>
+		/// <param name= "sz2">大きさ</param>
 		/// <returns>なし</returns>
-		void PushBox(DirectX::SimpleMath::Vector3* moveObj,
+		void Judgement(DirectX::SimpleMath::Vector3* moveObj,
 		       const DirectX::SimpleMath::Vector3& constObj,
 		       const DirectX::SimpleMath::Vector3& sz1,
 		       const DirectX::SimpleMath::Vector3& sz2);
@@ -55,12 +55,12 @@ namespace Collider
 		/// <summary>
 		/// 当たっているかどうかのみ判定する(面が格納される)
 		/// </summary>
-		/// <param name= moveObj">押し戻したいオブジェ(動いているもの)</param>
-		/// <param name= constObj">ぶつかる対象オブジェ(より強いもの)</param>
-		/// <param name= sz1">大きさ</param>
-		/// <param name= sz2">大きさ</param>
+		/// <param name= "moveObj">押し戻したいオブジェ(動いているもの)</param>
+		/// <param name= "constObj">ぶつかる対象オブジェ(より強いもの)</param>
+		/// <param name= "sz1">大きさ</param>
+		/// <param name= "sz2">大きさ</param>
 		/// <returns>なし</returns>
-		void PushBox(const DirectX::SimpleMath::Vector3& moveObj,
+		void Judgement(const DirectX::SimpleMath::Vector3& moveObj,
 					 const DirectX::SimpleMath::Vector3& constObj,
 					 const DirectX::SimpleMath::Vector3& sz1,
 					 const DirectX::SimpleMath::Vector3& sz2);

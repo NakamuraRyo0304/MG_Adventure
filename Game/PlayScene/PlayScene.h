@@ -12,6 +12,7 @@
 #include "../IScene.h"
 
 class Blocks;
+class ColliderHelper;
 class Player;
 class PlayerBill;
 class PlayUI;
@@ -35,12 +36,6 @@ private:
 	// 落下演出変数
 	float m_fallValue;
 
-	// オブジェクトの判定
-	std::vector<Object> m_hittingObjects;
-
-	// 前回のインデックス
-	std::deque<int> m_prevIndex;
-
 	// ヘルプ表示フラグ
 	bool is_helpFlag;
 
@@ -56,7 +51,7 @@ private:
 private:
 
 	// 当たり判定
-	std::unique_ptr<Collider::BoxCollider> m_boxCollider;
+	std::unique_ptr<ColliderHelper> m_collider;
 
 	// プレイヤ
 	std::unique_ptr<Player> m_player;
@@ -126,7 +121,7 @@ private:
 	const DirectX::SimpleMath::Vector3 START_CAMERA_POS = { 0.0f,50.0f,40.0f };
 
 	// 三人称カメラの距離
-	const DirectX::SimpleMath::Vector3 THIRD_DISTANCE = DirectX::SimpleMath::Vector3(0.0f, 2.5f, 6.0f);
+	const DirectX::SimpleMath::Vector3 THIRD_DISTANCE = { 0.0f, 2.5f, 6.0f };
 
 public:
 
@@ -233,20 +228,6 @@ private:
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
 	void HelpNext();
-
-	/// <summary>
-	/// 当たり判定処理
-	/// </summary>
-	/// <param name="引数無し"></param>
-	/// <returns>なし</returns>
-	void Judgement();
-
-	/// <summary>
-	/// 押し戻し処理
-	/// </summary>
-	/// <param name="obj">当たったオブジェクト</param>
-	/// <returns>なし</returns>
-	void ApplyPushBack(Object& obj);
 
 public:
 

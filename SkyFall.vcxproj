@@ -229,6 +229,7 @@
     <ClInclude Include="Libraries\SystemDatas\Button.h" />
     <ClInclude Include="Libraries\SystemDatas\Collider.h" />
     <ClInclude Include="Libraries\SystemDatas\Camera.h" />
+    <ClInclude Include="Libraries\SystemDatas\ColliderHelper.h" />
     <ClInclude Include="Libraries\SystemDatas\DrawSprite.h" />
     <ClInclude Include="Libraries\SystemDatas\DrawString.h" />
     <ClInclude Include="Libraries\SystemDatas\Fade.h" />
@@ -289,6 +290,7 @@
     <ClCompile Include="Libraries\SystemDatas\Button.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Collider.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Camera.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\ColliderHelper.cpp" />
     <ClCompile Include="Libraries\SystemDatas\DrawSprite.cpp" />
     <ClCompile Include="Libraries\SystemDatas\DrawString.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Fade.cpp" />
