@@ -147,7 +147,7 @@ void EditScene::Draw()
 		m_boxCollider->SetPushMode(false);
 
 		// “–‚½‚è”»’è‚ðŽæ‚é
-		m_boxCollider->PushBox(&m_cursorPos, m_mapObj[i].position,
+		m_boxCollider->Judgement(&m_cursorPos, m_mapObj[i].position,
 			SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			SimpleMath::Vector3{ COMMON_SIZE }
 		);
@@ -424,7 +424,7 @@ void EditScene::EditMap()
 		m_boxCollider->SetPushMode(false);
 
 		// “–‚½‚è”»’è‚ðŽæ‚é
-		m_boxCollider->PushBox(&m_cursorPos, i.position,
+		m_boxCollider->Judgement(&m_cursorPos, i.position,
 			SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			SimpleMath::Vector3{ COMMON_SIZE }
 		);

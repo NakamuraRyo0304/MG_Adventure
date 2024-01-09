@@ -460,6 +460,9 @@
     <ClInclude Include="Game\ResultScene\System\ResultCamera.h">
       <Filter>Scenes\ResultScene\System\ResultCamera</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\ColliderHelper.h">
+      <Filter>Common\Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -623,6 +626,9 @@
     </ClCompile>
     <ClCompile Include="Game\ResultScene\System\ResultCamera.cpp">
       <Filter>Scenes\ResultScene\System\ResultCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\ColliderHelper.cpp">
+      <Filter>Common\Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

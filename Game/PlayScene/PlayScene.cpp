@@ -6,8 +6,8 @@
  */
 
 #include "pch.h"
+#include "Libraries/SystemDatas/ColliderHelper.h"
 #include "Libraries/SystemDatas/MapLoad.h"
-#include "Libraries/SystemDatas/Collider.h"
 #include "Objects/Player.h"
 #include "Objects/PlayerBill.h"
 #include "Objects/PlayUI.h"
@@ -16,9 +16,6 @@
 #include "System/ThirdPersonCamera.h"
 #include "../CommonObjects/Blocks.h"
 #include "PlayScene.h"
-
-// エイリアス宣言
-using BOXHIT = Collider::BoxCollider::HIT_FACE;
 
 // コンストラクタ
 PlayScene::PlayScene(const int& stageNum, const int& coins)
@@ -29,8 +26,6 @@ PlayScene::PlayScene(const int& stageNum, const int& coins)
 	, m_gameTimer{0.0f}				// 制限時間
 	, m_clearTime{0.0f}				// クリア時間
 	, m_fallValue{0.0f}				// 落下用変数
-	, m_prevIndex{}					// 過去に当たったインデックス番号
-	, m_hittingObjects{}			// 当っているオブジェクトの格納
 	, m_lighting{}					// ライティング設定
 	, is_thirdPersonMode{false}		// サードパーソンモード
 	, is_helpFlag{false}			// ヘルプ表示フラグ
@@ -47,7 +42,7 @@ PlayScene::~PlayScene()
 	m_thirdCamera.reset();
 	m_playSky.reset();
 	m_camera.reset();
-	m_boxCollider.reset();
+	m_collider.reset();
 }
 
 // 初期化処理
@@ -190,13 +185,7 @@ void PlayScene::Update()
 		m_blocks->Update();
 
 		// 当たり判定の更新
-		Judgement();
-
-		// 衝突したオブジェクトごとに押し戻し処理を行う
-		for (auto& i : m_hittingObjects)
-		{
-			ApplyPushBack(i);
-		}
+		m_collider->Update(m_player.get(),m_blocks.get());
 	}
 
 	// UIの更新
@@ -279,9 +268,6 @@ void PlayScene::Finalize()
 
 	// マップの後処理
 	m_blocks->Finalize();
-
-	// 判定用配列を解放
-	m_hittingObjects.clear();
 }
 
 // 画面依存、デバイス依存の初期化
@@ -321,7 +307,7 @@ void PlayScene::CreateWindowDependentResources()
 	m_playUI->Create(GetSystemManager(), GetScreenSize());
 
 	// 当たり判定の作成
-	m_boxCollider = std::make_unique<Collider::BoxCollider>();
+	m_collider = std::make_unique<ColliderHelper>(JUDGE_AREA, GetSystemManager());
 }
 
 // シーン変数初期化関数
@@ -333,9 +319,6 @@ void PlayScene::SetSceneValues()
 
 	// BGMを鳴らす
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_PLAY, true);
-
-	// 判定の初期化
-	m_hittingObjects.clear();
 
 	// 制限時間の初期化
 	// 時間　×　フレームレート
@@ -549,114 +532,6 @@ void PlayScene::HelpNext()
 	default:
 		break;
 	}
-}
-
-// 判定処理
-void PlayScene::Judgement()
-{
-	// 衝突したオブジェクトリストを初期化
-	m_hittingObjects.clear();
-
-	// 当たり判定を取る
-	for (auto& block : m_blocks->GetMapData())
-	{
-		// マップステータスがなしの時は飛ばす
-		if (block.id == MAPSTATE::NONE) continue;
-
-		// プレイヤの判定範囲外は処理しない
-		// 引数（基準点、検索範囲、検索点）
-		if (not UserUtility::CheckPointInSphere(
-			m_player->GetPosition(), JUDGE_AREA, block.position)) continue;
-
-		// 判定を取る
-		m_boxCollider->PushBox(
-			m_player->GetPosition(), block.position,				// プレイヤ、オブジェクトの座標
-			SimpleMath::Vector3{ m_player->GetSize() },				// プレイヤサイズ
-			SimpleMath::Vector3{ m_blocks->GetObjSize(block.id) }	// ブロックサイズ
-		);
-
-		// 当たっていたらコリジョンリストに追加
-		if (m_boxCollider->IsHitBoxFlag())
-		{
-			m_hittingObjects.push_back(block);
-		}
-	}
-}
-
-// 押し戻し処理
-void PlayScene::ApplyPushBack(Object& obj)
-{
-	// 当っているオブジェがなしの場合は処理しない
-	if (obj.id == MAPSTATE::NONE)
-	{
-		// 要素を消して終了
-		m_hittingObjects.pop_back();
-		return;
-	}
-
-	// デフォルトで判定をつける
-	m_boxCollider->SetPushMode(true);
-
-	// コインの獲得処理
-	if (obj.id == MAPSTATE::COIN)
-	{
-		// 押し戻ししない
-		m_boxCollider->SetPushMode(false);
-
-		// コインカウントアップ
-		m_blocks->CountUpCoin(obj.index);
-
-		// コインのサウンドを鳴らす
-		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_COINGETTER, false);
-	}
-
-	// 雲の浮上処理
-	if (obj.id == MAPSTATE::CLOUD)
-	{
-		// プレイヤーが下にいたら押し戻ししない
-		if (m_player->GetPosition().y < obj.position.y + m_blocks->GetObjSize(MAPSTATE::CLOUD))
-		{
-			// 要素を消して終了
-			m_hittingObjects.pop_back();
-			return;
-		}
-
-		// 判定を有効化
-		m_boxCollider->SetPushMode(true);
-
-		// インデックス番号を格納
-		m_prevIndex.push_back(obj.index);
-
-		// 空なら処理しない
-		if (m_prevIndex.empty()) return;
-
-		// 当たっている判定を出す
-		m_blocks->SetCloudHitFlag(m_prevIndex.front(), true);
-
-		// 要素を消す
-		m_prevIndex.pop_front();
-	}
-
-	// 重力処理
-	if (obj.id == MAPSTATE::GRAVITY)
-	{
-		m_boxCollider->SetPushMode(false);
-		m_blocks->CallGravity();
-	}
-
-	// プレイヤーの押し戻し
-	SimpleMath::Vector3 _playerPos = m_player->GetPosition();
-	m_boxCollider->PushBox(
-		&_playerPos,obj.position,
-		SimpleMath::Vector3{ m_player->GetSize() },
-		SimpleMath::Vector3{ m_blocks->GetObjSize(obj.id)});
-	m_player->SetPosition(_playerPos);
-
-	// ブロックの上に乗っていたら着地判定
-	if (m_boxCollider->GetHitFace() == BOXHIT::UP) { m_player->ResetGravity(); }
-
-	// 要素を消して終了
-	m_hittingObjects.pop_back();
 }
 
 // 獲得コイン数
