@@ -65,7 +65,7 @@ void EditUI::Create(const std::shared_ptr<SystemManager>& system, const SimpleMa
 	m_texRect[MAPSTATE::CLOUD]   = { _1,_0,_2,_1 };
 	m_texRect[MAPSTATE::COIN]    = { _2,_0,_3,_1 };
 	m_texRect[MAPSTATE::GRAVITY] = { _2,_1,_3,_2 };
-	m_texRect[MAPSTATE::PLAYER]  = { _1,_1,_2,_2 };
+	m_texRect[MAPSTATE::BIRD]  = { _1,_1,_2,_2 };
 	m_modeRect[0] = { _0,_0,_1,_1 };					// 表示切替・戻るアイコン
 	m_modeRect[1] = { _1,_0,_2,_1 };
 	m_modeRect[2] = { _2,_0,_3,_1 };
@@ -306,7 +306,7 @@ void EditUI::ChangeState()
 					 _iconFlags[MAPSTATE::COIN]   ||
 					 _iconFlags[MAPSTATE::CLOUD]  ||
 					 _iconFlags[MAPSTATE::GRAVITY]||
-					 _iconFlags[MAPSTATE::PLAYER] ||
+					 _iconFlags[MAPSTATE::BIRD] ||
 					 _iconFlags[MAPSTATE::NONE]);
 
 	// マウスがクリックされた場合に、現在のステータスを更新する
@@ -341,8 +341,8 @@ void EditUI::ChangeState()
 			case MAPSTATE::GRAVITY:
 				m_nowState = MAPSTATE::GRAVITY;		// リセットポイント
 				break;
-			case MAPSTATE::PLAYER:
-				m_nowState = MAPSTATE::PLAYER;		// プレイヤー
+			case MAPSTATE::BIRD:
+				m_nowState = MAPSTATE::BIRD;		// プレイヤー
 				break;
 			case MAPSTATE::NONE:
 				m_nowState = MAPSTATE::NONE;		// なし

@@ -190,7 +190,7 @@ void EditScene::Draw()
 		m_blockCount[MAPSTATE::COIN],
 		m_blockCount[MAPSTATE::CLOUD],
 		m_blockCount[MAPSTATE::GRAVITY],
-		m_blockCount[MAPSTATE::PLAYER]
+		m_blockCount[MAPSTATE::BIRD]
 	);
 
 	// マウスカーソルの描画
@@ -215,7 +215,7 @@ void EditScene::SwitchDraw(const int& objNum, ID3D11DeviceContext* context,	Comm
 	case MAPSTATE::GRAVITY:	// 重力
 		m_gravityModel->Draw(context, states, world, view, proj);
 		break;
-	case MAPSTATE::PLAYER:	// プレイヤー
+	case MAPSTATE::BIRD:	// プレイヤー
 		m_playerModel->Draw(context, states, world, view, proj);
 		break;
 	default:

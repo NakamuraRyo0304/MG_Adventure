@@ -448,7 +448,7 @@ void Blocks::MapSwipe()
 			};
 		}
 		// ƒvƒŒƒCƒ„‚ÌÀ•W‚ğ‘ã“ü
-		if (m_mapObj[i].id == MAPSTATE::PLAYER)
+		if (m_mapObj[i].id == MAPSTATE::BIRD)
 		{
 			m_playerPos = SimpleMath::Vector3
 			{

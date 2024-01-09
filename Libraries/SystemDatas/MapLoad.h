@@ -47,7 +47,7 @@ public:
 		static const int CLOUD		= 2;	// 雲のブロック
 		static const int COIN		= 3;	// コインのブロック
 		static const int GRAVITY	= 4;	// 重力ブロック
-		static const int PLAYER		= 5;	// プレイヤー
+		static const int BIRD		= 5;	// プレイヤー
 		static const int LENGTH		= 6;	// ブロックステータスの長さ
 	};
 

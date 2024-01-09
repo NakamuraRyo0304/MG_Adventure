@@ -57,7 +57,7 @@ bool ClearChecker::RunCheck()
 	// オブジェクトの数を計算
 	for (int i = 0; i < m_checkMap.size(); i++)
 	{
-		if (m_checkMap[i].id == MAPSTATE::PLAYER)
+		if (m_checkMap[i].id == MAPSTATE::BIRD)
 		{
 			m_playerNum++;
 			m_playerPos = m_checkMap[i].position;
