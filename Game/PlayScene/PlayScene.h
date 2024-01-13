@@ -27,7 +27,9 @@ private:
 	float m_startTimer;
 
 	// 制限時間
-	float m_gameTimer;
+	float m_timeLinits;
+
+	// クリア時間
 	float m_clearTime;
 
 	// マップ番号
@@ -60,19 +62,19 @@ private:
 	std::unique_ptr<Blocks> m_blocks;
 
 	// プレイヤーの目印（ビルボード）
-	std::unique_ptr<PlayerBill> m_playerBill;
+	std::unique_ptr<PlayerBill> m_playerPoint;
 
 	// タイマー表示とコイン表示
 	std::unique_ptr<PlayUI> m_playUI;
 
 	// サードパーソンカメラ
-	std::unique_ptr<ThirdPersonCamera> m_thirdCamera;
+	std::unique_ptr<ThirdPersonCamera> m_tpCamera;
 
 	// スタートカメラ
 	std::unique_ptr<PlayCamera> m_camera;
 
 	// スカイドーム
-	std::unique_ptr<PlaySky> m_playSky;
+	std::unique_ptr<PlaySky> m_sky;
 
 private:
 
@@ -185,35 +187,35 @@ private:
 	/// </summary>
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
-	void InitializeLighting();
+	void UpdateLight();
 
 	/// <summary>
 	/// プレイヤーの作成
 	/// </summary>
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
-	void MakePlayer();
+	void CreatePlayer();
 
 	/// <summary>
 	/// ブロックの作成
 	/// </summary>
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
-	void MakeBlocks();
+	void CreateBlock();
 
 	/// <summary>
 	/// スタートのカウントダウン
 	/// </summary>
 	/// <param name="引数無し"></param>
 	/// <returns>終わっていたらTrueを返す</returns>
-	bool StartTimer();
+	bool Countdown();
 
 	/// <summary>
 	/// スタート演出
 	/// </summary>
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
-	void MoveStart();
+	void FirstMovement();
 
 	/// <summary>
 	/// UIの更新

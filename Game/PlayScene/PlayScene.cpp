@@ -22,10 +22,10 @@ PlayScene::PlayScene(const int& stageNum, const int& coins)
 	: IScene()						// 基底クラスの初期化
 	, m_stageNum{ stageNum }		// ステージ番号
 	, m_allCoins{ coins }			// 保有コイン数
-	, m_startTimer{0.0f}			// 開始時間
-	, m_gameTimer{0.0f}				// 制限時間
-	, m_clearTime{0.0f}				// クリア時間
-	, m_fallValue{0.0f}				// 落下用変数
+	, m_startTimer{}				// 開始時間
+	, m_timeLinits{}				// 制限時間
+	, m_clearTime{}					// クリア時間
+	, m_fallValue{}					// 落下用変数
 	, m_lighting{}					// ライティング設定
 	, is_thirdPersonMode{false}		// サードパーソンモード
 	, is_helpFlag{false}			// ヘルプ表示フラグ
@@ -37,10 +37,10 @@ PlayScene::~PlayScene()
 {
 	m_player.reset();
 	m_blocks.reset();
-	m_playerBill.reset();
+	m_playerPoint.reset();
 	m_playUI.reset();
-	m_thirdCamera.reset();
-	m_playSky.reset();
+	m_tpCamera.reset();
+	m_sky.reset();
 	m_camera.reset();
 	m_collider.reset();
 }
@@ -73,7 +73,7 @@ void PlayScene::Update()
 	// カメラの更新
 	if (is_thirdPersonMode) // 三人称カメラ
 	{
-		m_thirdCamera->UpdateFollow(m_player->GetPosition(), m_player->GetNeckRotate(), THIRD_DISTANCE);
+		m_tpCamera->UpdateFollow(m_player->GetPosition(), m_player->GetNeckRotate(), THIRD_DISTANCE);
 	}
 	else // 見下ろしカメラ
 	{
@@ -81,10 +81,10 @@ void PlayScene::Update()
 	}
 
 	// カウントダウンが終わったらスタート
-	if (StartTimer() == false)
+	if (Countdown() == false)
 	{
 		// スタートの動き
-		MoveStart();
+		FirstMovement();
 		return;
 	}
 
@@ -99,10 +99,10 @@ void PlayScene::Update()
 	}
 
 	// コインをすべて獲得かタイムアップでリザルト
-	if (m_blocks->IsCollectedFlag() || m_gameTimer < 0.0f)
+	if (m_blocks->IsCollectedFlag() || m_timeLinits < 0.0f)
 	{
 		// クリアタイムを格納
-		m_clearTime = m_gameTimer / FLAME_RATE;
+		m_clearTime = m_timeLinits / FLAME_RATE;
 
 		ChangeScene(SCENE::RESULT);
 		return;
@@ -110,13 +110,13 @@ void PlayScene::Update()
 	else // クリアしていなければデクリメント
 	{
 		// 制限時間の計算
-		m_gameTimer--;
+		m_timeLinits--;
 
 		// 空の処理
-		m_playSky->Update(m_gameTimer / (TIME_LIMIT * FLAME_RATE));
+		m_sky->Update(m_timeLinits / (TIME_LIMIT * FLAME_RATE));
 
 		// 時間が半分になったら合図を鳴らす
-		if (static_cast<int>(m_gameTimer / FLAME_RATE) == TIME_LIMIT / 2)
+		if (static_cast<int>(m_timeLinits / FLAME_RATE) == TIME_LIMIT / 2)
 		{
 			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_EVENINGBELL, false);
 		}
@@ -126,7 +126,7 @@ void PlayScene::Update()
 	m_player->Update(is_thirdPersonMode);
 
 	// 相対移動
-	m_playerBill->SetVertexMovePos(m_player->GetPosition());
+	m_playerPoint->SetVertexMovePos(m_player->GetPosition());
 
 	// ステージの下に落ちたらステージ崩壊演出
 	if (m_player->GetPosition().y < DURATION_FLOOR_LINE)
@@ -189,7 +189,7 @@ void PlayScene::Update()
 	}
 
 	// UIの更新
-	m_playUI->Update(m_gameTimer);
+	m_playUI->Update(m_timeLinits);
 
 	// 落下したらリスタート
 	if (m_player->GetDeathFlag())
@@ -209,7 +209,7 @@ void PlayScene::Draw()
 	SimpleMath::Matrix _view, _projection;
 
 	// ビュー行列&プロジェクション行列
-	if (StartTimer() == false)
+	if (Countdown() == false)
 	{
 		// スタート演出カメラ
 		_view = m_camera->CreateView();
@@ -218,7 +218,7 @@ void PlayScene::Draw()
 	else if (is_thirdPersonMode)
 	{
 		// リアル視点(三人称)カメラ
-		_view = m_thirdCamera->GetFollowView();
+		_view = m_tpCamera->GetFollowView();
 		_projection = GetSystemManager()->GetCamera()->GetProjection();
 	}
 	else
@@ -229,7 +229,7 @@ void PlayScene::Draw()
 	}
 
 	// ライティングの更新
-	InitializeLighting();
+	UpdateLight();
 
 	// マップの描画
 	m_blocks->Render(*_states, _view, _projection, _timer, m_lighting);
@@ -238,22 +238,22 @@ void PlayScene::Draw()
 	m_player->Render(*_states, _view, _projection, m_lighting);
 
 	// スカイドームの描画
-	m_playSky->Draw(*_states, _view, _projection, _timer);
+	m_sky->Draw(*_states, _view, _projection, _timer);
 
 	// ビルボードの描画
 	if (not is_thirdPersonMode)
 	{
-		m_playerBill->CreateBillboard(
+		m_playerPoint->CreateBillboard(
 			GetSystemManager()->GetCamera()->GetTarget(),	// カメラの注視点
 			GetSystemManager()->GetCamera()->GetPosition(),	// カメラの座標
 			SimpleMath::Vector3::Up
 		);
-		m_playerBill->Render(m_player->GetPosition(), _timer, _view, _projection);
+		m_playerPoint->Render(m_player->GetPosition(), _timer, _view, _projection);
 	}
 	// 回りの靄
 	else
 	{
-		m_thirdCamera->DrawAdhesion();
+		m_tpCamera->DrawAdhesion();
 	}
 
 	// UIの描画
@@ -281,25 +281,25 @@ void PlayScene::CreateWindowDependentResources()
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
 
 	// サードパーソンカメラの作成
-	m_thirdCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager());
-	m_thirdCamera->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
+	m_tpCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager());
+	m_tpCamera->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
 
 	// スタート用カメラの作成
 	m_camera = std::make_unique<PlayCamera>(SimpleMath::Vector2(GetScreenSize().x, GetScreenSize().y));
 	m_camera->SetPosition(START_CAMERA_POS);
 
 	// スカイドームの作成
-	m_playSky = std::make_unique<PlaySky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
+	m_sky = std::make_unique<PlaySky>(GetFactoryManager(), L"Resources/Models/ShineSky.cmo");
 
 	// プレイヤーの作成
-	MakePlayer();
+	CreatePlayer();
 
 	// ブロックの作成
-	MakeBlocks();
+	CreateBlock();
 
 	// 位置情報のシェーダーの作成
-	m_playerBill = std::make_unique<PlayerBill>(GetFactoryManager());
-	m_playerBill->Create();
+	m_playerPoint = std::make_unique<PlayerBill>(GetFactoryManager());
+	m_playerPoint->Create();
 
 	// UIの作成
 	GetSystemManager()->GetDrawSprite()->MakeSpriteBatch();
@@ -322,7 +322,7 @@ void PlayScene::SetSceneValues()
 
 	// 制限時間の初期化
 	// 時間　×　フレームレート
-	m_gameTimer = TIME_LIMIT * FLAME_RATE;
+	m_timeLinits = TIME_LIMIT * FLAME_RATE;
 
 	m_clearTime = 0.0f;
 
@@ -353,14 +353,14 @@ void PlayScene::SetSceneValues()
 }
 
 // ライティングの設定
-void PlayScene::InitializeLighting()
+void PlayScene::UpdateLight()
 {
 	m_player->InitializeLighting(m_lighting);
 	m_blocks->InitializeLighting(m_lighting);
 }
 
 // プレイヤー作成関数
-void PlayScene::MakePlayer()
+void PlayScene::CreatePlayer()
 {
 	// ファクトリマネージャ
 	auto& _fm = GetFactoryManager();
@@ -385,7 +385,7 @@ void PlayScene::MakePlayer()
 }
 
 // ブロック作成関数
-void PlayScene::MakeBlocks()
+void PlayScene::CreateBlock()
 {
 	m_blocks = std::make_unique<Blocks>(GetFactoryManager());
 	m_blocks->CreateShader();
@@ -410,7 +410,7 @@ void PlayScene::MakeBlocks()
 }
 
 // カウントダウン
-bool PlayScene::StartTimer()
+bool PlayScene::Countdown()
 {
 	m_startTimer -= COUNT_SPEED;
 
@@ -424,7 +424,7 @@ bool PlayScene::StartTimer()
 }
 
 // スタートの動き
-void PlayScene::MoveStart()
+void PlayScene::FirstMovement()
 {
 	auto& _camera = GetSystemManager()->GetCamera();
 
@@ -458,7 +458,7 @@ bool PlayScene::UpdateUI()
 	auto& _se = GetSystemManager()->GetSoundManager();
 
 	// ヘルプ表示を切り替える
-	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Enter) && StartTimer())
+	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Enter) && Countdown())
 	{
 		is_helpFlag = not is_helpFlag;
 		m_playUI->SetHelpFlag(is_helpFlag);
