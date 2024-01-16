@@ -458,7 +458,7 @@ bool PlayScene::UpdateUI()
 	auto& _se = GetSystemManager()->GetSoundManager();
 
 	// ƒwƒ‹ƒv•\Ž¦‚ðØ‚è‘Ö‚¦‚é
-	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Enter) && Countdown())
+	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::H) && Countdown())
 	{
 		is_helpFlag = not is_helpFlag;
 		m_playUI->SetHelpFlag(is_helpFlag);

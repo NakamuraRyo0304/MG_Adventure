@@ -181,14 +181,14 @@ private:
 	/// </summary>
 	/// <param name="scale">画像の拡大率</param>
 	/// <returns>なし</returns>
-	void RenderSunny(DirectX::SimpleMath::Vector2 scale);
+	void DrawSun(DirectX::SimpleMath::Vector2 scale);
 
 	/// <summary>
 	/// ページの描画
 	/// </summary>
 	/// <param name="scale">画面の拡大率</param>
 	/// <returns>なし</returns>
-	void RenderHelpPage(DirectX::SimpleMath::Vector2 scale);
+	void DrawPage(DirectX::SimpleMath::Vector2 scale);
 
 	/// <summary>
 	/// 座標を移動させる

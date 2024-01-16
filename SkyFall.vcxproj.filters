@@ -661,9 +661,6 @@
     <Image Include="Resources\Textures\PLAY_HELP\HelpBack.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
     </Image>
-    <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds">
-      <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
-    </Image>
     <Image Include="Resources\Textures\SELECT_INFO\LeftArrow.dds">
       <Filter>Resources\Textures\SELECT_INFO</Filter>
     </Image>
@@ -758,6 +755,51 @@
       <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
     </Image>
     <Image Include="Resources\Textures\Wkeydef.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Akeyred.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Dkeyred.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Skeyred.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Wkeyred.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Hkeydef.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_HELP\HelpFont.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArDown.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArDownR.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArLeft.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArLeftR.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArRight.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArRightR.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArUp.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArUpR.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\BackCamera.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
     </Image>
   </ItemGroup>
@@ -911,19 +953,5 @@
     <Font Include="Resources\Fonts\myfile.spritefont">
       <Filter>Assets</Filter>
     </Font>
-  </ItemGroup>
-  <ItemGroup>
-    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Akeydef.png">
-      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
-    </ImageContentTask>
-    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Dkeydef.png">
-      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
-    </ImageContentTask>
-    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Skeydef.png">
-      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
-    </ImageContentTask>
-    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Wkeydef.png">
-      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
-    </ImageContentTask>
   </ItemGroup>
 </Project>

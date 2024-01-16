@@ -67,11 +67,11 @@ void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,const SimpleMa
 	m_system->GetDrawSprite()->AddTextureData(L"HelpBack",			// ヘルプ時の背景暗転
 		L"Resources/Textures/PLAY_HELP/HelpBack.dds");
 
-	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp",			// ヘルプを開く表示
-		L"Resources/Textures/PLAY_HELP/OpenHelp.dds");
-
 	m_system->GetDrawSprite()->AddTextureData(L"HowToPlay",			// ヘルプ表示
 		L"Resources/Textures/PLAY_HELP/Help.dds");
+
+	m_system->GetDrawSprite()->AddTextureData(L"HelpFont",			// ヘルプ文字
+		L"Resources/Textures/PLAY_HELP/HelpFont.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"BlockInfo",			// ブロック情報
 		L"Resources/Textures/PLAY_HELP/BlockInfo.dds");
@@ -219,55 +219,21 @@ void PlayUI::Render()
 	}
 
 	// 太陽アイコンの描画
-	RenderSunny(_scale);
+	DrawSun(_scale);
 
 	// タイマーの描画
 	RenderTimer(_scale);
 
-	//-------------------------------------------------------------------------------------//
-	// ヘルプ中の表示
-	if (is_helpFlag)
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"HelpBack",                       // 登録キー
-			SimpleMath::Vector2::Zero,         // 座標
-			{ 1.0f, 1.0f, 1.0f, 1.0f },        // 色
-			_scale,                            // 拡大率
-			SimpleMath::Vector2::Zero          // 中心位置
-		);
+	// キー入力を表示
+	m_showKey->Draw(_scale);
 
-		// ページの描画
-		RenderHelpPage(_scale);
+	// ヘルプ文字を描画
+	m_system->GetDrawSprite()->DrawTexture(L"HelpFont",
+		SimpleMath::Vector2(1800.0f, 50.0f) * _scale, { 1,1,1,1 }, SimpleMath::Vector2::One * _scale,
+		{ 96, 32 }, { 0,0,192,64 });
 
-		// アロー
-		if (is_transFlag)
-		{
-			m_system->GetDrawSprite()->DrawTexture(
-				L"SelectArrow",
-				m_arrowPos.nowPos * _scale,
-				{ 1.0f, 1.0f, 1.0f, 1.0f },
-				 _scale,
-				ARROW_SIZE / 2,
-				RECT_U(0L, 0L, static_cast<LONG>(ARROW_SIZE.x), static_cast<LONG>(ARROW_SIZE.y))
-			);
-		}
-	}
-	//-------------------------------------------------------------------------------------//
-	// 通常の表示
-	else
-	{
-		m_system->GetDrawSprite()->DrawTexture(
-			L"OpenHelp",
-			SimpleMath::Vector2{ m_windowSize.x - HELP_WIDTH * _scale.x, 0.0f },
-			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			_scale,
-			SimpleMath::Vector2::Zero,
-			{ 0L,0L,360L,120L }
-		);
-
-		// キー入力を表示
-		m_showKey->Draw(_scale);
-	}
+	// ヘルプ中の描画
+	if (is_helpFlag) { DrawPage(_scale); }
 }
 
 // カウントダウン
@@ -279,28 +245,21 @@ void PlayUI::RenderCountDown(const float& countDown)
 	if (static_cast<int>(countDown / 60) == 0)
 	{
 		m_countDownEnds -= COUNT_END_SPEED;
-		m_system->GetDrawSprite()->DrawTexture(
-			L"GameStart",
+		m_system->GetDrawSprite()->DrawTexture(L"GameStart",
 			{ (m_windowSize / 2).x * _scale.x,
 			((m_windowSize / 2).y + m_countDownEnds * COUNT_MOVE_SPEED) * _scale.y },
-			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			_scale,
-			m_windowSize / 2
-		);
+			{ 1.0f, 1.0f, 1.0f, 1.0f }, _scale, m_windowSize / 2);
+
 		return;
 	}
 
+	// カウントダウンの切り取り位置を計算
 	int _num = static_cast<int>(countDown) / 60;
 	RECT_U _countRec = { _num * NUM_SIZE, 0, _num * NUM_SIZE + NUM_SIZE, NUM_SIZE };
 
-	m_system->GetDrawSprite()->DrawTexture(
-		L"Number",
-		m_countDownPos,
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		_scale,
-		SimpleMath::Vector2::Zero,
-		_countRec
-	);
+	// カウントダウンの表示
+	m_system->GetDrawSprite()->DrawTexture(L"Number", m_countDownPos,
+		{ 1.0f, 1.0f, 1.0f, 1.0f }, _scale, SimpleMath::Vector2::Zero, _countRec);
 }
 
 // 終了処理
@@ -319,41 +278,30 @@ void PlayUI::RenderTimer(SimpleMath::Vector2 scale)
 	RECT_U _oneRec = { _oneSec * NUM_SIZE, 0, _oneSec * NUM_SIZE + NUM_SIZE, NUM_SIZE };
 	RECT_U _tenRec = { _tenSec * NUM_SIZE, 0, _tenSec * NUM_SIZE + NUM_SIZE, NUM_SIZE };
 
+	// 10の桁
 	m_system->GetDrawSprite()->DrawTexture(
-		L"Number",
-		m_tenSecPos,
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale,
-		SimpleMath::Vector2::Zero,
-		_tenRec
-	);
+		L"Number", m_tenSecPos, SimpleMath::Vector4::One, scale, SimpleMath::Vector2::Zero, _tenRec);
 
+	// 1の桁
 	m_system->GetDrawSprite()->DrawTexture(
-		L"Number",
-		m_oneSecPos,
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		scale,
-		SimpleMath::Vector2::Zero,
-		_oneRec
-	);
+		L"Number", m_oneSecPos, SimpleMath::Vector4::One, scale, SimpleMath::Vector2::Zero, _oneRec);
 }
 
 // 太陽の描画
-void PlayUI::RenderSunny(SimpleMath::Vector2 scale)
+void PlayUI::DrawSun(SimpleMath::Vector2 scale)
 {
 	m_system->GetDrawSprite()->DrawTexture(
-		L"Sun",
-		m_sunPos,
-		{ 1.0f,1.0f,1.0f,1.0f },
-		scale,
-		SimpleMath::Vector2{ SUN_SIZE / 2 },
-		{ 0L,0L,100L,100L }
-	);
+		L"Sun", m_sunPos, SimpleMath::Vector4::One, scale, SimpleMath::Vector2{ SUN_SIZE / 2 },
+		{ 0L,0L,100L,100L });
 }
 
-// ページの描画
-void PlayUI::RenderHelpPage(SimpleMath::Vector2 scale)
+// ヘルプページの描画
+void PlayUI::DrawPage(SimpleMath::Vector2 scale)
 {
+	// 背景を薄暗くカバーする
+	m_system->GetDrawSprite()->DrawTexture(L"HelpBack",
+		SimpleMath::Vector2::Zero, SimpleMath::Vector4::One, scale, SimpleMath::Vector2::Zero);
+
 	// Page1
 	m_system->GetDrawSprite()->DrawTexture(
 		L"HowToPlay",
@@ -380,6 +328,14 @@ void PlayUI::RenderHelpPage(SimpleMath::Vector2 scale)
 		scale,
 		SimpleMath::Vector2::Zero
 	);
+
+	// アロー
+	if (is_transFlag)
+	{
+		m_system->GetDrawSprite()->DrawTexture(L"SelectArrow",
+			m_arrowPos.nowPos * scale, SimpleMath::Vector4::One, scale, ARROW_SIZE / 2,
+			RECT_U(0L, 0L, static_cast<LONG>(ARROW_SIZE.x), static_cast<LONG>(ARROW_SIZE.y)));
+	}
 }
 
 // 位置を移動する

@@ -326,20 +326,22 @@
     <Image Include="Resources\Textures\Number.dds" />
     <Image Include="Resources\Textures\PlayerPoint.dds" />
     <Image Include="Resources\Textures\PLAY_BUTTON\Akeydef.dds" />
-    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Akeydef.png">
-      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Textures/PLAY_BUTTON/%(Filename).dds</ContentOutput>
-    </ImageContentTask>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Akeyred.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArDown.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArDownR.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArLeft.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArLeftR.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArRight.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArRightR.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArUp.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\ArUpR.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\BackCamera.dds" />
     <Image Include="Resources\Textures\PLAY_BUTTON\Dkeydef.dds" />
-    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Dkeydef.png">
-      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Textures/PLAY_BUTTON/%(Filename).dds</ContentOutput>
-    </ImageContentTask>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Dkeyred.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\Hkeydef.dds" />
     <Image Include="Resources\Textures\PLAY_BUTTON\Skeydef.dds" />
-    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Skeydef.png">
-      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Textures/PLAY_BUTTON/%(Filename).dds</ContentOutput>
-    </ImageContentTask>
-    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Wkeydef.png">
-      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Textures/PLAY_BUTTON/%(Filename).dds</ContentOutput>
-    </ImageContentTask>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Skeyred.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\Wkeyred.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\Adhesion.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\GameStart.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\sun.dds" />
@@ -347,7 +349,7 @@
     <Image Include="Resources\Textures\PLAY_HELP\GoScenes.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\Help.dds" />
     <Image Include="Resources\Textures\PLAY_HELP\HelpBack.dds" />
-    <Image Include="Resources\Textures\PLAY_HELP\OpenHelp.dds" />
+    <Image Include="Resources\Textures\PLAY_HELP\HelpFont.dds" />
     <Image Include="Resources\Textures\RESULT_INFO\CLEAR.dds" />
     <Image Include="Resources\Textures\RESULT_INFO\GETCOINS.dds" />
     <Image Include="Resources\Textures\RESULT_INFO\ResultBack.dds" />
