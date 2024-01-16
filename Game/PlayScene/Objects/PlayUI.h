@@ -10,6 +10,7 @@
 #define PLAYUI
 
 class SystemManager;
+class ShowKey;
 class PlayUI
 {
 public:
@@ -20,6 +21,9 @@ private:
 
 	// システムポインタ
 	std::shared_ptr<SystemManager> m_system;
+
+	// キー入力表示
+	std::unique_ptr<ShowKey> m_showKey;
 
 	// ウィンドウサイズ
 	DirectX::SimpleMath::Vector2 m_windowSize;
@@ -35,9 +39,6 @@ private:
 
 	// スタートが消えるタイマー
 	float m_countDownEnds;
-
-	// 画面下の説明文の座標
-	DirectX::SimpleMath::Vector2 m_underFontPos;
 
 	// 太陽の位置
 	DirectX::SimpleMath::Vector2 m_sunPos;
@@ -81,9 +82,6 @@ private:
 
 	// Help表示の横サイズ
 	const float HELP_WIDTH = 400.0f;
-
-	// 下の文の流れる速度
-	const float UNDER_SPEED = 2.5f;
 
 	// 太陽の画像のサイズ
 	const DirectX::SimpleMath::Vector2 SUN_SIZE = { 100.0f,100.0f };
@@ -170,12 +168,6 @@ public:
 
 private:
 
-	/// <summary>
-	/// 下のフォントの位置の更新
-	/// </summary>
-	/// <param name="scale">拡大率</param>
-	/// <returns>なし</returns>
-	void UpdateUnderLine(DirectX::SimpleMath::Vector2 scale);
 
 	/// <summary>
 	/// タイマーの描画

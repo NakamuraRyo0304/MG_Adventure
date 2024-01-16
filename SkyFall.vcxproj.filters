@@ -200,23 +200,11 @@
     <Filter Include="Common\Debug\DrawString">
       <UniqueIdentifier>{4e74567a-c8e0-4d55-897c-84489a262085}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\ChangeSceneEffects">
-      <UniqueIdentifier>{47bbbf2b-40f4-4cbf-ae8c-4eefd6179c43}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\ChangeSceneEffects\Fade">
-      <UniqueIdentifier>{7c91f0be-f5e3-4cf5-b110-ada0c1ed334d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\ChangeSceneEffects\Transition">
-      <UniqueIdentifier>{5604dedf-a809-4c86-bb0c-2b1b36fc758a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scenes\EditScene\System\MouseCursor">
       <UniqueIdentifier>{dec65e1a-97d1-40d8-88cf-2337775d9678}</UniqueIdentifier>
     </Filter>
     <Filter Include="Common\Input">
       <UniqueIdentifier>{384b2334-9697-40a3-8742-085e4f0eb785}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Button">
-      <UniqueIdentifier>{1434c8ff-58f3-468d-b023-84a92efdee68}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scenes\SelectScene\Objects\FontObject">
       <UniqueIdentifier>{8c55365a-a4ed-4e68-8d22-97264a98932b}</UniqueIdentifier>
@@ -280,6 +268,21 @@
     </Filter>
     <Filter Include="Scenes\ResultScene\System\ResultCamera">
       <UniqueIdentifier>{d49340a1-c506-4eb2-a5cf-2ac1cb1f313e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Transitions">
+      <UniqueIdentifier>{47bbbf2b-40f4-4cbf-ae8c-4eefd6179c43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Transitions\Fade">
+      <UniqueIdentifier>{7c91f0be-f5e3-4cf5-b110-ada0c1ed334d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Transitions\Transition">
+      <UniqueIdentifier>{5604dedf-a809-4c86-bb0c-2b1b36fc758a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\ShowKey">
+      <UniqueIdentifier>{2bf051f7-7683-4dca-a9ec-66b11305ccc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures\PLAY_UI\PLAY_BUTTON">
+      <UniqueIdentifier>{9e476d72-31e8-4709-8989-4e28e75b7c82}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -356,7 +359,7 @@
       <Filter>Scenes\EditScene\Objects\EditUI</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\Fade.h">
-      <Filter>Common\ChangeSceneEffects\Fade</Filter>
+      <Filter>Common\Transitions\Fade</Filter>
     </ClInclude>
     <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h">
       <Filter>Scenes\PlayScene\Objects\PlayerBill</Filter>
@@ -398,16 +401,13 @@
       <Filter>Scenes\EditScene\System\EditorLog</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\Transition.h">
-      <Filter>Common\ChangeSceneEffects\Transition</Filter>
+      <Filter>Common\Transitions\Transition</Filter>
     </ClInclude>
     <ClInclude Include="Game\EditScene\System\MouseCursor.h">
       <Filter>Scenes\EditScene\System\MouseCursor</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\Input.h">
       <Filter>Common\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\SystemDatas\Button.h">
-      <Filter>Common\Button</Filter>
     </ClInclude>
     <ClInclude Include="Game\SelectScene\Objects\FontObject.h">
       <Filter>Scenes\SelectScene\Objects\FontObject</Filter>
@@ -462,6 +462,9 @@
     </ClInclude>
     <ClInclude Include="Libraries\SystemDatas\ColliderHelper.h">
       <Filter>Common\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\ShowKey.h">
+      <Filter>Scenes\PlayScene\Objects\ShowKey</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -529,7 +532,7 @@
       <Filter>Scenes\EditScene\Objects\EditUI</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\Fade.cpp">
-      <Filter>Common\ChangeSceneEffects\Fade</Filter>
+      <Filter>Common\Transitions\Fade</Filter>
     </ClCompile>
     <ClCompile Include="Game\PlayScene\Objects\PlayerBill.cpp">
       <Filter>Scenes\PlayScene\Objects\PlayerBill</Filter>
@@ -565,16 +568,13 @@
       <Filter>Scenes\EditScene\System\EditorLog</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\Transition.cpp">
-      <Filter>Common\ChangeSceneEffects\Transition</Filter>
+      <Filter>Common\Transitions\Transition</Filter>
     </ClCompile>
     <ClCompile Include="Game\EditScene\System\MouseCursor.cpp">
       <Filter>Scenes\EditScene\System\MouseCursor</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\SystemDatas\Input.cpp">
       <Filter>Common\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\SystemDatas\Button.cpp">
-      <Filter>Common\Button</Filter>
     </ClCompile>
     <ClCompile Include="Game\SelectScene\Objects\FontObject.cpp">
       <Filter>Scenes\SelectScene\Objects\FontObject</Filter>
@@ -630,6 +630,9 @@
     <ClCompile Include="Libraries\SystemDatas\ColliderHelper.cpp">
       <Filter>Common\Collider</Filter>
     </ClCompile>
+    <ClCompile Include="Game\PlayScene\Objects\ShowKey.cpp">
+      <Filter>Scenes\PlayScene\Objects\ShowKey</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\Icon\Icon.rc">
@@ -669,12 +672,6 @@
     </Image>
     <Image Include="Resources\Textures\SELECT_INFO\TotalCoins.dds">
       <Filter>Resources\Textures\SELECT_INFO</Filter>
-    </Image>
-    <Image Include="Resources\Textures\UnderFont.dds">
-      <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
-    </Image>
-    <Image Include="Resources\Textures\UnderLine.dds">
-      <Filter>Resources\Textures\PLAY_UI\PLAY_HELP</Filter>
     </Image>
     <Image Include="Resources\Textures\PLAY_COMMON\sun.dds">
       <Filter>Resources\Textures\PLAY_UI\PLAY_COMMON</Filter>
@@ -750,6 +747,18 @@
     </Image>
     <Image Include="Resources\Textures\RESULT_INFO\ResultBack.dds">
       <Filter>Resources\Textures\RESULT_INFO</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Dkeydef.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Skeydef.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Akeydef.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Wkeydef.dds">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -854,6 +863,9 @@
     <None Include="Datas\Maps\StageEdit.csv">
       <Filter>Datas\Maps</Filter>
     </None>
+    <None Include="Resources\Shaders\Blocks.hlsli">
+      <Filter>Resources\Shaders\Block</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -891,10 +903,27 @@
     <FxCompile Include="Resources\Shaders\PS_Coin.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\PS_OutLine.hlsl">
+      <Filter>Resources\Shaders\Block</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Fonts\myfile.spritefont">
       <Filter>Assets</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Akeydef.png">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Dkeydef.png">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Skeydef.png">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Wkeydef.png">
+      <Filter>Resources\Textures\PLAY_UI\PLAY_BUTTON</Filter>
+    </ImageContentTask>
   </ItemGroup>
 </Project>

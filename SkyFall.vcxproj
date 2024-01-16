@@ -204,6 +204,7 @@
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlaySky.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayUI.h" />
+    <ClInclude Include="Game\PlayScene\Objects\ShowKey.h" />
     <ClInclude Include="Game\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\PlayScene\System\PlayCamera.h" />
     <ClInclude Include="Game\PlayScene\System\ThirdPersonCamera.h" />
@@ -226,7 +227,6 @@
     <ClInclude Include="Libraries\Factories\ShaderFactory.h" />
     <ClInclude Include="Libraries\FactoryManager\FactoryManager.h" />
     <ClInclude Include="Libraries\Nlohmann\json.hpp" />
-    <ClInclude Include="Libraries\SystemDatas\Button.h" />
     <ClInclude Include="Libraries\SystemDatas\Collider.h" />
     <ClInclude Include="Libraries\SystemDatas\Camera.h" />
     <ClInclude Include="Libraries\SystemDatas\ColliderHelper.h" />
@@ -266,6 +266,7 @@
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlaySky.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayUI.cpp" />
+    <ClCompile Include="Game\PlayScene\Objects\ShowKey.cpp" />
     <ClCompile Include="Game\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\PlayScene\System\PlayCamera.cpp" />
     <ClCompile Include="Game\PlayScene\System\ThirdPersonCamera.cpp" />
@@ -287,7 +288,6 @@
     <ClCompile Include="Libraries\Factories\ModelFactory.cpp" />
     <ClCompile Include="Libraries\Factories\ShaderFactory.cpp" />
     <ClCompile Include="Libraries\FactoryManager\FactoryManager.cpp" />
-    <ClCompile Include="Libraries\SystemDatas\Button.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Collider.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Camera.cpp" />
     <ClCompile Include="Libraries\SystemDatas\ColliderHelper.cpp" />
@@ -325,6 +325,21 @@
     <Image Include="Resources\Textures\EDITS\UnderInfo.dds" />
     <Image Include="Resources\Textures\Number.dds" />
     <Image Include="Resources\Textures\PlayerPoint.dds" />
+    <Image Include="Resources\Textures\PLAY_BUTTON\Akeydef.dds" />
+    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Akeydef.png">
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Textures/PLAY_BUTTON/%(Filename).dds</ContentOutput>
+    </ImageContentTask>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Dkeydef.dds" />
+    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Dkeydef.png">
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Textures/PLAY_BUTTON/%(Filename).dds</ContentOutput>
+    </ImageContentTask>
+    <Image Include="Resources\Textures\PLAY_BUTTON\Skeydef.dds" />
+    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Skeydef.png">
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Textures/PLAY_BUTTON/%(Filename).dds</ContentOutput>
+    </ImageContentTask>
+    <ImageContentTask Include="Resources\Textures\PLAY_BUTTON\Wkeydef.png">
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Textures/PLAY_BUTTON/%(Filename).dds</ContentOutput>
+    </ImageContentTask>
     <Image Include="Resources\Textures\PLAY_COMMON\Adhesion.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\GameStart.dds" />
     <Image Include="Resources\Textures\PLAY_COMMON\sun.dds" />
@@ -350,8 +365,7 @@
     <Image Include="Resources\Textures\TRANSITION\Cloud2Rule.png" />
     <Image Include="Resources\Textures\TRANSITION\Cloud3Rule.png" />
     <Image Include="Resources\Textures\TRANSITION\Cloud4Rule.png" />
-    <Image Include="Resources\Textures\UnderFont.dds" />
-    <Image Include="Resources\Textures\UnderLine.dds" />
+    <Image Include="Resources\Textures\Wkeydef.dds" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest" />
@@ -390,6 +404,7 @@
     <None Include="Resources\Models\StageEdit.cmo" />
     <None Include="Resources\Models\TitleLogoVer2.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
+    <None Include="Resources\Shaders\Blocks.hlsli" />
     <None Include="Resources\Shaders\PlayerPoint.hlsli" />
     <None Include="Resources\Shaders\Transition.hlsli" />
   </ItemGroup>
@@ -431,6 +446,12 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\PS_OutLine.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\PS_PlayerPoint.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>

@@ -7,6 +7,7 @@
 
 #include "pch.h"
 #include "Libraries/SystemManager/SystemManager.h"
+#include "ShowKey.h"
 #include "Libraries/UserUtility.h"
 #include "PlayUI.h"
 
@@ -19,7 +20,6 @@ PlayUI::PlayUI()
     , m_tenSecPos{SimpleMath::Vector2::Zero}	// 10秒の座標
 	, m_countDownPos{SimpleMath::Vector2::Zero}	// ３カウントダウンの座標
 	, m_countDownEnds{1.0f}						// カウントダウンが消える時間
-	, m_underFontPos{SimpleMath::Vector2::Zero}	// 下の文字ロールの座標
 	, m_moveTexPos{SimpleMath::Vector2::Zero}	// 画像移動用座標
 	, m_arrowPos{SimpleMath::Vector2::Zero}		// 選択項目下線座標
 	, m_helpPoses{}								// ヘルプの座標
@@ -39,6 +39,7 @@ PlayUI::~PlayUI()
 {
 	Finalize();
 	m_system.reset();
+	m_showKey.reset();
 }
 
 // 作成関数
@@ -46,6 +47,9 @@ void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,const SimpleMa
 {
 	m_system = system;
 	m_windowSize = windowSize;
+
+	// キー表示の作成
+	m_showKey = std::make_unique<ShowKey>();
 
 	// 画像を登録
 	m_system->GetDrawSprite()->AddTextureData(L"Number",			// 数字スプライト
@@ -65,12 +69,6 @@ void PlayUI::Create(const std::shared_ptr<SystemManager>& system ,const SimpleMa
 
 	m_system->GetDrawSprite()->AddTextureData(L"OpenHelp",			// ヘルプを開く表示
 		L"Resources/Textures/PLAY_HELP/OpenHelp.dds");
-
-	m_system->GetDrawSprite()->AddTextureData(L"UnderFont",			// 下のテキスト
-		L"Resources/Textures/PLAY_HELP/UnderFont.dds");
-
-	m_system->GetDrawSprite()->AddTextureData(L"UnderBack",			// 下のテキストのライン
-		L"Resources/Textures/PLAY_HELP/UnderBack.dds");
 
 	m_system->GetDrawSprite()->AddTextureData(L"HowToPlay",			// ヘルプ表示
 		L"Resources/Textures/PLAY_HELP/Help.dds");
@@ -130,14 +128,13 @@ void PlayUI::Update(const float& timelimit)
 	// 比率を計算
 	SimpleMath::Vector2 _scale = m_windowSize / FULL_SCREEN_SIZE;
 
+	m_showKey->Update();
+
 	// 太陽の回転をセット
 	m_system->GetDrawSprite()->CreateRotation(L"Sun", static_cast<float>(MAX_LIMITS - m_gameTimer) * ROT_SPEED);
 
 	// 太陽の移動処理
 	m_sunPos.x += m_gameTimer != 0 ? SUN_MOVE_SPEED * _scale.x : 0.0f;
-
-	// フォントの移動処理
-	UpdateUnderLine(_scale);
 
 	// 変更をリセット
 	if (!is_helpFlag)
@@ -268,23 +265,8 @@ void PlayUI::Render()
 			{ 0L,0L,360L,120L }
 		);
 
-		// 画面下のフォント
-		m_system->GetDrawSprite()->DrawTexture(
-			L"UnderBack",
-			SimpleMath::Vector2::Zero,
-			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			_scale,
-			SimpleMath::Vector2::Zero
-		);
-		m_system->GetDrawSprite()->DrawTexture(
-			L"UnderFont",
-			m_underFontPos,
-			{ 1.0f, 1.0f, 1.0f, 1.0f },
-			_scale,
-			SimpleMath::Vector2::Zero,
-			// 画像のサイズ
-			{ 0L,0L,static_cast<LONG>(FULL_SCREEN_SIZE.x * 2),static_cast<LONG>(FULL_SCREEN_SIZE.y) }
-		);
+		// キー入力を表示
+		m_showKey->Draw(_scale);
 	}
 }
 
@@ -324,18 +306,6 @@ void PlayUI::RenderCountDown(const float& countDown)
 // 終了処理
 void PlayUI::Finalize()
 {
-}
-
-// 下のフォントの更新
-void PlayUI::UpdateUnderLine(SimpleMath::Vector2 scale)
-{
-	m_underFontPos.x -= UNDER_SPEED * scale.x;
-
-	if (m_underFontPos.x < -FULL_SCREEN_SIZE.x * 2 * scale.x)
-	{
-		m_underFontPos.x = FULL_SCREEN_SIZE.x;
-	}
-
 }
 
 // タイマーの描画
