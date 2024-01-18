@@ -18,7 +18,6 @@ class PlayerBill;
 class PlayUI;
 class PlayCamera;
 class PlaySky;
-class ThirdPersonCamera;
 class PlayScene final : public IScene
 {
 private:
@@ -40,9 +39,6 @@ private:
 
 	// ヘルプ表示フラグ
 	bool is_helpFlag;
-
-	// サードパーソンモード
-	bool is_thirdPersonMode;
 
 	// 合計コイン数
 	int m_allCoins;
@@ -66,9 +62,6 @@ private:
 
 	// タイマー表示とコイン表示
 	std::unique_ptr<PlayUI> m_playUI;
-
-	// サードパーソンカメラ
-	std::unique_ptr<ThirdPersonCamera> m_tpCamera;
 
 	// スタートカメラ
 	std::unique_ptr<PlayCamera> m_camera;
