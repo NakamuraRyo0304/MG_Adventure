@@ -396,6 +396,7 @@
     <None Include="Resources\Models\Head_w.cmo" />
     <None Include="Resources\Models\LegL.cmo" />
     <None Include="Resources\Models\LegR.cmo" />
+    <None Include="Resources\Models\lineBox.cmo" />
     <None Include="Resources\Models\ResetPt.cmo" />
     <None Include="Resources\Models\ShineSky.cmo" />
     <None Include="Resources\Models\Stage1.cmo" />
@@ -487,6 +488,9 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="..\lineBox.fbx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

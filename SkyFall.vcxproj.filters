@@ -908,6 +908,9 @@
     <None Include="Resources\Shaders\Blocks.hlsli">
       <Filter>Resources\Shaders\Block</Filter>
     </None>
+    <None Include="Resources\Models\lineBox.cmo">
+      <Filter>Resources\Models\MapObject</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DevelopMemo.txt">
@@ -953,5 +956,10 @@
     <Font Include="Resources\Fonts\myfile.spritefont">
       <Filter>Assets</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="..\lineBox.fbx">
+      <Filter>Resources\Models\MapObject</Filter>
+    </MeshContentTask>
   </ItemGroup>
 </Project>
