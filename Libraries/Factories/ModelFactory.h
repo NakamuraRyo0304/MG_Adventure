@@ -16,10 +16,10 @@ public:
 	~ModelFactory();
 
 	/// <summary>
-	/// モデルを作成し、返却する
+	/// モデルを作成し、返却する(std::unique_ptr<Model>で格納可)
 	/// </summary>
 	/// <param name="filename">ファイルパス　拡張子は「.cmo」</param>
-	/// <returns>モデルデータ</returns>
+	/// <returns>作成したモデルデータ</returns>
 	std::unique_ptr<DirectX::Model> GetCreateModel(const wchar_t* filename);
 
 	/// <summary>

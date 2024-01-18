@@ -13,6 +13,7 @@
 #include "Objects/PlayUI.h"
 #include "Objects/PlaySky.h"
 #include "System/PlayCamera.h"
+#include "System/ThirdPersonCamera.h"
 #include "../CommonObjects/Blocks.h"
 #include "PlayScene.h"
 
@@ -26,6 +27,7 @@ PlayScene::PlayScene(const int& stageNum, const int& coins)
 	, m_clearTime{}					// クリア時間
 	, m_fallValue{}					// 落下用変数
 	, m_lighting{}					// ライティング設定
+	, is_thirdPersonMode{false}		// サードパーソンモード
 	, is_helpFlag{false}			// ヘルプ表示フラグ
 {
 }
@@ -37,6 +39,7 @@ PlayScene::~PlayScene()
 	m_blocks.reset();
 	m_playerPoint.reset();
 	m_playUI.reset();
+	m_tpCamera.reset();
 	m_sky.reset();
 	m_camera.reset();
 	m_collider.reset();
@@ -68,7 +71,14 @@ void PlayScene::Update()
 	if (UpdateUI()) return;
 
 	// カメラの更新
-	GetSystemManager()->GetCamera()->Update();
+	if (is_thirdPersonMode) // 三人称カメラ
+	{
+		m_tpCamera->UpdateFollow(m_player->GetPosition(), m_player->GetNeckRotate(), THIRD_DISTANCE);
+	}
+	else // 見下ろしカメラ
+	{
+		GetSystemManager()->GetCamera()->Update();
+	}
 
 	// カウントダウンが終わったらスタート
 	if (Countdown() == false)
@@ -81,6 +91,12 @@ void PlayScene::Update()
 	// カメラ操作制限を解除
 	GetSystemManager()->GetCamera()->SetEagleMode(true);
 	GetSystemManager()->GetCamera()->SetArrowMode(true);
+
+	// サードパーソンモードの切り替え
+	if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::Space))
+	{
+		is_thirdPersonMode = not is_thirdPersonMode;
+	}
 
 	// コインをすべて獲得かタイムアップでリザルト
 	if (m_blocks->IsCollectedFlag() || m_timeLinits < 0.0f)
@@ -107,7 +123,7 @@ void PlayScene::Update()
 	}
 
 	// プレイヤの更新
-	m_player->Update();
+	m_player->Update(is_thirdPersonMode);
 
 	// 相対移動
 	m_playerPoint->SetVertexMovePos(m_player->GetPosition());
@@ -199,6 +215,12 @@ void PlayScene::Draw()
 		_view = m_camera->CreateView();
 		_projection = m_camera->GetProjection();
 	}
+	else if (is_thirdPersonMode)
+	{
+		// リアル視点(三人称)カメラ
+		_view = m_tpCamera->GetFollowView();
+		_projection = GetSystemManager()->GetCamera()->GetProjection();
+	}
 	else
 	{
 		// 通常カメラ
@@ -219,12 +241,20 @@ void PlayScene::Draw()
 	m_sky->Draw(*_states, _view, _projection, _timer);
 
 	// ビルボードの描画
-	m_playerPoint->CreateBillboard(
-		GetSystemManager()->GetCamera()->GetTarget(),	// カメラの注視点
-		GetSystemManager()->GetCamera()->GetPosition(),	// カメラの座標
-		SimpleMath::Vector3::Up
-	);
-	m_playerPoint->Render(m_player->GetPosition(), _timer, _view, _projection);
+	if (not is_thirdPersonMode)
+	{
+		m_playerPoint->CreateBillboard(
+			GetSystemManager()->GetCamera()->GetTarget(),	// カメラの注視点
+			GetSystemManager()->GetCamera()->GetPosition(),	// カメラの座標
+			SimpleMath::Vector3::Up
+		);
+		m_playerPoint->Render(m_player->GetPosition(), _timer, _view, _projection);
+	}
+	// 回りの靄
+	else
+	{
+		m_tpCamera->DrawAdhesion();
+	}
 
 	// UIの描画
 	m_playUI->IsCountDownEnd() ? m_playUI->Render() : m_playUI->RenderCountDown(m_startTimer);
@@ -249,6 +279,10 @@ void PlayScene::CreateWindowDependentResources()
 
 	// デフォルトカメラの設定
 	GetSystemManager()->GetCamera()->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
+
+	// サードパーソンカメラの作成
+	m_tpCamera = std::make_unique<ThirdPersonCamera>(GetSystemManager());
+	m_tpCamera->CreateProjection(GetScreenSize().x, GetScreenSize().y, CAMERA_ANGLE);
 
 	// スタート用カメラの作成
 	m_camera = std::make_unique<PlayCamera>(SimpleMath::Vector2(GetScreenSize().x, GetScreenSize().y));
@@ -298,6 +332,9 @@ void PlayScene::SetSceneValues()
 	// 死亡エフェクトを切る
 	m_playUI->SetEffectFlag(false);
 
+	// サードパーソンモードを切る
+	is_thirdPersonMode = false;
+
 	// ヘルプを表示しない
 	is_helpFlag = false;
 
@@ -334,6 +371,7 @@ void PlayScene::CreatePlayer()
 	auto _body = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Body.cmo");
 	auto _legR = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/LegR.cmo");
 	auto _legL = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/LegL.cmo");
+	auto _wink = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Head_w.cmo");
 
 	_fm->LeaveModelFactory();
 	// プレイヤーを作成する
@@ -341,7 +379,8 @@ void PlayScene::CreatePlayer()
 		std::move(_head),			// 頭のモデル
 		std::move(_body),			// 身体のモデル
 		std::move(_legR),			// 右足のモデル
-		std::move(_legL)			// 左足のモデル
+		std::move(_legL),			// 左足のモデル
+		std::move(_wink)			// ウインク差分
 	);
 }
 

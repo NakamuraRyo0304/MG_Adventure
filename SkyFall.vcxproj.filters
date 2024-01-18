@@ -173,6 +173,9 @@
     <Filter Include="Scenes\PlayScene\System\PlayCamera">
       <UniqueIdentifier>{53bf5eb5-8b00-4f15-874f-68cb81622511}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\PlayScene\System\ThirdPersonCamera">
+      <UniqueIdentifier>{7c8bb59e-982d-4124-920f-509f09847f44}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Resources\Textures\EDITS">
       <UniqueIdentifier>{5bbfed9e-5864-4179-9609-ce004e514ba6}</UniqueIdentifier>
     </Filter>
@@ -281,12 +284,6 @@
     <Filter Include="Resources\Textures\PLAY_UI\PLAY_BUTTON">
       <UniqueIdentifier>{9e476d72-31e8-4709-8989-4e28e75b7c82}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scenes\PlayScene\Objects\Player\Parts">
-      <UniqueIdentifier>{5185b444-3a16-4cd3-9dbf-9819fa74773e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scenes\PlayScene\Objects\Player\Parts\Head">
-      <UniqueIdentifier>{eb3ace32-5907-431c-a215-4aaecc67f021}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -394,6 +391,9 @@
     <ClInclude Include="Game\PlayScene\System\PlayCamera.h">
       <Filter>Scenes\PlayScene\System\PlayCamera</Filter>
     </ClInclude>
+    <ClInclude Include="Game\PlayScene\System\ThirdPersonCamera.h">
+      <Filter>Scenes\PlayScene\System\ThirdPersonCamera</Filter>
+    </ClInclude>
     <ClInclude Include="Game\EditScene\System\MementoMap.h">
       <Filter>Scenes\EditScene\System\MementoMap</Filter>
     </ClInclude>
@@ -465,12 +465,6 @@
     </ClInclude>
     <ClInclude Include="Game\PlayScene\Objects\ShowKey.h">
       <Filter>Scenes\PlayScene\Objects\ShowKey</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\PlayScene\Objects\Parts\IParts.h">
-      <Filter>Scenes\PlayScene\Objects\Player\Parts</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\PlayScene\Objects\Parts\Head\Head.h">
-      <Filter>Scenes\PlayScene\Objects\Player\Parts\Head</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -564,6 +558,9 @@
     <ClCompile Include="Game\PlayScene\System\PlayCamera.cpp">
       <Filter>Scenes\PlayScene\System\PlayCamera</Filter>
     </ClCompile>
+    <ClCompile Include="Game\PlayScene\System\ThirdPersonCamera.cpp">
+      <Filter>Scenes\PlayScene\System\ThirdPersonCamera</Filter>
+    </ClCompile>
     <ClCompile Include="Game\EditScene\System\MementoMap.cpp">
       <Filter>Scenes\EditScene\System\MementoMap</Filter>
     </ClCompile>
@@ -635,12 +632,6 @@
     </ClCompile>
     <ClCompile Include="Game\PlayScene\Objects\ShowKey.cpp">
       <Filter>Scenes\PlayScene\Objects\ShowKey</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\PlayScene\Objects\Parts\IParts.cpp">
-      <Filter>Scenes\PlayScene\Objects\Player\Parts</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\PlayScene\Objects\Parts\Head\Head.cpp">
-      <Filter>Scenes\PlayScene\Objects\Player\Parts\Head</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

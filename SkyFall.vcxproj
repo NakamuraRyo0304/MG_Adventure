@@ -200,10 +200,6 @@
     <ClInclude Include="Game\EditScene\System\MouseCursor.h" />
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
-    <ClInclude Include="Game\PlayScene\Objects\Parts\Head\Head.h" />
-    <ClInclude Include="Game\PlayScene\Objects\Parts\IParts.h" />
-    <ClInclude Include="Game\PlayScene\Objects\Parts\LeftLeg\LeftLeg.h" />
-    <ClInclude Include="Game\PlayScene\Objects\Parts\RightLeg\RightLeg.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h" />
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlaySky.h" />
@@ -211,6 +207,7 @@
     <ClInclude Include="Game\PlayScene\Objects\ShowKey.h" />
     <ClInclude Include="Game\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\PlayScene\System\PlayCamera.h" />
+    <ClInclude Include="Game\PlayScene\System\ThirdPersonCamera.h" />
     <ClInclude Include="Game\ResultScene\Objects\ResultUI.h" />
     <ClInclude Include="Game\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\ResultScene\System\ResultCamera.h" />
@@ -265,10 +262,6 @@
     <ClCompile Include="Game\EditScene\System\MouseCursor.cpp" />
     <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />
-    <ClCompile Include="Game\PlayScene\Objects\Parts\Head\Head.cpp" />
-    <ClCompile Include="Game\PlayScene\Objects\Parts\IParts.cpp" />
-    <ClCompile Include="Game\PlayScene\Objects\Parts\LeftLeg\LeftLeg.cpp" />
-    <ClCompile Include="Game\PlayScene\Objects\Parts\RightLeg\RightLeg.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayerBill.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlaySky.cpp" />
@@ -276,6 +269,7 @@
     <ClCompile Include="Game\PlayScene\Objects\ShowKey.cpp" />
     <ClCompile Include="Game\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\PlayScene\System\PlayCamera.cpp" />
+    <ClCompile Include="Game\PlayScene\System\ThirdPersonCamera.cpp" />
     <ClCompile Include="Game\ResultScene\Objects\ResultUI.cpp" />
     <ClCompile Include="Game\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Game\ResultScene\System\ResultCamera.cpp" />

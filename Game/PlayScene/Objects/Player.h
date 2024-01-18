@@ -26,14 +26,10 @@ struct Parameter
 	}
 };
 
-class Head;
 class SystemManager;
 class Player
 {
 private:
-
-	// 頭
-	std::unique_ptr<Head> m_head;
 
 	// プレイヤのパラメータ
 	Parameter m_parameter;
@@ -41,11 +37,22 @@ private:
 	// セレクトから受け取ったコイン数
 	int m_coinNum;
 
+	// 頭の動きに使う変数
+	float m_headMove;
+
 	// 脚の動きに使う変数
 	float m_footMove;
 
+	// 首の動き
+	DirectX::SimpleMath::Quaternion m_neckQuaternion;
+	DirectX::SimpleMath::Vector2 m_neckRotate;
+	bool is_lookFlag;
+
+	// 三人称の回転
+	DirectX::SimpleMath::Quaternion m_thirdRotate;
+
 	// モデルデータ
-	std::unique_ptr<DirectX::Model> m_body, m_leftLeg, m_rightLeg;
+	std::unique_ptr<DirectX::Model> m_head, m_body, m_leftLeg, m_rightLeg, m_wink;
 
 	// システム
 	std::shared_ptr<SystemManager> m_system;
@@ -61,10 +68,13 @@ private:
 	// プレイヤのサイズ
 	const float SIZE = 0.85f;
 	// 移動速度
+	const float THIRD_SPEED = 0.015f;
 	const float NORMAL_SPEED = 0.01f;
 	const float FOOT_SPEED = 0.1f;
+	const float HEAD_SPEED = 0.25f;
 	// 回転速度
 	const float ROT_SPEED = 0.05f;
+	const float NECK_ROT_SPEED = 0.30f;
 	// 摩擦係数
 	const float DECELERATION = 0.851f;
 	// プレイヤの浮遊
@@ -88,7 +98,7 @@ public:
 	/// <param name="left">左足モデルデータ</param>
 	/// <returns>なし</returns>
 	Player(std::unique_ptr<DirectX::Model> head,std::unique_ptr<DirectX::Model> body,
-		std::unique_ptr<DirectX::Model> rightLeg, std::unique_ptr<DirectX::Model> leftLeg);
+		std::unique_ptr<DirectX::Model> rightLeg, std::unique_ptr<DirectX::Model> leftLeg, std::unique_ptr<DirectX::Model> wink);
 	~Player();
 
 	/// <summary>
@@ -101,9 +111,9 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	/// <param name="引数無し"></param>
+	/// <param name="lookFlag">視点フラグ</param>
 	/// <returns>なし</returns>
-	void Update();
+	void Update(bool lookFlag);
 
 	/// <summary>
 	/// 描画処理
@@ -167,6 +177,8 @@ public:
 	const bool& GetDeathFlag() { return is_deathFlag; }
 	// 回転量を取得
 	const DirectX::SimpleMath::Quaternion& GetRotate() { return m_parameter.rotate; }
+	// 首の回転量を取得
+	const DirectX::SimpleMath::Quaternion& GetNeckRotate() { return m_thirdRotate; }
 	// 合計コイン数を設定
 	void SetAllCoins(const int& allCoins) { m_coinNum = allCoins; }
 };
