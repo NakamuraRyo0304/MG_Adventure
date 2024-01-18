@@ -202,6 +202,8 @@
     <ClInclude Include="Game\GameMain.h" />
     <ClInclude Include="Game\PlayScene\Objects\Parts\Head\Head.h" />
     <ClInclude Include="Game\PlayScene\Objects\Parts\IParts.h" />
+    <ClInclude Include="Game\PlayScene\Objects\Parts\LeftLeg\LeftLeg.h" />
+    <ClInclude Include="Game\PlayScene\Objects\Parts\RightLeg\RightLeg.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlayerBill.h" />
     <ClInclude Include="Game\PlayScene\Objects\Player.h" />
     <ClInclude Include="Game\PlayScene\Objects\PlaySky.h" />
@@ -265,6 +267,8 @@
     <ClCompile Include="Game\GameMain.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Parts\Head\Head.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Parts\IParts.cpp" />
+    <ClCompile Include="Game\PlayScene\Objects\Parts\LeftLeg\LeftLeg.cpp" />
+    <ClCompile Include="Game\PlayScene\Objects\Parts\RightLeg\RightLeg.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlayerBill.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Player.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\PlaySky.cpp" />
