@@ -16,6 +16,11 @@ class RightLeg : public IParts
 {
 private:
 
+	// ‘«‚Ì“®‚«
+	float m_move;
+
+	// ‘«‚Ì‘¬“x
+	const float SPEED = 0.1f;
 
 public:
 

@@ -6,42 +6,37 @@
  */
 
 #include "pch.h"
-#include "Libraries/SystemManager/SystemManager.h"
 #include "Libraries/UserUtility.h"
 #include "Libraries/SystemDatas/Input.h"
 #include "Libraries/Factories/ModelFactory.h"
 #include "Parts/Head/Head.h"
+#include "Parts/RightLeg/RightLeg.h"
+#include "Parts/LeftLeg/LeftLeg.h"
 #include "Player.h"
 
 // コンストラクタ
 Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body,
 			   std::unique_ptr<Model> right, std::unique_ptr<Model> left)
-	: m_system{}					// システム
-	, m_parameter{}					// パラメーター
+	: m_parameter{}					// パラメーター
 	, m_coinNum{}					// 合計獲得コイン数
 	, m_body{ std::move(body) }		// 身体のモデル
-	, m_rightLeg{ std::move(right) }// 右足のモデル
-	, m_leftLeg{ std::move(left) }	// 左足のモデル
-	, m_footMove{0.0f}				// 足の動き
 	, m_lightDirection{}			// ライティングの向き
 	, is_deathFlag{}				// 死亡フラグ
 {
 	m_head = std::make_unique<Head>(std::move(head));
+	m_legR = std::make_unique<RightLeg>(std::move(right));
+	m_legL = std::make_unique<LeftLeg>(std::move(left));
 }
 
 // デストラクタ
 Player::~Player()
 {
 	Finalize();
-	m_system.reset();
 }
 
 // 初期化処理
-void Player::Initialize(std::shared_ptr<SystemManager> system)
+void Player::Initialize()
 {
-	// システムの取得
-	m_system = system;
-
 	// パラメータのリセット
 	m_parameter.reset();
 
@@ -78,11 +73,12 @@ void Player::Update()
 	_moveDirection = SimpleMath::Vector3::Transform(_moveDirection, m_parameter.rotate);
 	m_parameter.velocity += _moveDirection;
 
-	// 脚の動き
-	(_key.W || _key.A || _key.S || _key.D) ? m_footMove++ : m_footMove = 0.0f;
-
 	// 頭の更新処理
 	m_head->Update();
+
+	// 足の更新処理
+	m_legR->Update();
+	m_legL->Update();
 
 	// 移動量の計算
 	m_parameter.position += m_parameter.velocity;
@@ -100,9 +96,6 @@ void Player::Render(CommonStates& states, SimpleMath::Matrix view, SimpleMath::M
 {
 	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
 
-	// ワールド行列
-	SimpleMath::Matrix _legRMat, _legLMat;
-
 	// 回転行列
 	SimpleMath::Matrix _rotate = SimpleMath::Matrix::CreateFromQuaternion(m_parameter.rotate);
 
@@ -112,26 +105,6 @@ void Player::Render(CommonStates& states, SimpleMath::Matrix view, SimpleMath::M
 			m_parameter.position.x, m_parameter.position.y + OFFSET_Y, m_parameter.position.z);
 	// 共通行列計算
 	SimpleMath::Matrix _world = _rotate * _trans;
-
-	// 右脚の動き
-	SimpleMath::Matrix _rightTrans =
-		SimpleMath::Matrix::CreateTranslation(
-			0.0f,
-			0.0f,
-			sinf(m_footMove) * FOOT_SPEED
-		);
-
-	// 左脚の動き
-	SimpleMath::Matrix _leftTrans =
-		SimpleMath::Matrix::CreateTranslation(
-			0.0f,
-			0.0f,
-			-sinf(m_footMove) * FOOT_SPEED
-		);
-
-	// 移動してから回転させる
-	_legRMat = _rightTrans * _world;
-	_legLMat = _leftTrans  * _world;
 
 	// ビュー行列からカメラの回転を取得
 	SimpleMath::Matrix _cameraRot;
@@ -149,12 +122,12 @@ void Player::Render(CommonStates& states, SimpleMath::Matrix view, SimpleMath::M
 		SimpleMath::Vector3::TransformNormal(lightDir, _cameraRot), LIGHT_SPEED);
 
 	// 右足の描画
-	m_rightLeg->UpdateEffects(UpdateLighting(m_lightDirection));
-	m_rightLeg->Draw(_context, states, _legRMat, view, proj);
+	m_legR->SetParentMatrix(_world);
+	m_legR->Draw(states, view, proj);
 
 	// 左足の描画
-	m_leftLeg->UpdateEffects(UpdateLighting(m_lightDirection));
-	m_leftLeg->Draw(_context, states, _legLMat, view, proj);
+	m_legL->SetParentMatrix(_world);
+	m_legL->Draw(states, view, proj);
 
 	// 頭部の描画
 	m_head->SetParentMatrix(_world);
@@ -169,9 +142,10 @@ void Player::Render(CommonStates& states, SimpleMath::Matrix view, SimpleMath::M
 void Player::Finalize()
 {
 	m_head.reset();
+	m_legR.reset();
+	m_legL.reset();
+
 	m_body.reset();
-	m_rightLeg.reset();
-	m_leftLeg.reset();
 	m_parameter.reset();
 }
 

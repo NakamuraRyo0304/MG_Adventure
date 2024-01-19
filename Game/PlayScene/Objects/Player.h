@@ -27,7 +27,8 @@ struct Parameter
 };
 
 class Head;
-class SystemManager;
+class RightLeg;
+class LeftLeg;
 class Player
 {
 private:
@@ -35,20 +36,20 @@ private:
 	// 頭
 	std::unique_ptr<Head> m_head;
 
+	// 右足
+	std::unique_ptr<RightLeg> m_legR;
+
+	// 左足
+	std::unique_ptr<LeftLeg> m_legL;
+
 	// プレイヤのパラメータ
 	Parameter m_parameter;
 
 	// セレクトから受け取ったコイン数
 	int m_coinNum;
 
-	// 脚の動きに使う変数
-	float m_footMove;
-
 	// モデルデータ
-	std::unique_ptr<DirectX::Model> m_body, m_leftLeg, m_rightLeg;
-
-	// システム
-	std::shared_ptr<SystemManager> m_system;
+	std::unique_ptr<DirectX::Model> m_body;
 
 	// 死亡判定
 	bool is_deathFlag;
@@ -94,9 +95,9 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	/// <param name="system">システムデータ</param>
+	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
-	void Initialize(std::shared_ptr<SystemManager> system);
+	void Initialize();
 
 	/// <summary>
 	/// 更新処理

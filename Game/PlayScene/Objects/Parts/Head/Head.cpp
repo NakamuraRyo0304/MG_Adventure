@@ -46,4 +46,3 @@ void Head::Draw(CommonStates& states, SimpleMath::Matrix view, SimpleMath::Matri
 	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
 	GetModel()->Draw(_context, states, GetMatrix() * GetParentMatrix(), view, proj);
 }
-

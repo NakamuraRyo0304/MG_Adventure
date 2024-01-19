@@ -303,7 +303,7 @@ void PlayScene::SetSceneValues()
 
 	// プレイヤの初期化
 	m_player->SetAllCoins(m_allCoins);
-	m_player->Initialize(GetSystemManager());
+	m_player->Initialize();
 
 	// マップ読み込み
 	m_blocks->Initialize(m_stageNum);

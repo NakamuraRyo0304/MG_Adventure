@@ -287,6 +287,12 @@
     <Filter Include="Scenes\PlayScene\Objects\Player\Parts\Head">
       <UniqueIdentifier>{eb3ace32-5907-431c-a215-4aaecc67f021}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\Player\Parts\LeftLeg">
+      <UniqueIdentifier>{30c77493-e1cc-4231-b1ce-a89029b5b392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\Player\Parts\RightLeg">
+      <UniqueIdentifier>{4bf9fb59-bcd5-419b-be3b-a0177981aa48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -472,6 +478,12 @@
     <ClInclude Include="Game\PlayScene\Objects\Parts\Head\Head.h">
       <Filter>Scenes\PlayScene\Objects\Player\Parts\Head</Filter>
     </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\Parts\LeftLeg\LeftLeg.h">
+      <Filter>Scenes\PlayScene\Objects\Player\Parts\LeftLeg</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\Parts\RightLeg\RightLeg.h">
+      <Filter>Scenes\PlayScene\Objects\Player\Parts\RightLeg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -641,6 +653,12 @@
     </ClCompile>
     <ClCompile Include="Game\PlayScene\Objects\Parts\Head\Head.cpp">
       <Filter>Scenes\PlayScene\Objects\Player\Parts\Head</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\Objects\Parts\LeftLeg\LeftLeg.cpp">
+      <Filter>Scenes\PlayScene\Objects\Player\Parts\LeftLeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\Objects\Parts\RightLeg\RightLeg.cpp">
+      <Filter>Scenes\PlayScene\Objects\Player\Parts\RightLeg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
