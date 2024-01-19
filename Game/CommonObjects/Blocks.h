@@ -167,7 +167,7 @@ public:
 	void CallGravity();
 
 	// ライティングのセッター
-	void InitializeLighting(const DirectX::SimpleMath::Vector3& lightDir) { m_lighting = lightDir; }
+	void SetLighting(const DirectX::SimpleMath::Vector3& lightDir) { m_lighting = lightDir; }
 public:
 
 	// 取得コイン数を取得

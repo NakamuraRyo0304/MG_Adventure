@@ -176,13 +176,6 @@ private:
 private:
 
 	/// <summary>
-	/// ライティングの更新
-	/// </summary>
-	/// <param name="引数無し"></param>
-	/// <returns>なし</returns>
-	void UpdateLight();
-
-	/// <summary>
 	/// プレイヤーの作成
 	/// </summary>
 	/// <param name="引数無し"></param>

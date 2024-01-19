@@ -6,10 +6,9 @@
  */
 
 #include "pch.h"
-#include "Libraries/UserUtility.h"
-#include "Libraries/SystemDatas/Input.h"
-#include "Libraries/Factories/ModelFactory.h"
+#include "Libraries/FactoryManager/FactoryManager.h"
 #include "Parts/Head/Head.h"
+#include "Parts/Body/Body.h"
 #include "Parts/RightLeg/RightLeg.h"
 #include "Parts/LeftLeg/LeftLeg.h"
 #include "Player.h"
@@ -17,12 +16,11 @@
 // コンストラクタ
 Player::Player(std::unique_ptr<Model> head, std::unique_ptr<Model> body,
 			   std::unique_ptr<Model> right, std::unique_ptr<Model> left)
-	: m_parameter{}					// パラメーター
-	, m_coinNum{}					// 合計獲得コイン数
-	, m_body{ std::move(body) }		// 身体のモデル
-	, m_lightDirection{}			// ライティングの向き
+	: m_coinNum{}					// 合計獲得コイン数
 	, is_deathFlag{}				// 死亡フラグ
 {
+	m_factory = std::make_unique<FactoryManager>();
+	m_parent = std::make_unique<Body>(std::move(body));
 	m_head = std::make_unique<Head>(std::move(head));
 	m_legR = std::make_unique<RightLeg>(std::move(right));
 	m_legL = std::make_unique<LeftLeg>(std::move(left));
@@ -37,41 +35,24 @@ Player::~Player()
 // 初期化処理
 void Player::Initialize()
 {
-	// パラメータのリセット
-	m_parameter.reset();
+	// ファクトリの作成
+	m_factory->CreateFactory();
 
-	// 加速度の設定
-	m_parameter.accelerate = NORMAL_SPEED;
+	// パラメータのリセット
+	m_parent->ResetAll();
 
 	// 死亡判定の初期化
 	is_deathFlag = false;
-
-	// ライティングリセット
-	m_lightDirection = SimpleMath::Vector3(1.0f, -1.0f, -1.0f);
 }
 
 // 更新処理
 void Player::Update()
 {
-	auto _key = Keyboard::Get().GetState();
+	// 親の更新
+	m_parent->Update();
 
-	// 視点によって速度を変更する
-	m_parameter.accelerate = NORMAL_SPEED;
-
-	// 重力処理
-	UpdateGravity();
-
-	// 左右旋回をする
-	float _rotationAngle = 0.0f;
-	_rotationAngle = _key.A ? ROT_SPEED : _key.D ? -ROT_SPEED : 0.0f;
-	SimpleMath::Quaternion _q = SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, _rotationAngle);
-	m_parameter.rotate *= _rotationAngle != 0.0f ? _q : SimpleMath::Quaternion::Identity;
-
-	// 前後移動をする
-	SimpleMath::Vector3 _moveDirection(0.0f, 0.0f, 0.0f);
-	_moveDirection.z = _key.W ? -m_parameter.accelerate : _key.S ? m_parameter.accelerate * 0.5f: 0.0f;
-	_moveDirection = SimpleMath::Vector3::Transform(_moveDirection, m_parameter.rotate);
-	m_parameter.velocity += _moveDirection;
+	// 死亡判定
+	is_deathFlag = m_parent->GetPosition().y < DEATH_LINE;
 
 	// 頭の更新処理
 	m_head->Update();
@@ -79,47 +60,12 @@ void Player::Update()
 	// 足の更新処理
 	m_legR->Update();
 	m_legL->Update();
-
-	// 移動量の計算
-	m_parameter.position += m_parameter.velocity;
-
-	// 減速処理
-	if (m_parameter.velocity != SimpleMath::Vector3::Zero)
-	{
-		m_parameter.velocity *= DECELERATION;
-	}
 }
 
 // 描画処理
-void Player::Render(CommonStates& states, SimpleMath::Matrix view, SimpleMath::Matrix proj,
-	const SimpleMath::Vector3& lightDir)
+void Player::Render(CommonStates& states, SimpleMath::Matrix view, SimpleMath::Matrix proj)
 {
-	auto _context = DX::DeviceResources::GetInstance()->GetD3DDeviceContext();
-
-	// 回転行列
-	SimpleMath::Matrix _rotate = SimpleMath::Matrix::CreateFromQuaternion(m_parameter.rotate);
-
-	// 移動行列
-	SimpleMath::Matrix _trans =
-		SimpleMath::Matrix::CreateTranslation(
-			m_parameter.position.x, m_parameter.position.y + OFFSET_Y, m_parameter.position.z);
-	// 共通行列計算
-	SimpleMath::Matrix _world = _rotate * _trans;
-
-	// ビュー行列からカメラの回転を取得
-	SimpleMath::Matrix _cameraRot;
-
-	// ビュー行列を逆変換
-	_cameraRot = view.Invert();
-
-	// 移動量をなくす
-	_cameraRot._41 = 0.0f;
-	_cameraRot._42 = 0.0f;
-	_cameraRot._43 = 0.0f;
-
-	// ライトの方向をカメラの回転に逆向きにする
-	m_lightDirection = SimpleMath::Vector3::Lerp(m_lightDirection,
-		SimpleMath::Vector3::TransformNormal(lightDir, _cameraRot), LIGHT_SPEED);
+	auto _world = m_parent->GetMatrix();
 
 	// 右足の描画
 	m_legR->SetParentMatrix(_world);
@@ -134,8 +80,8 @@ void Player::Render(CommonStates& states, SimpleMath::Matrix view, SimpleMath::M
 	m_head->Draw(states, view, proj);
 
 	// 身体の描画
-	m_body->UpdateEffects(UpdateLighting(m_lightDirection));
-	m_body->Draw(_context, states, _world, view, proj);
+	m_parent->SetParentMatrix(SimpleMath::Matrix::Identity);
+	m_parent->Draw(states, view, proj);
 }
 
 // 終了処理
@@ -144,80 +90,90 @@ void Player::Finalize()
 	m_head.reset();
 	m_legR.reset();
 	m_legL.reset();
-
-	m_body.reset();
-	m_parameter.reset();
+	m_parent.reset();
+	m_factory.reset();
 }
 
-// 重力処理
-void Player::UpdateGravity()
+// 新規作成
+void Player::NewCreate()
 {
-	// 重力の加算
-	m_parameter.gravity += 0.015f;
+	// ファクトリマネージャ
+	m_factory->BuildModelFactory();
 
-	// 重力の反映
-	m_parameter.position.y -= m_parameter.gravity;
+	// ファクトリーからモデルをもらう
+	auto _head = m_factory->VisitModelFactory()->GetCreateModel(L"Resources/Models/Head.cmo");
+	auto _body = m_factory->VisitModelFactory()->GetCreateModel(L"Resources/Models/Body.cmo");
+	auto _legR = m_factory->VisitModelFactory()->GetCreateModel(L"Resources/Models/LegR.cmo");
+	auto _legL = m_factory->VisitModelFactory()->GetCreateModel(L"Resources/Models/LegL.cmo");
 
-	// 死亡判定
-	if (m_parameter.position.y < DEATH_LINE)
-	{
-		is_deathFlag = true;
-	}
-}
+	// 新規作成
+	m_parent = std::make_unique<Body>(std::move(_body));
+	m_head	 = std::make_unique<Head>(std::move(_head));
+	m_legR   = std::make_unique<RightLeg>(std::move(_legR));
+	m_legL   = std::make_unique<LeftLeg>(std::move(_legL));
 
-// ライティングの更新
-std::function<void(IEffect* effect)> Player::UpdateLighting(SimpleMath::Vector3 dir)
-{
-	auto _lightingEffects = [&](IEffect* effect)
-		{
-			SimpleMath::Color lightColor(0.3f, 0.3f, 0.3f, 1.0f);
-			// ベーシックエフェクト
-			auto _basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (_basicEffect)
-			{
-				// アンビエントライトカラーを設定
-				_basicEffect->SetAmbientLightColor(SimpleMath::Color(0.2f, 0.2f, 0.2f));
-			}
-
-			// ライト
-			auto _lights = dynamic_cast<IEffectLights*>(effect);
-			if (_lights)
-			{
-				for (int i = 0; i < 3; ++i)
-				{
-					_lights->SetLightEnabled(i, true);
-					_lights->SetLightDirection(i, dir);
-					_lights->SetLightDiffuseColor(i, lightColor);
-				}
-			}
-
-			// フォグ
-			auto _fog = dynamic_cast<IEffectFog*>(effect);
-			if (_fog)
-			{
-				// 霧を使うシェーダーに切り替える
-				_fog->SetFogEnabled(true);
-
-				// フォグの色を決める
-				_fog->SetFogColor(Colors::LightGray);
-
-				// スタート
-				_fog->SetFogStart(-50.0f);
-
-				// エンド
-				_fog->SetFogEnd(150.0f);
-			}
-		};
-
-	return _lightingEffects;
+	// ファクトリを破棄
+	m_factory->LeaveModelFactory();
 }
 
 // リスポーン関数
 void Player::Spawn(SimpleMath::Vector3 spawnPosition)
 {
 	// パラメータの初期化
-	m_parameter.reset();
+	m_parent->ResetAll();
 
 	// 座標の設定
-	m_parameter.position = spawnPosition;
+	m_parent->SetPosition(spawnPosition);
+}
+
+// 座標の取得
+const SimpleMath::Vector3& Player::GetPosition()
+{
+	if (not m_parent)
+	{
+		NewCreate();
+	}
+	return m_parent->GetPosition();
+}
+
+// 座標の設定
+void Player::SetPosition(const SimpleMath::Vector3& position)
+{
+	if (not m_parent)
+	{
+		NewCreate();
+	}
+	m_parent->SetPosition(position);
+}
+
+// 重力のリセット
+void Player::ResetGravity()
+{
+	m_parent->ZeroGravity();
+}
+
+// 重力を取得
+const float& Player::GetGravity()
+{
+	if (not m_parent)
+	{
+		NewCreate();
+	}
+	return m_parent->GetGravity();
+}
+
+// 重力の設定
+void Player::SetGravity(const float& gravity)
+{
+	m_parent->SetGravity(gravity);
+}
+
+// 回転の取得
+const SimpleMath::Quaternion& Player::GetRotation()
+{
+	if (not m_parent)
+	{
+		NewCreate();
+	}
+	return m_parent->GetRotation();
 }

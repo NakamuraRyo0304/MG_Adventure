@@ -109,7 +109,7 @@ void PlayScene::Update()
 	// プレイヤの更新
 	m_player->Update();
 
-	// 相対移動
+	// プレイヤーの位置にポイント画像を表示
 	m_playerPoint->SetVertexMovePos(m_player->GetPosition());
 
 	// ステージの下に落ちたらステージ崩壊演出
@@ -207,23 +207,21 @@ void PlayScene::Draw()
 	}
 
 	// ライティングの更新
-	UpdateLight();
+	m_blocks->SetLighting(m_lighting);
 
 	// マップの描画
 	m_blocks->Render(*_states, _view, _projection, _timer, m_lighting);
 
-	// プレイヤの描画
-	m_player->Render(*_states, _view, _projection, m_lighting);
+	// プレイヤーの描画
+	m_player->Render(*_states, _view, _projection);
 
 	// スカイドームの描画
 	m_sky->Draw(*_states, _view, _projection, _timer);
 
 	// ビルボードの描画
-	m_playerPoint->CreateBillboard(
-		GetSystemManager()->GetCamera()->GetTarget(),	// カメラの注視点
-		GetSystemManager()->GetCamera()->GetPosition(),	// カメラの座標
-		SimpleMath::Vector3::Up
-	);
+	auto& _position = GetSystemManager()->GetCamera()->GetPosition();
+	auto& _target = GetSystemManager()->GetCamera()->GetTarget();
+	m_playerPoint->CreateBillboard(_target, _position, SimpleMath::Vector3::Up);
 	m_playerPoint->Render(m_player->GetPosition(), _timer, _view, _projection);
 
 	// UIの描画
@@ -315,13 +313,6 @@ void PlayScene::SetSceneValues()
 	m_lighting = -SimpleMath::Vector3::One;
 }
 
-// ライティングの設定
-void PlayScene::UpdateLight()
-{
-	m_player->InitializeLighting(m_lighting);
-	m_blocks->InitializeLighting(m_lighting);
-}
-
 // プレイヤー作成関数
 void PlayScene::CreatePlayer()
 {
@@ -336,13 +327,10 @@ void PlayScene::CreatePlayer()
 	auto _legL = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/LegL.cmo");
 
 	_fm->LeaveModelFactory();
+
 	// プレイヤーを作成する
-	m_player = std::make_unique<Player>(
-		std::move(_head),			// 頭のモデル
-		std::move(_body),			// 身体のモデル
-		std::move(_legR),			// 右足のモデル
-		std::move(_legL)			// 左足のモデル
-	);
+	m_player = std::make_unique<Player>(std::move(_head),
+		std::move(_body), std::move(_legR), std::move(_legL));
 }
 
 // ブロック作成関数

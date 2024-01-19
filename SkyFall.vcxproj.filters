@@ -293,6 +293,12 @@
     <Filter Include="Scenes\PlayScene\Objects\Player\Parts\RightLeg">
       <UniqueIdentifier>{4bf9fb59-bcd5-419b-be3b-a0177981aa48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\Player\Parts\IParts">
+      <UniqueIdentifier>{d9d6fd8b-73dd-4985-8377-20018411bea9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes\PlayScene\Objects\Player\Parts\Body">
+      <UniqueIdentifier>{350aeacd-f8de-4096-8d7e-81b8f46ef099}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -472,9 +478,6 @@
     <ClInclude Include="Game\PlayScene\Objects\ShowKey.h">
       <Filter>Scenes\PlayScene\Objects\ShowKey</Filter>
     </ClInclude>
-    <ClInclude Include="Game\PlayScene\Objects\Parts\IParts.h">
-      <Filter>Scenes\PlayScene\Objects\Player\Parts</Filter>
-    </ClInclude>
     <ClInclude Include="Game\PlayScene\Objects\Parts\Head\Head.h">
       <Filter>Scenes\PlayScene\Objects\Player\Parts\Head</Filter>
     </ClInclude>
@@ -483,6 +486,12 @@
     </ClInclude>
     <ClInclude Include="Game\PlayScene\Objects\Parts\RightLeg\RightLeg.h">
       <Filter>Scenes\PlayScene\Objects\Player\Parts\RightLeg</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\Parts\IParts.h">
+      <Filter>Scenes\PlayScene\Objects\Player\Parts\IParts</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PlayScene\Objects\Parts\Body\Body.h">
+      <Filter>Scenes\PlayScene\Objects\Player\Parts\Body</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -648,9 +657,6 @@
     <ClCompile Include="Game\PlayScene\Objects\ShowKey.cpp">
       <Filter>Scenes\PlayScene\Objects\ShowKey</Filter>
     </ClCompile>
-    <ClCompile Include="Game\PlayScene\Objects\Parts\IParts.cpp">
-      <Filter>Scenes\PlayScene\Objects\Player\Parts</Filter>
-    </ClCompile>
     <ClCompile Include="Game\PlayScene\Objects\Parts\Head\Head.cpp">
       <Filter>Scenes\PlayScene\Objects\Player\Parts\Head</Filter>
     </ClCompile>
@@ -659,6 +665,12 @@
     </ClCompile>
     <ClCompile Include="Game\PlayScene\Objects\Parts\RightLeg\RightLeg.cpp">
       <Filter>Scenes\PlayScene\Objects\Player\Parts\RightLeg</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\Objects\Parts\IParts.cpp">
+      <Filter>Scenes\PlayScene\Objects\Player\Parts\IParts</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayScene\Objects\Parts\Body\Body.cpp">
+      <Filter>Scenes\PlayScene\Objects\Player\Parts\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

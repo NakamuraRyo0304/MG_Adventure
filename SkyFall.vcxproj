@@ -200,6 +200,7 @@
     <ClInclude Include="Game\EditScene\System\MouseCursor.h" />
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\GameMain.h" />
+    <ClInclude Include="Game\PlayScene\Objects\Parts\Body\Body.h" />
     <ClInclude Include="Game\PlayScene\Objects\Parts\Head\Head.h" />
     <ClInclude Include="Game\PlayScene\Objects\Parts\IParts.h" />
     <ClInclude Include="Game\PlayScene\Objects\Parts\LeftLeg\LeftLeg.h" />
@@ -265,6 +266,7 @@
     <ClCompile Include="Game\EditScene\System\MouseCursor.cpp" />
     <ClCompile Include="Game\IScene.cpp" />
     <ClCompile Include="Game\GameMain.cpp" />
+    <ClCompile Include="Game\PlayScene\Objects\Parts\Body\Body.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Parts\Head\Head.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Parts\IParts.cpp" />
     <ClCompile Include="Game\PlayScene\Objects\Parts\LeftLeg\LeftLeg.cpp" />
