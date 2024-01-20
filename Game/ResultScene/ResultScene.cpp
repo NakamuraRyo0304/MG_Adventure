@@ -167,9 +167,9 @@ void ResultScene::SetSceneValues()
 // モデルの作成
 void ResultScene::CreateModels(std::shared_ptr<FactoryManager> fm)
 {
-	auto _grass = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
-	auto _coin = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
-	auto _cloud = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+	auto _grass = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineBox.cmo");
+	auto _coin = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineCoin.cmo");
+	auto _cloud = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineCl.cmo");
 	auto _gravity = fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
 
 	// モデルの受け渡し
@@ -186,12 +186,12 @@ bool ResultScene::AnimationValue()
 	m_directionalTime--;
 
 	// ランダムの値を生成
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dist(0, MAX_COUNT);
+	std::random_device _rd;
+	std::mt19937 _gen(_rd());
+	std::uniform_int_distribution<int> _dist(0, MAX_COUNT);
 
 	// ランダムな整数を生成
-	int randomValue = dist(gen);
+	int _value = _dist(_gen);
 
 	// 演出をする
 	if (m_directionalTime < 0.0f)
@@ -204,7 +204,7 @@ bool ResultScene::AnimationValue()
 	else
 	{
 		// ランダムな値を入れる
-		m_clearTime = static_cast<float>(randomValue);
+		m_clearTime = static_cast<float>(_value);
 	}
 
 	return false;
@@ -242,7 +242,7 @@ void ResultScene::SelectMenu()
 		if (static_cast<int>(GetFadeValue()) != 0) return;
 
 		m_selectingScene++;
-		m_selectingScene = m_selectingScene == 3 ? SELECTION::NEXT : m_selectingScene;
+		m_selectingScene = m_selectingScene == MAX_SCENES ? SELECTION::NEXT : m_selectingScene;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 	}
 	else if (_input.GetKeyTrack()->IsKeyReleased(Keyboard::Left) ||
@@ -252,7 +252,7 @@ void ResultScene::SelectMenu()
 		if (static_cast<int>(GetFadeValue()) != 0) return;
 
 		m_selectingScene--;
-		m_selectingScene = m_selectingScene == -1 ? SELECTION::SELECT : m_selectingScene;
+		m_selectingScene = m_selectingScene == MIN_SCENES ? SELECTION::SELECT : m_selectingScene;
 		GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 	}
 

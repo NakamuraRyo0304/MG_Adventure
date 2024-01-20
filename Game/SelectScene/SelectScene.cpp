@@ -219,8 +219,8 @@ void SelectScene::CreateStages()
 	{
 		// ファクトリーからモデルをもらう
 		auto _grass   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineBox.cmo");
-		auto _coin    = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
-		auto _cloud   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+		auto _coin    = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineCoin.cmo");
+		auto _cloud   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineCl.cmo");
 		auto _gravity = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
 
 		// 作成されていない場合は作成する
@@ -253,9 +253,9 @@ void SelectScene::CreateFirstStage()
 	auto& _fm = GetFactoryManager();
 	_fm->BuildModelFactory();
 
-	auto _grass   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
-	auto _coin    = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
-	auto _cloud   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+	auto _grass   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineBox.cmo");
+	auto _coin    = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineCoin.cmo");
+	auto _cloud   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineCl.cmo");
 	auto _gravity = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
 
 	_fm->LeaveModelFactory();

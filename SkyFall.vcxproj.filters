@@ -917,9 +917,6 @@
     <None Include="Datas\Progress.json">
       <Filter>Datas</Filter>
     </None>
-    <None Include="Resources\Models\Head_w.cmo">
-      <Filter>Resources\Models\Player</Filter>
-    </None>
     <None Include="Resources\Models\EditSky.cmo">
       <Filter>Resources\Models\SkyDome</Filter>
     </None>
@@ -944,17 +941,17 @@
     <None Include="Datas\Maps\StageEdit.csv">
       <Filter>Datas\Maps</Filter>
     </None>
-    <None Include="Resources\Shaders\Blocks.hlsli">
-      <Filter>Resources\Shaders\Block</Filter>
-    </None>
     <None Include="Resources\Models\lineBox.cmo">
+      <Filter>Resources\Models\MapObject</Filter>
+    </None>
+    <None Include="Resources\Models\lineCl.cmo">
+      <Filter>Resources\Models\MapObject</Filter>
+    </None>
+    <None Include="Resources\Models\lineCoin.cmo">
       <Filter>Resources\Models\MapObject</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="DevelopMemo.txt">
-      <Filter>Assets</Filter>
-    </Text>
     <Text Include="説明書.txt">
       <Filter>Assets</Filter>
     </Text>
@@ -969,9 +966,6 @@
     <FxCompile Include="Resources\Shaders\VS_PlayerPoint.hlsl">
       <Filter>Resources\Shaders\PlayerPoint</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\PS_Cloud.hlsl">
-      <Filter>Resources\Shaders\Block</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\Shaders\VS_Transition.hlsl">
       <Filter>Resources\Shaders\Transition</Filter>
     </FxCompile>
@@ -984,21 +978,10 @@
     <FxCompile Include="Resources\Shaders\PS_Gravity.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\PS_Coin.hlsl">
-      <Filter>Resources\Shaders\Block</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\PS_OutLine.hlsl">
-      <Filter>Resources\Shaders\Block</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Fonts\myfile.spritefont">
       <Filter>Assets</Filter>
     </Font>
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="..\lineBox.fbx">
-      <Filter>Resources\Models\MapObject</Filter>
-    </MeshContentTask>
   </ItemGroup>
 </Project>

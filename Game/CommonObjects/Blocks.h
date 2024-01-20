@@ -48,7 +48,7 @@ private:
 	bool is_hitCoinFlag;
 
 	// オブジェクトのシェーダー
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_psCoin, m_psCloud, m_psGravity;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_psGravity;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 	// コンスタントバッファ

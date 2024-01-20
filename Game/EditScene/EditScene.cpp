@@ -311,13 +311,13 @@ void EditScene::SetSceneValues()
 void EditScene::CreateModels(std::shared_ptr<FactoryManager> fm)
 {
 	m_grassModel = // 草ブロック
-		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/GrassBlock.cmo");
+		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineBox.cmo");
 
 	m_coinModel = // コインブロック
-		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
+		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineCoin.cmo");
 
 	m_cloudModel = // 雲ブロック
-		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineCl.cmo");
 
 	m_gravityModel = // 重力ブロック
 		fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");

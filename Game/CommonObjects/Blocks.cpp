@@ -115,7 +115,7 @@ void Blocks::Render(CommonStates& states,SimpleMath::Matrix view, SimpleMath::Ma
 	// ライティング設定
 	std::function<void(IEffect* effect)> _lightSetting;
 
-	// 雲以外のオブジェクトの描画
+	// ブロックの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
 		if (m_mapObj[i].id == MAPSTATE::NONE) continue;
@@ -193,63 +193,29 @@ void Blocks::Render(CommonStates& states,SimpleMath::Matrix view, SimpleMath::Ma
 			}
 		};
 
-		// 草ブロック
 		if (m_mapObj[i].id == MAPSTATE::GRASS)
 		{
 			m_grassModel->UpdateEffects(_lightSetting);
 			m_grassModel->Draw(_context, states, _world, view, proj);
 		}
 	}
-
-	// コイン
+	// コインの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
 		if (m_mapObj[i].id != MAPSTATE::COIN) continue;
 
 		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
-		m_coinModel->Draw(_context, states, _rotate * _world, view, proj, false, [&]()
-			{
-				// 定数バッファを更新
-				D3D11_MAPPED_SUBRESOURCE mappedResource;
-
-				// GPUが定数バッファに対してアクセスを行わないようにする
-				_context->Map(m_coinBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-
-				// 定数バッファを更新
-				CoinBuffer cb = {};
-				cb.timer.x = timer; // ダミーデータ
-				cb.d1 = cb.d2 = cb.d3 = SimpleMath::Vector4::Zero;
-
-				*static_cast<CoinBuffer*>(mappedResource.pData) = cb;
-
-				// GPUが定数バッファに対してのアクセスを許可する
-				_context->Unmap(m_coinBuffer.Get(), 0);
-
-				// ピクセルシェーダ使用する定数バッファを設定
-				ID3D11Buffer* cbuf_ps[] = { m_coinBuffer.Get() };
-				_context->PSSetConstantBuffers(1, 1, cbuf_ps);
-
-				// オリジナルピクセルシェーダーの設定
-				_context->PSSetShader(m_psCoin.Get(), nullptr, 0);
-			}
-		);
+		m_coinModel->Draw(_context, states, _rotate * _world, view, proj);
 	}
-
-	// 雲ブロック
+	// 雲ブロックの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
 		if (m_mapObj[i].id != MAPSTATE::CLOUD) continue;
 
 		_world = SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
-		m_cloudModel->Draw(_context, states, _rotate * _world, view, proj, false, [&]()
-			{
-				_context->OMSetBlendState(states.NonPremultiplied(), nullptr, 0xffffffff);
-				_context->OMSetDepthStencilState(states.DepthDefault(), 0);
-				_context->PSSetShader(m_psCloud.Get(), nullptr, 0);
-			}
-		);
+		m_cloudModel->Draw(_context, states, _rotate * _world, view, proj);
 	}
-	// 重力ブロック
+	// 重力ブロックの描画
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
 		if (m_mapObj[i].id != MAPSTATE::GRAVITY) continue;
@@ -290,20 +256,11 @@ void Blocks::CreateModels(std::unique_ptr<Model> model,int modelNum)
 {
 	switch (modelNum)
 	{
-	case GRASS:									// 草ブロック
-		m_grassModel = std::move(model);
-		break;
-	case COIN:									// コイン
-		m_coinModel = std::move(model);
-		break;
-	case CLOWD:									// 雲ブロック
-		m_cloudModel = std::move(model);
-		break;
-	case GRAVITY:								// 重力ブロック
-		m_gravityModel = std::move(model);
-		break;
-	default:
-		break;
+	case GRASS:		m_grassModel = std::move(model);	break;
+	case COIN:		m_coinModel = std::move(model);		break;
+	case CLOWD:		m_cloudModel = std::move(model);	break;
+	case GRAVITY:	m_gravityModel = std::move(model);	break;
+	default: break;
 	}
 }
 
@@ -313,8 +270,6 @@ void Blocks::CreateShader()
 	// ファクトリでシェーダーを生成
 	m_factory->BuildShaderFactory();
 
-	m_factory->VisitShaderFactory()->CreatePixelShader(L"Resources/Shaders/PS_Coin.cso", &m_psCoin);
-	m_factory->VisitShaderFactory()->CreatePixelShader(L"Resources/Shaders/PS_Cloud.cso", &m_psCloud);
 	m_factory->VisitShaderFactory()->CreatePixelShader(L"Resources/Shaders/PS_Gravity.cso", &m_psGravity);
 
 	m_factory->LeaveShaderFactory();
@@ -356,19 +311,19 @@ const float& Blocks::GetObjSize(const int& objName)
 // 雲を元に戻す
 void Blocks::CallGravity()
 {
-	for (auto& i : m_mapObj)
+	for (auto& obj : m_mapObj)
 	{
 		// 雲のみを対象とする
-		if (i.id == MAPSTATE::CLOUD)
+		if (obj.id == MAPSTATE::CLOUD)
 		{
 			// Y座標を始点まで動かす
-			i.position.y = UserUtility::Lerp
+			obj.position.y = UserUtility::Lerp
 			(
-				i.position.y,
-				m_cloudState[i.index].initPosition.y,
+				obj.position.y,
+				m_cloudState[obj.index].initPosition.y,
 				CLOUD_SPEED * 0.5f
 			);
-			m_cloudState[i.index].moveFlag = false;
+			m_cloudState[obj.index].moveFlag = false;
 		}
 	}
 }
@@ -379,7 +334,7 @@ std::wstring Blocks::MapSelect(int num)
 	std::wstring _filePath;
 
 	// TODO: [ステージ番号]マップ追加はここから！
-	// マップの変更
+	// マップの変更　case ステージ番号
 	switch (num)
 	{
 	case 0:
@@ -468,12 +423,12 @@ void Blocks::CreateConstBuffer()
 {
 	auto _device = DX::DeviceResources::GetInstance()->GetD3DDevice();
 	// 定数バッファの作成
-	D3D11_BUFFER_DESC bufferDesc = {};
+	D3D11_BUFFER_DESC _desc = {};
 	// 注意：コンスタントバッファは１６の倍数であること
-	bufferDesc.ByteWidth = static_cast<UINT>(sizeof(CoinBuffer));
+	_desc.ByteWidth = static_cast<UINT>(sizeof(CoinBuffer));
 	// GPU (読み取り専用) と CPU (書き込み専用) の両方からアクセスできるリソース
-	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;	// 定数バッファとして扱う
-	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	// CPUが内容を変更できるようにする
-	DX::ThrowIfFailed(_device->CreateBuffer(&bufferDesc, nullptr, m_coinBuffer.ReleaseAndGetAddressOf()));
+	_desc.Usage = D3D11_USAGE_DYNAMIC;
+	_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;	// 定数バッファとして扱う
+	_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;	// CPUが内容を変更できるようにする
+	DX::ThrowIfFailed(_device->CreateBuffer(&_desc, nullptr, m_coinBuffer.ReleaseAndGetAddressOf()));
 }

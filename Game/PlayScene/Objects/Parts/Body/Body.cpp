@@ -28,14 +28,15 @@ void Body::Update()
 	auto _key = Keyboard::Get().GetState();
 
 	// ç∂âEê˘âÒÇÇ∑ÇÈ
-	float _rotationAngle = 0.0f;
-	_rotationAngle = _key.A ? ROT_SPEED : _key.D ? -ROT_SPEED : 0.0f;
-	SimpleMath::Quaternion _q = SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, _rotationAngle);
-	m_param.rotation *= _rotationAngle != 0.0f ? _q : SimpleMath::Quaternion::Identity;
+	float _angleLR = 0.0f;
+	_angleLR = _key.A ? ROT_SPEED : _key.D ? -ROT_SPEED : 0.0f;
+	SimpleMath::Quaternion _axisAngle =
+		SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, _angleLR);
+	m_param.rotation *= _angleLR != 0.0f ? _axisAngle : SimpleMath::Quaternion::Identity;
 
 	// ëOå„à⁄ìÆÇÇ∑ÇÈ
 	SimpleMath::Vector3 _moveDirection(0.0f, 0.0f, 0.0f);
-	_moveDirection.z = _key.W ? -m_param.accelerate : _key.S ? m_param.accelerate * 0.5f : 0.0f;
+	_moveDirection.z = _key.W ? -MOVE_SPEED : _key.S ? MOVE_SPEED * 0.5f : 0.0f;
 	_moveDirection = SimpleMath::Vector3::Transform(_moveDirection, m_param.rotation);
 	m_param.velocity += _moveDirection;
 
@@ -80,7 +81,4 @@ void Body::Draw(CommonStates& states, SimpleMath::Matrix view, SimpleMath::Matri
 void Body::ResetAll()
 {
 	m_param.reset();
-
-	// â¡ë¨ìxÇÃê›íË
-	m_param.accelerate = MOVE_SPEED;
 }

@@ -50,6 +50,12 @@ private:
 	// ランダム最大数
 	const int MAX_COUNT = 69;
 
+	// 遷移先シーンの数
+	const int MAX_SCENES = 3;
+
+	// ループシーン
+	const int MIN_SCENES = -1;
+
 private:
 
 	// ブロック

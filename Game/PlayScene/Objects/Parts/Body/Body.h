@@ -16,19 +16,18 @@ class Body : public IParts
 {
 private:
 
+	// パラメータ
 	struct Parameter
 	{
 		DirectX::SimpleMath::Vector3 position;		// 座標
 		DirectX::SimpleMath::Vector3 velocity;		// 移動量
-		DirectX::SimpleMath::Quaternion rotation;		// 向いている方向
+		DirectX::SimpleMath::Quaternion rotation;	// 回転
 		float gravity;								// 重力
-		float accelerate;							// 加速度
 		void reset()								// リセット関数
 		{
 			position = DirectX::SimpleMath::Vector3::Zero;
 			velocity = DirectX::SimpleMath::Vector3::Zero;
 			gravity = 0.0f;
-			accelerate = 0.0f;
 			rotation = DirectX::SimpleMath::Quaternion::Identity;
 		}
 	} m_param;

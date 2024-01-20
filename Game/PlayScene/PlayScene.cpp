@@ -336,20 +336,21 @@ void PlayScene::CreatePlayer()
 // ブロック作成関数
 void PlayScene::CreateBlock()
 {
-	m_blocks = std::make_unique<Blocks>(GetFactoryManager());
-	m_blocks->CreateShader();
-
 	// ファクトリマネージャ
 	auto& _fm = GetFactoryManager();
 	_fm->BuildModelFactory();
 
 	// ファクトリーからモデルをもらう
 	auto _grass   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineBox.cmo");
-	auto _coin    = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Coin.cmo");
-	auto _cloud   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/Cloud.cmo");
+	auto _coin    = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineCoin.cmo");
+	auto _cloud   = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/lineCl.cmo");
 	auto _gravity = _fm->VisitModelFactory()->GetCreateModel(L"Resources/Models/ResetPt.cmo");
 
 	_fm->LeaveModelFactory();
+
+	// ブロックを作成する
+	m_blocks = std::make_unique<Blocks>(GetFactoryManager());
+	m_blocks->CreateShader();
 
 	// モデルの受け渡し
 	m_blocks->CreateModels(std::move(_grass),   m_blocks->GRASS);
@@ -377,27 +378,15 @@ void PlayScene::FirstMovement()
 {
 	auto& _camera = GetSystemManager()->GetCamera();
 
-	//-------------------//
-	// 現在位置
-	// 終点位置
-	// 移動速度
-	//-------------------//
-
 	// カメラ座標の移動
 	m_camera->SetPosition(
-		UserUtility::Lerp(
-			m_camera->GetPosition(),
-			_camera->GetPosition(),
-			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
-		)
-	);
+		UserUtility::Lerp(m_camera->GetPosition(), _camera->GetPosition(),
+			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }));
+
+	// カメラ注視点の移動
 	m_camera->SetTarget(
-		UserUtility::Lerp(
-			m_camera->GetTarget(),
-			_camera->GetTarget(),
-			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }
-		)
-	);
+		UserUtility::Lerp(m_camera->GetTarget(), _camera->GetTarget(),
+			SimpleMath::Vector3{ MOVE_CAMERA_SPEED }));
 }
 
 // UIの更新
@@ -416,14 +405,16 @@ bool PlayScene::UpdateUI()
 
 	if (is_helpFlag)
 	{
+		bool _leftFlag = (_input.GetKeyTrack()->IsKeyPressed(Keyboard::A) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Left));
+		bool _rightFlag = (_input.GetKeyTrack()->IsKeyPressed(Keyboard::D) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Right));
+		bool _upFlag = (_input.GetKeyTrack()->IsKeyPressed(Keyboard::W) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Up));
+		bool _downFlag = (_input.GetKeyTrack()->IsKeyPressed(Keyboard::S) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Down));
+
 		// 表示切替
-		m_playUI->UpdatePage(
-			(_input.GetKeyTrack()->IsKeyPressed(Keyboard::A) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Left)),
-			(_input.GetKeyTrack()->IsKeyPressed(Keyboard::D) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Right)));
+		m_playUI->UpdatePage(_leftFlag, _rightFlag);
 
 		// ページをめくる音を鳴らす
-		if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::A) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Left) ||
-			_input.GetKeyTrack()->IsKeyPressed(Keyboard::D) || _input.GetKeyTrack()->IsKeyPressed(Keyboard::Right))
+		if (_leftFlag || _rightFlag)
 		{
 			_se->PlaySound(XACT_WAVEBANK_SKBX_SE_NEXTHELP, false);
 		}
@@ -432,16 +423,9 @@ bool PlayScene::UpdateUI()
 		if (m_playUI->GetTransitionPage())
 		{
 			// 上下キーで選択
-			m_playUI->UpdateTransition(
-				(_input.GetKeyTrack()->IsKeyPressed(Keyboard::W) ||
-				 _input.GetKeyTrack()->IsKeyPressed(Keyboard::Up)),
-				(_input.GetKeyTrack()->IsKeyPressed(Keyboard::S) ||
-				 _input.GetKeyTrack()->IsKeyPressed(Keyboard::Down)));
+			m_playUI->UpdateTransition(_upFlag, _downFlag);
 
-			if (_input.GetKeyTrack()->IsKeyPressed(Keyboard::W) ||
-				_input.GetKeyTrack()->IsKeyPressed(Keyboard::Up)||
-				_input.GetKeyTrack()->IsKeyPressed(Keyboard::S) ||
-				_input.GetKeyTrack()->IsKeyPressed(Keyboard::Down))
+			if (_upFlag || _downFlag)
 			{
 				_se->PlaySound(XACT_WAVEBANK_SKBX_SE_SELECT, false);
 			}
