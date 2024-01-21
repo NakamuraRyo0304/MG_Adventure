@@ -64,7 +64,6 @@ private:
 	// ライティング
 	DirectX::SimpleMath::Vector3 m_lighting;
 
-
 private:
 	// マップサイズ
 	const float COMMON_SIZE = 0.9f;

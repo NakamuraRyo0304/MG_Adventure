@@ -1,6 +1,6 @@
 /*
  *	@File	ParticleUtility.h
- *	@Brief	パーティクルユーティリティクラス。// namespaceは利便性考慮で削除
+ *	@Brief	パーティクルユーティリティクラス。
  *	@Date	2023-07-07
  *  @Author T.Ito
  *  @Editor NakamuraRyo

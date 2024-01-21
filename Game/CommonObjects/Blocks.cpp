@@ -65,6 +65,7 @@ void Blocks::Initialize(int stageNum)
 
 	// コンスタントバッファの作成
 	CreateConstBuffer();
+
 }
 
 // 更新処理
@@ -100,7 +101,6 @@ void Blocks::Update()
 	{
 		is_collectedFlag = true;
 	}
-
 }
 
 // 描画関数
