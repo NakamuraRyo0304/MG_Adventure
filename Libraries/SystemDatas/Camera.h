@@ -78,8 +78,8 @@ public:
 	/// <param name="duration">揺れ継続時間</param>
 	/// <param name="tremor">揺れ幅</param>
 	/// <param name="pos">対象オブジェのポジション</param>
-	/// <returns>なし</returns>
-	void ShakeObject(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
+	/// <returns>移動した座標</returns>
+	DirectX::SimpleMath::Vector3 ShakeObject(float duration, float tremor, DirectX::SimpleMath::Vector3* pos);
 
 
 private:

@@ -11,10 +11,10 @@
 
 // コライダー
 #include "Libraries/SystemDatas/Collider.h"
+#include "Game/CommonObjects/Object.h"
 
 class Player;
 class Blocks;
-struct Object;
 class SystemManager;
 class ColliderHelper
 {

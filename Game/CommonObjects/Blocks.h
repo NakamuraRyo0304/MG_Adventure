@@ -7,6 +7,7 @@
 
 // エイリアス
 using MAPSTATE = MapLoad::BOXSTATE;
+using SLAMBDA = std::function<void __cdecl()>;
 
 class FactoryManager;
 class Blocks
@@ -50,16 +51,6 @@ private:
 	// オブジェクトのシェーダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_psGravity;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-
-	// コンスタントバッファ
-	struct CoinBuffer
-	{
-		DirectX::SimpleMath::Vector4 timer;
-		DirectX::SimpleMath::Vector4 d1;
-		DirectX::SimpleMath::Vector4 d2;
-		DirectX::SimpleMath::Vector4 d3;
-	};
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_coinBuffer;
 
 	// ライティング
 	DirectX::SimpleMath::Vector3 m_lighting;
@@ -179,15 +170,12 @@ public:
 	const DirectX::SimpleMath::Vector3& GetPlayerPosition() { return m_playerPos; }
 
 	// マップ全体を取得
-	const std::vector<Object>& GetMapData() { return m_mapObj; }
+	std::vector<Object>& GetMapData() { return m_mapObj; }
 
 	// ブロック単体の座標を取得
-	DirectX::SimpleMath::Vector3& GetBlockPosition(const int& index)
-	{
-		if (index >= m_mapObj.max_size()) throw std::out_of_range("Index out of range");
-		return m_mapObj[index].position;
-	}
-	void SetBlockPosition(const DirectX::SimpleMath::Vector3& newPos, const int& index) { m_mapObj[index].position = newPos; }
+	DirectX::SimpleMath::Vector3& GetBlockPosition(const int& index);
+
+	void SetBlockPosition(const DirectX::SimpleMath::Vector3& newPos, const int& index);
 
 	/// <summary>
 	/// サイズゲッター
@@ -213,11 +201,4 @@ private:
 	/// <param name="引数無し"></param>
 	/// <returns>なし</returns>
 	void MapSwipe();
-
-	/// <summary>
-	/// コンスタントバッファの作成
-	/// </summary>
-	/// <param name="引数無し"></param>
-	/// <returns>なし</returns>
-	void CreateConstBuffer();
 };

@@ -493,6 +493,9 @@
     <ClInclude Include="Game\PlayScene\Objects\Parts\Body\Body.h">
       <Filter>Scenes\PlayScene\Objects\Player\Parts\Body</Filter>
     </ClInclude>
+    <ClInclude Include="Game\CommonObjects\Object.h">
+      <Filter>CommonObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">

@@ -77,14 +77,20 @@ bool MapLoad::LoadMap(std::wstring filename)
 		Object _obj;
 
 		// 読み込めなくなったらファイルを閉じる
-		if (not (_iss >> _obj.id) ||			// マップID
-			not (_iss >> _obj.position.x) ||	// 座標X
-			not (_iss >> _obj.position.y) ||	// 座標Y
-			not (_iss >> _obj.position.z))		// 座標Z
+		int _id, _x, _y, _z;
+		_id = _x = _y = _z = 0;
+		if (not (_iss >> _id) ||	// マップID
+			not (_iss >> _x)  ||	// 座標X
+			not (_iss >> _y)  ||	// 座標Y
+			not (_iss >> _z))		// 座標Z
 		{
 			_ifs.close();
 			m_mapData.clear();
 		}
+
+		_obj.SetID(_id);
+		_obj.SetPosition(SimpleMath::Vector3(
+			static_cast<float>(_x), static_cast<float>(_y), static_cast<float>(_z)));
 
 		// 読み込んだデータを格納する
 		m_mapData.push_back(_obj);
@@ -117,7 +123,8 @@ void MapLoad::WriteMap(std::vector<Object> obj)
 		std::ostringstream _oss;
 
 		// ID,X,Y,X,改行
-		_oss << _obj.id << "," << _obj.position.x << "," << _obj.position.y << "," << _obj.position.z << ",\n";
+		_oss << _obj.GetID() << "," << _obj.GetPosition().x << ","
+			<< _obj.GetPosition().y << "," << _obj.GetPosition().z << ",\n";
 
 		// １ブロックの情報を出力
 		_ofs << _oss.str();
@@ -343,15 +350,14 @@ void MapLoad::CreateNewMap()
 
 				if (y == 0)
 				{
-					_tmpObj.id = BOXSTATE::GRASS;
+					_tmpObj.SetID(BOXSTATE::GRASS);
 				}
 				else
 				{
-					_tmpObj.id = BOXSTATE::NONE;
+					_tmpObj.SetID(BOXSTATE::NONE);
 				}
-				_tmpObj.position.x = static_cast<float>(x);
-				_tmpObj.position.y = static_cast<float>(y);
-				_tmpObj.position.z = static_cast<float>(z);
+				_tmpObj.SetPosition(SimpleMath::Vector3(
+					static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)));
 
 				_obj.push_back(_tmpObj);
 			}

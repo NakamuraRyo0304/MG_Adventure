@@ -141,26 +141,26 @@ void EditScene::Draw()
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
 		SimpleMath::Matrix _boxMat =
-			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].position);
+			SimpleMath::Matrix::CreateTranslation(m_mapObj[i].GetPosition());
 
 		// 押し戻し処理を無効化
 		m_boxCollider->SetPushMode(false);
 
 		// 当たり判定を取る
-		m_boxCollider->Judgement(&m_cursorPos, m_mapObj[i].position,
+		m_boxCollider->Judgement(&m_cursorPos, m_mapObj[i].GetPosition(),
 			SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			SimpleMath::Vector3{ COMMON_SIZE }
 		);
 
-		m_mapObj[i].hit = m_boxCollider->IsHitBoxFlag();
+		m_mapObj[i].SetHit(m_boxCollider->IsHitBoxFlag());
 
-		if (m_mapObj[i].hit) // 選択中のマスにオブジェクトを描画
+		if (m_mapObj[i].IsHit()) // 選択中のマスにオブジェクトを描画
 		{
 			SwitchDraw(m_nowState, _context, *_states, _rotateY * _boxMat, _view, _projection);
 		}
 		else				 // 該当オブジェクトの描画
 		{
-			SwitchDraw(m_mapObj[i].id, _context, *_states, _boxMat, _view, _projection);
+			SwitchDraw(m_mapObj[i].GetID(), _context, *_states, _boxMat, _view, _projection);
 		}
 	}
 
@@ -334,7 +334,7 @@ void EditScene::ResetObjNum()
 {
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		m_blockCount[m_mapObj[i].id] = 0;
+		m_blockCount[m_mapObj[i].GetID()] = 0;
 	}
 }
 
@@ -343,7 +343,7 @@ void EditScene::CountObjNum()
 {
 	for (int i = 0; i < m_mapObj.size(); i++)
 	{
-		m_blockCount[m_mapObj[i].id]++;
+		m_blockCount[m_mapObj[i].GetID()]++;
 	}
 }
 
@@ -424,26 +424,26 @@ void EditScene::EditMap()
 		m_boxCollider->SetPushMode(false);
 
 		// 当たり判定を取る
-		m_boxCollider->Judgement(&m_cursorPos, i.position,
+		m_boxCollider->Judgement(&m_cursorPos, i.GetPosition(),
 			SimpleMath::Vector3{ COMMON_SIZE / 2 },
 			SimpleMath::Vector3{ COMMON_SIZE }
 		);
 
 		// 瞬間の当たり判定を取得
-		i.hit = m_boxCollider->IsHitBoxFlag();
+		i.SetHit(m_boxCollider->IsHitBoxFlag());
 
 		// クリックでブロック設置
-		if (i.hit &&  _mouse.leftButton)
+		if (i.IsHit() && _mouse.leftButton)
 		{
 			// 既に同じオブジェクトなら処理しない
-			if (i.id == m_nowState) continue;
+			if (i.GetID() == m_nowState) continue;
 
 			// 一時保存する
 			SaveModification();
 
 			// オブジェクトをセット
 			GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_SETBOX, false);
-			i.id = m_nowState;
+			i.SetID(m_nowState);
 		}
 	}
 }

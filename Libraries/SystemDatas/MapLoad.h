@@ -9,25 +9,8 @@
 #ifndef MAPLOAD
 #define MAPLOAD
 
-// マップブロックの構造体
-struct Object
-{
-	int id = 0;									// マップID
-	DirectX::SimpleMath::Vector3 position;		// 座標
-	bool hit = false;							// 当たっていたらTrue
-	int index = 0;								// インデックス番号を格納
-
-	Object()
-		: id(0), position(DirectX::SimpleMath::Vector3(0, 0, 0)), hit(false), index(0)
-	{
-	}
-
-	// 演算子のオーバーロード
-	bool operator==(const Object& name) const
-	{
-		return id == name.id && position == name.position;
-	}
-};
+// オブジェクト型
+#include "Game/CommonObjects/Object.h"
 
 class MapLoad
 {

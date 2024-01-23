@@ -118,25 +118,23 @@ void PlayScene::Update()
 		// 落下させる
 		m_fallValue -= FALL_SPEED;
 
-		for (auto& i : m_blocks->GetMapData())
+		for (auto& block : m_blocks->GetMapData())
 		{
 			// エフェクトをオフ
 			m_playUI->SetEffectFlag(false);
 
-			// オブジェクトの振動
-			GetSystemManager()->GetCamera()->ShakeObject(
-				SHAKE_DURATION,							// 振動時間
-				SHAKE_TREMOR * SHAKE_OBJ_POWER,			// 振動範囲
-				&m_blocks->GetBlockPosition(i.index)	// 振動オブジェクト
-			);
+			SimpleMath::Vector3 _pos = block.GetPosition();
 
+			// オブジェクトの振動(ランダムで動かす)
+			GetSystemManager()->GetCamera()->ShakeObject(
+				SHAKE_DURATION,		// 振動時間
+				SHAKE_TREMOR,		// 振動範囲
+				&_pos				// 振動座標
+			);
 			// 座標のセット
 			m_blocks->SetBlockPosition(
-				SimpleMath::Vector3(
-				i.position.x,						// X軸
-				i.position.y + m_fallValue,			// Y軸
-				i.position.z),						// Z軸
-				i.index								// 配列番号
+				_pos + SimpleMath::Vector3(0.0f, m_fallValue, 0.0f),
+				block.GetIndex()
 			);
 		}
 	}
@@ -144,22 +142,20 @@ void PlayScene::Update()
 	else if (m_player->GetPosition().y < DEATH_EFFECT_LINE)
 	{
 		// オブジェクトの振動
-		for (auto& i : m_blocks->GetMapData())
+		for (auto& block : m_blocks->GetMapData())
 		{
 			// エフェクトをオン
-			if (static_cast<int>(m_player->GetPosition().y) % 2 == 0)
-			{
-				m_playUI->SetEffectFlag(true);
-			}
-			else
-			{
-				m_playUI->SetEffectFlag(false);
-			}
+			m_playUI->SetEffectFlag(static_cast<int>(m_player->GetPosition().y) % 2 == 0);
+
+			// オブジェクトの振動(ランダムで動かす)
+			SimpleMath::Vector3 _pos = block.GetPosition();
 			GetSystemManager()->GetCamera()->ShakeObject(
-				1.0f,									// 振動時間
-				SHAKE_TREMOR,							// 振動範囲
-				&m_blocks->GetBlockPosition(i.index)	// 振動オブジェクト
+				SHAKE_DURATION,		// 振動時間
+				SHAKE_TREMOR,		// 振動範囲
+				&_pos				// 振動座標
 			);
+			// 座標のセット
+			m_blocks->SetBlockPosition(_pos, block.GetIndex());
 		}
 	}
 	// プレイヤー生存時のみ処理
@@ -285,9 +281,7 @@ void PlayScene::SetSceneValues()
 	GetSystemManager()->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_BGM_PLAY, true);
 
 	// 制限時間の初期化
-	// 時間　×　フレームレート
 	m_timeLinits = TIME_LIMIT * FLAME_RATE;
-
 	m_clearTime = 0.0f;
 
 	// 開始カウントダウン(フェードも考慮)

@@ -42,9 +42,9 @@ void ColliderHelper::Update(Player* player, Blocks* blocks)
 	Judgement(player, blocks);
 
 	// 衝突したオブジェクトごとに押し戻し処理を行う
-	for (auto& i : m_hitObj)
+	for (auto& obj : m_hitObj)
 	{
-		ApplyPushBack(player, blocks, i);
+		ApplyPushBack(player, blocks, obj);
 	}
 }
 
@@ -59,17 +59,16 @@ void ColliderHelper::Judgement(Player* player, Blocks* blocks)
 	for (auto& block : blocks->GetMapData())
 	{
 		// ブロックがなければ処理しない
-		if (block.id == MAPSTATE::NONE) continue;
+		if (block.GetID() == MAPSTATE::NONE) continue;
 
 		// プレイヤの判定範囲外は処理しない
 		if (not UserUtility::CheckPointInSphere(
-			player->GetPosition(), m_radius, block.position)) continue;
+			player->GetPosition(), m_radius, block.GetPosition())) continue;
 
-		// 判定を取る
-		m_collider->Judgement(
-			player->GetPosition(), block.position,				// プレイヤ、オブジェクトの座標
-			SimpleMath::Vector3{ player->GetSize() },			// プレイヤサイズ
-			SimpleMath::Vector3{ blocks->GetObjSize(block.id) }	// ブロックサイズ
+		// 判定を取る // 座標・サイズ
+		m_collider->Judgement(player->GetPosition(), block.GetPosition(),
+			SimpleMath::Vector3{ player->GetSize() },
+			SimpleMath::Vector3{ blocks->GetObjSize(block.GetID()) }
 		);
 
 		// 当たっていたらコリジョンリストに追加
@@ -84,7 +83,7 @@ void ColliderHelper::Judgement(Player* player, Blocks* blocks)
 void ColliderHelper::ApplyPushBack(Player* player, Blocks* blocks, Object& obj)
 {
 	// 当っているオブジェがなしの場合は処理しない
-	if (obj.id == MAPSTATE::NONE)
+	if (obj.GetID() == MAPSTATE::NONE)
 	{
 		// 要素を消して終了
 		m_hitObj.pop_back();
@@ -95,23 +94,23 @@ void ColliderHelper::ApplyPushBack(Player* player, Blocks* blocks, Object& obj)
 	m_collider->SetPushMode(true);
 
 	// コインの獲得処理
-	if (obj.id == MAPSTATE::COIN)
+	if (obj.GetID() == MAPSTATE::COIN)
 	{
 		// 押し戻ししない
 		m_collider->SetPushMode(false);
 
 		// コインカウントアップ
-		blocks->CountUpCoin(obj.index);
+		blocks->CountUpCoin(obj.GetIndex());
 
 		// コイン獲得音を鳴らす
 		m_system->GetSoundManager()->PlaySound(XACT_WAVEBANK_SKBX_SE_COINGETTER, false);
 	}
 
 	// 雲の浮上処理
-	if (obj.id == MAPSTATE::CLOUD)
+	if (obj.GetID() == MAPSTATE::CLOUD)
 	{
 		// プレイヤーが下にいたら押し戻ししない
-		if (player->GetPosition().y < obj.position.y + blocks->GetObjSize(MAPSTATE::CLOUD))
+		if (player->GetPosition().y < obj.GetPosition().y + blocks->GetObjSize(MAPSTATE::CLOUD))
 		{
 			// 要素を消して終了
 			m_hitObj.pop_back();
@@ -122,7 +121,7 @@ void ColliderHelper::ApplyPushBack(Player* player, Blocks* blocks, Object& obj)
 		m_collider->SetPushMode(true);
 
 		// インデックス番号を格納
-		m_lastIdx.push_back(obj.index);
+		m_lastIdx.push_back(obj.GetIndex());
 
 		// 空なら処理しない
 		if (m_lastIdx.empty()) return;
@@ -133,7 +132,7 @@ void ColliderHelper::ApplyPushBack(Player* player, Blocks* blocks, Object& obj)
 	}
 
 	// 重力処理
-	if (obj.id == MAPSTATE::GRAVITY)
+	if (obj.GetID() == MAPSTATE::GRAVITY)
 	{
 		m_collider->SetPushMode(false);
 		blocks->CallGravity();
@@ -142,9 +141,9 @@ void ColliderHelper::ApplyPushBack(Player* player, Blocks* blocks, Object& obj)
 	// プレイヤーの押し戻し
 	SimpleMath::Vector3 _playerPos = player->GetPosition();
 	m_collider->Judgement(
-		&_playerPos, obj.position,
+		&_playerPos, obj.GetPosition(),
 		SimpleMath::Vector3{ player->GetSize() },
-		SimpleMath::Vector3{ blocks->GetObjSize(obj.id) });
+		SimpleMath::Vector3{ blocks->GetObjSize(obj.GetID()) });
 	player->SetPosition(_playerPos);
 
 	// ブロックの上に乗っていたら着地判定

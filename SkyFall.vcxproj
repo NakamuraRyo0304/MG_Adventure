@@ -191,6 +191,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\CommonObjects\Blocks.h" />
     <ClInclude Include="Game\CommonObjects\IGameCamera.h" />
+    <ClInclude Include="Game\CommonObjects\Object.h" />
     <ClInclude Include="Game\EditScene\EditScene.h" />
     <ClInclude Include="Game\EditScene\Objects\EditSky.h" />
     <ClInclude Include="Game\EditScene\Objects\EditUI.h" />

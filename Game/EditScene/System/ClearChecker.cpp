@@ -57,16 +57,16 @@ bool ClearChecker::RunCheck()
 	// オブジェクトの数を計算
 	for (int i = 0; i < m_checkMap.size(); i++)
 	{
-		if (m_checkMap[i].id == MAPSTATE::BIRD)
+		if (m_checkMap[i].GetID() == MAPSTATE::BIRD)
 		{
 			m_playerNum++;
-			m_playerPos = m_checkMap[i].position;
+			m_playerPos = m_checkMap[i].GetPosition();
 		}
-		if (m_checkMap[i].id == MAPSTATE::COIN)
+		if (m_checkMap[i].GetID() == MAPSTATE::COIN)
 		{
 			m_coinNum++;
 		}
-		if (m_checkMap[i].id == MAPSTATE::CLOUD)
+		if (m_checkMap[i].GetID() == MAPSTATE::CLOUD)
 		{
 			m_cloudNum++;
 		}
@@ -81,10 +81,10 @@ bool ClearChecker::RunCheck()
 		for (auto& j : m_checkMap)
 		{
 			// コインじゃなければ処理を飛ばす
-			if (i.id != MAPSTATE::COIN || j.id != MAPSTATE::COIN) continue;
+			if (i.GetID() != MAPSTATE::COIN || j.GetID() != MAPSTATE::COIN) continue;
 
 			// 距離を計算して最大を越えたら入れ替える
-			 float _check = SimpleMath::Vector3::Distance(i.position, j.position);
+			 float _check = SimpleMath::Vector3::Distance(i.GetPosition(), j.GetPosition());
 
 			if (_check > m_coinLength)
 			{
@@ -119,10 +119,10 @@ bool ClearChecker::CheckSameHeight()
 
 	for (auto& i : m_checkMap)
 	{
-		if (i.id == MAPSTATE::CLOUD)
+		if (i.GetID() == MAPSTATE::CLOUD)
 		{
 			// 乗れればTrue、乗れなければFalseを入れる
-			if (static_cast<int>(m_playerPos.y) > static_cast<int>(i.position.y))
+			if (static_cast<int>(m_playerPos.y) > static_cast<int>(i.GetPosition().y))
 			{
 				return true;
 			}
@@ -138,12 +138,12 @@ bool ClearChecker::CheckNormalStart()
 	for (auto& i : m_checkMap)
 	{
 		// ブロックがあればスキップ
-		if (i.id != MAPSTATE::NONE) continue;
+		if (i.GetID() != MAPSTATE::NONE) continue;
 
 		// プレイヤーの下にブロックがなければfalseを返す
-		if (static_cast<int>(i.position.x) == static_cast<int>(m_playerPos.x) &&
-			static_cast<int>(i.position.z) == static_cast<int>(m_playerPos.z) &&
-			static_cast<int>(i.position.y) <  static_cast<int>(m_playerPos.y))
+		if (static_cast<int>(i.GetPosition().x) == static_cast<int>(m_playerPos.x) &&
+			static_cast<int>(i.GetPosition().z) == static_cast<int>(m_playerPos.z) &&
+			static_cast<int>(i.GetPosition().y) <  static_cast<int>(m_playerPos.y))
 		{
 			return false;
 		}

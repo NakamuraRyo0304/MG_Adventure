@@ -117,7 +117,7 @@ void Camera::DraggedDistance(int x, int y)
 }
 
 // オブジェクトを揺らす
-void Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
+SimpleMath::Vector3 Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
 {
 	int _counta = 0;
 	_counta++;
@@ -136,6 +136,8 @@ void Camera::ShakeObject(float duration, float tremor, SimpleMath::Vector3* pos)
 		(*pos).y += _d * (rand() % 3 - 1);
 		(*pos).z += _d * (rand() % 3 - 1);
 	}
+
+	return (*pos);
 }
 
 
