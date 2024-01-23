@@ -7,7 +7,6 @@
 
 // エイリアス
 using MAPSTATE = MapLoad::BOXSTATE;
-using SLAMBDA = std::function<void __cdecl()>;
 
 class FactoryManager;
 class Blocks

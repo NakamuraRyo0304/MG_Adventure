@@ -299,6 +299,18 @@
     <Filter Include="Scenes\PlayScene\Objects\Player\Parts\Body">
       <UniqueIdentifier>{350aeacd-f8de-4096-8d7e-81b8f46ef099}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\ShadowMap">
+      <UniqueIdentifier>{4126a8b6-8c5d-4fb8-bdaf-fc1ef9fc405c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ShadowMap">
+      <UniqueIdentifier>{8e3b1652-b7fd-4328-9fe8-41a67b2fd55e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\RenderTexture">
+      <UniqueIdentifier>{a540eb71-ef74-4927-ac67-a9f20f9522fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\DepthStencil">
+      <UniqueIdentifier>{59e8b4d0-62e8-422b-87bf-16f2648759cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Icon\Icon.h">
@@ -496,6 +508,15 @@
     <ClInclude Include="Game\CommonObjects\Object.h">
       <Filter>CommonObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\ShadowMap.h">
+      <Filter>Common\ShadowMap</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTexture.h">
+      <Filter>Common\RenderTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\SystemDatas\DepthStencil.h">
+      <Filter>Common\DepthStencil</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -674,6 +695,15 @@
     </ClCompile>
     <ClCompile Include="Game\PlayScene\Objects\Parts\Body\Body.cpp">
       <Filter>Scenes\PlayScene\Objects\Player\Parts\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\ShadowMap.cpp">
+      <Filter>Common\ShadowMap</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTexture.cpp">
+      <Filter>Common\RenderTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\SystemDatas\DepthStencil.cpp">
+      <Filter>Common\DepthStencil</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -953,6 +983,12 @@
     <None Include="Resources\Models\lineCoin.cmo">
       <Filter>Resources\Models\MapObject</Filter>
     </None>
+    <None Include="Resources\Shaders\ShadowMap\ParametersHeader.hlsli">
+      <Filter>Resources\Shaders\ShadowMap</Filter>
+    </None>
+    <None Include="Resources\Shaders\ShadowMap\SM_Common.hlsli">
+      <Filter>Resources\Shaders\ShadowMap</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="説明書.txt">
@@ -980,6 +1016,18 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\PS_Gravity.hlsl">
       <Filter>Resources\Shaders\Block</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap\SM_PS.hlsl">
+      <Filter>Resources\Shaders\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap\SM_PS_Depth.hlsl">
+      <Filter>Resources\Shaders\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap\SM_VS.hlsl">
+      <Filter>Resources\Shaders\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap\SM_VS_Depth.hlsl">
+      <Filter>Resources\Shaders\ShadowMap</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -235,6 +235,7 @@
     <ClInclude Include="Libraries\SystemDatas\Collider.h" />
     <ClInclude Include="Libraries\SystemDatas\Camera.h" />
     <ClInclude Include="Libraries\SystemDatas\ColliderHelper.h" />
+    <ClInclude Include="Libraries\SystemDatas\DepthStencil.h" />
     <ClInclude Include="Libraries\SystemDatas\DrawSprite.h" />
     <ClInclude Include="Libraries\SystemDatas\DrawString.h" />
     <ClInclude Include="Libraries\SystemDatas\Fade.h" />
@@ -243,12 +244,14 @@
     <ClInclude Include="Libraries\SystemDatas\MapLoad.h" />
     <ClInclude Include="Libraries\SystemDatas\ParticleUtility.h" />
     <ClInclude Include="Libraries\SystemDatas\RayCast.h" />
+    <ClInclude Include="Libraries\SystemDatas\ShadowMap.h" />
     <ClInclude Include="Libraries\SystemDatas\SoundManager.h" />
     <ClInclude Include="Libraries\SystemDatas\Transition.h" />
     <ClInclude Include="Libraries\SystemManager\SystemManager.h" />
     <ClInclude Include="Libraries\UserUtility.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReadData.h" />
+    <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="Resources\Icon\Icon.h" />
     <ClInclude Include="SoundList.h" />
     <ClInclude Include="StepTimer.h" />
@@ -300,6 +303,7 @@
     <ClCompile Include="Libraries\SystemDatas\Collider.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Camera.cpp" />
     <ClCompile Include="Libraries\SystemDatas\ColliderHelper.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\DepthStencil.cpp" />
     <ClCompile Include="Libraries\SystemDatas\DrawSprite.cpp" />
     <ClCompile Include="Libraries\SystemDatas\DrawString.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Fade.cpp" />
@@ -308,6 +312,7 @@
     <ClCompile Include="Libraries\SystemDatas\MapLoad.cpp" />
     <ClCompile Include="Libraries\SystemDatas\ParticleUtility.cpp" />
     <ClCompile Include="Libraries\SystemDatas\RayCast.cpp" />
+    <ClCompile Include="Libraries\SystemDatas\ShadowMap.cpp" />
     <ClCompile Include="Libraries\SystemDatas\SoundManager.cpp" />
     <ClCompile Include="Libraries\SystemDatas\Transition.cpp" />
     <ClCompile Include="Libraries\SystemManager\SystemManager.cpp" />
@@ -318,6 +323,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RenderTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -418,6 +424,8 @@
     <None Include="Resources\Models\TitleLogoVer2.cmo" />
     <None Include="Resources\Models\TitleStage.cmo" />
     <None Include="Resources\Shaders\PlayerPoint.hlsli" />
+    <None Include="Resources\Shaders\ShadowMap\ParametersHeader.hlsli" />
+    <None Include="Resources\Shaders\ShadowMap\SM_Common.hlsli" />
     <None Include="Resources\Shaders\Transition.hlsli" />
   </ItemGroup>
   <ItemGroup>
@@ -458,6 +466,38 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap\SM_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ShadowMap\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ShadowMap\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap\SM_PS_Depth.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ShadowMap\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ShadowMap\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap\SM_VS.hlsl">
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ShadowMap\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ShadowMap\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap\SM_VS_Depth.hlsl">
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ShadowMap\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ShadowMap\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\VS_PlayerPoint.hlsl">
