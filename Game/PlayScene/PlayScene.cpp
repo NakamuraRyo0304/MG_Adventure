@@ -202,9 +202,6 @@ void PlayScene::Draw()
 		_projection = GetSystemManager()->GetCamera()->GetProjection();
 	}
 
-	// ライティングの更新
-	m_blocks->SetLighting(m_lighting);
-
 	// マップの描画
 	m_blocks->Render(*_states, _view, _projection, _timer, m_lighting);
 

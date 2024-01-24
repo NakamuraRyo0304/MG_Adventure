@@ -17,10 +17,6 @@ Blocks::Blocks(std::shared_ptr<FactoryManager> factory)
 	, m_coinCount{0}							// コインカウンタ
 	, m_maxCoins{0}								// コイン最大値
 	, m_playerPos{ SimpleMath::Vector3::Zero }	// プレイヤーポジション
-	, m_grassModel{ nullptr }					// 草ブロックのモデル
-	, m_coinModel{ nullptr }					// コインブロックのモデル
-	, m_cloudModel{ nullptr }					// 雲ブロックのモデル
-	, m_gravityModel{ nullptr }					// 重力ブロックのモデル
 	, m_lighting{}								// ライティング
 	, is_collectedFlag{ false }					// コイン回収済み判定フラグ
 	, is_hitCoinFlag{ false }					// 判定フラグ
@@ -31,7 +27,10 @@ Blocks::Blocks(std::shared_ptr<FactoryManager> factory)
 // デストラクタ
 Blocks::~Blocks()
 {
-
+	m_grassModel.reset();
+	m_coinModel.reset();
+	m_cloudModel.reset();
+	m_gravityModel.reset();
 }
 
 // 初期化処理
@@ -83,13 +82,8 @@ void Blocks::Update()
 				CLOUD_SPEED
 			);
 
-			m_mapObj[i].SetPosition(
-				SimpleMath::Vector3(
-					m_mapObj[i].GetPosition().x,
-					_move,
-					m_mapObj[i].GetPosition().z
-				)
-			);
+			// 変更した値を反映
+			m_mapObj[i].SetPosition(m_mapObj[i].GetPosition() + SimpleMath::Vector3(0.0f, _move, 0.0f));
 		}
 	}
 
@@ -288,7 +282,7 @@ SimpleMath::Vector3& Blocks::GetBlockPosition(const int& index)
 }
 
 // 座標を設定する
-void Blocks::SetBlockPosition(const DirectX::SimpleMath::Vector3& newPos, const int& index)
+void Blocks::SetBlockPosition(const SimpleMath::Vector3& newPos, const int& index)
 {
 	m_mapObj[index].SetPosition(newPos);
 }
@@ -350,7 +344,7 @@ void Blocks::CallGravity()
 // マップ選択
 std::wstring Blocks::MapSelect(int num)
 {
-	std::wstring _filePath;
+	std::wstring _filePath = L"NoStage";
 
 	// TODO: [ステージ番号]マップ追加はここから！
 	// マップの変更　case ステージ番号
